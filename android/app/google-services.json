@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "278272557601",
+    "project_id": "lybertineapp-f32dd",
+    "storage_bucket": "lybertineapp-f32dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278272557601:android:b22b53fbdfb167c4bbd960",
+        "android_client_info": {
+          "package_name": "com.lybertineapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278272557601-k55mgjthbptv8ar537obde191n0devj7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMtJJwybSIaXTM4yo5UQkEC1A3Mi4sHBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278272557601-k55mgjthbptv8ar537obde191n0devj7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
