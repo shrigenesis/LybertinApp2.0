@@ -24,7 +24,7 @@ import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
 import Video from 'react-native-video';
 import Animated, {ZoomIn, FadeOut, FadeIn} from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {StoryContainer, ProgressBar} from 'react-native-stories-view';
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import {Overlay} from 'react-native-elements';
@@ -211,7 +211,10 @@ const showHightlight = ({navigation, route}) => {
         navigation.goBack();
 
         if (res?.alert?.status) {
-          SimpleToast.show(res?.alert?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
         }
         console.log(res);
       },

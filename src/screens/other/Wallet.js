@@ -59,7 +59,14 @@ const Wallet = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backBtn}>
-              <SvgUri source={IMAGE.svgBackBlack} />
+              <Image
+                source={IMAGE.back}
+                style={{
+                  height: 20,
+                  width: 20,
+                  resizeMode: 'contain',
+                }}
+              />
             </TouchableOpacity>
             <Text style={styles.headerText}>
               {/* {this.props.route.params.title} */}
@@ -230,8 +237,9 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   imageBoy: {
-    width: 43,
-    height: 43
+    width: 42,
+    height: 42,
+    borderRadius: 21
   },
   coinImage: {
     width: 31,

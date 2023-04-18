@@ -34,9 +34,8 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {pickImage} from '../../component/';
 import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 
@@ -88,7 +87,10 @@ export default class Createhightlights extends Component {
       res => {
         console.log(res);
         if (res.status) {
-          SimpleToast.show(res?.message);
+          Toast.show({
+            type: 'info',
+            text1: res.message
+          })
           this.props?.navigation.navigate('MyProfile');
         }
         this.setState({isLoading: false});

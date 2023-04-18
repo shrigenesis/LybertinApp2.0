@@ -31,9 +31,8 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {pickImage} from '../../component/';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -117,7 +116,10 @@ export default class addParticipent extends Component {
           selectUserList: [],
         });
         if (res?.status) {
-          SimpleToast.show('Add Participent Done');
+          Toast.show({
+            type: 'success',
+            text1: 'Add Participent Done'
+          })
           this.props?.navigation.goBack();
         }
       },

@@ -18,8 +18,8 @@ import {
 import MarketplaceListItem from './MarketplaceListItem';
 import { ButtonGroup, Divider } from 'react-native-elements';
 import { User } from './../../utils/user';
-import { APIRequest, ApiUrl } from '../../utils/api';
-import { Loader } from '../../component';
+import { APIRequest, ApiUrl, BASEURL } from '../../utils/api';
+import { Header, Loader } from '../../component';
 
 import EventListSkelton from '../../utils/skeltons/eventListSkelton';
 import MarketingListSkelton from '../../utils/skeltons/MarketingListSkelton';
@@ -63,12 +63,25 @@ const Marketplace = ({ navigation }) => {
   };
   // Add interest for filter  
   useEffect(() => {
-    const interest = new User().getuserdata().interests;
-    if (interest) {
-      setInterests(['Top', ...interest])
-    } else {
-      setInterests(null)
-    }
+    console.log(new User().getuserdata());
+    let config = {
+      url: `${ApiUrl.userinfo}${new User().getuserdata().id}`,
+      method: 'get',
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+        if (res.user.interests.length>0) {
+          setInterests(['Top', ...res.user.interests])
+        } else {
+          setInterests(null)
+        }
+      },
+      err => {
+        console.log(err);
+      },
+    );
     getMarketingEventList()
   }, []);
 
@@ -97,7 +110,7 @@ const Marketplace = ({ navigation }) => {
         selectedTextStyle={styles.selectedTextStyle}
         selectedButtonStyle={styles.selectedButtonStyle}
         containerStyle={styles.containerStyle}
-        buttonContainerStyle={[styles.buttonContainerStyle, { width: Interests.length > 3 ? 95 : -1,}]}
+        buttonContainerStyle={[styles.buttonContainerStyle, { width: Interests.length > 3 ? 95 : -1, }]}
         Component={TouchableOpacity}
       />
     )
@@ -114,21 +127,24 @@ const Marketplace = ({ navigation }) => {
           backgroundColor={color.transparent}
         />
         <>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerBox}>
+          <View style={{ marginHorizontal: '4%', marginVertical: '6%' }}>
+            <View style={styles.headerContainer}>
               <TouchableOpacity
-                style={styles.backImageBox}
+                style={{ height: 30, width: 30 }}
                 onPress={() => navigation.goBack()}>
                 <Image
                   source={IMAGE.back}
-                  style={styles.backImage}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    resizeMode: 'contain',
+                  }}
                 />
               </TouchableOpacity>
-
               <Text style={styles.headerText}>
-                {/* {this.props.route.params.title} */}
                 Marketplace
               </Text>
+              <View style={{ height: 30, width: 30 }}></View>
             </View>
           </View>
           <View
@@ -136,9 +152,11 @@ const Marketplace = ({ navigation }) => {
             {Interests ?
               <>
                 {Interests.length > 3 ?
-                  <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
-                    <TopButtonGroup />
-                  </ScrollView> :
+                  <View style={{ height: 55 }}>
+                    <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                      <TopButtonGroup />
+                    </ScrollView>
+                  </View> :
                   <TopButtonGroup />
                 }
                 <Divider style={styles.divider} />
@@ -178,7 +196,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: null,
-    backgroundColor: color.liteRed,
+    backgroundColor: color.lightGray,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -195,7 +213,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.size15,
     fontFamily: fontFamily.Bold,
     color: color.atomicBlack,
-    textAlign: 'center',
+    textAlign: "center",
     flex: 1,
   },
   divider: {

@@ -3,23 +3,16 @@ import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  TextInput,
   Image,
   TouchableOpacity,
-  ScrollView,
   Platform,
   SafeAreaView,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
-import NoRecord from './noRecord';
 import { StatusBar } from 'react-native';
 import TicketVideoScreen from './TicketVideoScreen';
 import TicketMediaScreen from './TicketMediaScreen';
@@ -29,21 +22,55 @@ export default class TicketScreen extends Component {
     super(props);
     this.state = {
       activeTab: 'EVENTS',
+      bkg: '#ff0000'
     };
   }
+  componentDidMount() {
+    this.props.navigation.addListener('focus', async() => {
+      // StatusBar.setBackgroundColor('#000000')
+      await this.setState({
+        ...this.state,
+        bkg: '#000000'
+      })
+      console.log('Screen.js focused', this.state.bkg)
+      
+    });
+  } 
+
+  // componentWillUnmount() {
+  //   this._navListener.remove();
+  // }
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
 
-          <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
-
-          <View>
+          <StatusBar 
+          // barStyle={'dark-content'}  
+          // backgroundColor={this.state.bkg}
+           />
+          <View style={{ marginHorizontal: '4%', marginVertical: '6%' }}>
             <View style={styles.headerContainer}>
-              <Text style={styles.headerText}>My Bookings</Text>
-            </View>
-            {/* <View style={styles.divider}></View> */}
+              <TouchableOpacity
+                style={{ height: 30, width: 30 }}
+                onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={IMAGE.back}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    resizeMode: 'contain',
+                  }}
+                />
+              </TouchableOpacity>
 
+              <Text style={styles.headerText}>
+                My Bookings
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.bodyContainer}>
             <View style={{ marginHorizontal: '3%' }}>
               <View style={styles.tabView}>
                 <TouchableOpacity
@@ -59,7 +86,7 @@ export default class TicketScreen extends Component {
                         fontFamily: fontFamily.Bold,
                       },
                     ]}>
-                    Media
+                    Events
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
@@ -75,12 +102,12 @@ export default class TicketScreen extends Component {
                         fontFamily: fontFamily.Bold,
                       },
                     ]}>
-                    Video Course
+                    Video Courses
                   </Text>
                 </TouchableOpacity>
               </View>
-              {this.state.activeTab==='VIDEO_COURSE'?<TicketVideoScreen /> : null}
-              {this.state.activeTab==='EVENTS'? <TicketMediaScreen /> :null}
+              {this.state.activeTab === 'VIDEO_COURSE' ? <TicketVideoScreen navigation={this.props.navigation} /> : null}
+              {this.state.activeTab === 'EVENTS' ? <TicketMediaScreen navigation={this.props.navigation} /> : null}
             </View>
           </View>
         </View>
@@ -92,26 +119,30 @@ export default class TicketScreen extends Component {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: color.background
+    backgroundColor: color.lightGray
   },
   container: {
     flex: 1,
     width: null,
-    backgroundColor: color.background
+    backgroundColor: color.lightGray,
   },
   headerContainer: {
-    // backgroundColor: '#EDEDED',
-    height: 56,
-    alignItems: 'center',
-    justifyContent: 'center',
-    // flexDirection: 'row',
+    flexDirection: 'row',
     // justifyContent: 'space-between',
+    alignContent: 'center',
+    alignItems: 'center',
+    marginTop: Platform.OS == 'ios' ? hp(4) : 2,
+  },
+  bodyContainer: {
+    backgroundColor: color.white,
+    paddingTop: 15,
   },
   headerText: {
-    fontSize: 15,
+    fontSize: fontSize.size15,
     fontFamily: fontFamily.Bold,
-    color: '#0F0F0F',
-    textAlign: 'center',
+    color: color.atomicBlack,
+    textAlign: "center",
+    flex: 1,
   },
   filterText: {
     fontSize: 16,

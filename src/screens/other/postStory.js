@@ -22,10 +22,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Toast from 'react-native-toast-message';
 import {Header, Loader} from './../../component/';
 import IMAGE from '../../constant/image';
 import {useIsFocused} from '@react-navigation/native';
-import {APIRequestWithFile, ApiUrl, IMAGEURL, Toast} from './../../utils/api';
+import {APIRequestWithFile, ApiUrl, IMAGEURL} from './../../utils/api';
 import Video from 'react-native-video';
 import Animated, {ZoomIn, FadeOut, FadeIn} from 'react-native-reanimated';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -73,7 +74,10 @@ const PostStory = ({navigation, route}) => {
       config,
       res => {
         if (res.status) {
-          Toast(res?.alert?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          });
           navigation.navigate("Friends");
         }
         setisLoading(false);

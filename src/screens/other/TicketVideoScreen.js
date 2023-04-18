@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, FlatList, ScrollView } from 'react-native'
+import { View, FlatList, ScrollView, StyleSheet } from 'react-native'
 import { User } from '../../utils/user'
 import EducationVideoListItem from './educationVideoListItem'
 import { IMAGE, color } from '../../constant'
@@ -10,6 +10,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import EducationVideoListItemBooking from './educationVideoListItemBooking'
 
 const TicketVideoScreen = (props) => {
   const [isLoading, setisLoading] = useState(true);
@@ -42,39 +43,39 @@ const TicketVideoScreen = (props) => {
     );
   };
 
-  console.log(user);
-
   return (
     <ScrollView>
       {isLoading ?
         <FlatList
-          data={[1, 2, 3, 5, 5, 7]}
+          data={[1, 2, 3, 4]}
           renderItem={(item) => <TicketListSkelton />}
-          keyExtractor={item => `SkeletonListOfMediaTickets${item}`}
+          keyExtractor={item => `SkeletonListOfVideosTickets${item}`}
         />
         :
         Videos.length == 0 ? (
-          <NoRecord
-            image={IMAGE.Ticket}
-            title="No Videos"
-            description="Buy a videos of an event to make them appear here."
-            buttonText="Explore course"
-            navigation={props.navigation}
-            navigateTo={'popularEvent'}
-            showButton={true}
-          />
+          <View style={styles.NoRecordWrapper}>
+            <NoRecord
+              image={IMAGE.noMedia}
+              title="No Videos"
+              description="Buy a videos of an courses to make them appear here."
+              buttonText="Explore course"
+              navigation={props.navigation}
+              navigateTo={'Education'}
+              showButton={true}
+            />
+          </View>
         ) : (
-            <View style={{marginBottom: hp(41) }}>
-              {Videos.map((d) => (
-                <View style={{
-                  marginTop: 20,
-                  backgroundColor: color.white,
-                  borderRadius: 10,
-                }}>
-                  <EducationVideoListItem item={d} purchased={true} />
-                </View>
-              ))}
-            </View>
+          <View style={{ marginBottom: hp(70) }}>
+            {Videos.map((d) => (
+              <View style={{
+                marginTop: 20,
+                backgroundColor: color.white,
+                borderRadius: 10,
+              }}>
+                <EducationVideoListItemBooking item={d} purchased={true} />
+              </View>
+            ))}
+          </View>
         )}
     </ScrollView>
   )
@@ -82,3 +83,10 @@ const TicketVideoScreen = (props) => {
 
 export default TicketVideoScreen;
 
+
+const styles = StyleSheet.create({
+  NoRecordWrapper: {
+    height: hp(80),
+    backgroundColor: color.white
+  },
+});

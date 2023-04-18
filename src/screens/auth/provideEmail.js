@@ -15,10 +15,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import Toast from 'react-native-toast-message';
 import { color, IMAGE, fontFamily } from '../../constant';
 import { User } from '../../utils/user';
 import { Button, Textinput } from '../../component';
-import { APIRequest, ApiUrl, Toast } from '../../utils/api';
+import { APIRequest, ApiUrl } from '../../utils/api';
 import { LoginContext } from '../../context/LoginContext';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Video from 'react-native-video';
@@ -88,12 +89,11 @@ const ProvideEmail = ({ navigation, route }) => {
           if (err?.response?.status == 422) {
             setemailError(err?.response?.data?.error);
           } else {
-            Toast('Invalid user');
+            Toast.show({
+              type: 'info',
+              text1: 'Invalid user',
+            });
           }
-          // if (err?.response?.data) {
-          //   Toast(err?.response?.data?.error?.email?.[0]);
-          //   Toast(err?.response?.data?.error?.username?.[0]);
-          // }
         },
       );
     }
@@ -103,7 +103,10 @@ const ProvideEmail = ({ navigation, route }) => {
 
 
     if (email == '') {
-      Toast('Please Enter Email');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Email',
+      });
       return false;
     }
     return true;

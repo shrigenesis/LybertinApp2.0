@@ -17,6 +17,7 @@ import {
 import { APIRequest, ApiUrl, IMAGEURL, Toast } from '../../utils/api';
 import EducationListItem from './educationListItem';
 import EventListSkelton from '../../utils/skeltons/eventListSkelton';
+import NoRecord from './noRecord';
 
 export default class EducationShowAll extends Component {
   constructor(props) {
@@ -59,7 +60,7 @@ export default class EducationShowAll extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+        <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
         <View style={styles.headerBox}>
           <View style={styles.headerContainer}>
             <TouchableOpacity
@@ -78,21 +79,29 @@ export default class EducationShowAll extends Component {
               onPress={() => this.props.navigation.navigate('filterScreenEducation')}>
               <Image
                 source={IMAGE.filterList}
-                style={styles.backImageBox}
+                style={styles.filterImage}
               />
             </TouchableOpacity>
           </View>
         </View>
         {/* <Divider style={styles.divider} /> */}
         <View style={styles.listBox}>
-          {!this.state.isLoading ? <FlatList
-            data={this.state.data}
-            keyExtractor={index => `educationList-${index}`}
-            renderItem={({ item }) => (
-              <EducationListItem item={item} />
-            )}
-            numColumns={2}
-          /> :
+          {!this.state.isLoading ?
+            this.state.data.length > 0 ? <FlatList
+              data={this.state.data}
+              keyExtractor={index => `educationList-${index}`}
+              renderItem={({ item }) => (
+                <EducationListItem item={item} />
+              )}
+              numColumns={2}
+            /> :
+              <NoRecord
+                image={IMAGE.noConversation}
+                title="No Courses found"
+                description="You will get Featured and Live conferences Courses here."
+                showButton={false}
+              />
+            :
             <FlatList
               keyExtractor={index => `featuredCourseSkelton-${index}`}
               showsVerticalScrollIndicator={false}
@@ -113,7 +122,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: null,
-    // backgroundColor: 'red',
+    backgroundColor: color.lightGray,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -124,7 +133,7 @@ const styles = StyleSheet.create({
   },
   headerBox: {
     marginHorizontal: '4%',
-    marginVertical: '6%'
+    marginVertical: '6%',
   },
   backImage: {
     height: 20,
@@ -140,9 +149,14 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Bold,
     color: '#0F0F0F',
   },
-  listBox:{ 
-    backgroundColor: '#00000012', 
-    paddingHorizontal: 10, 
-    flex: 1 
+  listBox: {
+    backgroundColor: '#00000012',
+    paddingHorizontal: 10,
+    flex: 1
   },
+  filterImage: {
+    height: 20,
+    width: 20,
+    resizeMode: 'contain',
+  }
 });

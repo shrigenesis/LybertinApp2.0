@@ -24,13 +24,13 @@ import {Divider, Input, Overlay} from 'react-native-elements';
 import {RippleTouchable, StoryList} from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import {APIRequest, ApiUrl, IMAGEURL, Toast} from './../../utils/api';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import {User} from '../../utils/user';
 import {FA5Style} from 'react-native-vector-icons/FontAwesome5';
 import {Download} from './../../utils/download';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 
 export default class ticketDetailsqrcode extends Component {
   constructor(props) {
@@ -71,7 +71,10 @@ export default class ticketDetailsqrcode extends Component {
 
         console.log('API response  =====', res);
         if (res?.status) {
-          SimpleToast.show(res?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.message
+          })
         }
       },
       err => {

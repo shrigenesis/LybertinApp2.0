@@ -28,8 +28,8 @@ import CountDown from 'react-native-countdown-component';
 import { APIRequest, APIRequestWithFile, ApiUrl } from './../../utils/api';
 import moment from 'moment';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
-import WebView from 'react-native-webview';
+import Toast from 'react-native-toast-message';
+import WebView from 'react-native-webview';  
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import GenrateAttendee from './genrateAttendee';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -62,7 +62,7 @@ export default class buyTicket extends Component {
       to_date: this.props?.route?.params?.date?.end_date,
       from_time: this.props?.route?.params.date?.start_time,
       to_time: this.props?.route?.params.date?.end_time,
-      isloading: false,
+      isloading: true,
       totalQty: 0,
       grandTotal: 0,
       totalPrice: 0,
@@ -116,6 +116,7 @@ export default class buyTicket extends Component {
             quantity: quantity,
             promocode: promocode,
             currency: res.currency,
+            isloading: false
           });
         }
       },
@@ -184,7 +185,10 @@ export default class buyTicket extends Component {
                 t.ticketId == ticketId ? newTikcetList : t,
               );
             } else {
-              SimpleToast.show('Max limit for one person to book ticket is over');
+              Toast.show({
+                type: 'info',
+                text1: 'Max limit for one person to book ticket is over'
+              })
               return false;
             }
           }
@@ -374,7 +378,10 @@ export default class buyTicket extends Component {
 
         if (res.status) {
           if (type == '1') {
-            SimpleToast.show(res?.message);
+            Toast.show({
+              type: 'info',
+              text1: res?.message
+            })
             if (res.message == 'Congrats! Booking Successful.') {
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
@@ -428,7 +435,10 @@ export default class buyTicket extends Component {
 
                     .catch(error => {
                       console.log(error);
-                      SimpleToast.show(error.code);
+                      Toast.show({
+                        type: 'error',
+                        text1: error.code
+                      })
                       this.setState({ isloading: false });
 
                       if (error.code === 'USER_CANCELLATION') {
@@ -452,7 +462,10 @@ export default class buyTicket extends Component {
         this.setState({ isloading: false });
 
         console.log(err?.response);
-        SimpleToast.show('Enter all fields');
+        Toast.show({
+          type: 'info',
+          text1: 'Enter all fields'
+        })
         // Toast ('Enter all fields');
       },
     );
@@ -499,10 +512,16 @@ export default class buyTicket extends Component {
               '',
               'NO',
             );
-            SimpleToast.show('Promocode Applied successfully');
+            Toast.show({
+              type: 'success',
+              text1: 'Promocode Applied successfully'
+            })
             this.setState({ isloading: false });
           } else {
-            SimpleToast.show('Promocode is invalid');
+            Toast.show({
+              type: 'info',
+              text1: 'Promocode is invalid'
+            })
             this.setState({ isloading: false });
           }
         },
@@ -513,7 +532,10 @@ export default class buyTicket extends Component {
         },
       );
     } else {
-      SimpleToast.show('Please Enter PromoCode');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter PromoCode'
+      })
     }
   };
   removeCoupan = item => {
@@ -525,7 +547,10 @@ export default class buyTicket extends Component {
     const currentSelectedTicket = ticketList.find(t => t.ticketId == ticket.id);
     this.setState({ ticketList: newTicket });
     this.handleSelectValue(currentSelectedTicket.value, ticket, '', 'NO');
-    SimpleToast.show('Promocode removed successfully');
+    Toast.show({
+      type: 'info',
+      text1: 'Promocode removed successfully'
+    })
   };
 
   checkTaxesIsAvailable = item => {

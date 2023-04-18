@@ -19,7 +19,7 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -32,27 +32,25 @@ import {
   Button,
   Loader,
 } from '../../component/';
-// import Loader from '../../component/loader';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import {
   APIRequest,
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
-import {pickImage} from '../../component/';
-import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {User} from '../../utils/user';
+import { pickImage } from '../../component/';
+import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { User } from '../../utils/user';
 import moment from 'moment';
-import {Overlay} from 'react-native-elements';
+import { Overlay } from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export const RenderBottomSheet = memo(
-  ({setCover, setProfile, type, bottomSheetRef, snapPoints, file}) => {
+  ({ setCover, setProfile, type, bottomSheetRef, snapPoints, file }) => {
     return (
       <BottomSheet
         ref={bottomSheetRef}
@@ -61,8 +59,8 @@ export const RenderBottomSheet = memo(
         onChange={v => {
           console.log(v);
         }}
-        style={{elevation: 10, shadowColor: '#000'}}
-        backgroundStyle={{borderRadius: 20}}
+        style={{ elevation: 10, shadowColor: '#000' }}
+        backgroundStyle={{ borderRadius: 20 }}
         backdropComponent={BottomSheetBackdrop}>
         <TouchableOpacity
           onPress={() =>
@@ -106,7 +104,7 @@ export const RenderBottomSheet = memo(
   },
 );
 
-const EditProfile = ({navigation, route}) => {
+const EditProfile = ({ navigation, route }) => {
   // console.log('=================>',route,navigation);
   const [isLoading, setisLoading] = useState(true);
   const [name, setname] = useState('');
@@ -148,10 +146,10 @@ const EditProfile = ({navigation, route}) => {
     setdatePicker(false);
   };
 
-  const fetchProfile = async() => {
-    setisLoading((isLoading)=> true);
+  const fetchProfile = async () => {
+    setisLoading((isLoading) => true);
 
-    let config = { 
+    let config = {
       url: ApiUrl.myprofile,
       method: 'post',
     };
@@ -160,7 +158,7 @@ const EditProfile = ({navigation, route}) => {
       config,
       res => {
         console.log('api response', res.auth);
-        setisLoading(state=> !state);
+        setisLoading(state => !state);
         if (res.status) {
           let data = res.auth;
           setname(data.name);
@@ -182,7 +180,7 @@ const EditProfile = ({navigation, route}) => {
         }
       },
       err => {
-        setisLoading(state=> !state);
+        setisLoading(state => !state);
 
         console.log(err?.response?.data);
       },
@@ -200,37 +198,58 @@ const EditProfile = ({navigation, route}) => {
   const updateProfile = () => {
     let formData = new FormData();
     if (name === '') {
-      return Toast('Please enter name');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please enter name'
+      });
     }
     if (username === '') {
-      return Toast('Please enter user name');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please enter user name'
+      });
     }
     if (email === '') {
-      return Toast('Please enter email');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please enter email'
+      });
     }
     if (number == '') {
-      return Toast('Please enter mobile number');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please enter mobile number'
+      });
     }
     if (dob == '') {
-      return Toast('Please enter dob');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please enter dob'
+      });
     }
     if (genderType == 4 && otherGenderType == '') {
-      return Toast('Please specify pronoun');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please specify pronoun'
+      });
     }
     if (likes == '') {
-      return Toast('Please enter likes and hobby');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please enter likes and hobby'
+      });
     } else {
-      setisLoading(state=> !state);
+      setisLoading(state => !state);
 
-      formData.append('name', name? name:"");
-      formData.append('email', email? email:"");
-      formData.append('username', username ? username:"");
-      formData.append('gender', genderType ? genderType:"");
-      formData.append('gender_pronoun', otherGenderType? otherGenderType :"" ); 
-      formData.append('dob', dob?dob:'');
-      formData.append('likes_n_hobby', likes?likes:'');
-      formData.append('phone', number?number:"");
-      formData.append('calling_code_id', selectedCodeId? selectedCodeId:"");
+      formData.append('name', name ? name : "");
+      formData.append('email', email ? email : "");
+      formData.append('username', username ? username : "");
+      formData.append('gender', genderType ? genderType : "");
+      formData.append('gender_pronoun', otherGenderType ? otherGenderType : "");
+      formData.append('dob', dob ? dob : '');
+      formData.append('likes_n_hobby', likes ? likes : '');
+      formData.append('phone', number ? number : "");
+      formData.append('calling_code_id', selectedCodeId ? selectedCodeId : "");
       if (cover) {
         formData.append('cover', cover);
       }
@@ -256,15 +275,21 @@ const EditProfile = ({navigation, route}) => {
       APIRequestWithFile(
         config,
         res => {
-          setisLoading(state=> !state);
-          Toast(res?.alert?.message);
+          setisLoading(state => !state);
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
           console.log("===============================================>>>>>>>>>>>>>>res", res);
           new User().setuserdata(res?.auth);
-           navigation?.goBack();
+          navigation?.goBack();
         },
         err => {
-          setisLoading(state=> !state);
-          // Toast(res?.alert?.message);
+          setisLoading(state => !state);
+          Toast.show({
+            type: 'error',
+            text1: res?.alert?.message
+          });
           if (err?.response?.status == 422) {
             setValidationError(err?.response?.data?.error);
           }
@@ -298,7 +323,7 @@ const EditProfile = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={style.safeArea}>
-      <View style={{flex: 1, backgroundColor: color.background}}>
+      <View style={{ flex: 1, backgroundColor: color.background }}>
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         {<Loader isLoading={isLoading} type={'dots'} />}
         <Header title={'Edit Profile'} />
@@ -311,19 +336,19 @@ const EditProfile = ({navigation, route}) => {
               style={style.coverView}>
               {cover ? (
                 <Image
-                  source={{uri: cover?.uri}}
-                  style={{height: hp(25), width: wp(100), resizeMode: 'cover'}}
+                  source={{ uri: cover?.uri }}
+                  style={{ height: hp(25), width: wp(100), resizeMode: 'cover' }}
                 />
               ) : oldCover ? (
                 <Image
-                  source={{uri: `${IMAGEURL}/${oldCover}`}}
-                  style={{height: hp(25), width: wp(100), resizeMode: 'cover'}}
+                  source={{ uri: `${IMAGEURL}/${oldCover}` }}
+                  style={{ height: hp(25), width: wp(100), resizeMode: 'cover' }}
                 />
               ) : (
                 <>
                   <Image
                     source={IMAGE.upload_cover}
-                    style={{height: 40, width: 40, resizeMode: 'contain'}}
+                    style={{ height: 40, width: 40, resizeMode: 'contain' }}
                   />
                   <Text style={style.groupText}>Upload cover image</Text>
                 </>
@@ -333,11 +358,11 @@ const EditProfile = ({navigation, route}) => {
               onPress={() => {
                 setimgtype('profile'), bottomSheetRef?.current?.expand();
               }}
-              style={{justifyContent: 'center'}}>
+              style={{ justifyContent: 'center' }}>
               <View style={style.groupProfileView}>
                 {profile ? (
                   <Image
-                    source={{uri: profile?.uri}}
+                    source={{ uri: profile?.uri }}
                     style={{
                       height: hp(14),
                       width: wp(30),
@@ -348,7 +373,7 @@ const EditProfile = ({navigation, route}) => {
                   />
                 ) : oldProfile ? (
                   <Image
-                    source={{uri: `${IMAGEURL}/${oldProfile}`}}
+                    source={{ uri: `${IMAGEURL}/${oldProfile}` }}
                     style={{
                       height: hp(14),
                       width: wp(30),
@@ -364,13 +389,13 @@ const EditProfile = ({navigation, route}) => {
               <Text
                 style={[
                   style.groupText,
-                  {textAlign: 'center', marginBottom: hp(3), marginTop: -hp(4)},
+                  { textAlign: 'center', marginBottom: hp(3), marginTop: -hp(4) },
                 ]}>
                 Upload image
               </Text>
             </TouchableOpacity>
 
-            <View style={{paddingHorizontal: wp(10)}}>
+            <View style={{ paddingHorizontal: wp(10) }}>
               <Textinput
                 value={name}
                 changeText={setname}
@@ -393,7 +418,7 @@ const EditProfile = ({navigation, route}) => {
                 validationError={hasError('email')}
               />
               <View style={[style.inputStyle1, style.customInputs]}>
-                <View style={{flexDirection: 'row', alignContent: 'center'}}>
+                <View style={{ flexDirection: 'row', alignContent: 'center' }}>
                   <TouchableOpacity
                     onPress={() => setvisible(true)}
                     style={{
@@ -413,7 +438,7 @@ const EditProfile = ({navigation, route}) => {
                         marginRight: '2%',
                       }}
                     />
-                    <Text style={{marginHorizontal: '4%'}}>
+                    <Text style={{ marginHorizontal: '4%' }}>
                       {selectedCode != '' ? '+' + selectedCode : ''}
                     </Text>
                     <Image
@@ -455,7 +480,7 @@ const EditProfile = ({navigation, route}) => {
                   }}
                   maximumDate={new Date()}
 
-                  // onChange={(day)=>this.onChange(day)}
+                // onChange={(day)=>this.onChange(day)}
                 />
               )}
 
@@ -488,11 +513,11 @@ const EditProfile = ({navigation, route}) => {
               </TouchableOpacity>
               <Textinput
                 value={likes}
-                style={{paddingLeft: wp(6)}}
+                style={{ paddingLeft: wp(6) }}
                 changeText={setlikes}
                 placeholder={'Hobbies and likes'}
-                //   keyboardType="Number-pad"
-                //   icon={IMAGE.mobile}
+              //   keyboardType="Number-pad"
+              //   icon={IMAGE.mobile}
               />
               {/* <Textinput value={about} style={style.inputStyle}  changeText={setabout} placeholder={'likes and characters'}/> */}
 
@@ -503,7 +528,7 @@ const EditProfile = ({navigation, route}) => {
                     setgenderType(1);
                   }}
                   style={style.genderType}
-                  labelStyle={{fontFamily: fontFamily.Bold}}
+                  labelStyle={{ fontFamily: fontFamily.Bold }}
                   label={'She/Her'}
                 />
                 <Radio
@@ -512,7 +537,7 @@ const EditProfile = ({navigation, route}) => {
                     setgenderType(2);
                   }}
                   style={style.genderType}
-                  labelStyle={{fontFamily: fontFamily.Bold}}
+                  labelStyle={{ fontFamily: fontFamily.Bold }}
                   label={'He/Him'}
                 />
                 <Radio
@@ -521,7 +546,7 @@ const EditProfile = ({navigation, route}) => {
                     setgenderType(3);
                   }}
                   style={style.genderType}
-                  labelStyle={{fontFamily: fontFamily.Bold}}
+                  labelStyle={{ fontFamily: fontFamily.Bold }}
                   label={'They/Them'}
                 />
                 <Radio
@@ -530,14 +555,14 @@ const EditProfile = ({navigation, route}) => {
                     setgenderType(4);
                   }}
                   style={style.genderType}
-                  labelStyle={{fontFamily: fontFamily.Bold}}
+                  labelStyle={{ fontFamily: fontFamily.Bold }}
                   label={'Other'}
                 />
               </View>
               {genderType == 4 && (
                 <Textinput
                   value={otherGenderType}
-                  style={{paddingLeft: wp(6), marginTop: 10}}
+                  style={{ paddingLeft: wp(6), marginTop: 10 }}
                   changeText={setOtherGenderType}
                   placeholder={'Specifiy pronoun'}
                 />
@@ -628,10 +653,10 @@ const EditProfile = ({navigation, route}) => {
                 </View>
               </View>
 
-              <TouchableOpacity style={{marginVertical: hp(5)}}>
+              <TouchableOpacity style={{ marginVertical: hp(5) }}>
                 <Button
                   onPress={updateProfile}
-                  btnStyle={{height: hp(5.5)}}
+                  btnStyle={{ height: hp(5.5) }}
                   label={'Save'}
                 />
               </TouchableOpacity>
@@ -669,7 +694,7 @@ const EditProfile = ({navigation, route}) => {
             paddingBottom: hp(12),
             overflow: 'hidden',
           }}>
-          <View style={{marginVertical: '5%'}}>
+          <View style={{ marginVertical: '5%' }}>
             <Text
               style={{
                 marginBottom: '4%',
@@ -684,7 +709,7 @@ const EditProfile = ({navigation, route}) => {
               onPress={() => {
                 setvisible(false);
               }}
-              style={{position: 'absolute', right: 10, top: -10}}>
+              style={{ position: 'absolute', right: 10, top: -10 }}>
               <Icon
                 name={'times'}
                 style={{
@@ -695,8 +720,8 @@ const EditProfile = ({navigation, route}) => {
             </TouchableOpacity>
             <FlatList
               data={countryCode}
-              style={{paddingVertical: hp(5)}}
-              renderItem={({item: d}) => (
+              style={{ paddingVertical: hp(5) }}
+              renderItem={({ item: d }) => (
                 <TouchableOpacity
                   style={{
                     flexDirection: 'row',
@@ -723,8 +748,8 @@ const EditProfile = ({navigation, route}) => {
                   </Text>
                 </TouchableOpacity>
               )}
-              //Setting the number of column
-              // numColumns={2}
+            //Setting the number of column
+            // numColumns={2}
             />
             <TouchableOpacity onPress={() => setvisible(false)}>
               <Text

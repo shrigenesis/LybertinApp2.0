@@ -22,8 +22,8 @@ import {
 } from 'react-native-responsive-screen';
 import {Button, Header, Loader} from '../../component';
 import {color, fontFamily, fontSize, IMAGE} from '../../constant';
-import {APIRequest, APIRequestWithFile, ApiUrl, Toast} from '../../utils/api';
-
+import {APIRequest, APIRequestWithFile, ApiUrl} from '../../utils/api';
+import Toast from 'react-native-toast-message'
 import LinearGradient from 'react-native-linear-gradient';
 import { User } from '../../utils/user';
 
@@ -101,7 +101,10 @@ const PersonalitySelector = ({navigation}) => {
 
   const saveAndNext = () => {
     if (selectedPersonalities.length <= 0) {
-      return Toast('Please select atleast one item.');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please select atleast one item.',
+      });
     }
     completeProfile();
   };

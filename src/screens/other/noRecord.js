@@ -55,7 +55,7 @@ export default class NoRecord extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    height: hp(60),
+    height: hp(70),
     flex: 1,
     backgroundColor: 'white',
     justifyContent: "center",

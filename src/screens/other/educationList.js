@@ -14,7 +14,7 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -53,6 +53,16 @@ const EducationList = ({ navigation }) => {
     navigation.goBack();
     return true;
   }
+
+  useEffect(() => {
+    if (isFocus) {
+      setTimeout(() => {
+        setSearch('');
+        getEvents('');
+      });
+    }
+  }, [isFocus])
+  
 
   useEffect(() => {
     setSearch('');
@@ -111,13 +121,15 @@ const EducationList = ({ navigation }) => {
       timer = setTimeout(() => {
         timer = null;
         func.apply(context, args);
-      }, 100);
+      }, 50);
     };
   };
 
   const handleSearchChange = (text) => {
     getEvents(text);
   }
+
+
 
   const optimizedFn = useCallback(debounce(handleSearchChange), []);
 
@@ -152,6 +164,7 @@ const EducationList = ({ navigation }) => {
                       onSubmitEditing={() => getEvents()}
                       style={style.search}
                       onChangeText={text => {
+                        setisLoading(true)
                         setSearch(text);
                         optimizedFn(text);
                       }}
@@ -208,7 +221,7 @@ const EducationList = ({ navigation }) => {
                 backgroundColor: color.background,
               }}
             >
-              {(status && (Course?.data?.featured.length > 0 && Course?.data?.top_selling.length > 0 && Course?.data?.live_conferences.length > 0)) ? (
+              {(status && (Course?.data?.featured.length > 0 || Course?.data?.top_selling.length > 0 || Course?.data?.live_conferences.length > 0)) ? (
                 <>
                   {Course?.data?.featured.length > 0 ? <View
                     style={style.listCategoryBox}>
@@ -228,6 +241,7 @@ const EducationList = ({ navigation }) => {
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.featured}
+                      reload={getEvents}
                       keyExtractor={index => `upcomingEvents-${index}`}
                       renderItem={({ item, index }) => renderEventBox(item, index)}
                       //Setting the number of column
@@ -288,8 +302,8 @@ const EducationList = ({ navigation }) => {
               ) : (
                 <NoRecord
                   image={IMAGE.noConversation}
-                  title="No Education found"
-                  description="You will get Featured and Live conferences Education here."
+                  title="No Courses found"
+                  description="You will get Featured and Live conferences Courses here."
                   showButton={false}
                 />
               )}
@@ -351,6 +365,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: color.lightGray,
+    marginTop:10
   },
   listItem: {
     backgroundColor: color.lightGray,
@@ -400,7 +415,7 @@ const style = StyleSheet.create({
     color: color.white,
   },
   popularText: {
-    fontSize: 20,
+    fontSize: fontSize.size19,
     fontFamily: fontFamily.Bold,
     color: color.black,
     marginLeft: '5%',

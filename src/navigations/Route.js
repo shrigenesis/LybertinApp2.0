@@ -115,9 +115,13 @@ export const RouterStack = () => {
   let { isLogin } = React.useContext(LoginContext);
   let { type } = React.useContext(LoginContext);
   const handleDynamicLink = (link) => {
-    if (isLogin) {
+    console.log(isLogin, '=============link', link);
+    alert('link1')
+    if (true) {
+      alert('link1.1')
       RegisterDeeplink(link?.url)
     } else {
+      alert('link1.2')
       SyncStorage.set('deepLink', link?.url);
     }
   };
@@ -127,6 +131,7 @@ export const RouterStack = () => {
     return () => unsubscribe();
   }, []);
   useEffect(() => {
+    console.log('=============');
     dynamicLinks()
       .getInitialLink()
       .then(link => {

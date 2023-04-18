@@ -99,7 +99,6 @@ const MyProfile = ({ navigation, route }) => {
   const [appReady, setAppReady] = useState(false);
   const [hightLight, sethighLight] = useState([]);
   const userdata = new User().getuserdata();
-
   const data = [1, 1, 1, 1, 1, 1];
 
   const onShare = async () => {

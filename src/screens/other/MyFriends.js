@@ -24,10 +24,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Toast from 'react-native-toast-message';
 import { RippleTouchable, Header, Button } from '../../component/';
 import Loader from '../../component/loader';
 import { useIsFocused } from '@react-navigation/native';
-import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { User } from '../../utils/user';
 import { LoginContext } from './../../context/LoginContext';
@@ -78,7 +79,10 @@ const MyFriends = ({ navigation, route }) => {
       res => {
         setisLoading(false);
         getfriends();
-        Toast(res.message);
+        Toast.show({
+          type: 'success',
+          text1: res.message
+        });
         console.log('Api response unfriend===', res);
       },
       err => {
@@ -120,12 +124,13 @@ const MyFriends = ({ navigation, route }) => {
   return (
     <SafeAreaView style={style.safeArea}>
       <View style={{ flex: 1, backgroundColor: color.white }}>
-        <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+        <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
         <Header
           title={'My Friends'}
+          headStyle={{backgroundColor: color.lightGray}} 
         />
 
-        <ScrollView>
+        <ScrollView style={{paddingTop:30}}>
           <Loader isLoading={isLoading} type={'dots'} />
 
           {friends.length > 0 ? (
@@ -261,6 +266,8 @@ const style = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'space-between',
+    borderBottomColor: color.lightGray,
+    borderBottomWidth:1,
   },
   profileImg: {
     borderWidth: 2,

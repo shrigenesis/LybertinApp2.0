@@ -9,26 +9,17 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
-  ScrollView,
-  StatusBar,
-  ActivityIndicator,
   Platform,
-  ImageBackground,
+  StatusBar,
 } from 'react-native';
 import { IMAGE, color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Divider, Input, Overlay } from 'react-native-elements';
-
-import { RippleTouchable, StoryList } from '../../component/';
-import SwipeableView from 'react-native-swipeable-view';
-import Loader from './../../component/loader';
 import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
-import moment from 'moment';
-import { User } from '../../utils/user';
+import NoRecord from './noRecord';
+import EventListSkelton from '../../utils/skeltons/eventListSkelton';
 
 export default class featured_events extends Component {
   constructor(props) {
@@ -44,6 +35,7 @@ export default class featured_events extends Component {
       search: this.props.route.params.input,
       hashtag: this.props.route.params.hashtag,
       endDate: this.props.route.params.endDate,
+      isLoading: true,
     };
   }
 
@@ -76,11 +68,10 @@ export default class featured_events extends Component {
         this.setState({
           data: res.data,
         });
-
-        // setisLoading(false);
+        this.setState({ ...this.state, isLoading: false })
       },
       err => {
-        // setisLoading(false);
+        this.setState({ ...this.state, isLoading: false })
         console.log(err);
       },
     );
@@ -89,6 +80,10 @@ export default class featured_events extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+          barStyle={'dark-content'}
+          backgroundColor={color.lightGray}
+        />
         <View style={{ marginHorizontal: '4%' }}>
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
@@ -117,99 +112,120 @@ export default class featured_events extends Component {
           </View>
         </View>
         {/* <Divider style={styles.divider} /> */}
-        <View style={{ flex: 1, backgroundColor: '#fff' }}>
-          <View>
-            <FlatList
-              data={this.state.data}
-              renderItem={({ item: d }) => (
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('eventDetails', {
-                      event_id: d.id,
-                    })
-                  }
-                  style={styles.cardContainer}>
-                  <Image
-                    source={{ uri: `${IMAGEURL}/${d.thumbnail}` }}
-                    style={{
-                      height: '50%',
-                      width: '96%',
-                      resizeMode: 'stretch',
-                      alignSelf: 'center',
-                      borderTopLeftRadius: 10,
-                      borderTopRightRadius: 10,
-                      // marginTop: '4%',
-                    }}
-                  />
-                  <Text style={styles.headingText} numberOfLines={1}>
-                    {d.title}
-                  </Text>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      marginHorizontal: '4%',
-                    }}>
-                    <Image
-                      source={IMAGE.date}
-                      style={{
-                        height: 12,
-                        width: 12,
-                        resizeMode: 'contain',
-                        alignSelf: 'center',
-                        marginRight: '2%',
-                      }}
-                    />
-                    <Text style={styles.dateText}>
-                      {d.start_date} to {d.end_date}
-                    </Text>
-                  </View>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      marginHorizontal: '4%',
-                    }}>
-                    <Image
-                      source={IMAGE.location}
-                      style={{
-                        height: 12,
-                        width: 12,
-                        resizeMode: 'contain',
-                        alignSelf: 'center',
-                        marginRight: '2%',
-                      }}
-                    />
-                    <Text style={styles.dateText}>{d.city}</Text>
-                  </View>
+        {!this.state.isLoading ?
+          this.state.data.length > 0 ?
+            <View style={{ flex: 1, backgroundColor: '#fff' }}>
+              <View>
+                <FlatList
+                  data={this.state.data}
+                  renderItem={({ item: d }) => (
+                    <TouchableOpacity
+                      onPress={() =>
+                        this.props.navigation.navigate('eventDetails', {
+                          event_id: d.id,
+                        })
+                      }
+                      style={styles.cardContainer}>
+                      <Image
+                        source={{ uri: `${IMAGEURL}/${d.thumbnail}` }}
+                        style={{
+                          height: '50%',
+                          width: '96%',
+                          resizeMode: 'stretch',
+                          alignSelf: 'center',
+                          borderTopLeftRadius: 10,
+                          borderTopRightRadius: 10,
+                          // marginTop: '4%',
+                        }}
+                      />
+                      <Text style={styles.headingText} numberOfLines={1}>
+                        {d.title}
+                      </Text>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          marginHorizontal: '4%',
+                        }}>
+                        <Image
+                          source={IMAGE.date}
+                          style={{
+                            height: 12,
+                            width: 12,
+                            resizeMode: 'contain',
+                            alignSelf: 'center',
+                            marginRight: '2%',
+                          }}
+                        />
+                        <Text style={styles.dateText}>
+                          {d.start_date} to {d.end_date}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          marginHorizontal: '4%',
+                        }}>
+                        <Image
+                          source={IMAGE.location}
+                          style={{
+                            height: 12,
+                            width: 12,
+                            resizeMode: 'contain',
+                            alignSelf: 'center',
+                            marginRight: '2%',
+                          }}
+                        />
+                        <Text style={styles.dateText}>{d.city}</Text>
+                      </View>
 
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      justifyContent: 'flex-start',
-                      marginHorizontal: '3%',
-                    }}>
-                    <Image
-                      source={IMAGE.time}
-                      style={{
-                        height: 12,
-                        width: 12,
-                        resizeMode: 'contain',
-                        alignSelf: 'center',
-                        marginHorizontal: '2%',
-                      }}
-                    />
-                    <Text style={styles.dateText}>
-                      {d.start_time} - {d.end_time}
-                    </Text>
-                  </View>
-                </TouchableOpacity>
-              )}
-              //Setting the number of column
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: 'flex-start',
+                          marginHorizontal: '3%',
+                        }}>
+                        <Image
+                          source={IMAGE.time}
+                          style={{
+                            height: 12,
+                            width: 12,
+                            resizeMode: 'contain',
+                            alignSelf: 'center',
+                            marginHorizontal: '2%',
+                          }}
+                        />
+                        <Text style={styles.dateText}>
+                          {d.start_time} - {d.end_time}
+                        </Text>
+                      </View>
+                    </TouchableOpacity>
+                  )}
+                  //Setting the number of column
+                  numColumns={2}
+                />
+              </View>
+            </View> :
+            <NoRecord
+              image={IMAGE.noConversation}
+              title="No Event found"
+              description="You will get Upcoming and poular events here."
+              showButton={false}
+            />
+          :
+          <View style={styles.listBox}>
+            <FlatList
+              keyExtractor={index => `featuredCourseSkelton-${index}`}
+              showsVerticalScrollIndicator={false}
+              data={[0, 1, 2, 3, 4, 6]}
               numColumns={2}
+              renderItem={() => (
+                <EventListSkelton />
+              )}
             />
           </View>
-        </View>
+        }
       </View>
     );
   }
@@ -219,14 +235,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: null,
-    // backgroundColor: 'red',
+    backgroundColor: color.lightGray,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: '4%',
+    marginVertical: '6%' ,
     alignItems: 'center',
-    marginBottom: '2.5%',
     marginTop: Platform.OS == 'ios' ? hp(6) : hp(4),
   },
   headerText: {
@@ -273,5 +289,10 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Light,
     color: '#8E8E93',
     marginTop: '3%',
+  },
+  listBox: {
+    backgroundColor: '#00000012',
+    paddingHorizontal: 10,
+    flex: 1
   },
 });

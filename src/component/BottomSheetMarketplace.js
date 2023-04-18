@@ -10,7 +10,7 @@ import {
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
-const BottomSheetCustom = (props) => {
+const BottomSheetMarketplace = (props) => {
 
     return (
         <>
@@ -31,18 +31,7 @@ const BottomSheetCustom = (props) => {
                                 <Divider style={styles.divider} />
                                 {props.children}
                                 <Divider style={styles.dividerSpace} />
-                                <Button
-                                    onPress={() => props.setisShowBottomSheet(false)}
-                                    title={props.cancelBtn.title}
-                                    titleStyle={{ color: props?.cancelBtn?.textColor ? props?.cancelBtn?.textColor : color.white }}
-                                    buttonStyle={{
-                                        backgroundColor: props.cancelBtn.color,
-                                        borderWidth: 2,
-                                        borderColor: 'white',
-                                        borderRadius: 11,
-                                        padding: 15,
-                                    }}
-                                />
+                                
                             </View>
                         </Pressable>
                     </Pressable>
@@ -52,7 +41,7 @@ const BottomSheetCustom = (props) => {
     )
 }
 
-export default BottomSheetCustom
+export default BottomSheetMarketplace
 
 const styles = StyleSheet.create({
     outerContainer:{

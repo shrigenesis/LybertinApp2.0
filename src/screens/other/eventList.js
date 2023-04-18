@@ -17,7 +17,7 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -55,10 +55,17 @@ const EventList = ({ navigation }) => {
   const isFocus = useIsFocused();
   function handleBackButtonClick() {
     setSearch('');
-
     navigation.goBack();
     return true;
   }
+
+  useEffect(() => {
+    if (isFocus) {
+      setTimeout(() => {
+        getEvents('');
+      });
+    }
+  }, [isFocus])
 
   useEffect(() => {
     getEvents('');
@@ -388,13 +395,7 @@ const EventList = ({ navigation }) => {
                   {upcomingEvents.length > 0 ?
                     <>
                       <View
-                        style={{
-                          paddingHorizontal: 10,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          backgroundColor: color.lightGray,
-                        }}>
+                        style={style.listCategoryBox}>
                         <View style={[style.popularContainer, { marginTop: 10 }]}>
                           <Text style={style.popularText}>Upcoming Events</Text>
                         </View>
@@ -422,13 +423,7 @@ const EventList = ({ navigation }) => {
                   {featuredEvents.length > 0 ?
                     <>
                       <View
-                        style={{
-                          paddingHorizontal: 10,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          backgroundColor: color.lightGray,
-                        }}>
+                        style={style.listCategoryBox}>
                         <View style={style.popularContainer}>
                           <Text style={style.popularText}>Featured Events</Text>
                         </View>
@@ -456,13 +451,7 @@ const EventList = ({ navigation }) => {
                   {topSellingEvents.length > 0 ?
                     <>
                       <View
-                        style={{
-                          paddingHorizontal: 10,
-                          flexDirection: 'row',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          backgroundColor: color.lightGray,
-                        }}>
+                        style={style.listCategoryBox}>
                         <View style={style.popularContainer}>
                           <Text style={style.popularText}>Top Selling Events</Text>
                         </View>
@@ -489,12 +478,12 @@ const EventList = ({ navigation }) => {
 
                 </>
               ) : (
-                <NoRecord
-                  image={IMAGE.noConversation}
-                  title="No Event found"
-                  description="You will get Upcoming and poular events here."
-                  showButton={false}
-                />
+                  <NoRecord
+                    image={IMAGE.noConversation}
+                    title="No Event found"
+                    description="You will get Upcoming and poular events here."
+                    showButton={false}
+                  />
               )}
             </>
           )}
@@ -668,7 +657,7 @@ const style = StyleSheet.create({
     backgroundColor: color.btnBlue,
   },
   popularText: {
-    fontSize: 20,
+    fontSize: fontSize.size19,
     fontFamily: fontFamily.Bold,
     color: color.black,
     marginLeft: '5%',
@@ -750,6 +739,14 @@ const style = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: '#33373B',
+  },
+  listCategoryBox: {
+    paddingHorizontal: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: color.lightGray,
+    paddingTop:10
   },
 });
 export default EventList;

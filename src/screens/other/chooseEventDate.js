@@ -134,7 +134,7 @@ export default class chooseEventDate extends Component {
                         />
                       ) : (
                         <Image
-                          source={IMAGE.checkTick}
+                          source={IMAGE.checkmark_circle_outline}
                           style={styles.bottomImage}
                         />
                       )}

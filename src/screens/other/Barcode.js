@@ -8,14 +8,13 @@ import {
   TouchableOpacity,
   Linking,
   BackHandler,
-  ToastAndroid,
   Image,
 } from 'react-native';
 import Loader from './../../component/loader';
 
 // import QRCodeScanner from 'react-native-qrcode-scanner';
 import {fontFamily, IMAGE} from '../../constant';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {APIRequest, ApiUrl} from '../../utils/api';
 
 class Barcode extends Component {
@@ -53,7 +52,10 @@ class Barcode extends Component {
 
     this.setState({scannerData: data});
 
-    SimpleToast.show('Ticket scanned.');
+    Toast.show({
+      type: 'success',
+      text1: 'Ticket scanned.'
+    })
     let config = {
       url: ApiUrl.scanTicket,
       method: 'post',
@@ -75,7 +77,10 @@ class Barcode extends Component {
             ticket: res?.booking[0],
           });
         } else {
-          SimpleToast.show('Ticket scanned.');
+          Toast.show({
+            type: 'success',
+            text1: 'Ticket scanned.'
+          })
         }
         // setisLoading(false);
       },
@@ -83,7 +88,10 @@ class Barcode extends Component {
         // setisLoading(false);
         console.log('ssssss', err?.response?.data);
         if (!err?.status) {
-          SimpleToast.show(err?.message);
+          Toast.show({
+            type: 'error',
+            text1: err?.message
+          })
         }
       },
     );

@@ -21,13 +21,13 @@ import {
   APIRequestWithFile,
   ApiUrl,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
 import io from 'socket.io-client';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
+
 import { Divider } from 'react-native-elements';
 
 // const Socket = io.connect('https://nodejs.shrigenesis.com/');
@@ -194,7 +194,10 @@ class Chat extends React.Component {
 
   sendMessage = () => {
     if (this.state.message == '') {
-      SimpleToast.show('Message Required');
+      Toast.show({
+        type: 'info',
+        text1: 'Message Required'
+      })
     } else {
       this.onTyping(false);
       this.setState({ isLoading: true });
@@ -216,10 +219,10 @@ class Chat extends React.Component {
         },
         err => {
           this.setState({ isLoading: false });
-          SimpleToast.show(err?.response?.data.message);
-
-          // alert( err?.response?.data.message);
-          // console.log( "koidjoidjifj", err?.response?.data.message);
+          Toast.show({
+            type: 'error',
+            text1: err?.response?.data.message
+          })
         },
       );
     }

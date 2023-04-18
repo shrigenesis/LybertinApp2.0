@@ -24,17 +24,18 @@ import {
 import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SliderBox } from "react-native-image-slider-box";
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
+import HtmlToText from '../../utils/HtmlToText';
+import ReadMore from '@fawazahmed/react-native-read-more';
 
 let myHTML = '';
-let strippedHtml = myHTML.replace(/<[^>]+>/g, '');
 
 export default class eventDetails extends Component {
   constructor(props) {
@@ -52,6 +53,7 @@ export default class eventDetails extends Component {
       tag_group_new: [],
       isLoading: true,
     };
+    this.strippedHtml = ""
   }
 
   componentDidMount = () => {
@@ -82,10 +84,8 @@ export default class eventDetails extends Component {
             hosts: res.tag_groups.speaker,
             dance: res.tag_groups.dance,
             images: res.event.images,
+            strippedHtml: HtmlToText(res.event.description)
           });
-          myHTML = res.event.description;
-          strippedHtml = myHTML.replace(/<[^>]+>/g, '');
-
           // setrequestCount(res.follow_requests);
         }
         this.setState({ ...this.state, isLoading: false })
@@ -280,36 +280,19 @@ export default class eventDetails extends Component {
                 ) : (
                   <View></View>
                 )}
-
-                {strippedHtml == '' ? (
-                  <Text></Text>
-                ) : (
+                <View style={styles.descriptionWrapper}>
+                  <Text style={styles.desHeading}>Event Description</Text>
                   <View>
-                    <View style={styles.descriptionWrapper}>
-                      <Text style={styles.desHeading}>Event Description</Text>
-                      {this.state.showText == 0 ? (
-                        <View>
-                          <Text style={styles.desText} numberOfLines={2}>
-                            {strippedHtml}
-                          </Text>
-                          <Text
-                            onPress={() =>
-                              this.setState({
-                                showText: 1,
-                              })
-                            }
-                            style={{ color: color.btnBlue, alignSelf: 'flex-end' }}>
-                            ...Read more{' '}
-                          </Text>
-                        </View>
-                      ) : (
-                        <View>
-                          <Text style={styles.desText}>{strippedHtml}</Text>
-                        </View>
-                      )}
-                    </View>
+                    <ReadMore
+                      numberOfLines={4}
+                      style={styles.desText}
+                      seeMoreText='read more'
+                      seeMoreStyle={{ color: color.btnBlue }}>
+                      {this.state.strippedHtml}
+                    </ReadMore>
                   </View>
-                )}
+                </View>
+
                 {this.state.isRepetative === true && (
                   <View style={styles.ticketWrapper}>
                     <View>
@@ -437,7 +420,11 @@ export default class eventDetails extends Component {
                       end_time: this.state?.event?.end_time
                     },
                   })
-                  : SimpleToast.show('Choose event date')
+                  :
+                  Toast.show({
+                    type: 'error',
+                    text1: 'Choose event date'
+                  })
               }
               style={{
                 flex: 0.08,

@@ -12,6 +12,7 @@ import {
   ScrollView,
 
   Platform,
+  StatusBar,
 } from 'react-native';
 import { IMAGE, color, fontFamily } from '../../constant/';
 import {
@@ -126,8 +127,13 @@ export default class filterScreenEducation extends Component {
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
+         <StatusBar
+          barStyle={'dark-content'}
+          translucent
+          backgroundColor={color.lightGray}
+        />
         <ScrollView style={styles.container}>
-          <View style={{ backgroundColor: '#F5F5F5', paddingTop: 15, paddingBottom: 10, }}>
+          <View style={{ backgroundColor: color.lightGray, paddingTop: 15, paddingBottom: 10, }}>
             <View style={styles.headerContainer}>
               <Text style={styles.headerText}>Filter by</Text>
               <Text
@@ -135,13 +141,12 @@ export default class filterScreenEducation extends Component {
                   this.setState({
                     input: '',
                     hashTagInput: '',
-                    event: 0,
                     hashtag: 0,
+                    input:0,
                     category: 0,
                     date: 0,
-                    price: 0,
-                    country: 0,
-                    city: 0,
+                    dob:'',
+                    dob1:'',
                   })
                 }
                 style={styles.clearAllText}>
@@ -204,7 +209,7 @@ export default class filterScreenEducation extends Component {
                         this.state.event == 0 ? '#fff' : color.btnBlue,
                     }}>
                   </View>
-                  <Text style={styles.categotyText}>Search Event</Text>
+                  <Text style={styles.categotyText}>Search Course</Text>
                   {this.state.event == '0' ? (
                     <View></View>
                   ) : (
@@ -375,7 +380,8 @@ export default class filterScreenEducation extends Component {
                     marginLeft: '18%',
                   }}
                   onChangeText={v => this.setState({ input: v })}
-                  placeholder={`Type Event Name`}
+                  placeholder={`Type Course Name`}
+                  value= {this.state.input}
                   placeholderTextColor={'#000'}
                 />
               </View>

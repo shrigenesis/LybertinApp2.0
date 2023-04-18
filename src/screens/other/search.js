@@ -170,7 +170,7 @@ const Search = ({navigation, route}) => {
               onSubmitEditing={() => {
                 search && searchfilter(search);
               }}
-              placeholder="Username, Name or Email"
+              placeholder="Search..."
               placeholderTextColor={'lightgray'}
             />
             {/* </View> */}

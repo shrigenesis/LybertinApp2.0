@@ -25,11 +25,11 @@ import {
 // import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import { BottomSheet } from 'react-native-elements';
 import Loader from './../../component/loader';
-import { APIRequest, ApiUrl, IMAGEURL, Toast, twitterFailUrl, twitterSuccessUrl } from './../../utils/api';
+import { APIRequest, ApiUrl, IMAGEURL, twitterFailUrl, twitterSuccessUrl } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SliderBox } from "react-native-image-slider-box";
 import ReadMore from '@fawazahmed/react-native-read-more';
@@ -42,6 +42,11 @@ import TwitterAuthorization from './Modal/TwitterAuthorization';
 import WebView from 'react-native-webview';
 import { log } from 'react-native-reanimated';
 import NoFormatter from '../../utils/NoFormatter';
+import BottomSheetMarketplace from '../../component/BottomSheetMarketplace';
+import { BackgroundImage } from 'react-native-elements/dist/config';
+import TwitterConfirmMessage from './Modal/TwitterConfirmMessage';
+import BottomSheetWebview from '../../component/BottomSheetWebview';
+import TwitterSuccessMessage from './Modal/TwitterSuccessMessage';
 let strippedHtml
 const sponsorsImage = ['https://lybertine.com/images/danone-logo.png', 'https://lybertine.com/images/Tata-Company.png', 'https://lybertine.com/images/danone-logo.png']
 
@@ -68,7 +73,24 @@ export default class MarketplaceDetails extends Component {
             isShowBottomSheet: false,
             isPostTwitter: false,
             openWebview: false,
+            twitterAuthorization: false,
+            twitterConfirmMessage: false,
+            twitterSuccessMessage: false,
+            earningValue: { min: 0, max: 0, type: 'default' }
         };
+    }
+
+    // Calculate EarningValue
+    CalculateEarningValue = () => {
+        this.setState({ ...this.state, isLoading: true })
+        let earningCoins = [];
+        for (let index = 0; index < this.state.event.marketings.length; index++) {
+            earningCoins.push(this.state.event.marketings[index].commission)
+        }
+        let minValue = Math.min(...earningCoins);
+        let maxValue = Math.max(...earningCoins);
+        this.setState({ ...this.state, earningValue: { min: minValue, max: maxValue, type: this.state.event.marketings[0].commission_type } })
+        this.setState({ ...this.state, isLoading: false })
     }
 
     componentDidMount = () => {
@@ -77,7 +99,7 @@ export default class MarketplaceDetails extends Component {
 
     // Getg deeplink for socail share
     OtherShare = () => {
-        this.setState({ ...this.state, isShowBottomSheet: false });
+        this.setState({ ...this.state, isLoading: true, isShowBottomSheet: false });
         let config = {
             url: `${ApiUrl.getDeeplink}`,
             method: 'post',
@@ -100,62 +122,91 @@ export default class MarketplaceDetails extends Component {
     }
 
     // Get message and check user autoraizd
-    TwittwrShare = () => {
-        this.setState({ ...this.state, isLoading: true })
-        let config = {
-            url: `${ApiUrl.getDeeplink}`,
-            method: 'post',
-            body: {
-                event_id: this.state.event.id,
-            },
-        };
-        APIRequest(
-            config,
-            res => {
-                if (res.status) {
-                    this.setState({ ...this.state, twitterMassage: `${res.promotional_text} Book your tickets at ${res.deep_link}`, isPostTwitter: true })
-                }
-                this.setState({ ...this.state, isLoading: false })
-            },
-            err => {
-                console.log(err);
-                this.setState({ ...this.state, isLoading: false })
-            },
-        );
+    TwittwrShare = (permission) => {
+        if (permission) {
+            this.setState({ ...this.state, isLoading: true, twitterAuthorization: false })
+            let config = {
+                url: `${ApiUrl.getDeeplink}`,
+                method: 'post',
+                body: {
+                    event_id: this.state.event.id,
+                },
+            };
+            APIRequest(
+                config,
+                res => {
+                    if (res.status) {
+                        this.setState({
+                            ...this.state,
+                            twitterMassage: `${res.promotional_text} Book your tickets at ${res.deep_link}`,
+                            twitterConfirmMessage: true
+                        })
+                    }
+                    this.setState({ ...this.state, isLoading: false })
+                },
+                err => {
+                    console.log(err);
+                    this.setState({ ...this.state, isLoading: false })
+                },
+            );
+        } else {
+            this.setState({ ...this.state, twitterAuthorization: false })
+        }
+
     }
 
     // Post on twitter 
-    PostTwitter = () => {
-
-        let config = {
-            url: `${ApiUrl.twitterPost}`,
-            method: 'post',
-            body: {
-                event_id: this.state.event.id,
-                text: this.state.twitterMassage
-            },
-        };
-        APIRequest(
-            config,
-            res => {
-                if (res.status) {
-                    if (!res.alreadyHasAuthorized) {
-                        this.setState({ ...this.state, webviewUrl: res.authorize_url, openWebview: true })
+    PostTwitter = (permission) => {
+        if (permission) {
+            this.setState({ ...this.state, isLoading: true, twitterConfirmMessage: false })
+            let config = {
+                url: `${ApiUrl.twitterPost}`,
+                method: 'post',
+                body: {
+                    event_id: this.state.event.id,
+                    text: this.state.twitterMassage
+                },
+            };
+            APIRequest(
+                config,
+                res => {
+                    if (res.status) {
+                        if (!res.alreadyHasAuthorized) {
+                            this.setState({
+                                ...this.state,
+                                webviewUrl: res.authorize_url,
+                                openWebview: true,
+                                isShowBottomSheet: true,
+                                isPostTwitter: true,
+                            })
+                        } else {
+                            Toast.show({
+                                type: 'success',
+                                text1: res.message
+                            })
+                            this.setState({ ...this.state, isShowBottomSheet: false })
+                        }
                     }
-                }
-                this.setState({ ...this.state, isLoading: false })
-            },
-            err => {
-                console.log(err);
-                this.setState({ ...this.state, isLoading: false })
-            },
-        );
+                    this.setState({ ...this.state, isLoading: false })
+                },
+                err => {
+                    console.log(err);
+                    this.setState({ ...this.state, isLoading: false })
+                },
+            );
+        } else {
+            this.setState({ ...this.state, twitterConfirmMessage: false })
+        }
 
+    }
+
+    settwitterSuccessMessage = () => {
+        this.getEventDetails()
     }
 
     // Get event details
     getEventDetails = () => {
-        this.setState({ ...this.state, isLoading: true })
+        this.setState({ ...this.state, isLoading: true, twitterSuccessMessage: false })
 
         let config = {
             url: `${ApiUrl.getMarketingEventDetails}/${this.state.eventId}`,
@@ -178,6 +229,7 @@ export default class MarketplaceDetails extends Component {
                     });
                     let myHTML = res.marketing_event_info.event.description;
                     strippedHtml = HtmlToText(myHTML)
+                    this.CalculateEarningValue()
                 }
                 this.setState({ ...this.state, isLoading: false })
             },
@@ -211,6 +263,7 @@ export default class MarketplaceDetails extends Component {
 
     // Social Share fundtion
     onShare = async (link) => {
+        this.setState({ ...this.state, isLoading: false });
         try {
             const result = await Share.share({
                 message:
@@ -226,7 +279,10 @@ export default class MarketplaceDetails extends Component {
                 // dismissed
             }
         } catch (error) {
-            SimpleToast.show(error.message)
+            Toast.show({
+                type: 'success',
+                text1: error.message
+            })
         }
     };
 
@@ -274,7 +330,7 @@ export default class MarketplaceDetails extends Component {
                             style={styles.bodyContainer} />
                         <View
                             style={{
-                                backgroundColor: color.background,
+                                backgroundColor: color.white,
                             }}>
                             <Text style={styles.mainHeading}>${this.minPrice()}</Text>
                             <View>
@@ -286,53 +342,62 @@ export default class MarketplaceDetails extends Component {
                                     style={styles.shareBox}
                                 >
                                     <TouchableOpacity
-                                        onPress={() => this.setState({ ...this.state, isShowBottomSheet: true })}
+                                        onPress={() => {
+                                            !this.state.event?.hasShared?.sharedOnTwitter ?
+                                                this.setState({ ...this.state, isShowBottomSheet: true }) :
+                                                this.OtherShare()
+                                        }}
                                         style={styles.shareBtnText}>
                                         <Image
-                                            source={IMAGE.sendBlue}
+                                            source={
+                                                (this.state.event?.hasShared?.sharedOnTwitter || this.state.event?.hasShared?.normalShare) ? IMAGE.shareMarketplace : IMAGE.sendBlue
+                                            }
                                             style={styles.shareImage}
                                         />
-                                        <Text style={styles.buttonText}>Share Now</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        onPress={() => this.setState({ ...this.state, isShowBottomSheet: true })}
-                                        style={styles.shareBtnImg}>
-                                        <Image
-                                            source={IMAGE.shareMarketplace}
-                                            style={styles.shareImage}
-                                        />
+                                        {(this.state.event?.hasShared?.sharedOnTwitter || this.state.event?.hasShared?.normalShare) ?
+                                            <Text style={[styles.buttonText,{color: color.violet}]}>Share again </Text> :
+                                            <Text style={styles.buttonText}>Share Now </Text>
+                                        }
+                                        {/* <Text style={styles.buttonText}>
+                                            {(this.state.event?.hasShared?.sharedOnTwitter || !this.state.event?.hasShared?.normalShare)? 'Share again' : 'Share Now'}
+                                        </Text> */}
                                     </TouchableOpacity>
                                 </View>
-                                <View style={[styles.borderBox, { padding: 15, paddingBottom: 5, marginHorizontal: 14, marginVertical: 15 }]}>
-                                    <View style={styles.engagementTitleBox}>
-                                        <Text style={styles.engagementTitle}>POST ENGAGEMENT</Text>
-                                        <TouchableOpacity onPress={this.getEventDetails}>
-                                            <Image source={IMAGE.sync} style={styles.syncImage} />
-                                        </TouchableOpacity>
+                                {this.state.event?.hasShared?.sharedOnTwitter ?
+                                    <View style={[styles.borderBox, { padding: 15, paddingBottom: 5, marginHorizontal: 14, marginVertical: 15 }]}>
+                                        <View style={styles.engagementTitleBox}>
+                                            <Text style={styles.engagementTitle}>POST ENGAGEMENT</Text>
+                                            <TouchableOpacity onPress={this.getEventDetails}>
+                                                <Image source={IMAGE.sync} style={styles.syncImage} />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={[styles.engagementTitleBox, { marginTop: 15 }]}>
+                                            <View>
+                                                <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_shares)}</Text>
+                                                <Text style={styles.detailsText}>Share</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.detailsTitle}>{this.state.event.total_coins_distributed ? NoFormatter(this.state.event.total_coins_distributed) : 0}</Text>
+                                                <Text style={styles.detailsText}>Earning</Text>
+                                            </View>
+                                            <View>
+                                                <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_bookings_from_links)}</Text>
+                                                <Text style={styles.detailsText}>Booking</Text>
+                                            </View>
+                                        </View>
+                                        <Text style={[styles.detailsText, { marginTop: 10 }]}>Last sync {this.state.last_sync}</Text>
+                                    </View> : null}
+                                <View style={styles.imageContainer}>
+                                    <Image
+                                        source={IMAGE.star_earn}
+                                        style={styles.dateStyle}
+                                    />
+                                    <View>
+                                        <Text style={styles.dateText}>Earnings</Text>
+                                        <Text style={styles.timeText}>
+                                            {`${this.state.earningValue.min} to ${this.state.earningValue.max} ${this.state.earningValue.type === "percentage" ? "%" : "$"} earnings`}
+                                        </Text>
                                     </View>
-                                    <View style={[styles.engagementTitleBox, { marginTop: 15 }]}>
-                                        <View>
-                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.engagement.favorites)}</Text>
-                                            <Text style={styles.detailsText}>Post likes</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.engagement.retweets)}</Text>
-                                            <Text style={styles.detailsText}>Comments</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_shares)}</Text>
-                                            <Text style={styles.detailsText}>Share</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={styles.detailsTitle}>{this.state.event.total_coins_distributed ? NoFormatter(this.state.event.total_coins_distributed) : 0}</Text>
-                                            <Text style={styles.detailsText}>Earning</Text>
-                                        </View>
-                                        <View>
-                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_bookings_from_links)}</Text>
-                                            <Text style={styles.detailsText}>Booking</Text>
-                                        </View>
-                                    </View>
-                                    <Text style={[styles.detailsText, { marginTop: 10 }]}>Last sync {this.state.last_sync}</Text>
                                 </View>
                                 <View style={styles.imageContainer}>
                                     <Image
@@ -387,7 +452,7 @@ export default class MarketplaceDetails extends Component {
                                 ) : (
                                     <View>
                                         <View style={styles.descriptionWrapper}>
-                                            <Text style={styles.desHeading}>Video Description</Text>
+                                            <Text style={styles.desHeading}>Event Description</Text>
                                             <ReadMore
                                                 numberOfLines={4}
                                                 style={styles.desText}
@@ -452,7 +517,7 @@ export default class MarketplaceDetails extends Component {
                             </View>
                         </View>
                         {false ? <ConfirmationModal /> : null}
-                        <BottomSheetCustom
+                        {/* <BottomSheetCustom
                             cancelBtn={{ color: color.lightGray, title: "Cancel", textColor: color.btnBlue }}
                             isShowBottomSheet={this.state.isShowBottomSheet}
                             setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}
@@ -488,22 +553,120 @@ export default class MarketplaceDetails extends Component {
                                     <WebView
                                         source={{ uri: this.state.webviewUrl }}
 
-                                        // onNavigationStateChange={navState => {
-                                        //     // Keep track of going back navigation within component
-                                        //     console.log('navstate', navState);
-                                        //     if (navState?.url == twitterSuccessUrl) {
-                                        //         SimpleToast.show('Twitter successful')
-                                        //         this.setState({ ...this.state, isPostTwitter: false, openWebview: false, isShowBottomSheet: false });
-                                        //     }
-                                        //     if (navState?.url.includes(twitterFailUrl)) {
-                                        //         SimpleToast.show('Sorry, Something went wrong, please try again.')
-                                        //         this.setState({ ...this.state, isPostTwitter: false, openWebview: false, isShowBottomSheet: false });
-                                        //     }
-                                        // }}
+                                        onNavigationStateChange={navState => {
+                                            // Keep track of going back navigation within component
+                                            console.log('navstate', navState);
+                                            if (navState?.url.includes(twitterSuccessUrl)) {
+                                                SimpleToast.show('Post successfully posted on Twitter')
+                                                this.setState({ ...this.state, isPostTwitter: false, openWebview: false, isShowBottomSheet: false });
+                                            }
+                                            if (navState?.url.includes(twitterFailUrl)) {
+                                                SimpleToast.show('Sorry, Something went wrong, please try again.')
+                                                this.setState({ ...this.state, isPostTwitter: false, openWebview: false, isShowBottomSheet: false });
+                                            }
+                                        }}
 
                                     />
                                 </View> : null}
-                        </BottomSheetCustom>
+                        </BottomSheetCustom> */}
+                        {(this.state.openWebview && this.state.isPostTwitter) ?
+                            <BottomSheetWebview
+                                cancelBtn={{ color: color.lightGray, title: "Cancel", textColor: color.btnBlue }}
+                                isShowBottomSheet={this.state.isShowBottomSheet}
+                                setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}
+                            >
+                                {(this.state.openWebview && this.state.isPostTwitter) ?
+                                    <View style={{ height: 500 }}>
+                                        <WebView
+                                            source={{ uri: this.state.webviewUrl }}
+                                            onNavigationStateChange={navState => {
+                                                // Keep track of going back navigation within component
+                                                console.log('navstate', navState);
+                                                if (navState?.url.includes(twitterSuccessUrl)) {
+                                                    this.setState({
+                                                        ...this.state,
+                                                        isPostTwitter: false,
+                                                        openWebview: false,
+                                                        isShowBottomSheet: false,
+                                                        twitterSuccessMessage: true
+                                                    });
+                                                }
+                                                if (navState?.url.includes(twitterFailUrl)) {
+                                                    Toast.show({
+                                                        type: 'error',
+                                                        text1: res.message
+                                                    })
+                                                    this.setState({
+                                                        ...this.state,
+                                                        isPostTwitter: false,
+                                                        openWebview: false,
+                                                        isShowBottomSheet: false,
+                                                    });
+                                                }
+                                            }}
+
+                                        />
+                                    </View> : null}
+                            </BottomSheetWebview>
+                            :
+                            <BottomSheetMarketplace
+                                isShowBottomSheet={this.state.isShowBottomSheet}
+                                setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}
+                            >
+                                {!this.state.isPostTwitter ? <>
+                                    <Text style={{
+                                        textAlign: 'center', fontSize: fontSize.size21,
+                                        fontFamily: fontFamily.Bold,
+                                        color: color.blueMagenta,
+                                        marginBottom: 20,
+                                    }}>Share Your Post</Text>
+                                    <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+                                        <TouchableOpacity
+                                            onPress={this.OtherShare}
+                                            activeOpacity={0.9}
+                                            style={styles.twitterShareBtn}
+                                        >
+                                            <View style={[styles.shareIconBox, { backgroundColor: color.lightGray }]}>
+                                                <Image style={styles.shareIcon} source={IMAGE.shareMarketplace} />
+                                            </View>
+                                            <Text style={styles.buttonText}>Other</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            onPress={() => this.setState({
+                                                ...this.state,
+                                                twitterAuthorization: true,
+                                                isShowBottomSheet: false,
+                                            })}
+                                            activeOpacity={0.9}
+                                            style={styles.twitterShareBtn}
+                                        >
+                                            <View style={[styles.shareIconBox, { backgroundColor: color.twitterColor }]}>
+                                                <Image style={styles.shareIcon} source={IMAGE.twitter} />
+                                            </View>
+                                            <Text style={styles.buttonText}>Twitter</Text>
+                                            <Text style={styles.recommendText}>we recommend</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                </> : null}
+                            </BottomSheetMarketplace>
+                        }
+                        {this.state.twitterAuthorization ?
+                            <TwitterAuthorization
+                                twitterAuthorization={this.state.twitterAuthorization}
+                                TwittwrShare={this.TwittwrShare.bind(this)}
+                            />
+                            : null}
+                        {this.state.twitterConfirmMessage ?
+                            <TwitterConfirmMessage
+                                twitterMassage={this.state.twitterMassage}
+                                twitterConfirmMessage={this.state.twitterConfirmMessage}
+                                PostTwitter={this.PostTwitter.bind(this)}
+                            />
+                            : null}
+                        {this.state.twitterSuccessMessage ?
+                            <TwitterSuccessMessage confetti={true} settwitterSuccessMessage={this.settwitterSuccessMessage.bind(this)} />
+                            : null}
 
                     </ScrollView> :
                     <DetailsSkelton />
@@ -550,7 +713,7 @@ const styles = StyleSheet.create({
         height: 20,
         borderTopLeftRadius: 30,
         borderTopRightRadius: 40,
-        backgroundColor: color.background,
+        backgroundColor: color.white,
     },
     shareBox: {
         display: 'flex',
@@ -558,15 +721,15 @@ const styles = StyleSheet.create({
         paddingHorizontal: 14,
     },
     shareBtnText: {
-        backgroundColor: '#F6EAFA',
+        backgroundColor: color.lightGray,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 6,
         display: 'flex',
         flexDirection: 'row',
         marginVertical: 10,
-        width: '82%',
-        marginRight: '2%'
+        width: '100%',
+        // marginRight: '2%'
     },
     shareImage: {
         height: 15,
@@ -575,41 +738,55 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         marginRight: 4,
     },
-    shareBtnImg: {
-        backgroundColor: '#F6EAFA',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 6,
-        display: 'flex',
-        flexDirection: 'row',
-        marginVertical: 10,
-        width: '16%',
-    },
     engagementTitle: {
         textAlign: 'center',
         fontFamily: fontFamily.Semibold,
         fontSize: fontSize.size12,
         color: color.blackRussian
     },
-    dateStyle:{
+    dateStyle: {
         height: 22,
         width: 22,
         resizeMode: 'contain',
         marginRight: '4%',
         tintColor: color.btnBlue,
     },
-    twitterShareBtn:{
-        backgroundColor: '#F6EAFA',
-        justifyContent: 'center',
+    twitterShareBtn: {
+        width: wp(40),
+        height: wp(42),
+        borderRadius: 13,
+        backgroundColor: color.white,
+        borderWidth: 1,
+        borderColor: color.liteRed,
+        shadowColor: color.liteRed,
+        shadowOffset: { width: -2, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 3,
+        elevation: 3,
+        paddingTop: 20,
         alignItems: 'center',
-        borderRadius: 6,
-        display: 'flex',
-        flexDirection: 'row',
-        marginVertical: 10,
-        marginHorizontal: '5%',
-        width: '90%',
+        position: 'relative'
     },
-    postTwitterBtn:{
+    shareIconBox: {
+        width: 60, height: 60, justifyContent: 'center', borderRadius: 12
+    },
+    shareIcon: {
+        width: 30,
+        height: 30,
+        resizeMode: 'contain',
+        alignSelf: 'center'
+    },
+    recommendText: {
+        backgroundColor: color.twitterColor,
+        color: color.white, padding: 5, position: 'absolute',
+        width: wp(40),
+        textAlign: 'center',
+        borderBottomRightRadius: 13,
+        borderBottomLeftRadius: 13,
+        fontSize: fontSize.size10,
+        bottom: 0
+    },
+    postTwitterBtn: {
         backgroundColor: '#F6EAFA',
         justifyContent: 'center',
         alignItems: 'center',
@@ -750,11 +927,12 @@ const styles = StyleSheet.create({
         // alignSelf:'center'
     },
     buttonText: {
-        fontSize: fontSize.size15,
+        fontSize: fontSize.size14,
         fontWeight: '700',
         fontFamily: fontFamily.Regular,
         color: color.violet,
         paddingVertical: 11,
+        color: color.blueMagenta
     },
     borderBox: {
         borderColor: color.liteMagenta,
@@ -795,6 +973,6 @@ const styles = StyleSheet.create({
     engagementTitleBox: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between'
+        justifyContent: 'space-around'
     }
 });

@@ -32,9 +32,7 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
 import {pickImage} from '../../component/';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import moment from 'moment';
@@ -195,7 +193,7 @@ export default class highlights extends Component {
                       />
                     ) : (
                       <Image
-                        source={IMAGE.checkTick}
+                        source={IMAGE.checkmark_circle_outline}
                         style={styles.bottomImage}
                       />
                     )}

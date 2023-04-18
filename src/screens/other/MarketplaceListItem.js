@@ -15,12 +15,13 @@ import { useNavigation } from '@react-navigation/native';
 import SvgUri from 'react-native-svg-uri-updated';
 import { Loader } from '../../component';
 
+
 const Tag = ['#event', '#event', '#event'];
 
 const MarketplaceListItem = ({ Event }) => {
   const navigation = useNavigation();
   const [isLoding, setisLoding] = useState(false);
-  const [EarningValue, setEarningValue] = useState({min: 0, max: 0, type:'default'});
+  const [EarningValue, setEarningValue] = useState({ min: 0, max: 0, type: 'default' });
   //  social share
   const onShare = async (link) => {
     setisLoding(false)
@@ -67,15 +68,15 @@ const MarketplaceListItem = ({ Event }) => {
   };
 
   // Find min and max value and commission type
-  useEffect(()=>{
-    let earningCoins=[];
+  useEffect(() => {
+    let earningCoins = [];
     for (let index = 0; index < Event.marketings.length; index++) {
       earningCoins.push(Event.marketings[index].commission)
     }
     let minValue = Math.min(...earningCoins);
     let maxValue = Math.max(...earningCoins);
-    setEarningValue({min: minValue, max: maxValue, type: Event.marketings[0].commission_type})
-  },[])
+    setEarningValue({ min: minValue, max: maxValue, type: Event.marketings[0].commission_type })
+  }, [])
 
 
 
@@ -96,79 +97,40 @@ const MarketplaceListItem = ({ Event }) => {
               source={{
                 uri: `${IMAGEURL}/${Event.thumbnail}`,
               }}
-              style={{
-                height: 144,
-                width: '100%',
-                resizeMode: 'cover',
-                alignSelf: 'center',
-                borderTopLeftRadius: 10,
-                borderTopRightRadius: 10,
-              }}
+              style={styles.thumbnailStyle}
             />
             <View style={styles.contentBox}>
               <Text style={styles.dateText}>
-                {Event.start_date} to {Event.end_date}
+                {Event.formatted_date}
               </Text>
               <Text style={styles.headingText} numberOfLines={1}>
                 {Event.title}
               </Text>
               <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  flexWrap: 'wrap',
-                }}>
+                style={styles.tagGroup}>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                  }}>
+                  style={styles.imageWithText}>
                   <Image
                     source={IMAGE.coin}
-                    style={{
-                      height: 12,
-                      width: 12,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                      marginRight: '2%',
-                    }}
+                    style={styles.imageOfTag}
                   />
-                  <Text style={styles.dateText}>{`${EarningValue.min} to ${EarningValue.max} ${EarningValue.type === "percentage"? "%": "$"} earnings`} </Text>
+                  <Text style={styles.dateText}>{`${EarningValue.min} to ${EarningValue.max} ${EarningValue.type === "percentage" ? "%" : "$"} earnings`} </Text>
                 </View>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                    marginHorizontal: 15,
-                  }}>
+                  style={styles.imageWithText}>
                   <Image
                     source={IMAGE.location}
-                    style={{
-                      height: 12,
-                      width: 12,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                      marginRight: '2%',
-                    }}
+                    style={styles.imageOfTag}
                   />
-                  <Text style={styles.dateText}>{Event.city}location</Text>
+                  <Text style={styles.dateText}>{Event.city}</Text>
                 </View>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-start',
-                  }}>
+                  style={styles.imageWithText}>
                   <Image
                     source={IMAGE.Ticket}
-                    style={{
-                      height: 12,
-                      width: 12,
-                      resizeMode: 'contain',
-                      alignSelf: 'center',
-                      marginRight: '2%',
-                    }}
+                    style={styles.imageOfTag}
                   />
-                  <Text style={styles.dateText}>{Event.total_tickets-Event.total_shares} Tickets Left</Text>
+                  <Text style={styles.dateText}>{Event.total_tickets - Event.total_shares} Tickets Left</Text>
                 </View>
               </View>
               <View
@@ -178,39 +140,35 @@ const MarketplaceListItem = ({ Event }) => {
                   paddingVertical: 10,
                 }}>
                 {Event.hashtags.map(item => (
-                  <Text style={styles.tagText}>{item.title}</Text>
+                  <Text style={styles.tagText}>#{item.title}</Text>
                 ))}
               </View>
               <TouchableOpacity
-                // onPress={getEventShareUrl}
                 activeOpacity={0.4}
                 onPress={() =>
                   navigation.navigate('marketplaceDetails', {
                     event_id: Event.id,
                   })
                 }
-                style={{
-                  backgroundColor: '#F9F9F9',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderRadius: 6,
-                  display: 'flex',
-                  flexDirection: 'row',
-                  marginVertical: 10,
-                }}>
+                style={[styles.button, {backgroundColor:
+                  (Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter)? color.chatRight : color.lightGray}]}>
                 <SvgUri
                   style={styles.rightSpace}
                   fill={color.violet}
                   fillAll={true}
                   source={IMAGE.svgsend}
                 />
-                <Text style={styles.buttonText}>Share Now</Text>
+                <Text style={[styles.buttonText, {color:
+                 (Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter)? color.violet : color.blueMagenta}]}>
+                  {(Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter) ? 'Share again':'Share Now' }
+                  </Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>
-        </View> : <Loader isLoading={true} type={'dots'} />}
-      </View>
-    </View>
+        </View> : <Loader isLoading={true} type={'dots'} />
+        }
+      </View >
+    </View >
   );
 };
 const styles = StyleSheet.create({
@@ -238,6 +196,14 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Bold,
     color: color.black,
   },
+  thumbnailStyle: {
+    height: 144,
+    width: '100%',
+    resizeMode: 'cover',
+    alignSelf: 'center',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
   dateText: {
     fontSize: fontSize.size12,
     fontFamily: fontFamily.Light,
@@ -256,16 +222,40 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     marginRight: 4,
   },
+  button: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 6,
+    display: 'flex',
+    flexDirection: 'row',
+    marginVertical: 10,
+  },
   buttonText: {
     fontSize: fontSize.size15,
     fontWeight: '700',
     fontFamily: fontFamily.Regular,
-    color: color.blueMagenta,
     paddingVertical: 11,
   },
   rightSpace: {
     marginRight: 5,
   },
+  imageOfTag: {
+    height: 12,
+    width: 12,
+    resizeMode: 'contain',
+    alignSelf: 'center',
+    marginRight: '2%',
+  },
+  imageWithText: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  tagGroup: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexWrap: 'wrap',
+    columnGap: 10
+  }
 });
 
 export default MarketplaceListItem;

@@ -16,6 +16,7 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import Toast from 'react-native-toast-message';
 import { color, IMAGE, fontFamily } from '../../constant/';
 import { User } from '../../utils/user';
 import Video from 'react-native-video';
@@ -25,7 +26,7 @@ import {
   PressableText,
   RippleTouchable,
 } from './../../component/';
-import { APIRequest, ApiUrl, Toast } from './../../utils/api';
+import { APIRequest, ApiUrl } from './../../utils/api';
 import { LoginContext } from './../../context/LoginContext';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
@@ -237,7 +238,10 @@ const Login = ({ navigation, route }) => {
 
         setisLoading(false);
         if (err?.response?.data) {
-          Toast(err?.response?.data?.error);
+          Toast.show({
+            type: 'error',
+            text1: err?.response?.data?.error,
+          });
         }
       },
     );
@@ -270,14 +274,20 @@ const Login = ({ navigation, route }) => {
             setLogin('true');
             DeepLinkNavigation()
           } else {
-            Toast(res?.error);
+            Toast.show({
+              type: 'error',
+              text1:res?.error,
+            });
           }
         },
         err => {
           console.log(err);
           setisLoading(false);
           if (err?.response?.data) {
-            Toast(err?.response?.data?.error);
+            Toast.show({
+              type: 'error',
+              text1: err?.response?.data?.error,
+            });
           }
         },
       );
@@ -287,11 +297,17 @@ const Login = ({ navigation, route }) => {
   const validation = () => {
     if (email == '') {
       // emailRef.current.focus();
-      Toast('Please Enter Email');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Email',
+      });
       return false;
     } else if (password == '') {
       // passwordRef.current.focus();
-      Toast('Please Enter Password');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Password',
+      });
       return false;
     } else {
       return true;

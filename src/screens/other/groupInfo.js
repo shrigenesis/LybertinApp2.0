@@ -32,9 +32,9 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
+
 
 let apiMethod = '/leave';
 let apiUrl = ApiUrl.groups;
@@ -99,7 +99,7 @@ export default class groupInfo extends Component {
   exitGroup = () => {
     this.setState({isLoading: true});
     let config = {
-      url: `${apiUrl}${this.state.groupId}${apiMethod}`,
+      url: `${apiUrl}/${this.state.groupId}${apiMethod}`,
       method: 'post',
     };
 
@@ -118,7 +118,7 @@ export default class groupInfo extends Component {
   deleteGroup = () => {
     this.setState({isLoading: true});
     let config = {
-      url: `${apiUrl}${this.state.groupId}${apiMethodNew}`,
+      url: `${apiUrl}/${this.state.groupId}${apiMethodNew}`,
       method: 'post',
     };
 
@@ -149,7 +149,10 @@ export default class groupInfo extends Component {
       config,
       res => {
         console.log('Api response===', res);
-        SimpleToast.show(res?.message);
+        Toast.show({
+          type: 'success',
+          text1:res?.message
+        })
         this.props.navigation.navigate('Groups');
       },
       err => {

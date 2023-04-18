@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect, useRef, useMemo} from 'react';
+import React, { useState, memo, useEffect, useRef, useMemo } from 'react';
 import {
   View,
   StyleSheet,
@@ -15,26 +15,26 @@ import {
   Linking,
   Alert,
 } from 'react-native';
-import {color, fontFamily} from '../../constant/';
-import {Overlay} from 'react-native-elements';
+import { color, fontFamily } from '../../constant/';
+import { Overlay } from 'react-native-elements';
 
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Button, Loader, pickImage} from './../../component/';
+import { Button, Loader, pickImage } from './../../component/';
 import IMAGE from '../../constant/image';
-import {useIsFocused} from '@react-navigation/native';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import Video from 'react-native-video';
-import Animated, {ZoomIn, FadeOut, FadeIn} from 'react-native-reanimated';
+import Animated, { ZoomIn, FadeOut, FadeIn } from 'react-native-reanimated';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import SimpleToast from 'react-native-simple-toast';
-import {StoryContainer, ProgressBar} from 'react-native-stories-view';
-import {BottomSheetModal, BottomSheetBackdrop} from '@gorhom/bottom-sheet';
-import {User} from '../../utils/user';
+import Toast from 'react-native-toast-message';
+import { StoryContainer, ProgressBar } from 'react-native-stories-view';
+import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import { User } from '../../utils/user';
 
-const Progess = memo(({storyList, activeIndex, setactiveIndex, navigation}) => (
+const Progess = memo(({ storyList, activeIndex, setactiveIndex, navigation }) => (
   <ProgressBar
     images={storyList}
     progressIndex={activeIndex}
@@ -56,7 +56,7 @@ const Progess = memo(({storyList, activeIndex, setactiveIndex, navigation}) => (
   />
 ));
 
-const ShowStory = ({navigation, route}) => {
+const ShowStory = ({ navigation, route }) => {
   const bottomSheetRef = useRef(null);
   const reportBottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => [1, hp(52)], []);
@@ -72,7 +72,7 @@ const ShowStory = ({navigation, route}) => {
   const [visible, setvisible] = useState(false);
 
   const isFocus = useIsFocused();
-  const RenderBottomSheet = memo(({bottomSheetRef, snapPoints, file}) => (
+  const RenderBottomSheet = memo(({ bottomSheetRef, snapPoints, file }) => (
     <BottomSheetModal
       ref={bottomSheetRef}
       index={1}
@@ -81,7 +81,7 @@ const ShowStory = ({navigation, route}) => {
         console.log(v);
       }}
       backdropComponent={BottomSheetBackdrop}>
-      <View style={{alignSelf: 'center', paddingVertical: hp(1)}}>
+      <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
         <Text style={style.heading}>Add Story</Text>
         <Text style={style.subHeading}>Post Photo Video To Your Story</Text>
       </View>
@@ -192,7 +192,10 @@ const ShowStory = ({navigation, route}) => {
       res => {
         setisLoading(false);
         if (res?.alert?.status) {
-          SimpleToast.show(res?.alert?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
           navigation.goBack();
         }
       },
@@ -213,13 +216,15 @@ const ShowStory = ({navigation, route}) => {
         text: '',
       },
     };
-    // console.log('nikkkkkkkkkk',config);
     APIRequest(
       config,
       res => {
         setisLoading(false);
         if (res?.alert?.status) {
-          SimpleToast.show(res?.alert?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
           navigation.goBack();
         }
       },
@@ -236,17 +241,17 @@ const ShowStory = ({navigation, route}) => {
 
     if (file?.image) {
       return (
-        <TouchableOpacity style={{flex: 1}}>
+        <TouchableOpacity style={{ flex: 1 }}>
           <ImageBackground
             onLoadEnd={() => {
               setisLoading(false);
             }}
             onLoadStart={() => setisLoading(true)}
-            source={{uri: `${IMAGEURL}/${file.image}`}}
+            source={{ uri: `${IMAGEURL}/${file.image}` }}
             resizeMode={'contain'}
             style={style.storyImage}>
             <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
               <TouchableOpacity
                 activeOpacity={1}
                 style={{
@@ -302,10 +307,10 @@ const ShowStory = ({navigation, route}) => {
                       width: 60,
                       borderRadius: 120,
                       position: 'absolute',
-                      bottom:120,
+                      bottom: 120,
                       right: 20,
                     }}>
-                    <Icon name={'plus'} style={{fontSize: 25, color: '#fff'}} />
+                    <Icon name={'plus'} style={{ fontSize: 25, color: '#fff' }} />
                   </TouchableOpacity>
                 ) : (
                   <View></View>
@@ -327,7 +332,7 @@ const ShowStory = ({navigation, route}) => {
                     borderRadius: 10,
                   }}>
                   <Text
-                    style={{color: '#fff', fontSize: 20, textAlign: 'center',marginLeft:"16%"}}>
+                    style={{ color: '#fff', fontSize: 20, textAlign: 'center', marginLeft: "16%" }}>
                     {storyList[activeIndex]?.caption}
                   </Text>
                 </View>
@@ -344,9 +349,9 @@ const ShowStory = ({navigation, route}) => {
             // setactiveIndex(activeIndex+1)
           }}>
           <Video
-            source={{uri: `${IMAGEURL}/${file.video}`}}
+            source={{ uri: `${IMAGEURL}/${file.video}` }}
             ref={videoRef}
-            onBuffer={({isBuffering}) => {
+            onBuffer={({ isBuffering }) => {
               setisLoading(isBuffering == 1);
             }}
             onError={err => console.log(err)}
@@ -361,7 +366,7 @@ const ShowStory = ({navigation, route}) => {
               setisplay(false);
             }}
             resizeMode={'cover'}
-            style={{height: '84%', marginTop: hp(6), width: wp(100)}}
+            style={{ height: '84%', marginTop: hp(6), width: wp(100) }}
           />
           {!hideControles && !isLoading && _showIcon()}
           <TouchableOpacity
@@ -379,32 +384,32 @@ const ShowStory = ({navigation, route}) => {
               bottom: 5,
               right: 20,
             }}>
-            <Icon name={'plus'} style={{fontSize: 25, color: '#fff'}} />
+            <Icon name={'plus'} style={{ fontSize: 25, color: '#fff' }} />
           </TouchableOpacity>
           {storyList[activeIndex]?.caption != '' && (
-                <View
-                  style={{
-                    alignItems: 'center',
-                    width: 240,
-                    // justifyContent: 'center',
+            <View
+              style={{
+                alignItems: 'center',
+                width: 240,
+                // justifyContent: 'center',
 
-                    // borderRadius: 120,
-                    position: 'absolute',
-                    bottom: 2,
-                    //  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    // alignContent:"center"
-                    left: 50,
-                    borderRadius: 10,
-                  }}>
-                  <Text
-                    style={{color: '#fff', fontSize: 20, textAlign: 'center',marginLeft:"16%"}}>
-                    {storyList[activeIndex]?.caption}
-                  </Text>
-                </View>
-              )}
+                // borderRadius: 120,
+                position: 'absolute',
+                bottom: 2,
+                //  backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                // alignContent:"center"
+                left: 50,
+                borderRadius: 10,
+              }}>
+              <Text
+                style={{ color: '#fff', fontSize: 20, textAlign: 'center', marginLeft: "16%" }}>
+                {storyList[activeIndex]?.caption}
+              </Text>
+            </View>
+          )}
         </TouchableOpacity>
       );
-    }  else {
+    } else {
       navigation.goBack();
     }
   };
@@ -426,7 +431,7 @@ const ShowStory = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             sethideControles(false);
-            videoRef?.current?.setNativeProps({paused: true});
+            videoRef?.current?.setNativeProps({ paused: true });
             setisplay(false);
           }}
           style={{
@@ -448,7 +453,7 @@ const ShowStory = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             _hideControles();
-            videoRef?.current?.setNativeProps({paused: false});
+            videoRef?.current?.setNativeProps({ paused: false });
             setisplay(true);
           }}
           style={{
@@ -474,14 +479,14 @@ const ShowStory = ({navigation, route}) => {
     }
   };
 
-  const {id} = new User().getuserdata();
+  const { id } = new User().getuserdata();
   return (
-    <View style={{flex: 1, backgroundColor: color.black}}>
+    <View style={{ flex: 1, backgroundColor: color.black }}>
       {appReady && (
         <Animated.View entering={ZoomIn}>
           <View style={style.header}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <View style={{marginRight: wp(1), marginRight: wp(5)}}>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{ marginRight: wp(1), marginRight: wp(5) }}>
                 <Image
                   source={{
                     uri: `${IMAGEURL}/${getUserDetail(
@@ -519,7 +524,7 @@ const ShowStory = ({navigation, route}) => {
                   }}>
                   <Image
                     source={IMAGE.trash}
-                    style={{height: 20, width: 20, resizeMode: 'contain'}}
+                    style={{ height: 20, width: 20, resizeMode: 'contain' }}
                   />
                 </TouchableOpacity>
               ) : (
@@ -540,7 +545,7 @@ const ShowStory = ({navigation, route}) => {
               )}
               <TouchableOpacity
                 onPress={() => {
-                  videoRef?.current?.setNativeProps({paused: true});
+                  videoRef?.current?.setNativeProps({ paused: true });
                   navigation.goBack();
                 }}>
                 <Image
@@ -602,7 +607,7 @@ const ShowStory = ({navigation, route}) => {
                       bottom: 120,
                       right: 20,
                     }}>
-                    <Icon name={'plus'} style={{fontSize: 25, color: '#fff'}} />
+                    <Icon name={'plus'} style={{ fontSize: 25, color: '#fff' }} />
                   </TouchableOpacity>
                 ) : (
                   <View></View>
@@ -612,7 +617,7 @@ const ShowStory = ({navigation, route}) => {
               renderStoryItem()
             )}
             {isLoading && (
-              <View style={{position: 'absolute', top: hp(40), left: wp(40)}}>
+              <View style={{ position: 'absolute', top: hp(40), left: wp(40) }}>
                 <Loader isLoading={isLoading} />
               </View>
             )}
@@ -622,7 +627,7 @@ const ShowStory = ({navigation, route}) => {
       <RenderBottomSheet
         file={file => {
           bottomSheetRef?.current?.close(),
-            navigation.navigate('PostStory', {file: file});
+            navigation.navigate('PostStory', { file: file });
         }}
         snapPoints={snapPoints}
         bottomSheetRef={bottomSheetRef}
@@ -635,7 +640,7 @@ const ShowStory = ({navigation, route}) => {
           console.log(v);
         }}
         backdropComponent={BottomSheetBackdrop}>
-        <View style={{alignSelf: 'center', paddingVertical: hp(1)}}>
+        <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
           <Text style={style.roportHeading}>Report</Text>
           <Text style={style.subHeading}>Why Are You Reporting This Post?</Text>
         </View>
@@ -753,7 +758,7 @@ const ShowStory = ({navigation, route}) => {
               marginHorizontal: '-3.4%',
               marginVertical: '5%',
             }}></View>
-          <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <TouchableOpacity
               onPress={() => setvisible(false)}
               style={{
@@ -893,18 +898,18 @@ const style = StyleSheet.create({
   storyView: {
     width: wp(100),
     height: hp(95),
-    marginTop:"20%"
+    marginTop: "20%"
   },
   storyImage: {
     height: hp(100),
     alignSelf: 'center',
     width: wp(98),
-    justifyContent:"center",
-    marginTop:"-10%"
+    justifyContent: "center",
+    marginTop: "-10%"
   },
 });
 
-const Renderurlview = ({url}) => {
+const Renderurlview = ({ url }) => {
   const [ischeck, setischeck] = useState(false);
   useEffect(() => {
     if (url) {
@@ -917,7 +922,7 @@ const Renderurlview = ({url}) => {
       if (url) {
         console.log('storyList[activeIndex]?.link', url);
         const result = await Linking.canOpenURL(url);
-        console.log({result});
+        console.log({ result });
         if (result) {
           console.log('-----1');
           setischeck(true);
@@ -953,7 +958,10 @@ const Renderurlview = ({url}) => {
                 if (supported) {
                   Linking.openURL(url);
                 } else {
-                  Alert.alert('Alert', 'Hyperlink is broken');
+                  Toast.show({
+                    type: 'info',
+                    text1: 'Hyperlink is broken'
+                  })
                 }
               })
             }

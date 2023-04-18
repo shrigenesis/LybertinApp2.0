@@ -74,6 +74,7 @@
     "react-native-swipe-gestures": "^1.0.5",
     "react-native-swipeable": "^0.6.0",
     "react-native-swipeable-view": "^1.1.0",
+    "react-native-toast-message": "^2.1.6",
     "react-native-vector-icons": "^9.2.0",
     "react-native-video": "^5.2.1",
     "react-native-webview": "^11.26.1",

@@ -30,9 +30,8 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from '../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import { pickImage } from '../../component';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 
@@ -188,7 +187,10 @@ const EditGroup = ({ navigation, route }) => {
         res => {
           setisLoading(false);
           if (res.status) {
-            SimpleToast.show(res.message);
+            Toast.show({
+              type: 'info',
+              text1: res.message
+            })
             navigation.goBack();
           }
         },
@@ -202,13 +204,22 @@ const EditGroup = ({ navigation, route }) => {
 
   const validation = () => {
     if (groupName == '') {
-      SimpleToast.show('Please Enter Group Name');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Group Name'
+      })
       return false;
     } else if (groupDesc == '') {
-      SimpleToast.show('Please Enter Group Description');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Group Description'
+      })
       return false;
     } else if (selectUserList.length == 0) {
-      SimpleToast.show('Please Select User');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Select User'
+      })
       return false;
     } else {
       return true;

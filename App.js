@@ -20,6 +20,7 @@ import { localNotificationService } from './LocalNotificationService';
 import { fcmService } from './FCMService';
 import { navigationRef } from './RootNavigation';
 import { MenuProvider } from 'react-native-popup-menu';
+import Toast from 'react-native-toast-message';
 
 
 LogBox.ignoreAllLogs();
@@ -70,6 +71,7 @@ const App = () => {
             <BottomSheetModalProvider>
               <NavigationContainer ref={navigationRef}>
                 <RouterStack />
+                <Toast />
               </NavigationContainer>
             </BottomSheetModalProvider>
           </MenuProvider>

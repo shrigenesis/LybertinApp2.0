@@ -38,4 +38,7 @@ export let color = {
   borderColor: '#DBDBDB',
   divider: '#E9E9E9',
   btnSeashell: '#F1F1F1',
+  twitterColor: '#1DA1F2',
+  extralightBlack: '#00000080',
+
 };

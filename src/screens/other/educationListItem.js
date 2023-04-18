@@ -27,7 +27,7 @@ const EducationListItem = ({ item }) => {
         }>
         <View style={{ flexDirection: 'column' }}>
           <Image
-            source={{ uri: `${BASEURL}${item?.image}` }}
+            source={{ uri: item.image }}
             style={style.imageStyle}
           />
           {item.hasOwnProperty('price') ?
