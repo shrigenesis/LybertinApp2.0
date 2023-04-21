@@ -124,7 +124,6 @@ const EventList = ({ navigation }) => {
         search: text ? text : '',
       },
     };
-    console.log(config);
     APIRequest(
       config,
 
@@ -256,8 +255,8 @@ const EventList = ({ navigation }) => {
               </Text>
             </View>
           </View>
-        </TouchableOpacity>
-      </View>
+        </TouchableOpacity >
+      </View >
     )
   };
 
@@ -478,12 +477,12 @@ const EventList = ({ navigation }) => {
 
                 </>
               ) : (
-                  <NoRecord
-                    image={IMAGE.noConversation}
-                    title="No Event found"
-                    description="You will get Upcoming and poular events here."
-                    showButton={false}
-                  />
+                <NoRecord
+                  image={IMAGE.noConversation}
+                  title="No Event found"
+                  description="You will get Upcoming and poular events here."
+                  showButton={false}
+                />
               )}
             </>
           )}
@@ -746,7 +745,7 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     backgroundColor: color.lightGray,
-    paddingTop:10
-  },
+    paddingTop: 10
+  }
 });
 export default EventList;

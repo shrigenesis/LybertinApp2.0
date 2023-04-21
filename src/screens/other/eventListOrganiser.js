@@ -239,8 +239,6 @@ const EventListOrganiser = ({navigation}) => {
       config,
 
       res => {
-        console.log('API response =====', res);
-
         if (res.status) {
           setupcomingEvents(res.events);
 
@@ -270,12 +268,8 @@ const EventListOrganiser = ({navigation}) => {
       config,
 
       res => {
-        console.log('API response =====', res);
-
         if (res.status) {
           setupcomingEvents(res.events);
-
-          // setrequestCount(res.follow_requests);
         }
         setisLoading(false);
       },

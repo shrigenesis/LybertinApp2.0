@@ -78,6 +78,7 @@ import { G, Path, Svg } from 'react-native-svg';
 import filterScreenEducation from '../screens/other/filterScreenEducation';
 import FeaturedCourse from '../screens/other/FeaturedCourse';
 import Payment from '../screens/other/Payment';
+import LiveConference from '../screens/other/LiveConference';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -342,8 +343,6 @@ function OtherTabBarOrg() {
 export const OtherStack = ({ fromRegister, isLogin }) => (
 
   <Stack.Navigator>
-    {console.log(isLogin, fromRegister, "=========================OtherStack")}
-
     {isLogin == 'true' && (
       <>
         {(fromRegister) && (
@@ -488,6 +487,11 @@ export const OtherStack = ({ fromRegister, isLogin }) => (
     <Stack.Screen
       name="videoPlayer"
       component={VideoPlayer}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
+    />
+    <Stack.Screen
+      name="LiveConference"
+      component={LiveConference}
       options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen

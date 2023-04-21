@@ -24,12 +24,11 @@ import RNPickerSelect from 'react-native-picker-select';
 import BraintreeDropIn from 'react-native-braintree-dropin-ui';
 import Loader from './../../component/loader';
 import CountDown from 'react-native-countdown-component';
-
 import { APIRequest, APIRequestWithFile, ApiUrl } from './../../utils/api';
 import moment from 'moment';
 import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import WebView from 'react-native-webview';  
+import WebView from 'react-native-webview';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import GenrateAttendee from './genrateAttendee';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -361,7 +360,7 @@ export default class buyTicket extends Component {
       is_donation: [null, null, null, null],
       promocode: promocodes,
       seats: this.state.attendees,
-      payment_method: type,
+      payment_method: 'offline',
     };
 
     let config = {
@@ -450,6 +449,10 @@ export default class buyTicket extends Component {
             }
           } else {
             if (res?.message == 'Congrats! Booking Successful.') {
+              Toast.show({
+                type: 'success',
+                text1: 'Congrats! Booking Successful.'
+              })
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
               console.log(res?.url);
@@ -460,16 +463,45 @@ export default class buyTicket extends Component {
       },
       err => {
         this.setState({ isloading: false });
-
         console.log(err?.response);
         Toast.show({
-          type: 'info',
-          text1: 'Enter all fields'
+          type: 'error',
+          text1: 'Something went wrong'
         })
-        // Toast ('Enter all fields');
       },
     );
   };
+
+  bookTickects = () => {
+    if (this.state.attendees.length > 0) {
+      console.log(this.state.attendees, "======================");
+      for (let index = 0; index < this.state.attendees.length; index++) {
+        if (!this.state.attendees[index].name) {
+          Toast.show({
+            type: 'info',
+            text1: 'Please Enter Name'
+          })
+        } else if (!this.state.attendees[index].phone) {
+          Toast.show({
+            type: 'info',
+            text1: 'Please Enter Mobile No.'
+          })
+        } else if (!this.state.attendees[index].address) {
+          Toast.show({
+            type: 'info',
+            text1: 'Please Enter Address'
+          })
+        }else{
+          this.bookticket('7')
+        }
+      }
+    }else{
+      Toast.show({
+        type: 'info',
+        text1: 'Please Add Attendee'
+      })
+    }
+  }
 
   checkpromo = id => {
     let index = this.state.ticketList.findIndex(v => v.ticket_id == id);
@@ -1434,7 +1466,7 @@ export default class buyTicket extends Component {
                     </TouchableOpacity> */}
                     <TouchableOpacity
                       onPress={() => {
-                        this.bookticket('7');
+                        this.bookTickects();
                       }}
                       // onPress={()=>this.props.navigation.navigate("buyTicket")}
                       style={{

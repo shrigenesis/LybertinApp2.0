@@ -109,7 +109,6 @@ const EditGroup = ({ navigation, route }) => {
 
   const isFocus = useIsFocused();
   useEffect(() => {
-    console.log('======group name', route?.params?.group_id);
     if (isFocus) {
       fetchGroupDetail();
       // if(route?.params?.group_id) {

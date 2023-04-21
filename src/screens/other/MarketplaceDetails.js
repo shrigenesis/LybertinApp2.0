@@ -16,6 +16,7 @@ import {
     Platform,
     ImageBackground,
     Share,
+    Pressable,
 } from 'react-native';
 import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
@@ -29,6 +30,7 @@ import { APIRequest, ApiUrl, IMAGEURL, twitterFailUrl, twitterSuccessUrl } from 
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { User } from '../../utils/user';
+import { Tooltip } from 'react-native-elements'
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SliderBox } from "react-native-image-slider-box";
@@ -47,6 +49,7 @@ import { BackgroundImage } from 'react-native-elements/dist/config';
 import TwitterConfirmMessage from './Modal/TwitterConfirmMessage';
 import BottomSheetWebview from '../../component/BottomSheetWebview';
 import TwitterSuccessMessage from './Modal/TwitterSuccessMessage';
+import RedirectToMap from '../../utils/RedirectToMap';
 let strippedHtml
 const sponsorsImage = ['https://lybertine.com/images/danone-logo.png', 'https://lybertine.com/images/Tata-Company.png', 'https://lybertine.com/images/danone-logo.png']
 
@@ -336,8 +339,20 @@ export default class MarketplaceDetails extends Component {
                             <View>
                                 <View style={styles.shareWrapp}>
                                     <Text style={styles.heading}>{this.state.event.title}</Text>
-
                                 </View>
+                                {this.state.event.hashtags.length > 0 ?
+                                    <View
+                                        style={{
+                                            flexDirection: 'row',
+                                            margin: 5,
+                                            flexWrap: 'wrap'
+                                        }}>
+                                        {this.state.event.hashtags.map(item => (
+                                            <Text style={styles.tagText}>#{item.title}</Text>
+                                        ))}
+                                    </View>
+                                    : null
+                                }
                                 <View
                                     style={styles.shareBox}
                                 >
@@ -355,7 +370,7 @@ export default class MarketplaceDetails extends Component {
                                             style={styles.shareImage}
                                         />
                                         {(this.state.event?.hasShared?.sharedOnTwitter || this.state.event?.hasShared?.normalShare) ?
-                                            <Text style={[styles.buttonText,{color: color.violet}]}>Share again </Text> :
+                                            <Text style={[styles.buttonText, { color: color.violet }]}>Share again </Text> :
                                             <Text style={styles.buttonText}>Share Now </Text>
                                         }
                                         {/* <Text style={styles.buttonText}>
@@ -363,7 +378,37 @@ export default class MarketplaceDetails extends Component {
                                         </Text> */}
                                     </TouchableOpacity>
                                 </View>
-                                {this.state.event?.hasShared?.sharedOnTwitter ?
+
+                                <View style={[styles.borderBox, { padding: 15, paddingBottom: 5, marginHorizontal: 14, marginVertical: 15 }]}>
+                                    <View style={styles.engagementTitleBox}>
+                                        <Text style={styles.engagementTitle}>POST ENGAGEMENT</Text>
+                                        <TouchableOpacity onPress={this.getEventDetails}>
+                                            <Image source={IMAGE.sync} style={styles.syncImage} />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={[styles.engagementTitleBox, { marginTop: 15 }]}>
+                                        <Tooltip width={150}
+                                            popover={<Text style={{ color: "#fff" }}>Total views</Text>}
+                                        >
+                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_views)}</Text>
+                                            <Image source={IMAGE.eye} style={styles.backImage} />
+                                        </Tooltip>
+                                        <Tooltip width={250}
+                                            popover={<Text style={{ color: "#fff" }}>My Friends Who Booked Event </Text>}
+                                        >
+                                            <Text style={styles.detailsTitle}>{this.state.event.total_bookings_by_friends ? NoFormatter(this.state.event.total_bookings_by_friends) : 0}</Text>
+                                            <Image source={IMAGE.friendsMarket} style={styles.backImage} />
+                                        </Tooltip>
+                                        <Tooltip width={250}
+                                            popover={<Text style={{ color: "#fff" }}>Booking with same interest people</Text>}
+                                        >
+                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_bookings_by_same_interest)}</Text>
+                                            <Image source={IMAGE.people} style={styles.backImage} />
+                                        </Tooltip >
+                                    </View>
+                                    <Text style={[styles.detailsText, { marginTop: 10 }]}>Last sync {this.state.last_sync}</Text>
+                                </View>
+                                {/* {this.state.event?.hasShared?.sharedOnTwitter ?
                                     <View style={[styles.borderBox, { padding: 15, paddingBottom: 5, marginHorizontal: 14, marginVertical: 15 }]}>
                                         <View style={styles.engagementTitleBox}>
                                             <Text style={styles.engagementTitle}>POST ENGAGEMENT</Text>
@@ -386,7 +431,7 @@ export default class MarketplaceDetails extends Component {
                                             </View>
                                         </View>
                                         <Text style={[styles.detailsText, { marginTop: 10 }]}>Last sync {this.state.last_sync}</Text>
-                                    </View> : null}
+                                    </View> : null} */}
                                 <View style={styles.imageContainer}>
                                     <Image
                                         source={IMAGE.star_earn}
@@ -418,7 +463,15 @@ export default class MarketplaceDetails extends Component {
                                         style={styles.dateStyle}
                                     />
 
-                                    <View>
+                                    <Pressable
+                                        onPress={() =>
+                                            RedirectToMap(
+                                                this.state.event.venue && this.state.event.venue,
+                                                this.state.event.state && ", " + this.state.event.state,
+                                                this.state.event.city && ", " + this.state.event.city,
+                                                this.state.event.zipcode && ", " + this.state.event.zipcode
+                                            )}
+                                    >
                                         <Text style={styles.dateText}>Location</Text>
                                         <Text style={styles.timeText} numberOfLines={2}>
                                             {this.state.event.venue && this.state.event.venue}
@@ -426,7 +479,7 @@ export default class MarketplaceDetails extends Component {
                                             {this.state.event.city && ", " + this.state.event.city}
                                             {this.state.event.zipcode && ", " + this.state.event.zipcode}
                                         </Text>
-                                    </View>
+                                    </Pressable>
                                 </View>
 
                                 {this.state.event.repetitive === 1 ? (
@@ -672,7 +725,7 @@ export default class MarketplaceDetails extends Component {
                     <DetailsSkelton />
                 }
                 <Loader isLoading={this.state.isLoading} type={'dots'} />
-            </View>
+            </View >
         );
     }
 }
@@ -946,6 +999,15 @@ const styles = StyleSheet.create({
         fontFamily: fontFamily.Semibold,
         textAlign: 'center',
     },
+    tagText: {
+        fontSize: fontSize.size11,
+        paddingHorizontal: 10,
+        paddingVertical: 3,
+        backgroundColor: color.liteRed,
+        color: color.liteBlueMagenta,
+        borderRadius: 3,
+        marginRight: 4,
+      },
     detailsText: {
         fontSize: fontSize.size11,
         color: color.blueMagenta,

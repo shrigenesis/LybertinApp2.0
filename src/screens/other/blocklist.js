@@ -35,7 +35,6 @@ const BlockList = ({ navigation, route }) => {
 
         APIRequest(config,
             (res) => {
-                console.log(res, '////');
                 setBlockedList(res.blocked)
                 if (res.status) {
                 }

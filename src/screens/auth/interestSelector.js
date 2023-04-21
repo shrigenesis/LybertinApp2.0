@@ -121,7 +121,6 @@ const InterestSelector = ({ navigation }) => {
       method: 'post',
       body: formData,
     };
-    console.log(config);
     APIRequestWithFile(
       config,
       res => {

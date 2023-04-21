@@ -34,7 +34,7 @@ const EducationListItem = ({ item }) => {
             <Text
               style={style.headingText}
               numberOfLines={1}>
-              ${item?.featured?.price ? item?.featured?.price : 120}
+              ${item?.price ? item?.price : 0}
             </Text> : null}
           <View
             style={style.contentBox}>

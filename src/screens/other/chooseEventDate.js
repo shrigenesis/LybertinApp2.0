@@ -38,6 +38,7 @@ export default class chooseEventDate extends Component {
   componentDidMount = () => {};
 
   render() {
+    console.log(this.state.formatted_schedule_dates);
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={{...styles.container}}>

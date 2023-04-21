@@ -139,7 +139,6 @@ export default class filterScreen extends Component {
       },
       err => {
         // this.setState({isLoading: false});
-        console.log('error====', err?.response?.data);
       },
     );
   };

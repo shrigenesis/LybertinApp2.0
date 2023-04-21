@@ -114,30 +114,29 @@ export const RouterStack = () => {
   let userStore = new User();
   let { isLogin } = React.useContext(LoginContext);
   let { type } = React.useContext(LoginContext);
-  const handleDynamicLink = (link) => {
-    console.log(isLogin, '=============link', link);
-    alert('link1')
-    if (true) {
-      alert('link1.1')
-      RegisterDeeplink(link?.url)
-    } else {
-      alert('link1.2')
-      SyncStorage.set('deepLink', link?.url);
-    }
-  };
 
   useEffect(() => {
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
     return () => unsubscribe();
   }, []);
   useEffect(() => {
-    console.log('=============');
     dynamicLinks()
       .getInitialLink()
       .then(link => {
         handleDynamicLink(link)
       });
   }, []);
+
+  const handleDynamicLink = (link) => {
+    setTimeout(() => {
+      if (isLogin) {
+        RegisterDeeplink(link?.url)
+      } else {
+        SyncStorage.set('deepLink', link?.url);
+      }
+    }, 1000)
+  };
+
   if (isLogin) {
     return type == 2 ? <OtherStack isLogin={isLogin} fromRegister={userStore?.getFromRegister()} /> : <OtherStackOrg />;
   } else {

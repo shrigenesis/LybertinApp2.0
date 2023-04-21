@@ -237,7 +237,6 @@ const MyProfile = ({ navigation, route }) => {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res.highlightsGroup);
         sethighLight(res.highlightsGroup);
       },
       err => {

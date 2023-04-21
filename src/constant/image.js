@@ -167,6 +167,9 @@ const IMAGE = {
   close:  require('./../assets/images/close.png'),
   editIcon:  require('./../assets/images/edit.png'),
   star_earn:  require('./../assets/images/star_earn.png'),
+  eye:  require('./../assets/images/eye.png'),
+  people:  require('./../assets/images/people.png'),
+  friendsMarket:  require('./../assets/images/friendsMarket.png'),
 };
 
 export default IMAGE;

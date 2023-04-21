@@ -177,7 +177,6 @@ class Chat extends React.Component {
     });
 
     let data = [res.conversation, ...this.state.chatList];
-    console.log("---------", data);
 
     this.setState({
       isLoading: false,

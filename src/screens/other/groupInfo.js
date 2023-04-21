@@ -106,11 +106,18 @@ export default class groupInfo extends Component {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res);
+        Toast.show({
+          type: 'success',
+          text1:res?.message
+        })
       },
       err => {
         this.setState({isLoading: false});
         console.log(err?.response?.data);
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong'
+        })
       },
     );
   };
@@ -125,11 +132,18 @@ export default class groupInfo extends Component {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res);
+        Toast.show({
+          type: 'success',
+          text1: 'Deleted group successfully'
+        })
       },
       err => {
         this.setState({isLoading: false});
         console.log(err?.response?.data);
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong'
+        })
       },
     );
   };
@@ -148,7 +162,6 @@ export default class groupInfo extends Component {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res);
         Toast.show({
           type: 'success',
           text1:res?.message

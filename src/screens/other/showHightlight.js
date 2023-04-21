@@ -183,7 +183,6 @@ const showHightlight = ({navigation, route}) => {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res.highlightStories);
         setStoryList(res.highlightStories);
       },
       err => {

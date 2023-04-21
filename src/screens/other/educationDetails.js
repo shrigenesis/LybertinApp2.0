@@ -31,7 +31,7 @@ import BottomSheetAddVideo from '../../component/BottomSheetAddVideo';
 import Video from 'react-native-video';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
-import { Button } from '../../component';
+import { Button, Loader } from '../../component';
 const MyVideo = [
   {
     "image": "/storage/courses/February2023/videos/1/thumbnails/1675944473zlQo9t2M4s.jpg",
@@ -74,11 +74,15 @@ export default class educationDetails extends Component {
   }
 
   componentDidMount() {
+    this.props.navigation.addListener('focus', async () => {
+      this.getEventDetails();
+    });
     this.getEventDetails();
   };
 
   // Get course details
   getEventDetails = () => {
+    this.setState({ ...this.state, isLoading: true })
     let config = {
       url: `${ApiUrl.educationList}/${this.state.id}`,
       method: 'post',
@@ -94,8 +98,6 @@ export default class educationDetails extends Component {
           strippedHtml: HtmlToText(res.data.video_description)
         });
         this.setState({ ...this.state, isLoading: false })
-        console.log("================>?>>>>", res.data);
-        console.log("================>?>>>>",);
       },
       err => {
         console.log(err);
@@ -118,9 +120,10 @@ export default class educationDetails extends Component {
       config,
       res => {
         if (res.status) {
+          this.getEventDetails()
           Toast.show({
-            type:'info',
-            message: res.Message
+            type: 'info',
+            text1: res.Message
           })
         }
         this.setState({ ...this.state, isLoading: false })
@@ -295,29 +298,33 @@ export default class educationDetails extends Component {
                   <View>
                     <View style={styles.descriptionWrapper}>
                       <Text style={styles.desHeading}>Trailer Video</Text>
-                      {/* <View>
-                    <TouchableOpacity
-                      style={{ width: wp(60) }}
-                      onPress={() => this.props.navigation.navigate('videoPlayer', { VideoURL: BaseURL + this.state.Course.videos[0].video })}
-                    >
-                      <Image
-                        source={{ uri: BaseURL + this.state.Course.poster }}
-                        style={{
-                          height: hp(25),
-                          resizeMode: 'cover',
-                          width: wp(91),
-                          borderRadius: 5,
-                          marginTop: 10
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View> */}
-                      <Video
-                        source={IMAGE.lybertinVideo}
-                        resizeMode={'cover'}
-                        muted={true}
-                        style={styles.trailerVideo}
-                      />
+                      <View>
+                        <TouchableOpacity
+                          style={{ width: wp(60) }}
+                          onPress={() => this.props.navigation.navigate('videoPlayer', { VideoURL: this.state.Course.trailer_video })}
+                        >
+                          <Image
+                            source={{uri: this.state.Course.image}}
+                            style={{
+                              height: hp(25),
+                              resizeMode: 'cover',
+                              width: wp(91),
+                              borderRadius: 5,
+                              marginTop: 10
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
+                      
+                        {/* <Video
+                          source={{ uri: this.state.Course.trailer_video }}
+                          // source={IMAGE.lybertinVideo}
+                          onBuffer={this.onBuffer}
+                          onLoadEnd={this.onLoadEnd}
+                          resizeMode={'cover'}
+                          muted={true}
+                          style={styles.trailerVideo}
+                        /> */}
                     </View>
                   </View>
 
@@ -382,7 +389,7 @@ export default class educationDetails extends Component {
                       <View style={styles.joinBtn}>
                         {this.state.Course.is_live_interest ? <Button
                           label='Join Now'
-                          onPress={() => console.log('join')}
+                          onPress={() => this.props.navigation.navigate('LiveConference')}
                         /> :
                           <Button
                             label='Enroll Now'
@@ -465,7 +472,7 @@ export default class educationDetails extends Component {
             {(this.state.Course.type !== 'live' && this.state.allVideos.length > 0) && (
               <Pressable
                 onPress={() =>
-                  this.state.AddedVideoPrice > 0
+                  this.state.AddedVideoCount > 0
                     ? this.props.navigation.navigate('Payment', {
                       course_id: this.state.id,
                       video_id: this.state.addedVideo,
@@ -714,9 +721,9 @@ const styles = StyleSheet.create({
   },
   rightSpace: {
     marginRight: 18,
-    width:20,
-    height:20,
-    resizeMode:'contain'
+    width: 20,
+    height: 20,
+    resizeMode: 'contain'
   },
   btnTextWhite: {
     color: color.white,

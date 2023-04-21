@@ -40,7 +40,6 @@ export default class addTextStory extends Component {
   }
 
   postStory = () => {
-    // console.log('message', message);
     this.setState({isLoding: true});
     let formdata = new FormData();
     // let type = route.params?.file?.fileType == 'photo' ? 'image' : 'video';
@@ -57,12 +56,11 @@ export default class addTextStory extends Component {
     APIRequestWithFile(
       config,
       res => {
-        console.log(res);
         if (res.status) {
           this.setState({isLoding: false});
           Toast.show({
             type: 'success',
-            text1: 'res?.alert?.message'
+            text1: res?.alert?.message
           })
           this.props?.navigation.goBack();
         }

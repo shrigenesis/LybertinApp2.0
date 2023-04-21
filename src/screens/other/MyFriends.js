@@ -109,7 +109,6 @@ const MyFriends = ({ navigation, route }) => {
       res => {
         setisLoading(false);
 
-        console.log('Api response===', res.friends);
         setfriends(res?.friends);
       },
       err => {

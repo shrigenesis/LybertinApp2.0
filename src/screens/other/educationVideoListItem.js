@@ -83,7 +83,7 @@ const EducationVideoListItem = (props) => {
             </View> :
               <Button
                 title={'Play'}
-                onPress={()=>navigation.navigate('videoPlayer', { VideoURL: `${BaseURL}/${props.item.video}`})}
+                onPress={()=>navigation.navigate('videoPlayer', { VideoURL: props.item.video_url})}
                 buttonStyle={style.buttonStyle}
                 titleStyle={style.titleStyle}
                 containerStyle={style.containerStyle}

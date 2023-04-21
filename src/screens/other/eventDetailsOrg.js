@@ -60,8 +60,6 @@ export default class eventDetailsOrg extends Component {
       config,
 
       res => {
-        console.log('API response dance =====', res);
-
         if (res.status) {
           this.setState({
             event: res.event,

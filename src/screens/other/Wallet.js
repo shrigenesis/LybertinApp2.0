@@ -37,6 +37,9 @@ const Wallet = ({ navigation }) => {
   }
 
   useEffect(() => {
+    navigation.addListener('focus', async() => {
+      this.getEventDetails();
+    });
     setstatus(false)
     getWalletTransaction()
     return () => {

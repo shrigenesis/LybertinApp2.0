@@ -55,7 +55,6 @@ export default class addParticipent extends Component {
   }
 
   componentDidMount() {
-    console.log('-----------------------', this.state.groupId);
     this.getGroupInfo();
   }
 
@@ -69,7 +68,6 @@ export default class addParticipent extends Component {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res.data.add_more_participent_list);
         this.setState({
           participents: res.data.add_more_participent_list,
         });
@@ -125,7 +123,7 @@ export default class addParticipent extends Component {
       },
       err => {
         this.setState({isLoading: false});
-        console.log('@@@@@@@', err?.response?.data);
+        console.log(err?.response?.data);
       },
     );
   };

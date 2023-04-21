@@ -83,8 +83,6 @@ export default class EventListOrganiserFilter extends Component {
       config,
 
       res => {
-        // console.log("API response =====",res.data.featured_events)
-
         if (res.status) {
           this.setState({
             category1: res.data.filters.categories,

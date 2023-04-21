@@ -15,7 +15,6 @@ const VideoPlayer = ({ route, navigation }) => {
     const [isLoading, setisLoading] = useState(false)
     const Orientation = useOrientation();
     const { VideoURL } = route.params;
-    console.log(VideoURL);
     const onLoadEnd = () => {
         console.log('onLoadEnd :', onLoadEnd);
         setisLoading(false)

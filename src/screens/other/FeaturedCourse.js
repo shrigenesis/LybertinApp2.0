@@ -64,12 +64,10 @@ export default class FeaturedCourse extends Component {
         end_date: this.state.endDate,
       },
     };
-    console.log(config);
     APIRequest(
       config,
 
       res => {
-        console.log(res, "=======================");
         this.setState({
           data: res.data,
         });

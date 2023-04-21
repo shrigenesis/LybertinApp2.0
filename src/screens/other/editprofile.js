@@ -105,7 +105,6 @@ export const RenderBottomSheet = memo(
 );
 
 const EditProfile = ({ navigation, route }) => {
-  // console.log('=================>',route,navigation);
   const [isLoading, setisLoading] = useState(true);
   const [name, setname] = useState('');
   const [username, setusername] = useState('');
@@ -280,7 +279,6 @@ const EditProfile = ({ navigation, route }) => {
             type: 'success',
             text1: res?.alert?.message
           })
-          console.log("===============================================>>>>>>>>>>>>>>res", res);
           new User().setuserdata(res?.auth);
           navigation?.goBack();
         },

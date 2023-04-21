@@ -139,7 +139,7 @@ const UserProfile = ({navigation, route}) => {
           getuserInfo(userData?.user?.id);
           Toast.show({
             type: 'info',
-            message: res?.alert?.message
+            text1: res?.alert?.message
           });
         }
         setisLoading(false);
@@ -167,7 +167,7 @@ const UserProfile = ({navigation, route}) => {
           getuserInfo(userData?.user?.id);
           Toast.show({
             type: 'info',
-            message: res?.message
+            text1: res?.message
           });
         }
         setisLoading(false);
@@ -196,7 +196,7 @@ const UserProfile = ({navigation, route}) => {
           getuserInfo(userData?.user?.id);
           Toast.show({
             type: 'info',
-            message: res?.message
+            text1: res?.message
           });
         }
         setisLoading(false);
@@ -221,7 +221,6 @@ const UserProfile = ({navigation, route}) => {
     APIRequest(
       config,
       res => {
-        console.log('Api response=== highlights', res.highlightsGroup);
         sethighLight(res.highlightsGroup);
       },
       err => {},

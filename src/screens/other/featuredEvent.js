@@ -60,7 +60,6 @@ export default class featured_events extends Component {
         end_date: this.state.endDate,
       },
     };
-    console.log(config);
     APIRequest(
       config,
 

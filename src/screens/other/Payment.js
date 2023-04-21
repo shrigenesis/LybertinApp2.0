@@ -31,6 +31,7 @@ const data = {
 const Payment = (props) => {
     const [PaymentType, setPaymentType] = useState(0);
     const [isLoading, setisLoading] = useState(false)
+    const [isNavigate, setisNavigate] = useState(false)
     const [PaymentData, setPaymentData] = useState({
         course_id: 1,
         booking_date: '2023-07-05',
@@ -48,13 +49,13 @@ const Payment = (props) => {
 
     useEffect(() => {
         if (PaymentType === 0) {
-            setPaymentData({ 
+            setPaymentData({
                 ...PaymentData,
                 course_id: props.route.params.course_id,
                 video_id: props.route.params.video_id,
                 promocode: props.route.params.promocode,
                 customer_id: userdata.id,
-                payment_method: 'offline' 
+                payment_method: 'offline'
             })
         } else {
             setPaymentData({
@@ -78,7 +79,6 @@ const Payment = (props) => {
                 ...PaymentData
             },
         };
-        console.log(PaymentData, '======================================');
         APIRequest(
             config,
             res => {
@@ -89,11 +89,13 @@ const Payment = (props) => {
                         setWebviewUrl({ url: res.url, openInWebView: res.openInWebView })
                         setisShowBottomSheet(true)
                     } else {
-                        Toast.show({
-                            type: 'success',
-                            text1: res.message
-                          })
-                        props.navigation.navigate('ticketsScreen')
+                        // Toast.show({
+                        //     type: 'success',
+                        //     text1: res.message
+                        // })
+                        setisShowBottomSheet(true)
+                        setisNavigate(true)
+                        // props.navigation.goBack()
                     }
                 }
             },
@@ -107,13 +109,19 @@ const Payment = (props) => {
     const handleSubmit = () => {
         console.log('submit', PaymentData);
         getEvents()
-        
+
     }
     const handleCancle = () => {
         console.log('cancle');
         props.navigation.goBack()
 
     }
+
+    useEffect(() => {
+        if (!isShowBottomSheet && isNavigate) {
+            props.navigation.goBack()
+        }
+    }, [isShowBottomSheet])
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle={'dark-content'} backgroundColor={color.transparent} />
@@ -222,7 +230,7 @@ const Payment = (props) => {
                 />
             </View>:null} */}
 
-            <BottomSheetCustom
+            {/* <BottomSheetCustom
                 cancelBtn={{ color: color.lightGray, title: "Cancel", textColor: color.btnBlue }}
                 isShowBottomSheet={isShowBottomSheet}
                 setisShowBottomSheet={setisShowBottomSheet}
@@ -232,6 +240,16 @@ const Payment = (props) => {
                         source={{ uri: WebviewUrl.url }}
                     />
                 </View>
+            </BottomSheetCustom> */}
+            <BottomSheetCustom
+                isShowBottomSheet={isShowBottomSheet}
+                setisShowBottomSheet={setisShowBottomSheet}
+                cancelBtn={{ color: color.lightGray, title: "Okay", textColor: color.btnBlue }}
+                confetti={true}
+            >
+                <Image style={styles.alertImage} source={IMAGE.checkTick} />
+                <Text style={styles.alertTitle}>Thank You!</Text>
+                <Text style={styles.alertText}>Your payment request has been successfully submitted to Admin</Text>
             </BottomSheetCustom>
             <Loader isLoading={isLoading} type='dots' />
         </SafeAreaView>
@@ -308,6 +326,24 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     btnContainer: { flexDirection: 'column', gap: 25 },
+    alertImage: {
+        width: 50,
+        height: 50,
+        alignSelf: 'center',
+        marginVertical: 20,
+    },
+    alertTitle: {
+        fontSize: fontSize.size20,
+        color: color.black,
+        textAlign: 'center',
+        marginVertical: 10,
+    },
+    alertText: {
+        fontSize: fontSize.size15,
+        color: color.liteBlueMagenta,
+        textAlign: 'center',
+        marginBottom: 25,
+    },
 
 })
 export default Payment

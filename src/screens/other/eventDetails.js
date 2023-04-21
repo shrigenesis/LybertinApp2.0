@@ -15,8 +15,10 @@ import {
   Platform,
   ImageBackground,
   Share,
+  Pressable,
+  Linking,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -24,6 +26,7 @@ import {
 import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
+import CountDown from 'react-native-countdown-component';
 import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
@@ -34,7 +37,10 @@ import { SliderBox } from "react-native-image-slider-box";
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 import HtmlToText from '../../utils/HtmlToText';
 import ReadMore from '@fawazahmed/react-native-read-more';
+import RedirectToMap from '../../utils/RedirectToMap';
 
+
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 let myHTML = '';
 
 export default class eventDetails extends Component {
@@ -97,6 +103,11 @@ export default class eventDetails extends Component {
     );
   };
 
+  getSaleExpirationSeconds(originTime) {
+    const eventDateTime = moment(originTime);
+    const currentDateTime = moment();
+    return eventDateTime.diff(currentDateTime, 'seconds');
+  }
   sliderImageArray = (images) => {
     let res = [];
     for (let i = 0; i < images.length; i++) {
@@ -128,7 +139,7 @@ export default class eventDetails extends Component {
       // <SafeAreaView style={{flex: 1}}>
       <>
         {!this.state.isLoading ? <View style={styles.container}>
-          <StatusBar barStyle={'light-content'} backgroundColor={color.white} />
+          <StatusBar barStyle={'dark-content'} translucent={true} backgroundColor={color.transparent} />
           <ScrollView style={{ flex: 0.92 }}>
             <SliderBox
               images={this.sliderImageArray(this.state.images)}
@@ -162,23 +173,13 @@ export default class eventDetails extends Component {
             )}
           /> */}
             <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginHorizontal: '5%',
-                marginTop: Platform.OS == "ios" ? '-60%' : '-80%',
-              }}>
+              style={styles.backBtn}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Image
                   source={IMAGE.ArrowLeft}
-                  style={{
-                    height: 32,
-                    width: 32,
-                    resizeMode: 'contain',
-                  }}
+                  style={styles.backBtnImage}
                 />
               </TouchableOpacity>
-
             </View>
 
             <View
@@ -214,6 +215,19 @@ export default class eventDetails extends Component {
                 <Text style={styles.ultimateText}>
                   {this.state.event.excerpt}
                 </Text>
+                {this.state.event.hashtags.length > 0 ?
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      margin: 5,
+                      flexWrap: 'wrap'
+                    }}>
+                    {this.state.event.hashtags.map(item => (
+                      <Text style={styles.tagText}>#{item.title}</Text>
+                    ))}
+                  </View>
+                  : null
+                }
 
                 <View style={styles.imageContainer}>
                   <Image
@@ -246,7 +260,16 @@ export default class eventDetails extends Component {
                     }}
                   />
 
-                  <View>
+                  <Pressable
+                    onPress={() =>
+                      RedirectToMap(
+                        this.state.event.venue && this.state.event.venue,
+                        this.state.event.state && ", " + this.state.event.state,
+                        this.state.event.city && ", " + this.state.event.city,
+                        this.state.event.zipcode && ", " + this.state.event.zipcode
+                      )
+                    }
+                  >
                     <Text style={styles.dateText}>Location</Text>
                     <Text style={styles.timeText} numberOfLines={2}>
                       {this.state.event.venue && this.state.event.venue}
@@ -254,7 +277,7 @@ export default class eventDetails extends Component {
                       {this.state.event.city && ", " + this.state.event.city}
                       {this.state.event.zipcode && ", " + this.state.event.zipcode}
                     </Text>
-                  </View>
+                  </Pressable>
                 </View>
 
                 {this.state.event.repetitive === 1 ? (
@@ -374,6 +397,32 @@ export default class eventDetails extends Component {
                         </TouchableOpacity>
                       )}
                     />
+                    <View style={styles.saleWrapper}>
+                      <CountDown
+                        until={this.getSaleExpirationSeconds(
+                          this.state.event.end_date,
+                        )}
+                        size={15}
+                        onFinish={() => this.saleFinished()}
+                        digitTxtStyle={{ color: color.btnBlue }}
+                        digitStyle={{
+                          backgroundColor: '#fff',
+                          marginTop: 0,
+                        }}
+                        timeLabelStyle={{
+                          fontSize: 12,
+                          fontFamily: fontFamily.Semibold,
+                          color: '#000',
+                        }}
+                        timeToShow={['D', 'H', 'M', 'S']}
+                        timeLabels={{
+                          d: 'D',
+                          h: 'H',
+                          m: 'M',
+                          s: 'S',
+                        }}
+                      />
+                    </View>
                   </View>
                 )}
                 {this.state.tag_group_new?.length > 0 &&
@@ -596,5 +645,31 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
-  }
+  },
+  backBtn: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: '5%',
+    marginTop: Platform.OS == "ios" ? '-50%' : '-70%',
+  },
+  backBtnImage: {
+    height: 32,
+    width: 32,
+    resizeMode: 'contain',
+  },
+  saleWrapper: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  tagText: {
+    fontSize: fontSize.size11,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: color.liteRed,
+    color: color.liteBlueMagenta,
+    borderRadius: 3,
+    marginRight: 4,
+  },
 });
