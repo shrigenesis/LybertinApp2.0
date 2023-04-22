@@ -32,6 +32,8 @@ import WebView from 'react-native-webview';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import GenrateAttendee from './genrateAttendee';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { Header } from '../../component/'
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default class buyTicket extends Component {
   constructor(props) {
@@ -839,8 +841,9 @@ export default class buyTicket extends Component {
     };
 
     return (
-      <View style={{ flex: 1, backgroundColor: '#fff' }}>
-        <StatusBar barStyle={'light-content'} backgroundColor={color.white} />
+      <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: STATUSBAR_HEIGHT }}>
+        <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+        <Header title="Buy Ticket" />
         {this.state.paymenturl != null ? (
           <View style={{ flex: 1 }}>
             <View
@@ -887,22 +890,6 @@ export default class buyTicket extends Component {
                   <Loader type="dots" isLoading={this.state.isloading} />
 
                   <View style={{ marginHorizontal: '4%', marginVertical: 0 }}>
-                    <View style={styles.headerContainer}>
-                      <TouchableOpacity
-                        style={{ height: 30, width: 30 }}
-                        onPress={() => this.props.navigation.goBack()}>
-                        <Image
-                          source={IMAGE.back}
-                          style={{
-                            height: 20,
-                            width: 20,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <Text style={styles.headerText}>Buy Ticket</Text>
-                      <Text style={{ color: '#fff' }}>new</Text>
-                    </View>
                     <View style={styles.divider}></View>
                     <Text style={styles.upperText}>Event Category</Text>
                     <Text style={styles.bottomText}>

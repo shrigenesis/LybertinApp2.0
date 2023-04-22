@@ -170,6 +170,8 @@ const IMAGE = {
   eye:  require('./../assets/images/eye.png'),
   people:  require('./../assets/images/people.png'),
   friendsMarket:  require('./../assets/images/friendsMarket.png'),
+  booking:  require('./../assets/images/booking.png'),
+  salary:  require('./../assets/images/salary.png'),
 };
 
 export default IMAGE;

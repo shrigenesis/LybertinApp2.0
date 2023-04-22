@@ -140,6 +140,15 @@ export default class eventDetails extends Component {
       <>
         {!this.state.isLoading ? <View style={styles.container}>
           <StatusBar barStyle={'dark-content'} translucent={true} backgroundColor={color.transparent} />
+          <View
+            style={styles.backBtn}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Image
+                source={IMAGE.ArrowLeft}
+                style={styles.backBtnImage}
+              />
+            </TouchableOpacity>
+          </View>
           <ScrollView style={{ flex: 0.92 }}>
             <SliderBox
               images={this.sliderImageArray(this.state.images)}
@@ -173,21 +182,11 @@ export default class eventDetails extends Component {
             )}
           /> */}
             <View
-              style={styles.backBtn}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={IMAGE.ArrowLeft}
-                  style={styles.backBtnImage}
-                />
-              </TouchableOpacity>
-            </View>
-
-            <View
               style={{
-                marginTop: Platform.OS == "ios" ? '40%' : '50%',
+                marginTop: -30,
                 height: 30,
                 borderTopLeftRadius: 30,
-                borderTopRightRadius: 40,
+                borderTopRightRadius: 30,
                 backgroundColor: '#F9F9FA',
               }}></View>
             <View
@@ -216,16 +215,19 @@ export default class eventDetails extends Component {
                   {this.state.event.excerpt}
                 </Text>
                 {this.state.event.hashtags.length > 0 ?
-                  <View
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
                     style={{
                       flexDirection: 'row',
                       margin: 5,
-                      flexWrap: 'wrap'
+                      flexWrap: 'wrap',
+                      marginHorizontal: 15
                     }}>
                     {this.state.event.hashtags.map(item => (
                       <Text style={styles.tagText}>#{item.title}</Text>
                     ))}
-                  </View>
+                  </ScrollView>
                   : null
                 }
 
@@ -647,10 +649,10 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   backBtn: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginHorizontal: '5%',
-    marginTop: Platform.OS == "ios" ? '-50%' : '-70%',
+    position: 'absolute',
+    left: 15,
+    top: STATUSBAR_HEIGHT + 15,
+    zIndex: 1
   },
   backBtnImage: {
     height: 32,

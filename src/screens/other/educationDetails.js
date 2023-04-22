@@ -32,17 +32,9 @@ import Video from 'react-native-video';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 import { Button, Loader } from '../../component';
-const MyVideo = [
-  {
-    "image": "/storage/courses/February2023/videos/1/thumbnails/1675944473zlQo9t2M4s.jpg",
-    "session": "Lession 1",
-    "title": "Lession 1",
-    "price": 0,
-    "video_url": "/storage/courses/February2023/videos/1/1675944473G0SOnWD4yI.mp4"
-  }
-]
 
-const sponsorsImage = ['https://lybertine.com/images/danone-logo.png', 'https://lybertine.com/images/Tata-Company.png', 'https://lybertine.com/images/danone-logo.png']
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+
 
 export default class educationDetails extends Component {
   constructor(props) {
@@ -217,6 +209,15 @@ export default class educationDetails extends Component {
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'light-content'} translucent={true} backgroundColor={color.transparent} />
+        <View
+          style={styles.backBtnPosition}>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <Image
+              source={IMAGE.ArrowLeft}
+              style={styles.backBtnImage}
+            />
+          </TouchableOpacity>
+        </View>
         {this.state.isLoading ? <DetailsSkelton /> :
           <>
             <ScrollView style={{ flex: 0.92 }}>
@@ -228,17 +229,6 @@ export default class educationDetails extends Component {
                 inactiveDotColor={color.black}
                 dotStyle={styles.dotStyle}
               />
-
-              <View
-                style={styles.backBtn}>
-                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                  <Image
-                    source={IMAGE.ArrowLeft}
-                    style={styles.backBtnImage}
-                  />
-                </TouchableOpacity>
-              </View>
-
               <View
                 style={styles.radiusDesign}></View>
 
@@ -253,6 +243,22 @@ export default class educationDetails extends Component {
                   </View>
                   <Text style={styles.headingText}>{this.state.Course.title}</Text>
                   <Text style={styles.ultimateText}>{this.state.Course?.team}</Text>
+                  {this.state.Course?.hashtags.length > 0 ?
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                      style={{
+                        flexDirection: 'row',
+                        margin: 5,
+                        flexWrap: 'wrap',
+                        marginHorizontal: 15
+                      }}>
+                      {this.state.Course?.hashtags.map(item => (
+                        <Text style={styles.tagText}>#{item.title}</Text>
+                      ))}
+                    </ScrollView>
+                    : null
+                  }
                   {/* <View
                 style={{
                   flexDirection: 'row',
@@ -295,7 +301,7 @@ export default class educationDetails extends Component {
                     </View>
                   </View>
 
-                  <View>
+                  {this.state.Course?.trailer_video ? <View>
                     <View style={styles.descriptionWrapper}>
                       <Text style={styles.desHeading}>Trailer Video</Text>
                       <View>
@@ -304,7 +310,7 @@ export default class educationDetails extends Component {
                           onPress={() => this.props.navigation.navigate('videoPlayer', { VideoURL: this.state.Course.trailer_video })}
                         >
                           <Image
-                            source={{uri: this.state.Course.image}}
+                            source={{ uri: this.state.Course.image }}
                             style={{
                               height: hp(25),
                               resizeMode: 'cover',
@@ -315,8 +321,8 @@ export default class educationDetails extends Component {
                           />
                         </TouchableOpacity>
                       </View>
-                      
-                        {/* <Video
+
+                      {/* <Video
                           source={{ uri: this.state.Course.trailer_video }}
                           // source={IMAGE.lybertinVideo}
                           onBuffer={this.onBuffer}
@@ -326,7 +332,7 @@ export default class educationDetails extends Component {
                           style={styles.trailerVideo}
                         /> */}
                     </View>
-                  </View>
+                  </View> : null}
 
                   {this.state.Course.type !== 'live' ? <View>
                     <View style={styles.descriptionWrapper}>
@@ -518,6 +524,12 @@ const styles = StyleSheet.create({
     color: color.btnBlue,
     marginHorizontal: 15
   },
+  backBtnPosition: {
+    position: 'absolute',
+    left: 15,
+    top: STATUSBAR_HEIGHT + 15,
+    zIndex: 1
+  },
   headingText: {
     fontSize: fontSize.size18,
     fontFamily: fontFamily.Bold,
@@ -545,10 +557,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   radiusDesign: {
-    marginTop: Platform.OS == "ios" ? '40%' : '50%',
+    marginTop: -30,
     height: 30,
     borderTopLeftRadius: 30,
-    borderTopRightRadius: 40,
+    borderTopRightRadius: 30,
     backgroundColor: color.background,
   },
   bodyBox: {
@@ -740,4 +752,13 @@ const styles = StyleSheet.create({
     resizeMode: 'center'
   },
   joinBtn: { alignItems: 'center' },
+  tagText: {
+    fontSize: fontSize.size11,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: color.liteRed,
+    color: color.liteBlueMagenta,
+    borderRadius: 3,
+    marginRight: 4,
+  },
 });

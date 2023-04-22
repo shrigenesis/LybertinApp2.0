@@ -1,25 +1,26 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
   StyleSheet,
   Image,
   ScrollView,
-  Platform,
-  Share,
   SafeAreaView,
+  StatusBar,
+  Pressable
 } from 'react-native';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Button, Header} from '../../component/';
+import { Button, Header } from '../../component/';
 import Loader from './../../component/loader';
-import {APIRequest, ApiUrl} from './../../utils/api';
+import { APIRequest, ApiUrl } from './../../utils/api';
 import moment from 'moment';
-import {Download} from './../../utils/download';
-import {User} from '../../utils/user';
+import { Download } from './../../utils/download';
+import { User } from '../../utils/user';
+import RedirectToMap from '../../utils/RedirectToMap';
 
 
 export default class TicketDetails extends Component {
@@ -33,7 +34,7 @@ export default class TicketDetails extends Component {
       userdata: new User().getuserdata(),
     };
   }
-  
+
   componentDidMount = () => {
     this.downlodeQrCode()
   };
@@ -52,7 +53,7 @@ export default class TicketDetails extends Component {
       </View>
     );
   };
-  
+
   cancelBooking = () => {
     var id = this.state.ticket?.id;
     let config = {
@@ -92,7 +93,7 @@ export default class TicketDetails extends Component {
     );
   };
   downlodTicket = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const id = this.state.ticket?.id;
     const order_number = this.state.ticket?.order_number;
     const config = {
@@ -102,7 +103,7 @@ export default class TicketDetails extends Component {
     APIRequest(
       config,
       res => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         if (res?.success) {
           let url = res?.data;
           let ext = url.split('.').pop();
@@ -110,12 +111,12 @@ export default class TicketDetails extends Component {
         }
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       },
     );
   };
   downlodInvoice = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     const id = this.state.ticket?.id;
     const config = {
       url: `${ApiUrl.downloadInvoice}/${id}`,
@@ -124,7 +125,7 @@ export default class TicketDetails extends Component {
     APIRequest(
       config,
       res => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         if (res?.success) {
           let url = res?.file;
           let ext = url.split('.').pop();
@@ -133,7 +134,7 @@ export default class TicketDetails extends Component {
       },
       err => {
         console.log(err);
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       },
     );
   };
@@ -150,6 +151,7 @@ export default class TicketDetails extends Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <Loader type="dots" isLoading={this.state.isLoading} />
+        <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title={'Ticket Details'} />
         <ScrollView style={styles.container}>
           <View style={styles.wrapperView}>
@@ -181,10 +183,17 @@ export default class TicketDetails extends Component {
               </View>
               <View style={styles.textWrapper}>
                 <Text style={styles.upperText}>Venue</Text>
-                <Text style={styles.bottomText}>
-                  {this.state.ticket.event_venue} , {this.state.ticket.city} ,{' '}
-                  {this.state.ticket.state}
-                </Text>
+                <Pressable
+                  onPress={() => RedirectToMap(
+                    this.state.ticket.event_venue, this.state.ticket.city,
+                    this.state.ticket.state
+                  )}
+                  style={styles.bottomText}>
+                  <Text>
+                    {this.state.ticket.event_venue} , {this.state.ticket.city} ,{' '}
+                    {this.state.ticket.state}
+                  </Text>
+                </Pressable>
               </View>
             </View>
             {this.renderSeprator()}

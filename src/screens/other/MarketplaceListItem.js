@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Platform,
   Share,
+  ScrollView,
 } from 'react-native';
 import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import { APIRequest, IMAGEURL, ApiUrl } from '../../utils/api';
@@ -133,16 +134,18 @@ const MarketplaceListItem = ({ Event }) => {
                   <Text style={styles.dateText}>{Event.total_tickets - Event.total_shares} Tickets Left</Text>
                 </View>
               </View>
-              <View
+              <ScrollView
+                showsHorizontalScrollIndicator={false}
+                horizontal={true}
                 style={{
                   flexDirection: 'row',
-                  justifyContent: 'flex-start',
-                  paddingVertical: 10,
+                  margin: 5,
+                  flexWrap: 'wrap',
                 }}>
                 {Event.hashtags.map(item => (
                   <Text style={styles.tagText}>#{item.title}</Text>
                 ))}
-              </View>
+              </ScrollView>
               <TouchableOpacity
                 activeOpacity={0.4}
                 onPress={() =>
@@ -150,18 +153,22 @@ const MarketplaceListItem = ({ Event }) => {
                     event_id: Event.id,
                   })
                 }
-                style={[styles.button, {backgroundColor:
-                  (Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter)? color.chatRight : color.lightGray}]}>
+                style={[styles.button, {
+                  backgroundColor:
+                    (Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter) ? color.chatRight : color.lightGray
+                }]}>
                 <SvgUri
                   style={styles.rightSpace}
                   fill={color.violet}
                   fillAll={true}
                   source={IMAGE.svgsend}
                 />
-                <Text style={[styles.buttonText, {color:
-                 (Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter)? color.violet : color.blueMagenta}]}>
-                  {(Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter) ? 'Share again':'Share Now' }
-                  </Text>
+                <Text style={[styles.buttonText, {
+                  color:
+                    (Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter) ? color.violet : color.blueMagenta
+                }]}>
+                  {(Event.hasShared.normalShare || Event.hasShared.sharedOnTwitter) ? 'Share again' : 'Share Now'}
+                </Text>
               </TouchableOpacity>
             </View>
           </TouchableOpacity>

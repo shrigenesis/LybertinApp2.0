@@ -50,9 +50,11 @@ import TwitterConfirmMessage from './Modal/TwitterConfirmMessage';
 import BottomSheetWebview from '../../component/BottomSheetWebview';
 import TwitterSuccessMessage from './Modal/TwitterSuccessMessage';
 import RedirectToMap from '../../utils/RedirectToMap';
+
 let strippedHtml
 const sponsorsImage = ['https://lybertine.com/images/danone-logo.png', 'https://lybertine.com/images/Tata-Company.png', 'https://lybertine.com/images/danone-logo.png']
 
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default class MarketplaceDetails extends Component {
     constructor(props) {
@@ -309,6 +311,15 @@ export default class MarketplaceDetails extends Component {
         return (
             <View style={styles.container}>
                 <StatusBar barStyle={'light-content'} translucent backgroundColor="transparent" />
+                <View
+                    style={styles.backBtnPosition}>
+                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                        <Image
+                            source={IMAGE.ArrowLeft}
+                            style={styles.backImage}
+                        />
+                    </TouchableOpacity>
+                </View>
                 {this.state.isLoading !== true ?
                     <ScrollView style={{ flex: 0.92 }}>
                         <SliderBox
@@ -319,15 +330,6 @@ export default class MarketplaceDetails extends Component {
                             inactiveDotColor={color.black}
                             dotStyle={styles.dotStyle}
                         />
-                        <View
-                            style={styles.backImageBox}>
-                            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                                <Image
-                                    source={IMAGE.ArrowLeft}
-                                    style={styles.backImage}
-                                />
-                            </TouchableOpacity>
-                        </View>
 
                         <View
                             style={styles.bodyContainer} />
@@ -341,16 +343,19 @@ export default class MarketplaceDetails extends Component {
                                     <Text style={styles.heading}>{this.state.event.title}</Text>
                                 </View>
                                 {this.state.event.hashtags.length > 0 ?
-                                    <View
+                                    <ScrollView
+                                        horizontal={true}
+                                        showsHorizontalScrollIndicator={false}
                                         style={{
                                             flexDirection: 'row',
                                             margin: 5,
-                                            flexWrap: 'wrap'
+                                            flexWrap: 'wrap',
+                                            marginHorizontal: 15
                                         }}>
                                         {this.state.event.hashtags.map(item => (
                                             <Text style={styles.tagText}>#{item.title}</Text>
                                         ))}
-                                    </View>
+                                    </ScrollView>
                                     : null
                                 }
                                 <View
@@ -379,34 +384,42 @@ export default class MarketplaceDetails extends Component {
                                     </TouchableOpacity>
                                 </View>
 
-                                <View style={[styles.borderBox, { padding: 15, paddingBottom: 5, marginHorizontal: 14, marginVertical: 15 }]}>
+                                <View style={[styles.borderBox, { padding: 15, marginHorizontal: 14, marginVertical: 15 }]}>
                                     <View style={styles.engagementTitleBox}>
                                         <Text style={styles.engagementTitle}>POST ENGAGEMENT</Text>
-                                        <TouchableOpacity onPress={this.getEventDetails}>
-                                            <Image source={IMAGE.sync} style={styles.syncImage} />
-                                        </TouchableOpacity>
                                     </View>
                                     <View style={[styles.engagementTitleBox, { marginTop: 15 }]}>
-                                        <Tooltip width={150}
-                                            popover={<Text style={{ color: "#fff" }}>Total views</Text>}
-                                        >
-                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_views)}</Text>
-                                            <Image source={IMAGE.eye} style={styles.backImage} />
-                                        </Tooltip>
                                         <Tooltip width={250}
                                             popover={<Text style={{ color: "#fff" }}>My Friends Who Booked Event </Text>}
                                         >
-                                            <Text style={styles.detailsTitle}>{this.state.event.total_bookings_by_friends ? NoFormatter(this.state.event.total_bookings_by_friends) : 0}</Text>
-                                            <Image source={IMAGE.friendsMarket} style={styles.backImage} />
+                                            <Text style={styles.detailsTitle}>{this.state.event.total_bookings_by_friends}</Text>
+                                            <Image source={IMAGE.friendsMarket} style={styles.engagementImage} />
                                         </Tooltip>
                                         <Tooltip width={250}
                                             popover={<Text style={{ color: "#fff" }}>Booking with same interest people</Text>}
                                         >
                                             <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_bookings_by_same_interest)}</Text>
-                                            <Image source={IMAGE.people} style={styles.backImage} />
+                                            <Image source={IMAGE.people} style={styles.engagementImage} />
                                         </Tooltip >
+                                        <Tooltip width={150}
+                                            popover={<Text style={{ color: "#fff" }}>Total views</Text>}
+                                        >
+                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_views)}</Text>
+                                            <Image source={IMAGE.eye} style={styles.engagementImage} />
+                                        </Tooltip>
+                                        <Tooltip width={250}
+                                            popover={<Text style={{ color: "#fff" }}>How many earning on this post</Text>}
+                                        >
+                                            <Text style={styles.detailsTitle}>{this.state.event.total_coins_distributed ? NoFormatter(this.state.event.total_coins_distributed) : 0}</Text>
+                                            <Image source={IMAGE.salary} style={styles.engagementImage} />
+                                        </Tooltip>
+                                        <Tooltip width={250}
+                                            popover={<Text style={{ color: "#fff" }}>How many booking on this post</Text>}
+                                        >
+                                            <Text style={styles.detailsTitle}>{NoFormatter(this.state.event.total_bookings_from_links)}</Text>
+                                            <Image source={IMAGE.booking} style={styles.engagementImage} />
+                                        </Tooltip>
                                     </View>
-                                    <Text style={[styles.detailsText, { marginTop: 10 }]}>Last sync {this.state.last_sync}</Text>
                                 </View>
                                 {/* {this.state.event?.hasShared?.sharedOnTwitter ?
                                     <View style={[styles.borderBox, { padding: 15, paddingBottom: 5, marginHorizontal: 14, marginVertical: 15 }]}>
@@ -761,11 +774,22 @@ const styles = StyleSheet.create({
         width: 32,
         resizeMode: 'contain',
     },
+    engagementImage: {
+        height: 26,
+        width: 26,
+        resizeMode: 'contain',
+    },
+    backBtnPosition: {
+        position: 'absolute',
+        left: 15,
+        top: STATUSBAR_HEIGHT + 15,
+        zIndex: 1
+      },
     bodyContainer: {
-        marginTop: Platform.OS == "ios" ? '40%' : '50%',
-        height: 20,
+        marginTop: -30,
+        height: 30,
         borderTopLeftRadius: 30,
-        borderTopRightRadius: 40,
+        borderTopRightRadius: 30,
         backgroundColor: color.white,
     },
     shareBox: {
@@ -1007,7 +1031,7 @@ const styles = StyleSheet.create({
         color: color.liteBlueMagenta,
         borderRadius: 3,
         marginRight: 4,
-      },
+    },
     detailsText: {
         fontSize: fontSize.size11,
         color: color.blueMagenta,
