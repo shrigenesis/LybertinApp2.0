@@ -68,7 +68,7 @@ export const ApiUrl = {
   storyCreate: `${apiBaseUrl}story/create`,
   viewStory: `${apiBaseUrl}story/view-story`, 
   stories: `${apiBaseUrl}story/index`,
-  deletestory: `${apiBaseUrl}story/delete-story`, 
+  deletestory: `${apiBaseUrl}story/delete-story`,  
   reportstory: `${apiBaseUrl}reported-story/report`,
   requestList: `${apiBaseUrl}follow/pendingfriendRequest-list`,
   accpetRequest: `${apiBaseUrl}follow/accept-request`,
