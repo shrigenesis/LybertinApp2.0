@@ -4,14 +4,10 @@ import {
   Text,
   StyleSheet,
   FlatList,
-  TextInput,
   Image,
   TouchableOpacity,
-  ScrollView,
   StatusBar,
-  ActivityIndicator,
   Platform,
-  ImageBackground,
   Dimensions,
 } from 'react-native';
 import { IMAGE, color, fontFamily } from '../../constant/';
@@ -19,16 +15,9 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Divider, Input, Overlay } from 'react-native-elements';
-
-import { RippleTouchable, StoryList } from '../../component/';
-import SwipeableView from 'react-native-swipeable-view';
-import Loader from './../../component/loader';
 import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
-import moment from 'moment';
-import { User } from '../../utils/user';
-
+import EventListSkelton from '../../utils/skeltons/eventListSkelton';
+import NoRecord from './noRecord';
 export default class popularEvent extends Component {
   constructor(props) {
     super(props);
@@ -36,6 +25,7 @@ export default class popularEvent extends Component {
       data: [],
       selected: 0,
       filter_type: this.props.route.params.filter_type,
+      isLoading: true,
     };
   }
 
@@ -56,18 +46,16 @@ export default class popularEvent extends Component {
 
     APIRequest(
       config,
-
       res => {
-        console.log('================', res.data);
         this.setState({
           data: res.data,
         });
-
-        // setisLoading(false);
+        this.setState({ ...this.state, isLoading: false })
       },
       err => {
-        // setisLoading(false);
+        this.setState({ ...this.state, isLoading: false })
         console.log(err);
+
       },
     );
   };
@@ -76,7 +64,7 @@ export default class popularEvent extends Component {
     return (
       <View style={styles.container}>
 
-        <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+        <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
         <View style={{ marginHorizontal: '4%', marginVertical: '6%' }}>
           <View style={styles.headerContainer}>
             <TouchableOpacity
@@ -109,104 +97,128 @@ export default class popularEvent extends Component {
           </View>
         </View>
         {/* <Divider style={styles.divider} /> */}
-        <View style={{ backgroundColor: '#00000012', paddingHorizontal: 10 }}>
-          <FlatList
-            data={this.state.data}
-            renderItem={({ item: d }) => (
-              <View style={[styles.cardContainerNew, { margin: 5, padding: 5 }]}>
-                <TouchableOpacity
-                  onPress={() =>
-                    this.props.navigation.navigate('eventDetails', {
-                      event_id: d.id,
-                    })
-                  }>
-                  <View style={{ flexDirection: 'column' }}>
-                    <Image
-                      source={{ uri: `${IMAGEURL}/${d.thumbnail}` }}
-                      style={{
-                        height: Dimensions.get('window').width / 3,
-                        width: '100%',
-                        alignContent: 'stretch',
-                        resizeMode: 'stretch',
-                        alignSelf: 'center',
-                        borderTopLeftRadius: 10,
-                        borderTopRightRadius: 10,
-                      }}
-                    />
 
-                    <Text style={styles.headingText} numberOfLines={1}>
-                      {d.title}
-                    </Text>
+        {!this.state.isLoading ?
+          this.state.data.length > 0 ?
+            <View style={{ flex: 1, backgroundColor: color.white }}>
+              <View>
+                <FlatList
+                  data={this.state.data}
+                  renderItem={({ item: d }) => (
+                    <View style={[styles.cardContainerNew, { margin: 5, padding: 5 }]}>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.props.navigation.navigate('eventDetails', {
+                            event_id: d.id,
+                          })
+                        }>
+                        <View style={{ flexDirection: 'column' }}>
+                          <Image
+                            source={{ uri: `${IMAGEURL}/${d.thumbnail}` }}
+                            style={{
+                              height: Dimensions.get('window').width / 3,
+                              width: '100%',
+                              alignContent: 'stretch',
+                              resizeMode: 'stretch',
+                              alignSelf: 'center',
+                              borderTopLeftRadius: 10,
+                              borderTopRightRadius: 10,
+                            }}
+                          />
 
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        marginTop: 5,
-                        marginLeft: 5,
-                      }}>
-                      <Image
-                        source={IMAGE.date}
-                        style={{
-                          height: 12,
-                          width: 12,
-                          resizeMode: 'contain',
-                          alignSelf: 'center',
-                          tintColor: '#0F1828D9',
-                        }}
-                      />
-                      <Text style={[styles.dateText, { marginLeft: 5 }]}>
-                        {d.start_date} to {d.end_date}
-                      </Text>
+                          <Text style={styles.headingText} numberOfLines={1}>
+                            {d.title}
+                          </Text>
+
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              marginTop: 5,
+                              marginLeft: 5,
+                            }}>
+                            <Image
+                              source={IMAGE.date}
+                              style={{
+                                height: 12,
+                                width: 12,
+                                resizeMode: 'contain',
+                                alignSelf: 'center',
+                                tintColor: '#0F1828D9',
+                              }}
+                            />
+                            <Text style={[styles.dateText, { marginLeft: 5 }]}>
+                              {d.start_date} to {d.end_date}
+                            </Text>
+                          </View>
+
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              marginHorizontal: 5,
+                              marginTop: 5,
+                            }}>
+                            <Image
+                              source={IMAGE.location}
+                              style={{
+                                height: 12,
+                                width: 12,
+                                resizeMode: 'contain',
+                                alignSelf: 'center',
+                                tintColor: '#0F1828D9',
+                              }}
+                            />
+                            <Text style={[styles.dateText, { marginLeft: 5 }]}>
+                              {d.city}
+                            </Text>
+                          </View>
+
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              margin: 5,
+                            }}>
+                            <Image
+                              source={IMAGE.time}
+                              style={{
+                                height: 12,
+                                width: 12,
+                                resizeMode: 'contain',
+                                alignSelf: 'center',
+                                tintColor: '#0F1828D9',
+                              }}
+                            />
+                            <Text style={[styles.dateText, { marginLeft: 5 }]}>
+                              {d.start_time} - {d.end_time}
+                            </Text>
+                          </View>
+                        </View>
+                      </TouchableOpacity>
                     </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        marginHorizontal: 5,
-                        marginTop: 5,
-                      }}>
-                      <Image
-                        source={IMAGE.location}
-                        style={{
-                          height: 12,
-                          width: 12,
-                          resizeMode: 'contain',
-                          alignSelf: 'center',
-                          tintColor: '#0F1828D9',
-                        }}
-                      />
-                      <Text style={[styles.dateText, { marginLeft: 5 }]}>
-                        {d.city}
-                      </Text>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        margin: 5,
-                      }}>
-                      <Image
-                        source={IMAGE.time}
-                        style={{
-                          height: 12,
-                          width: 12,
-                          resizeMode: 'contain',
-                          alignSelf: 'center',
-                          tintColor: '#0F1828D9',
-                        }}
-                      />
-                      <Text style={[styles.dateText, { marginLeft: 5 }]}>
-                        {d.start_time} - {d.end_time}
-                      </Text>
-                    </View>
-                  </View>
-                </TouchableOpacity>
+                  )}
+                  //Setting the number of column
+                  numColumns={2}
+                />
               </View>
-            )}
-            //Setting the number of column
-            numColumns={2}
-          />
-        </View>
+            </View> :
+            <NoRecord
+              image={IMAGE.noConversation}
+              title="No Event found"
+              description="You will get Upcoming and poular events here."
+              showButton={false}
+            />
+          :
+          <View style={styles.listBox}>
+            <FlatList
+              keyExtractor={index => `featuredCourseSkelton-${index}`}
+              showsVerticalScrollIndicator={false}
+              data={[0, 1, 2, 3, 4, 6]}
+              numColumns={2}
+              renderItem={() => (
+                <EventListSkelton />
+              )}
+            />
+          </View>
+        }
       </View>
     );
   }
@@ -216,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: null,
-    // backgroundColor: 'red',
+     backgroundColor: color.lightGray ,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -266,5 +278,16 @@ const styles = StyleSheet.create({
     width: '47%',
     borderRadius: 10,
     backgroundColor: '#fff',
+    borderColor: '#EDEDED',
+    shadowColor: '#171717',
+    shadowOffset: { width: -2, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
+  listBox: {
+    backgroundColor: '#00000012',
+    paddingHorizontal: 10,
+    flex: 1
   },
 });

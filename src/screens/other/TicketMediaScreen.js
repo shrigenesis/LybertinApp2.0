@@ -22,6 +22,7 @@ import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import NoRecord from './noRecord';
 import { StatusBar } from 'react-native';
 import TicketListSkelton from '../../utils/skeltons/TicketListSkelton'
+import moment from 'moment';
 
 export default class TicketMediaScreen extends Component {
   constructor(props) {
@@ -32,9 +33,6 @@ export default class TicketMediaScreen extends Component {
       multipleOptions: [],
     };
   }
-
-
-
 
   componentDidMount = () => {
     this.getTickets();
@@ -76,29 +74,31 @@ export default class TicketMediaScreen extends Component {
   render() {
     return (
       <ScrollView>
-        {this.state.isLoading ? 
-        <FlatList
-        data={[1,2,3,5,5,7]}
-        renderItem= {(item)=> <TicketListSkelton /> }
-        keyExtractor={item => `SkeletonListOfMediaTickets${item}`}
-         />
-         :
+        {this.state.isLoading ?
+          <FlatList
+            data={[1, 2, 3,4]}
+            renderItem={(item) => <TicketListSkelton />}
+            keyExtractor={item => `SkeletonListOfMediaTickets${item}`}
+          />
+          :
           this.state.tickets.length == 0 ? (
-            <NoRecord
-              image={IMAGE.Ticket}
-              title="No tickets"
-              description="Buy a ticket of an event to make them appear here."
-              buttonText="Explore events"
-              navigation={this.props.navigation}
-              navigateTo={'popularEvent'}
-              navigateParams={{
-                filter_type: 'top_selling_events ',
-                title: 'Top Selling Events',
-              }}
-              showButton={true}
-            />
+            <View style={styles.NoRecordWrapper}>
+              <NoRecord
+                image={IMAGE.noTicket}
+                title="No tickets"
+                description="Buy a ticket of an event to make them appear here."
+                buttonText="Explore events"
+                navigation={this.props.navigation}
+                navigateTo={'Events'}
+                navigateParams={{
+                  filter_type: 'top_selling_events ',
+                  title: 'Top Selling Events',
+                }}
+                showButton={true}
+              />
+            </View>
           ) : (
-            <View style={{ marginBottom: hp(41) }}>
+            <View style={{ marginBottom: hp(70) }}>
               <FlatList
                 //   horizontal
                 showsVerticalScrollIndicator={false}
@@ -114,7 +114,7 @@ export default class TicketMediaScreen extends Component {
                     style={{
                       marginRight: 10,
                       marginTop: 20,
-                      backgroundColor: color.white,
+                      backgroundColor: color.background,
                       borderRadius: 10,
                       height: 135,
                     }}>
@@ -134,7 +134,8 @@ export default class TicketMediaScreen extends Component {
                           {d.event_start_date} to {d.event_end_date}
                         </Text>
                         <Text style={styles.dateText} numberOfLines={1}>
-                          {d.event_start_time} - {d.event_end_time}
+                          {/* {d.event_start_time} - {d.event_end_time} */}
+                           {moment(d.event_start_time).format('h:mm:ss a')}
                         </Text>
                       </View>
                     </View>
@@ -236,5 +237,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: fontFamily.Semibold,
     color: color.textGray2,
+  },
+  NoRecordWrapper: {
+    height: hp(80),
+    backgroundColor: color.white
   },
 });

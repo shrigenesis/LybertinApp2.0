@@ -45,7 +45,6 @@ export default class seeAllEventOrg extends Component {
   }
 
   componentDidMount = () => {
-    console.log('---------------', this.state.filter_type);
     this.getEvents();
   };
 
@@ -62,7 +61,6 @@ export default class seeAllEventOrg extends Component {
       config,
 
       res => {
-        console.log('================', res.events);
         this.setState({
           data: res.events,
         });

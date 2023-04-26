@@ -19,9 +19,9 @@ import {
 import {RippleTouchable, Header} from '../../component/';
 import Loader from '../../component/loader';
 import {useIsFocused} from '@react-navigation/native';
-import {APIRequest, ApiUrl, IMAGEURL, Toast} from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
 import {Overlay} from 'react-native-elements';
+import  Toast  from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 const UserProfile = ({navigation, route}) => {
@@ -137,7 +137,10 @@ const UserProfile = ({navigation, route}) => {
       res => {
         if (res?.alert?.message) {
           getuserInfo(userData?.user?.id);
-          SimpleToast.show(res?.alert?.message);
+          Toast.show({
+            type: 'info',
+            text1: res?.alert?.message
+          });
         }
         setisLoading(false);
       },
@@ -162,7 +165,39 @@ const UserProfile = ({navigation, route}) => {
       res => {
         if (res?.message) {
           getuserInfo(userData?.user?.id);
-          SimpleToast.show(res?.message);
+          Toast.show({
+            type: 'info',
+            text1: res?.message
+          });
+        }
+        setisLoading(false);
+      },
+      err => {
+        setisLoading(false);
+        console.log(err);
+      },
+    );
+  };
+
+  const reportUser = () => {
+    setisLoading(true);
+    let config = {
+      url: ApiUrl.reportUser,
+      method: 'post',
+      body: {
+        reported_to: userData?.user?.id,
+        notes: 'Bad'
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        if (res?.message) {
+          getuserInfo(userData?.user?.id);
+          Toast.show({
+            type: 'info',
+            text1: res?.message
+          });
         }
         setisLoading(false);
       },
@@ -186,7 +221,6 @@ const UserProfile = ({navigation, route}) => {
     APIRequest(
       config,
       res => {
-        console.log('Api response=== highlights', res.highlightsGroup);
         sethighLight(res.highlightsGroup);
       },
       err => {},
@@ -657,7 +691,7 @@ const UserProfile = ({navigation, route}) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={() => [setreportVisible(false)]}
+                  onPress={() => [setreportVisible(false), reportUser()]}
                   style={{
                     height: 40,
                     width: '50%',

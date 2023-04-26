@@ -4,9 +4,16 @@ import { Loader, Radio } from '../../component'
 import { IMAGE, color, fontSize, fontFamily } from '../../constant'
 import { Button } from 'react-native-elements'
 import { User } from '../../utils/user';
-import { APIRequest, ApiUrl, Toast } from '../../utils/api'
-import SimpleToast from 'react-native-simple-toast'
+import { APIRequest, ApiUrl } from '../../utils/api'
+import Toast from 'react-native-toast-message';
 import { log } from 'react-native-reanimated'
+import WebView from 'react-native-webview'
+import BottomSheetCustom from '../../component/BottomSheetCustom'
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+
 
 
 const data = {
@@ -22,31 +29,44 @@ const data = {
 }
 
 const Payment = (props) => {
-    const [PaymentType, setPaymentType] = useState('');
+    const [PaymentType, setPaymentType] = useState(0);
     const [isLoading, setisLoading] = useState(false)
+    const [isNavigate, setisNavigate] = useState(false)
     const [PaymentData, setPaymentData] = useState({
         course_id: 1,
         booking_date: '2023-07-05',
         start_time: '04:03:00',
         end_time: '05:05:00',
         customer_id: 1,
-        video_id: [1],
+        video_id: props.video_id,
         payment_method: 7,
         method: 'Post',
         promocode: ['promocode']
     });
     const [WebviewUrl, setWebviewUrl] = useState({})
+    const [isShowBottomSheet, setisShowBottomSheet] = useState(false)
     let userdata = new User().getuserdata();
 
     useEffect(() => {
-        setPaymentData({
-            ...PaymentData,
-            course_id: props.route.params.course_id,
-            video_id: props.route.params.video_id,
-            promocode: props.route.params.promocode,
-            customer_id: userdata.id,
-            payment_method: PaymentType,
-        })
+        if (PaymentType === 0) {
+            setPaymentData({
+                ...PaymentData,
+                course_id: props.route.params.course_id,
+                video_id: props.route.params.video_id,
+                promocode: props.route.params.promocode,
+                customer_id: userdata.id,
+                payment_method: 'offline'
+            })
+        } else {
+            setPaymentData({
+                ...PaymentData,
+                course_id: props.route.params.course_id,
+                video_id: props.route.params.video_id,
+                promocode: props.route.params.promocode,
+                customer_id: userdata.id,
+                payment_method: PaymentType,
+            })
+        }
         console.log(PaymentData);
     }, [PaymentType])
 
@@ -64,12 +84,18 @@ const Payment = (props) => {
             res => {
                 console.log(res);
                 setisLoading(false)
-                if(res.status){
-                    if(res.openInWebView){
-                        setWebviewUrl({url:res.url, openInWebView: res.openInWebView})
-                    }else{
-                        SimpleToast.show(res.message)
-                        props.navigation.goBack()
+                if (res.status) {
+                    if (res.openInWebView) {
+                        setWebviewUrl({ url: res.url, openInWebView: res.openInWebView })
+                        setisShowBottomSheet(true)
+                    } else {
+                        // Toast.show({
+                        //     type: 'success',
+                        //     text1: res.message
+                        // })
+                        setisShowBottomSheet(true)
+                        setisNavigate(true)
+                        // props.navigation.goBack()
                     }
                 }
             },
@@ -78,17 +104,24 @@ const Payment = (props) => {
                 setisLoading(false)
             },
         );
-    }; 
+    };
 
     const handleSubmit = () => {
         console.log('submit', PaymentData);
         getEvents()
+
     }
     const handleCancle = () => {
         console.log('cancle');
         props.navigation.goBack()
 
     }
+
+    useEffect(() => {
+        if (!isShowBottomSheet && isNavigate) {
+            props.navigation.goBack()
+        }
+    }, [isShowBottomSheet])
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle={'dark-content'} backgroundColor={color.transparent} />
@@ -113,31 +146,43 @@ const Payment = (props) => {
                 <View style={styles.btnContainer}>
                     <TouchableOpacity
                         style={[styles.PaymentTypeBox,
-                        { borderColor: PaymentType === 'paypal' ? color.btnBlue : color.borderGray }
+                        { borderColor: PaymentType === 1 ? color.btnBlue : color.borderGray }
                         ]}
-                        onPress={() => setPaymentType('paypal')}
+                    // onPress={() => setPaymentType(1)}
                     >
                         <Image
                             source={IMAGE.Paypal_logo}
                             style={styles.paypalImage}
                         />
                         <Radio
-                            active={PaymentType === 'paypal' ? true : false}
+                            active={PaymentType === 1 ? true : false}
                             style={{ width: 0 }}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[styles.PaymentTypeBox,
-                        { borderColor: PaymentType === 'pay360' ? color.btnBlue : color.borderGray }
+                        { borderColor: PaymentType === 7 ? color.btnBlue : color.borderGray }
                         ]}
-                        onPress={() => setPaymentType('pay360')}
+                    // onPress={() => setPaymentType(7)}
                     >
                         <Image
                             source={IMAGE.pay360}
                             style={styles.paypalImage}
                         />
                         <Radio
-                            active={PaymentType === 'pay360' ? true : false}
+                            active={PaymentType === 7 ? true : false}
+                            style={{ width: 0 }}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.PaymentTypeBox,
+                        { borderColor: PaymentType === 0 ? color.btnBlue : color.borderGray }
+                        ]}
+                        onPress={() => setPaymentType(0)}
+                    >
+                        <Text style={styles.headingStyle}>Offline</Text>
+                        <Radio
+                            active={PaymentType === 0 ? true : false}
                             style={{ width: 0 }}
                         />
                     </TouchableOpacity>
@@ -164,9 +209,10 @@ const Payment = (props) => {
                     />
                 </View>
             </View>
-            {WebviewUrl.openInWebView?<View style={{ height: 500 }}>
+            {/* {WebviewUrl.openInWebView?
+            <View style={{ height: 500 }}>
                 <WebView
-                    source={{ uri: WebviewUrl }}
+                    source={{ uri: WebviewUrl.url }}
 
                     // onNavigationStateChange={navState => {
                     //     // Keep track of going back navigation within component
@@ -182,7 +228,29 @@ const Payment = (props) => {
                     // }}
 
                 />
-            </View>:null}
+            </View>:null} */}
+
+            {/* <BottomSheetCustom
+                cancelBtn={{ color: color.lightGray, title: "Cancel", textColor: color.btnBlue }}
+                isShowBottomSheet={isShowBottomSheet}
+                setisShowBottomSheet={setisShowBottomSheet}
+            >
+                <View style={{ height: 500, width: wp(89) }}>
+                    <WebView
+                        source={{ uri: WebviewUrl.url }}
+                    />
+                </View>
+            </BottomSheetCustom> */}
+            <BottomSheetCustom
+                isShowBottomSheet={isShowBottomSheet}
+                setisShowBottomSheet={setisShowBottomSheet}
+                cancelBtn={{ color: color.lightGray, title: "Okay", textColor: color.btnBlue }}
+                confetti={true}
+            >
+                <Image style={styles.alertImage} source={IMAGE.checkTick} />
+                <Text style={styles.alertTitle}>Thank You!</Text>
+                <Text style={styles.alertText}>Your payment request has been successfully submitted to Admin</Text>
+            </BottomSheetCustom>
             <Loader isLoading={isLoading} type='dots' />
         </SafeAreaView>
     )
@@ -258,6 +326,24 @@ const styles = StyleSheet.create({
         padding: 15,
     },
     btnContainer: { flexDirection: 'column', gap: 25 },
+    alertImage: {
+        width: 50,
+        height: 50,
+        alignSelf: 'center',
+        marginVertical: 20,
+    },
+    alertTitle: {
+        fontSize: fontSize.size20,
+        color: color.black,
+        textAlign: 'center',
+        marginVertical: 10,
+    },
+    alertText: {
+        fontSize: fontSize.size15,
+        color: color.liteBlueMagenta,
+        textAlign: 'center',
+        marginBottom: 25,
+    },
 
 })
 export default Payment

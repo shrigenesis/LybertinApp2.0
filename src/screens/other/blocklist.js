@@ -3,9 +3,9 @@ import { View, Text, StyleSheet, FlatList, TextInput, Image, TouchableOpacity, S
 import { IMAGE, color, fontFamily } from '../../constant/';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { RippleTouchable, Header } from '../../component/';
-import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NoRecord from './noRecord';
 
@@ -35,7 +35,6 @@ const BlockList = ({ navigation, route }) => {
 
         APIRequest(config,
             (res) => {
-                console.log(res, '////');
                 setBlockedList(res.blocked)
                 if (res.status) {
                 }
@@ -61,7 +60,10 @@ const BlockList = ({ navigation, route }) => {
             (res) => {
                 if (res?.alert?.message) {
                     // getuserInfo(userData?.user?.id)
-                    SimpleToast.show(res?.alert?.message)
+                    Toast.show({
+                        type: 'success',
+                        text1: res?.alert?.message
+                      })
                     fetchBlockList()
                 }
                 setisLoading(false)
@@ -95,8 +97,8 @@ const BlockList = ({ navigation, route }) => {
     return (
         <SafeAreaView style={style.safeArea}>
             <View style={{ flex: 1, backgroundColor: color.white }}>
-                <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
-                <Header title={'Blocklist'} />
+                <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
+                <Header title={'Blocklist'} headStyle={{backgroundColor: color.lightGray}} />
 
 
                 {blockList.length > 0 ? (

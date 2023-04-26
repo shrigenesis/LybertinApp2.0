@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, StatusBar, SafeAreaView } from 'react-native';
 import { IMAGE, color, fontFamily } from '../../constant/';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { APIRequest, ApiUrl, Toast } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import { APIRequest, ApiUrl } from './../../utils/api';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button, Header, Textinput } from './../../component/';
 
@@ -38,11 +38,17 @@ const updatePassword = () => {
       if (res?.status) {
 
         if (res?.alert?.message) {
-          SimpleToast.show(res?.alert?.message)
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
           navigation.goBack()
         }
       } else {
-        Toast(res?.message);
+        Toast.show({
+          type: 'error',
+          text1: res?.error
+        })
       }
       setisLoading(false)
     },

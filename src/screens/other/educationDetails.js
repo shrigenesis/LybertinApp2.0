@@ -19,8 +19,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { APIRequest, ApiUrl, BASEURL, IMAGEURL, Toast, domainUriPrefix } from '../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import { APIRequest, ApiUrl, BASEURL, domainUriPrefix } from '../../utils/api';
+import Toast from 'react-native-toast-message';
 import { SliderBox } from "react-native-image-slider-box";
 import RenderHtml from 'react-native-render-html';
 import ReadMore from '@fawazahmed/react-native-read-more';
@@ -31,18 +31,10 @@ import BottomSheetAddVideo from '../../component/BottomSheetAddVideo';
 import Video from 'react-native-video';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
-const MyVideo = [
-  {
-    "image": "/storage/courses/February2023/videos/1/thumbnails/1675944473zlQo9t2M4s.jpg",
-    "session": "Lession 1",
-    "title": "Lession 1",
-    "price": 0,
-    "video_url": "/storage/courses/February2023/videos/1/1675944473G0SOnWD4yI.mp4"
-  }
-]
+import { Button, Loader } from '../../component';
 
-const BaseURL = 'https://lybertine.com/storage/'
-const sponsorsImage = ['https://lybertine.com/images/danone-logo.png', 'https://lybertine.com/images/Tata-Company.png', 'https://lybertine.com/images/danone-logo.png']
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+
 
 export default class educationDetails extends Component {
   constructor(props) {
@@ -51,10 +43,10 @@ export default class educationDetails extends Component {
       id: this.props.route.params.id,
       selected: 0,
       Course: [],
-      title: this.props?.route?.params?.item?.title ? this.props?.route?.params?.item?.title : "test",
       event: {},
       allVideos: [],
       addedVideo: [],
+      allPurchasedVideo: [],
       showText: 0,
       isRepetative: '',
       repititiveSchedule: [],
@@ -74,11 +66,15 @@ export default class educationDetails extends Component {
   }
 
   componentDidMount() {
+    this.props.navigation.addListener('focus', async () => {
+      this.getEventDetails();
+    });
     this.getEventDetails();
   };
 
   // Get course details
   getEventDetails = () => {
+    this.setState({ ...this.state, isLoading: true })
     let config = {
       url: `${ApiUrl.educationList}/${this.state.id}`,
       method: 'post',
@@ -89,11 +85,11 @@ export default class educationDetails extends Component {
         this.setState({
           ...this.state,
           Course: res.data,
-          allVideos: res.data.session_videos,
+          allVideos: res.data.session_videos.filter(item => !item.is_purchased),
+          allPurchasedVideo: res.data.session_videos.filter(item => item.is_purchased),
           strippedHtml: HtmlToText(res.data.video_description)
         });
         this.setState({ ...this.state, isLoading: false })
-        console.log("================>?>>>>", res.data);
       },
       err => {
         console.log(err);
@@ -101,6 +97,37 @@ export default class educationDetails extends Component {
       },
     );
   };
+
+  // Enroll for live Course
+  EnrollCourse = () => {
+    let config = {
+      url: `${ApiUrl.educationAddInterest}`,
+      method: 'post',
+      body: {
+        course_id: [this.state.id],
+        is_live_interest: 1
+      }
+    };
+    APIRequest(
+      config,
+      res => {
+        if (res.status) {
+          this.getEventDetails()
+          Toast.show({
+            type: 'info',
+            text1: res.Message
+          })
+        }
+        this.setState({ ...this.state, isLoading: false })
+      },
+      err => {
+        console.log(err);
+        this.setState({ ...this.state, isLoading: false })
+      },
+    );
+  }
+
+
   // Extract image string for image slider
   sliderImageArray = (images) => {
     let res = [];
@@ -138,12 +165,12 @@ export default class educationDetails extends Component {
     this.setState({
       ...this.state,
       selectAllVideo: !this.state.selectAllVideo,
-      allVideos: this.state.allVideos.map(item => ({ ...item, added: !this.state.selectAllVideo })),
+      allVideos: this.state.allVideos.map(item => ({ ...item, added: !this.state.allVideos.is_purchased ? !this.state.selectAllVideo : this.state.allVideos.added })),
       AddedVideoCount: !this.state.selectAllVideo ? this.state.allVideos.length : 0,
       AddedVideoPrice: !this.state.selectAllVideo ?
-        this.state.allVideos.map(item => x + item.price) : 0,
+        this.state.allVideos.reduce((x, item) => x + item.price, 0) : 0,
       addedVideo: !this.state.selectAllVideo ?
-      this.state.allVideos.map(item => item.id) : [],
+        this.state.allVideos.map(item => item.id) : [],
     });
   }
   // Share Course Function
@@ -176,13 +203,21 @@ export default class educationDetails extends Component {
   };
 
 
-
   render() {
     // let SliderImage = JSON.parse(this.state.Course.image);
     // SliderImage = SliderImage.map((item) => BaseURL + item);
     return (
       <View style={styles.container}>
         <StatusBar barStyle={'light-content'} translucent={true} backgroundColor={color.transparent} />
+        <View
+          style={[styles.backBtnPosition, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
+          <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+            <Image
+              source={IMAGE.ArrowLeft}
+              style={styles.backBtnImage}
+            />
+          </TouchableOpacity>
+        </View>
         {this.state.isLoading ? <DetailsSkelton /> :
           <>
             <ScrollView style={{ flex: 0.92 }}>
@@ -194,17 +229,6 @@ export default class educationDetails extends Component {
                 inactiveDotColor={color.black}
                 dotStyle={styles.dotStyle}
               />
-
-              <View
-                style={styles.backBtn}>
-                <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                  <Image
-                    source={IMAGE.ArrowLeft}
-                    style={styles.backBtnImage}
-                  />
-                </TouchableOpacity>
-              </View>
-
               <View
                 style={styles.radiusDesign}></View>
 
@@ -214,11 +238,27 @@ export default class educationDetails extends Component {
                   <View style={styles.shareWrapp}>
                     <Text style={styles.heading}>${this.state.Course?.price}</Text>
                     <TouchableOpacity onPress={() => this.buildLink()}>
-                      <SvgUri style={styles.rightSpace} source={IMAGE.svgeducationShare} />
+                      <Image source={IMAGE.educationShareBlue} style={styles.rightSpace} />
                     </TouchableOpacity>
                   </View>
-                  <Text style={styles.headingText}>{this.state.title}</Text>
+                  <Text style={styles.headingText}>{this.state.Course.title}</Text>
                   <Text style={styles.ultimateText}>{this.state.Course?.team}</Text>
+                  {this.state.Course?.hashtags.length > 0 ?
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                      style={{
+                        flexDirection: 'row',
+                        margin: 5,
+                        flexWrap: 'wrap',
+                        marginHorizontal: 15
+                      }}>
+                      {this.state.Course?.hashtags.map(item => (
+                        <Text style={styles.tagText}>#{item.title}</Text>
+                      ))}
+                    </ScrollView>
+                    : null
+                  }
                   {/* <View
                 style={{
                   flexDirection: 'row',
@@ -261,88 +301,130 @@ export default class educationDetails extends Component {
                     </View>
                   </View>
 
-                  <View>
+                  {this.state.Course?.trailer_video ? <View>
                     <View style={styles.descriptionWrapper}>
                       <Text style={styles.desHeading}>Trailer Video</Text>
-                      {/* <View>
-                    <TouchableOpacity
-                      style={{ width: wp(60) }}
-                      onPress={() => this.props.navigation.navigate('videoPlayer', { VideoURL: BaseURL + this.state.Course.videos[0].video })}
-                    >
-                      <Image
-                        source={{ uri: BaseURL + this.state.Course.poster }}
-                        style={{
-                          height: hp(25),
-                          resizeMode: 'cover',
-                          width: wp(91),
-                          borderRadius: 5,
-                          marginTop: 10
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View> */}
-                      <Video
-                        source={IMAGE.lybertinVideo}
-                        resizeMode={'cover'}
-                        muted={true}
-                        style={styles.trailerVideo}
-                      />
-                    </View>
-                  </View>
+                      <View>
+                        <TouchableOpacity
+                          style={{ width: wp(60) }}
+                          onPress={() => this.props.navigation.navigate('videoPlayer', { VideoURL: this.state.Course.trailer_video })}
+                        >
+                          <Image
+                            source={{ uri: this.state.Course.image }}
+                            style={{
+                              height: hp(25),
+                              resizeMode: 'cover',
+                              width: wp(91),
+                              borderRadius: 5,
+                              marginTop: 10
+                            }}
+                          />
+                        </TouchableOpacity>
+                      </View>
 
-                  <View>
+                      {/* <Video
+                          source={{ uri: this.state.Course.trailer_video }}
+                          // source={IMAGE.lybertinVideo}
+                          onBuffer={this.onBuffer}
+                          onLoadEnd={this.onLoadEnd}
+                          resizeMode={'cover'}
+                          muted={true}
+                          style={styles.trailerVideo}
+                        /> */}
+                    </View>
+                  </View> : null}
+
+                  {this.state.Course.type !== 'live' ? <View>
                     <View style={styles.descriptionWrapper}>
                       <View style={styles.videoBox}>
                         <Text style={styles.desHeading}>Session videos</Text>
                       </View>
 
-                      <View style={[styles.shareWrapp, { marginBottom: 15 }]}>
+                      {this.state.allVideos.length > 0 ? <View style={[styles.shareWrapp, { marginBottom: 15 }]}>
                         <Text>Select All Session</Text>
                         <TouchableOpacity
                           onPress={() => this.selectAllVideo()}
                         >
-                          <Image style={styles.iconImage} source={this.state.selectAllVideo ? IMAGE.checkNewFill : IMAGE.checkTick} />
+                          <Image style={styles.iconImage} source={this.state.selectAllVideo ? IMAGE.checkNewFill : IMAGE.checkmark_circle_outline} />
                         </TouchableOpacity>
-                      </View>
-
+                      </View> : null}
                       <FlatList
-                        // horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={this.state.allPurchasedVideo}
+                        renderItem={({ item, index }) => {
+                          if (item.is_purchased) {
+                            return (
+                              <View>
+                                <EducationVideoListItem
+                                  setAddVideo={this.setAddVideo.bind(this)}
+                                  setRemoveVideo={this.setRemoveVideo.bind(this)}
+                                  purchased={item.is_purchased}
+                                  item={item} />
+                              </View>
+                            )
+                          }
+                        }}
+                        keyExtractor={((item, index) => `VideoListDetailsPerchesed${index}`)}
+                      />
+                      <FlatList
                         showsHorizontalScrollIndicator={false}
                         data={this.state.allVideos}
-                        renderItem={({ item, index }) => (
-                          <View>
-                            <EducationVideoListItem
-                              setAddVideo={this.setAddVideo.bind(this)}
-                              setRemoveVideo={this.setRemoveVideo.bind(this)}
-                              item={item} />
-                          </View>
-                        )}
+                        renderItem={({ item, index }) => {
+                          if (!item.is_purchased) {
+                            return (
+                              <View>
+                                <EducationVideoListItem
+                                  setAddVideo={this.setAddVideo.bind(this)}
+                                  setRemoveVideo={this.setRemoveVideo.bind(this)}
+                                  purchased={item.is_purchased}
+                                  item={item} />
+                              </View>
+                            )
+                          }
+                        }}
                         keyExtractor={((item, index) => `VideoListDetailsPage${index}`)}
                       />
                     </View>
-                  </View>
+                  </View> : null}
 
+                  {this.state.Course.type === 'live' ?
+                    <View style={styles.descriptionWrapper}>
+                      <View style={styles.videoBox}>
+                        <Text style={styles.desHeading}>Join live session</Text>
+                      </View>
+                      <View style={styles.joinBtn}>
+                        {this.state.Course.is_live_interest ? <Button
+                          label='Join Now'
+                          onPress={() => this.props.navigation.navigate('LiveConference')}
+                        /> :
+                          <Button
+                            label='Enroll Now'
+                            onPress={() => this.EnrollCourse()}
+                          />}
+                      </View>
+                    </View> : null}
 
                   <View>
-                    <View style={styles.descriptionWrapper}>
-                      <Text style={styles.desHeading}>Sponsors</Text>
-                      <FlatList
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={true}
-                        data={this.state.Course.sponsors}
-                        renderItem={({ item, index }) => (
-                          <View
-                            style={styles.sponsorTagInner}>
-                            <View >
-                              <Image
-                                source={{ uri: item }}
-                                style={styles.sponsorImage}
-                              />
+                    {this.state.Course?.sponsors?.length > 0 ?
+                      <View style={styles.descriptionWrapper}>
+                        <Text style={styles.desHeading}>Sponsors</Text>
+                        <FlatList
+                          horizontal={true}
+                          showsHorizontalScrollIndicator={true}
+                          data={this.state.Course.sponsors}
+                          renderItem={({ item, index }) => (
+                            <View
+                              style={styles.sponsorTagInner}>
+                              <View >
+                                <Image
+                                  source={{ uri: item }}
+                                  style={styles.sponsorImage}
+                                />
+                              </View>
                             </View>
-                          </View>
-                        )}
-                      />
-                    </View>
+                          )}
+                        />
+                      </View> : null}
                   </View>
                   {/* <View>
                   Dance Artist and other tag use it loop
@@ -393,16 +475,19 @@ export default class educationDetails extends Component {
                 </View>
               </View>
             </ScrollView>
-            {this.state.isRepetative == false && (
+            {(this.state.Course.type !== 'live' && this.state.allVideos.length > 0) && (
               <Pressable
                 onPress={() =>
-                  this.state.isRepetative == false
+                  this.state.AddedVideoCount > 0
                     ? this.props.navigation.navigate('Payment', {
                       course_id: this.state.id,
                       video_id: this.state.addedVideo,
-                      promocode: [0],
+                      promocode: [],
                     })
-                    : SimpleToast.show('Choose event date')
+                    : Toast.show({
+                      type: 'info',
+                      text1: 'Sorry, Cart is empty'
+                    })
                 }
                 style={styles.bottomCheckoutBox}>
                 <View>
@@ -439,6 +524,11 @@ const styles = StyleSheet.create({
     color: color.btnBlue,
     marginHorizontal: 15
   },
+  backBtnPosition: {
+    position: 'absolute',
+    left: 15,
+    zIndex: 1
+  },
   headingText: {
     fontSize: fontSize.size18,
     fontFamily: fontFamily.Bold,
@@ -466,10 +556,10 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
   radiusDesign: {
-    marginTop: Platform.OS == "ios" ? '40%' : '50%',
+    marginTop: -30,
     height: 30,
     borderTopLeftRadius: 30,
-    borderTopRightRadius: 40,
+    borderTopRightRadius: 30,
     backgroundColor: color.background,
   },
   bodyBox: {
@@ -642,6 +732,9 @@ const styles = StyleSheet.create({
   },
   rightSpace: {
     marginRight: 18,
+    width: 20,
+    height: 20,
+    resizeMode: 'contain'
   },
   btnTextWhite: {
     color: color.white,
@@ -656,5 +749,15 @@ const styles = StyleSheet.create({
     width: 7,
     height: 10,
     resizeMode: 'center'
+  },
+  joinBtn: { alignItems: 'center' },
+  tagText: {
+    fontSize: fontSize.size11,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: color.liteRed,
+    color: color.liteBlueMagenta,
+    borderRadius: 3,
+    marginRight: 4,
   },
 });

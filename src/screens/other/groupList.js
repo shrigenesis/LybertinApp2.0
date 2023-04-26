@@ -20,8 +20,8 @@ import {
 } from 'react-native-responsive-screen';
 import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
-import Loader from './../../component/loader';
-import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
+import Toast from 'react-native-toast-message';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
@@ -43,7 +43,10 @@ const _renderGroupList = React.memo(({ item, navigation, setisLoading, reload, p
   const pinUnpinChatList = item => {
 
     if (pinnedChatCount >= 3 && item?.is_pinned == '0') {
-      Toast('You can pin upto 3 conversations');
+      Toast.show({
+        type: 'info',
+        text1: 'You can pin upto 3 conversations',
+      });
       return false;
     }
     setisLoading(true);

@@ -23,7 +23,8 @@ import {
 } from 'react-native-responsive-screen';
 import { Button, Header, Loader } from '../../component';
 import { color, fontFamily, fontSize, IMAGE } from '../../constant';
-import { APIRequest, APIRequestWithFile, ApiUrl, Toast } from '../../utils/api';
+import { APIRequest, APIRequestWithFile, ApiUrl } from '../../utils/api';
+import Toast from 'react-native-toast-message';
 
 import { LoginContext } from './../../context/LoginContext';
 import { write } from 'react-native-fs';
@@ -98,7 +99,10 @@ const InterestSelector = ({ navigation }) => {
 
   const saveAndNext = () => {
     if (selectedInterests.length <= 0) {
-      return Toast('Please select atleast one item.');
+      return Toast.show({
+        type: 'info',
+        text1: 'Please select atleast one item.',
+      });
     }
     completeProfile();
   };
@@ -117,7 +121,6 @@ const InterestSelector = ({ navigation }) => {
       method: 'post',
       body: formData,
     };
-    console.log(config);
     APIRequestWithFile(
       config,
       res => {

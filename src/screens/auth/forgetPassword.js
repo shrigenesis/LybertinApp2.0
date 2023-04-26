@@ -12,7 +12,9 @@ import {
 import { heightPercentageToDP as hp , widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import { color,IMAGE,fontFamily } from '../../constant/';
 import {Button,Textinput} from './../../component/';
-import {APIRequest,ApiUrl,Toast} from './../../utils/api';
+import {APIRequest,ApiUrl} from './../../utils/api';
+import Toast from 'react-native-toast-message';
+
 
 const ForgetPassword  = ({navigation}) => {
   const [isLoading,setisLoading] = useState(false);
@@ -21,7 +23,10 @@ const ForgetPassword  = ({navigation}) => {
   
   const _forgetPassword = () =>{
     if(email=='') {
-      Toast('Please Enter Email Address')
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Email Address',
+      });
     } else {
       setisLoading(true)
       let config = {
@@ -34,17 +39,22 @@ const ForgetPassword  = ({navigation}) => {
 
       APIRequest(config,
       (res) =>{
-        Toast(res.message);
+        Toast.show({
+          type: 'success',
+          text1: res.message
+        });
         if(res.status) {
         }
         setisLoading(false)
       },
       (err) =>{
         console.log(err.response?.data);
-
         setisLoading(false)
         if(err?.response?.data) {
-          Toast(err?.response?.data?.error)
+          Toast.show({
+            type: 'error',
+            text1: err?.response?.data?.error
+          });
         }
       })
     }

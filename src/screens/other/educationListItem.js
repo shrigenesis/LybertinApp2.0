@@ -27,14 +27,14 @@ const EducationListItem = ({ item }) => {
         }>
         <View style={{ flexDirection: 'column' }}>
           <Image
-            source={{ uri: `${BASEURL}${item?.image}` }}
+            source={{ uri: item.image }}
             style={style.imageStyle}
           />
           {item.hasOwnProperty('price') ?
             <Text
               style={style.headingText}
               numberOfLines={1}>
-              ${item?.featured?.price ? item?.featured?.price : 120}
+              ${item?.price ? item?.price : 0}
             </Text> : null}
           <View
             style={style.contentBox}>

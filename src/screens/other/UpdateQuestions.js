@@ -29,14 +29,13 @@ import {
 import {
   APIRequest,
   APIRequestWithFile,
-  ApiUrl,
-  Toast,
- 
+  ApiUrl, 
 } from './../../utils/api';
 import { TouchableOpacity } from 'react-native';
 import { Text } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { ScrollView } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 
 
@@ -119,7 +118,10 @@ const UpdateQuestions = ({navigation, route}) => {
 
   const update = () => {
     if (selected.length <= 0) {
-          return Toast('Please select atleast one item.');
+          return Toast.show({
+            type: 'info',
+            text1: 'Please select atleast one item.',
+          });
         }
     // setIsLoading((isLoading) => !isLoading);
     let formData = new FormData();

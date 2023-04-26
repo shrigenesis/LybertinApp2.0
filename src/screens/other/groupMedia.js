@@ -20,10 +20,8 @@ import {
 import { Header } from './../../component/';
 import IMAGE from '../../constant/image';
 import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
 import Loader from '../../component/loader';
 import Video from 'react-native-video';
-import Icon from 'react-native-vector-icons/FontAwesome';
 
 const groupMedia = ({ navigation, route }) => {
   const [image, setImage] = useState([]);

@@ -23,11 +23,11 @@ import {
 import {RippleTouchable, StoryList} from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import {APIRequestWithFile, ApiUrl, IMAGEURL, Toast} from './../../utils/api';
+import {APIRequestWithFile, ApiUrl, IMAGEURL} from './../../utils/api';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import {User} from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {Button, Textinput, PressableText} from './../../component/';
 
 export default class addTextStory extends Component {
@@ -40,7 +40,6 @@ export default class addTextStory extends Component {
   }
 
   postStory = () => {
-    // console.log('message', message);
     this.setState({isLoding: true});
     let formdata = new FormData();
     // let type = route.params?.file?.fileType == 'photo' ? 'image' : 'video';
@@ -57,11 +56,12 @@ export default class addTextStory extends Component {
     APIRequestWithFile(
       config,
       res => {
-        console.log(res);
         if (res.status) {
           this.setState({isLoding: false});
-
-          Toast(res?.alert?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
           this.props?.navigation.goBack();
         }
         this.setState({isLoding: false});

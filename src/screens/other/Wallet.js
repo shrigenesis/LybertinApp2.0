@@ -37,6 +37,9 @@ const Wallet = ({ navigation }) => {
   }
 
   useEffect(() => {
+    navigation.addListener('focus', async() => {
+      this.getEventDetails();
+    });
     setstatus(false)
     getWalletTransaction()
     return () => {
@@ -59,7 +62,14 @@ const Wallet = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => navigation.goBack()}
               style={styles.backBtn}>
-              <SvgUri source={IMAGE.svgBackBlack} />
+              <Image
+                source={IMAGE.back}
+                style={{
+                  height: 20,
+                  width: 20,
+                  resizeMode: 'contain',
+                }}
+              />
             </TouchableOpacity>
             <Text style={styles.headerText}>
               {/* {this.props.route.params.title} */}
@@ -107,7 +117,8 @@ const Wallet = ({ navigation }) => {
         <ScrollView style={{ height: hp(70) }}>
           <Text style={styles.desHeading}>Transaction History</Text>
           {status ?
-            <>{data?.data?.length > 0 ? <FlatList
+            <>{data?.data?.length > 0 ? 
+            <FlatList
               data={data.data}
               renderItem={({ item, index }) => (
                 <View
@@ -230,8 +241,9 @@ const styles = StyleSheet.create({
     padding: 15,
   },
   imageBoy: {
-    width: 43,
-    height: 43
+    width: 42,
+    height: 42,
+    borderRadius: 21
   },
   coinImage: {
     width: 31,

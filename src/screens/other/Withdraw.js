@@ -6,6 +6,8 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Toast from 'react-native-toast-message';
+
 import { color, fontFamily, fontSize, IMAGE } from '../../constant';
 import BottomSheetCustom from '../../component/BottomSheetCustom';
 import TextLineSkelton from '../../utils/skeltons/TextLineSkelton';
@@ -42,7 +44,10 @@ const Withdraw = ({ navigation, route }) => {
             },
             err => {
                 console.log(err?.response?.data);
-                alert('Try agian')
+                Toast.show({
+                    type: 'error',
+                    text1: 'Try agian'
+                });
             },
         );
 
@@ -55,22 +60,37 @@ const Withdraw = ({ navigation, route }) => {
                     if (ACCode && ACNumber && ACName) {
                         postMonyRequest()
                     } else {
-                        alert('fill bank details')
+                        Toast.show({
+                            type: 'info',
+                            text1: 'fill bank details'
+                        });
                     }
                 } else if (bankTab === 'paypal') {
                     if (PaypalID) {
                         postMonyRequest()
                     } else {
-                        alert('fill paypal details')
+                        Toast.show({
+                            type: 'info',
+                            text1: 'fill paypal details'
+                        });
                     }
                 } else {
-                    alert('Select payment method ')
+                    Toast.show({
+                        type: 'info',
+                        text1: 'Select payment method'
+                    });
                 }
             } else {
-                alert('Please withdraw amount should less total( amount - processing) fee')
+                Toast.show({
+                    type: 'info',
+                    text1: 'Please withdraw amount should less total( amount - processing) fee'
+                });
             }
         } else {
-            alert('Withdraw amount should greater then 0')
+            Toast.show({
+                type: 'info',
+                text1: 'Withdraw amount should greater then 0'
+            });
         }
     }
     useEffect(() => {
@@ -94,14 +114,20 @@ const Withdraw = ({ navigation, route }) => {
                     <TouchableOpacity
                         onPress={() => navigation.goBack()}
                         style={styles.backBtn}>
-                        <SvgUri source={IMAGE.svgBackBlack} fill={'#fff'} />
+                        <Image
+                            source={IMAGE.backWhite}
+                            style={{
+                                height: 20,
+                                width: 20,
+                                resizeMode: 'contain',
+                            }}
+                        />
                     </TouchableOpacity>
                     <Text style={styles.headerText}>
                         {/* {this.props.route.params.title} */}
                         Withdraw Money
                     </Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}>
+                    <TouchableOpacity>
                         <SvgUri source={IMAGE.svgeducationShare} />
                     </TouchableOpacity>
                 </View>
@@ -124,7 +150,7 @@ const Withdraw = ({ navigation, route }) => {
                                     keyboardType='number-pad'
                                     autoFocus={true}
                                     maxLength={3}
-                                    value={Money}
+                                    value={Money.toString()}
                                     style={styles.coinText}
                                     placeholder="   0"
                                     editable={true}
@@ -149,13 +175,13 @@ const Withdraw = ({ navigation, route }) => {
                     <View style={{ ...styles.flexRow, justifyContent: 'space-evenly', marginVertical: 30 }}>
                         <TouchableOpacity onPress={() => setbankTab('bank')}>
                             <View style={bankTab === 'bank' ? styles.bankBoxActive : styles.bankBox}>
-                                <Image style={[styles.bankImage, {width:50}]} source={IMAGE.bank} />
+                                <Image style={[styles.bankImage, { width: 50 }]} source={IMAGE.bank} />
                                 <Text>Bank</Text>
                             </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => setbankTab('paypal')}>
                             <View style={bankTab === 'paypal' ? styles.bankBoxActive : styles.bankBox}>
-                                <Image style={[styles.bankImage, {width:40}]} source={IMAGE.paypal} />
+                                <Image style={[styles.bankImage, { width: 40 }]} source={IMAGE.paypal} />
                                 <Text>PayPal</Text>
                             </View>
                         </TouchableOpacity>
@@ -172,14 +198,14 @@ const Withdraw = ({ navigation, route }) => {
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={setACNumber}
-                                    value={ACNumber}
+                                    value={ACNumber.toString()}
                                     keyboardType='number-pad'
                                     placeholder="Account Number"
                                 />
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={setACCode}
-                                    value={ACCode}
+                                    value={ACCode.toString()}
                                     keyboardType='number-pad'
                                     placeholder="Code"
                                 /></>}
@@ -340,15 +366,15 @@ const styles = StyleSheet.create({
         width: 13,
         height: 13
     },
-    buttonStyleSubmit:{
+    buttonStyleSubmit: {
         backgroundColor: color.btnBlue,
         borderWidth: 2,
         borderColor: 'white',
         borderRadius: 11,
         padding: 15
     },
-    bankImage:{
-        height: 50, 
-        marginBottom: 5 
+    bankImage: {
+        height: 50,
+        marginBottom: 5
     },
 });

@@ -10,9 +10,10 @@ import {
   TouchableOpacity,
   Platform,
   SafeAreaView,
+  StatusBar,
 } from 'react-native';
-import React, {Component} from 'react';
-import {IMAGE, color, fontFamily} from '../../constant';
+import React, { Component } from 'react';
+import { IMAGE, color, fontFamily } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -20,12 +21,15 @@ import {
 import moment from 'moment';
 import { Header } from '../../component/'
 
+
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
+
 export default class chooseEventDate extends Component {
   constructor(props) {
     super(props);
     const formatted_schedule_dates =
       this.props.route.params.allData.schedule_dates.formatted_schedule_dates.map(
-        (f, i) => ({...f, id: i + 1, selected: false}),
+        (f, i) => ({ ...f, id: i + 1, selected: false }),
       );
     this.state = {
       formatted_schedule_dates: formatted_schedule_dates,
@@ -35,18 +39,20 @@ export default class chooseEventDate extends Component {
     };
   }
 
-  componentDidMount = () => {};
+  componentDidMount = () => { };
 
   render() {
+    console.log(this.state.formatted_schedule_dates);
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={{...styles.container}}>
-          <View style={{flex: 0.92}}>
+        <View style={{ ...styles.container }}>
+          <View style={{ flex: 1, paddingTop:STATUSBAR_HEIGHT }}>
             <Header title="Choose Event Date" />
+            <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
             <FlatList
               showsVerticalScrollIndicator={false}
               data={this.state.formatted_schedule_dates}
-              renderItem={({item: d}, index) => (
+              renderItem={({ item: d }, index) => (
                 <View>
                   <TouchableOpacity
                     onPress={() => {
@@ -134,7 +140,7 @@ export default class chooseEventDate extends Component {
                         />
                       ) : (
                         <Image
-                          source={IMAGE.checkTick}
+                          source={IMAGE.checkmark_circle_outline}
                           style={styles.bottomImage}
                         />
                       )}

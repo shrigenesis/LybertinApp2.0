@@ -1,7 +1,7 @@
 import {PermissionsAndroid} from 'react-native';
 import Document from 'react-native-document-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {
   check,
   request,
@@ -114,7 +114,10 @@ export const requestPermission = async permissionFor => {
     if (permission == 'granted') {
       return true;
     } else {
-      SimpleToast.show('Please Enable Permissions from Settings');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enable Permissions from Settings'
+      })
       return false;
     }
   } catch (err) {

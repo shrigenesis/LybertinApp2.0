@@ -1,21 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Alert, Modal, StyleSheet, Text, Pressable, View } from 'react-native';
-import { color, fontFamily, fontSize } from '../../../constant';
+import { Alert, Modal, StyleSheet, Text, Pressable, View, TouchableOpacity, Image } from 'react-native';
+import { IMAGE, color, fontFamily, fontSize } from '../../../constant';
 
-const TwitterAuthorization = () => {
-  const [modalVisible, setModalVisible] = useState(true);
+const TwitterAuthorization = (props) => {
+  // const [modalVisible, setModalVisible] = useState(true);
 
   return (
     <View style={styles.centeredView}>
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
+        visible={props.twitterAuthorization}
         onRequestClose={() => {
           // Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
+          props.TwittwrShare(false)
+        }}
+      >
         <View style={styles.centeredView}>
+          <Pressable
+            onPress={() => props.TwittwrShare(false)}
+            style={styles.closeBtn}>
+            <Image style={styles.closeBtnImage} source={IMAGE.close} />
+          </Pressable>
           <View style={styles.modalView}>
             <View style={styles.headingBox}>
               <Text style={styles.heading}>Confirm your participation</Text>
@@ -24,12 +30,11 @@ const TwitterAuthorization = () => {
               We will post a message on your Twitter account to market this
               event. In the next screen you will see the message which will be
               posted on your twitter account.
-              Vipul Vipul
             </Text>
             <View style={styles.btnBox}>
               <Pressable
                 style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
+                onPress={() => props.TwittwrShare(true)}>
                 <Text style={styles.textStyle}>Yes I'm Interested</Text>
               </Pressable>
             </View>
@@ -45,14 +50,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 22,
+    backgroundColor: color.extralightBlack
   },
   modalView: {
-    width: '80%',
-    margin: 20,
+    width: 280,
     backgroundColor: 'white',
     borderRadius: 20,
-    overflow:'hidden',
+    overflow: 'hidden',
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: {
@@ -62,9 +66,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
     elevation: 5,
+
   },
-  btnBox:{
-    width:'100%',
+  btnBox: {
+    width: '100%',
     backgroundColor: color.btnBlue
   },
   button: {
@@ -97,6 +102,18 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingTop: 10,
   },
+  closeBtn:{
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+    left: 140,
+    top: 7
+  },
+  closeBtnImage:{
+    width: 20,
+    height: 20,
+    resizeMode: 'contain',
+  }
 });
 
 export default TwitterAuthorization;

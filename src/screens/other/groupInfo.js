@@ -32,9 +32,9 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
+
 
 let apiMethod = '/leave';
 let apiUrl = ApiUrl.groups;
@@ -99,18 +99,25 @@ export default class groupInfo extends Component {
   exitGroup = () => {
     this.setState({isLoading: true});
     let config = {
-      url: `${apiUrl}${this.state.groupId}${apiMethod}`,
+      url: `${apiUrl}/${this.state.groupId}${apiMethod}`,
       method: 'post',
     };
 
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res);
+        Toast.show({
+          type: 'success',
+          text1:res?.message
+        })
       },
       err => {
         this.setState({isLoading: false});
         console.log(err?.response?.data);
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong'
+        })
       },
     );
   };
@@ -118,18 +125,25 @@ export default class groupInfo extends Component {
   deleteGroup = () => {
     this.setState({isLoading: true});
     let config = {
-      url: `${apiUrl}${this.state.groupId}${apiMethodNew}`,
+      url: `${apiUrl}/${this.state.groupId}${apiMethodNew}`,
       method: 'post',
     };
 
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res);
+        Toast.show({
+          type: 'success',
+          text1: 'Deleted group successfully'
+        })
       },
       err => {
         this.setState({isLoading: false});
         console.log(err?.response?.data);
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong'
+        })
       },
     );
   };
@@ -148,8 +162,10 @@ export default class groupInfo extends Component {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res);
-        SimpleToast.show(res?.message);
+        Toast.show({
+          type: 'success',
+          text1:res?.message
+        })
         this.props.navigation.navigate('Groups');
       },
       err => {

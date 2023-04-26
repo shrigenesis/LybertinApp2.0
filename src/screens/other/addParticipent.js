@@ -31,9 +31,8 @@ import {
   ApiUrl,
   APIRequestWithFile,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import {pickImage} from '../../component/';
 import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -56,7 +55,6 @@ export default class addParticipent extends Component {
   }
 
   componentDidMount() {
-    console.log('-----------------------', this.state.groupId);
     this.getGroupInfo();
   }
 
@@ -70,7 +68,6 @@ export default class addParticipent extends Component {
     APIRequest(
       config,
       res => {
-        console.log('Api response===', res.data.add_more_participent_list);
         this.setState({
           participents: res.data.add_more_participent_list,
         });
@@ -117,13 +114,16 @@ export default class addParticipent extends Component {
           selectUserList: [],
         });
         if (res?.status) {
-          SimpleToast.show('Add Participent Done');
+          Toast.show({
+            type: 'success',
+            text1: 'Add Participent Done'
+          })
           this.props?.navigation.goBack();
         }
       },
       err => {
         this.setState({isLoading: false});
-        console.log('@@@@@@@', err?.response?.data);
+        console.log(err?.response?.data);
       },
     );
   };

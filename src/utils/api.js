@@ -3,11 +3,12 @@
 import axios from 'axios';
 import { FC, useContext } from 'react';
 import { User } from './user';
-import SimpleToast from 'react-native-simple-toast';
 import { LoginContext } from '../context/LoginContext';
+import Toast from 'react-native-toast-message';
 
 // let BASEURL = 'http://192.168.0.120:8000';
 export const BASEURL = 'https://stage.shrigenesis.com';
+// export const BASEURL = 'https://lybertine.com';
 export const domainUriPrefix='https://lybertineapp.page.link';
 export const twitterSuccessUrl = `${BASEURL}/twitterSuccess`
 export const twitterFailUrl = `${BASEURL}/twitterFail`
@@ -21,11 +22,11 @@ export const IMAGEURL = `${BASEURL}/storage`;
 
 export const BaseURL = 'https://lybertine.com/storage'
 
-export const Toast = msg => {
-  if (msg && typeof msg == 'string') {
-    SimpleToast.show(msg);
-  }
-};
+// export const Toast = msg => {
+//   if (msg && typeof msg == 'string') {
+//     SimpleToast.show(msg);
+//   }
+// };
 
 export const ApiUrl = {
   login: `${apiBaseUrl}auth/login`,
@@ -99,6 +100,7 @@ export const ApiUrl = {
   organiserTotalEarning: `${apiBaseUrl}events/organiser_total_earning`,
   highlightIndex: `${apiBaseUrl}highlight/index`,
   checkinCheckout: `${apiBaseUrl}events/checkin-checkout`,
+  reportUser: `${apiBaseUrl}report-user`,
 
   // Marketing
   getDeeplink: `${apiMarketingBaseUrl}generate-promotional-event-deeplink`,
@@ -114,6 +116,7 @@ export const ApiUrl = {
   educationListFilter: `${apiBaseUrl}courses-filter`, 
   educationBuy: `${apiBaseUrl}courses/buy/course`, 
   educationPurchased: `${apiBaseUrl}courses/purchased`, 
+  educationAddInterest: `${apiBaseUrl}user-courses-interest`, 
 };
 
 export const APIRequest = async (config = {}, onSuccess, onError, noAuth = null) => {
@@ -153,12 +156,14 @@ export const APIRequest = async (config = {}, onSuccess, onError, noAuth = null)
 
       })
       .catch(err => {
-        console.log("=================================>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",err);
         onError(err);
       });
   } catch (error) {
     console.log("error", error);
-    Toast(error);
+    Toast.show({
+      type: 'error',
+      text1: error
+    });
   }
 };
 
@@ -186,6 +191,9 @@ export const APIRequestWithFile = async (config = {}, onSuccess, onError) => {
         onError(err);
       });
   } catch (error) {
-    Toast(error);
+    Toast.show({
+      type: 'error',
+      text1: error
+    });
   }
 };

@@ -21,10 +21,9 @@ import {
 import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
-
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import { User } from '../../utils/user';
 import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
@@ -38,7 +37,10 @@ const _renderChatList = React.memo(({ item, userId, navigation, reload, setisLoa
   const pinUnpinChatList = item => {
 
     if (pinnedChatCount >= 3 && item?.is_pinned == '0') {
-      Toast('You can pin upto 3 conversations');
+      Toast.show({
+        type: 'info',
+        text1: 'You can pin upto 3 conversations'
+      })
       return false;
     }
     setisLoading(true);
@@ -76,7 +78,10 @@ const _renderChatList = React.memo(({ item, userId, navigation, reload, setisLoa
     APIRequest(
       config,
       res => {
-        SimpleToast.show(res.message);
+        Toast.show({
+          type: 'success',
+          text1: res.message
+        })
         // fetchChatList()
       },
       err => { },

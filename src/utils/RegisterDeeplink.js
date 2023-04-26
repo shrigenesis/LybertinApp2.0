@@ -10,7 +10,6 @@ if (RouteType === "education") {
 }
 
 
-
   const token = link?.split("token=")[1];
     let config = {
       url: `${ApiUrl.registerDeeplink}`,

@@ -21,13 +21,13 @@ import {
   APIRequestWithFile,
   ApiUrl,
   IMAGEURL,
-  Toast,
 } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
 import io from 'socket.io-client';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
+
 import { Divider } from 'react-native-elements';
 
 // const Socket = io.connect('https://nodejs.shrigenesis.com/');
@@ -59,12 +59,12 @@ class Chat extends React.Component {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
 
-      // setTimeout(() => {
+      setTimeout(() => {
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
         this.fetchChatList(user_id);
       }
-      // }, 300);
+      }, 300);
 
       this.socketEvents();
     });
@@ -72,7 +72,7 @@ class Chat extends React.Component {
 
   socketEvents = () => {
     let userdata = new User().getuserdata();
-
+    console.log(Socket);
     Socket.emit('setup', userdata.id);
     Socket.on('connected', () => {
       console.log('join connected');
@@ -147,7 +147,9 @@ class Chat extends React.Component {
         if (res.status) {
           let data = res?.conversation?.data;
           if (res.roomId) {
-            Socket.emit('join chat', res.roomId);
+            this.socketEvents();
+
+            // Socket.emit('join chat', res.roomId);
           }
           let chatData = this.state.chatList.concat(data);
 
@@ -177,7 +179,6 @@ class Chat extends React.Component {
     });
 
     let data = [res.conversation, ...this.state.chatList];
-    console.log("---------", data);
 
     this.setState({
       isLoading: false,
@@ -194,7 +195,10 @@ class Chat extends React.Component {
 
   sendMessage = () => {
     if (this.state.message == '') {
-      SimpleToast.show('Message Required');
+      Toast.show({
+        type: 'info',
+        text1: 'Message Required'
+      })
     } else {
       this.onTyping(false);
       this.setState({ isLoading: true });
@@ -216,10 +220,10 @@ class Chat extends React.Component {
         },
         err => {
           this.setState({ isLoading: false });
-          SimpleToast.show(err?.response?.data.message);
-
-          // alert( err?.response?.data.message);
-          // console.log( "koidjoidjifj", err?.response?.data.message);
+          Toast.show({
+            type: 'error',
+            text1: err?.response?.data.message
+          })
         },
       );
     }

@@ -21,16 +21,17 @@ import {
 } from 'react-native-responsive-screen';
 import {Divider, Input, Overlay} from 'react-native-elements';
 
-import {RippleTouchable, StoryList} from '../../component/';
+import {Header, RippleTouchable, StoryList} from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import {APIRequest, ApiUrl, IMAGEURL, Toast} from './../../utils/api';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
 import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import {User} from '../../utils/user';
 import {FA5Style} from 'react-native-vector-icons/FontAwesome5';
 import {Download} from './../../utils/download';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default class ticketDetailsqrcode extends Component {
   constructor(props) {
@@ -71,7 +72,10 @@ export default class ticketDetailsqrcode extends Component {
 
         console.log('API response  =====', res);
         if (res?.status) {
-          SimpleToast.show(res?.message);
+          Toast.show({
+            type: 'success',
+            text1: res?.message
+          })
         }
       },
       err => {
@@ -90,9 +94,8 @@ export default class ticketDetailsqrcode extends Component {
     return (
       <ScrollView style={styles.container}>
         <Loader type="dots" isLoading={this.state.isLoading} />
-
         <View style={{marginHorizontal: '4%', marginVertical: '6%'}}>
-          <View style={styles.headerContainer}>
+        <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={IMAGE.back}

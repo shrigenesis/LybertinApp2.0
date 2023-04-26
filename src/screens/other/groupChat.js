@@ -23,12 +23,11 @@ import {
   ApiUrl,
   IMAGEURL,
   socketUrl,
-  Toast,
 } from './../../utils/api';
 import { BottomView, RenderBottomSheet, ChatItemgroup } from './chatComponent/';
 import io from 'socket.io-client';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 
@@ -66,14 +65,14 @@ class GroupChat extends React.Component {
       this.setState({ appReady: true });
       // let group_id = this.props?.route?.params?.group_id;
       // setTimeout(() => {
-        let group_id = this.props?.route?.params?.group_id;
-        if (group_id) {
-          this.setState({
-            group_id: group_id,
-          });
-          this.fetchGroupDetail(group_id);
-          this.fetchChatList(group_id);
-        }
+      let group_id = this.props?.route?.params?.group_id;
+      if (group_id) {
+        this.setState({
+          group_id: group_id,
+        });
+        this.fetchGroupDetail(group_id);
+        this.fetchChatList(group_id);
+      }
       // }, 300);
 
       this.socketEvents();
@@ -199,7 +198,10 @@ class GroupChat extends React.Component {
     let userdata = new User().getuserdata();
 
     if (this.state.message == '') {
-      SimpleToast.show('Message Required');
+      Toast.show({
+        type: 'info',
+        text1: 'Message Required'
+      })
     } else {
       // this.setState({ isLoading: true });
       let reply_on = null;

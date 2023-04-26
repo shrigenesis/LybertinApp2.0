@@ -31,6 +31,7 @@ import moment from 'moment';
 import { User } from '../../utils/user';
 import EducationListItem from './educationListItem';
 import EventListSkelton from '../../utils/skeltons/eventListSkelton';
+import NoRecord from './noRecord';
 
 export default class FeaturedCourse extends Component {
   constructor(props) {
@@ -63,12 +64,10 @@ export default class FeaturedCourse extends Component {
         end_date: this.state.endDate,
       },
     };
-    console.log(config);
     APIRequest(
       config,
 
       res => {
-        console.log(res, "=======================");
         this.setState({
           data: res.data,
         });
@@ -90,6 +89,11 @@ export default class FeaturedCourse extends Component {
   render() {
     return (
       <View style={styles.container}>
+        <StatusBar
+          barStyle={'dark-content'}
+          translucent
+          backgroundColor={color.transparent}
+        />
         <View style={{ marginHorizontal: '4%' }}>
           <View style={styles.headerContainer}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
@@ -102,10 +106,9 @@ export default class FeaturedCourse extends Component {
                 }}
               />
             </TouchableOpacity>
-
             <Text style={styles.headerText}>Filter</Text>
             <TouchableOpacity
-              onPress={() => this.props.navigation.navigate('filterScreen')}>
+              onPress={() => this.props.navigation.navigate('filterScreenEducation')}>
               <Image
                 source={IMAGE.filterList}
                 style={{
@@ -119,13 +122,21 @@ export default class FeaturedCourse extends Component {
         </View>
         <View style={{ flex: 1, backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
           {!this.state.isLoading ?
-            <FlatList
-              data={this.state.data}
-              keyExtractor={index => `featuredCourse-${index}`}
-              renderItem={({ item, index }) => this.renderEventBox(item, index)}
-              //Setting the number of column
-              numColumns={2}
-            /> :
+            this.state.data.length > 0 ?
+              <FlatList
+                data={this.state.data}
+                keyExtractor={index => `featuredCourse-${index}`}
+                renderItem={({ item, index }) => this.renderEventBox(item, index)}
+                //Setting the number of column
+                numColumns={2}
+              /> :
+              <NoRecord
+                image={IMAGE.noConversation}
+                title="No Courses found"
+                description="You will get Featured and Live conferences Courses here."
+                showButton={false}
+              />
+            :
             <FlatList
               keyExtractor={index => `featuredCourseSkelton-${index}`}
               showsVerticalScrollIndicator={false}
@@ -146,7 +157,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: null,
-    // backgroundColor: 'red',
+    marginTop: 25,
+    // backgroundColor: color.lightGray,
   },
   headerContainer: {
     flexDirection: 'row',

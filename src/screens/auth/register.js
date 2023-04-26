@@ -15,10 +15,11 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
+import Toast from 'react-native-toast-message';
 import { color, IMAGE, fontFamily } from '../../constant/';
 import { User } from '../../utils/user';
 import { Button, Textinput } from './../../component/';
-import { APIRequest, ApiUrl, Toast } from './../../utils/api';
+import { APIRequest, ApiUrl } from './../../utils/api';
 import { LoginContext } from './../../context/LoginContext';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -121,8 +122,17 @@ const Register = ({ navigation }) => {
         err => {
           setisLoading(false);
           if (err?.response?.data) {
-            Toast(err?.response?.data?.error?.email?.[0]);
-            Toast(err?.response?.data?.error?.username?.[0]);
+            if (err?.response?.data?.error?.email?.[0] !== "") {
+              Toast.show({
+                type: 'error',
+                text1:err?.response?.data?.error?.email?.[0]
+              });
+            } else {
+              Toast.show({
+                type: 'error',
+                text1:err?.response?.data?.error?.username?.[0]
+              });
+            }
           }
         },
       );
@@ -181,6 +191,10 @@ const Register = ({ navigation }) => {
           console.log(err?.response?.data);
           if (err?.response?.data) {
             setemailError(err?.response?.data?.error);
+            Toast.show({
+              type: 'info',
+              text1: err?.response?.data?.error
+            })
           }
         },
       );
@@ -190,27 +204,45 @@ const Register = ({ navigation }) => {
   const validation = () => {
 
     if (name == '') {
-      Toast('Please Enter Name');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Name',
+      });
       return false;
     }
     if (username == '') {
-      Toast('Please Enter Username');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Username',
+      });
       return false;
     }
     if (email == '') {
-      Toast('Please Enter Email');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Email',
+      });
       return false;
     }
     if (password == '') {
-      Toast('Please Enter Password');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Password',
+      });
       return false;
     }
     if (password?.length < 6) {
-      Toast('Please Enter Valid Password');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Enter Valid Password',
+      });
       return false;
     }
     if (CheckedBox == false) {
-      Toast('Please Select Terms & Conditions');
+      Toast.show({
+        type: 'info',
+        text1: 'Please Select Terms & Conditions ',
+      });
       return false;
     } else {
       return true;
@@ -218,6 +250,7 @@ const Register = ({ navigation }) => {
   };
 
   const _googleLogin = async () => {
+    console.log('ghnfgnfgjntfg');
     try {
       GoogleSignin.signOut();
       setisLoading(true);
@@ -363,7 +396,10 @@ const Register = ({ navigation }) => {
         console.log(err.response?.data);
         setisLoading(false);
         if (err?.response?.data) {
-          Toast(err?.response?.data?.error);
+          Toast.show({
+            type: 'error',
+            text1: err?.response?.data?.error,
+          });
         }
       },
     );
@@ -459,7 +495,7 @@ const Register = ({ navigation }) => {
                   onChangeCheckedBox();
                 }}>
                 <Image
-                  source={CheckedBox ? IMAGE.checkNewFill : IMAGE.checkTick}
+                  source={CheckedBox ? IMAGE.checkNewFill : IMAGE.checkmark_circle_outline}
                   style={style.checkIcon}
                 />
 

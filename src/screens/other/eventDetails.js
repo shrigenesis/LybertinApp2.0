@@ -15,8 +15,10 @@ import {
   Platform,
   ImageBackground,
   Share,
+  Pressable,
+  Linking,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -24,17 +26,22 @@ import {
 import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
+import CountDown from 'react-native-countdown-fixed';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import { User } from '../../utils/user';
-import SimpleToast from 'react-native-simple-toast';
+import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { SliderBox } from "react-native-image-slider-box";
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
+import HtmlToText from '../../utils/HtmlToText';
+import ReadMore from '@fawazahmed/react-native-read-more';
+import RedirectToMap from '../../utils/RedirectToMap';
 
+
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 let myHTML = '';
-let strippedHtml = myHTML.replace(/<[^>]+>/g, '');
 
 export default class eventDetails extends Component {
   constructor(props) {
@@ -52,6 +59,7 @@ export default class eventDetails extends Component {
       tag_group_new: [],
       isLoading: true,
     };
+    this.strippedHtml = ""
   }
 
   componentDidMount = () => {
@@ -82,10 +90,8 @@ export default class eventDetails extends Component {
             hosts: res.tag_groups.speaker,
             dance: res.tag_groups.dance,
             images: res.event.images,
+            strippedHtml: HtmlToText(res.event.description)
           });
-          myHTML = res.event.description;
-          strippedHtml = myHTML.replace(/<[^>]+>/g, '');
-
           // setrequestCount(res.follow_requests);
         }
         this.setState({ ...this.state, isLoading: false })
@@ -97,6 +103,11 @@ export default class eventDetails extends Component {
     );
   };
 
+  getSaleExpirationSeconds(originTime) {
+    const eventDateTime = moment(originTime);
+    const currentDateTime = moment();
+    return eventDateTime.diff(currentDateTime, 'seconds');
+  }
   sliderImageArray = (images) => {
     let res = [];
     for (let i = 0; i < images.length; i++) {
@@ -128,7 +139,16 @@ export default class eventDetails extends Component {
       // <SafeAreaView style={{flex: 1}}>
       <>
         {!this.state.isLoading ? <View style={styles.container}>
-          <StatusBar barStyle={'light-content'} backgroundColor={color.white} />
+          <StatusBar barStyle={'dark-content'} translucent={true} backgroundColor={color.transparent} />
+          <View
+            style={[styles.backBtn, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
+            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+              <Image
+                source={IMAGE.ArrowLeft}
+                style={styles.backBtnImage}
+              />
+            </TouchableOpacity>
+          </View>
           <ScrollView style={{ flex: 0.92 }}>
             <SliderBox
               images={this.sliderImageArray(this.state.images)}
@@ -163,30 +183,10 @@ export default class eventDetails extends Component {
           /> */}
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                marginHorizontal: '5%',
-                marginTop: Platform.OS == "ios" ? '-60%' : '-80%',
-              }}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={IMAGE.ArrowLeft}
-                  style={{
-                    height: 32,
-                    width: 32,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </TouchableOpacity>
-
-            </View>
-
-            <View
-              style={{
-                marginTop: Platform.OS == "ios" ? '40%' : '50%',
+                marginTop: -30,
                 height: 30,
                 borderTopLeftRadius: 30,
-                borderTopRightRadius: 40,
+                borderTopRightRadius: 30,
                 backgroundColor: '#F9F9FA',
               }}></View>
             <View
@@ -214,6 +214,22 @@ export default class eventDetails extends Component {
                 <Text style={styles.ultimateText}>
                   {this.state.event.excerpt}
                 </Text>
+                {this.state.event.hashtags.length > 0 ?
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
+                    style={{
+                      flexDirection: 'row',
+                      margin: 5,
+                      flexWrap: 'wrap',
+                      marginHorizontal: 15
+                    }}>
+                    {this.state.event.hashtags.map(item => (
+                      <Text style={styles.tagText}>#{item.title}</Text>
+                    ))}
+                  </ScrollView>
+                  : null
+                }
 
                 <View style={styles.imageContainer}>
                   <Image
@@ -246,7 +262,16 @@ export default class eventDetails extends Component {
                     }}
                   />
 
-                  <View>
+                  <Pressable
+                    onPress={() =>
+                      RedirectToMap(
+                        this.state.event.venue && this.state.event.venue,
+                        this.state.event.state && ", " + this.state.event.state,
+                        this.state.event.city && ", " + this.state.event.city,
+                        this.state.event.zipcode && ", " + this.state.event.zipcode
+                      )
+                    }
+                  >
                     <Text style={styles.dateText}>Location</Text>
                     <Text style={styles.timeText} numberOfLines={2}>
                       {this.state.event.venue && this.state.event.venue}
@@ -254,7 +279,7 @@ export default class eventDetails extends Component {
                       {this.state.event.city && ", " + this.state.event.city}
                       {this.state.event.zipcode && ", " + this.state.event.zipcode}
                     </Text>
-                  </View>
+                  </Pressable>
                 </View>
 
                 {this.state.event.repetitive === 1 ? (
@@ -280,36 +305,19 @@ export default class eventDetails extends Component {
                 ) : (
                   <View></View>
                 )}
-
-                {strippedHtml == '' ? (
-                  <Text></Text>
-                ) : (
+                <View style={styles.descriptionWrapper}>
+                  <Text style={styles.desHeading}>Event Description</Text>
                   <View>
-                    <View style={styles.descriptionWrapper}>
-                      <Text style={styles.desHeading}>Event Description</Text>
-                      {this.state.showText == 0 ? (
-                        <View>
-                          <Text style={styles.desText} numberOfLines={2}>
-                            {strippedHtml}
-                          </Text>
-                          <Text
-                            onPress={() =>
-                              this.setState({
-                                showText: 1,
-                              })
-                            }
-                            style={{ color: color.btnBlue, alignSelf: 'flex-end' }}>
-                            ...Read more{' '}
-                          </Text>
-                        </View>
-                      ) : (
-                        <View>
-                          <Text style={styles.desText}>{strippedHtml}</Text>
-                        </View>
-                      )}
-                    </View>
+                    <ReadMore
+                      numberOfLines={4}
+                      style={styles.desText}
+                      seeMoreText='read more'
+                      seeMoreStyle={{ color: color.btnBlue }}>
+                      {this.state.strippedHtml}
+                    </ReadMore>
                   </View>
-                )}
+                </View>
+
                 {this.state.isRepetative === true && (
                   <View style={styles.ticketWrapper}>
                     <View>
@@ -391,6 +399,32 @@ export default class eventDetails extends Component {
                         </TouchableOpacity>
                       )}
                     />
+                    <View style={styles.saleWrapper}>
+                      <CountDown
+                        until={this.getSaleExpirationSeconds(
+                          this.state.event.end_date,
+                        )}
+                        size={15}
+                        onFinish={() => this.saleFinished()}
+                        digitTxtStyle={{ color: color.btnBlue }}
+                        digitStyle={{
+                          backgroundColor: '#fff',
+                          marginTop: 0,
+                        }}
+                        timeLabelStyle={{
+                          fontSize: 12,
+                          fontFamily: fontFamily.Semibold,
+                          color: '#000',
+                        }}
+                        timeToShow={['D', 'H', 'M', 'S']}
+                        timeLabels={{
+                          d: 'D',
+                          h: 'H',
+                          m: 'M',
+                          s: 'S',
+                        }}
+                      />
+                    </View>
                   </View>
                 )}
                 {this.state.tag_group_new?.length > 0 &&
@@ -437,7 +471,11 @@ export default class eventDetails extends Component {
                       end_time: this.state?.event?.end_time
                     },
                   })
-                  : SimpleToast.show('Choose event date')
+                  :
+                  Toast.show({
+                    type: 'error',
+                    text1: 'Choose event date'
+                  })
               }
               style={{
                 flex: 0.08,
@@ -609,5 +647,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center"
-  }
+  },
+  backBtn: {
+    position: 'absolute',
+    left: 15,
+    zIndex: 1
+  },
+  backBtnImage: {
+    height: 32,
+    width: 32,
+    resizeMode: 'contain',
+  },
+  saleWrapper: {
+    marginTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  tagText: {
+    fontSize: fontSize.size11,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: color.liteRed,
+    color: color.liteBlueMagenta,
+    borderRadius: 3,
+    marginRight: 4,
+  },
 });

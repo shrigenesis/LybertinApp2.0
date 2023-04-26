@@ -47,7 +47,7 @@ const Header = props => {
               onPress={() => {
                 navigation && leftRoute
                   ? navigation.navigate(leftRoute, LeftRouteParams)
-                  : navigation.goBack();
+                  : navigation.goBack(null);
               }}>
               <Icon
                 name={'angle-left'}

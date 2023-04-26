@@ -49,11 +49,12 @@ const TicketListSkelton = () => {
         flexDirection: "row",
         alignItems: "center",
         marginVertical: 10,
-        marginHorizontal: 20
+        marginHorizontal: 20,
+        backgroundColor: color.background
     },
     image:{
-        width: 100,
-        height: 70,
+        width: 130,
+        height: 120,
         backgroundColor: color.borderGray
     },
     rightWrapper:{

@@ -20,7 +20,7 @@
   self.initialProps = @{};
 [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
  
-  [BTAppSwitch setReturnURLScheme:@"org.demo.lybertineApp.payments"];
+  [BTAppContextSwitcher setReturnURLScheme:@"org.demo.lybertineApp.payments"];
 
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
       center.delegate = self;

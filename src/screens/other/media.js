@@ -20,9 +20,8 @@ import {
 } from 'react-native-responsive-screen';
 import {Header} from './../../component/';
 import IMAGE from '../../constant/image';
-import {APIRequest, ApiUrl, IMAGEURL, Toast} from './../../utils/api';
-import SimpleToast from 'react-native-simple-toast';
-import Loader from '../../component/loader';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
+import Loader from '../../component/loader'; 
 import Video from 'react-native-video';
 import NoRecord from './noRecord';
 
