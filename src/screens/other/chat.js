@@ -55,7 +55,7 @@ class Chat extends React.Component {
     this.snapPoints = [1, 300];
   }
 
-  componentDidMount() {
+  componentDidMount() { 
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
 
