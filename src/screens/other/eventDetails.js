@@ -141,7 +141,7 @@ export default class eventDetails extends Component {
         {!this.state.isLoading ? <View style={styles.container}>
           <StatusBar barStyle={'dark-content'} translucent={true} backgroundColor={color.transparent} />
           <View
-            style={styles.backBtn}>
+            style={[styles.backBtn, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
               <Image
                 source={IMAGE.ArrowLeft}
@@ -311,9 +311,8 @@ export default class eventDetails extends Component {
                     <ReadMore
                       numberOfLines={4}
                       style={styles.desText}
-                      seeMoreText=' ...read more'
-                      ellipsis=''
-                      seeMoreStyle={{ color: color.btnBlue}}>
+                      seeMoreText='read more'
+                      seeMoreStyle={{ color: color.btnBlue }}>
                       {this.state.strippedHtml}
                     </ReadMore>
                   </View>
@@ -578,9 +577,10 @@ const styles = StyleSheet.create({
     marginTop: '1%',
   },
   desText: {
-    fontSize: fontSize.size13,
+    fontSize: Platform.OS == 'ios' ? 16 : 15,
     fontFamily: fontFamily.Medium,
-    color: color.blueMagenta,
+    color: '#191926',
+    marginTop: '4%',
   },
   ticketsText: {
     fontSize: 23,
@@ -651,7 +651,6 @@ const styles = StyleSheet.create({
   backBtn: {
     position: 'absolute',
     left: 15,
-    top: STATUSBAR_HEIGHT + 15,
     zIndex: 1
   },
   backBtnImage: {

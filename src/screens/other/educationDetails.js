@@ -210,7 +210,7 @@ export default class educationDetails extends Component {
       <View style={styles.container}>
         <StatusBar barStyle={'light-content'} translucent={true} backgroundColor={color.transparent} />
         <View
-          style={styles.backBtnPosition}>
+          style={[styles.backBtnPosition, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Image
               source={IMAGE.ArrowLeft}
@@ -293,9 +293,8 @@ export default class educationDetails extends Component {
                         <ReadMore
                           numberOfLines={4}
                           style={styles.desText}
-                          seeMoreText=' ...read more'
-                          ellipsis=''
-                          seeMoreStyle={{ color: color.btnBlue}}>
+                          seeMoreText='read more'
+                          seeMoreStyle={{ color: color.btnBlue }}>
                           {this.state.strippedHtml}
                         </ReadMore>
                       </View>
@@ -528,7 +527,6 @@ const styles = StyleSheet.create({
   backBtnPosition: {
     position: 'absolute',
     left: 15,
-    top: STATUSBAR_HEIGHT + 15,
     zIndex: 1
   },
   headingText: {

@@ -384,7 +384,6 @@ export default class buyTicket extends Component {
               text1: res?.message
             })
             if (res.message == 'Congrats! Booking Successful.') {
-              console.log('first==');
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
               if (res?.clientToken) {
@@ -456,7 +455,6 @@ export default class buyTicket extends Component {
                 type: 'success',
                 text1: 'Congrats! Booking Successful.'
               })
-              console.log('sec==');
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
               console.log(res?.url);
@@ -470,7 +468,7 @@ export default class buyTicket extends Component {
         console.log(err?.response);
         Toast.show({
           type: 'error',
-          text1: err?.response?.data?.message
+          text1: 'Something went wrong'
         })
       },
     );
@@ -843,7 +841,7 @@ export default class buyTicket extends Component {
     };
 
     return (
-      <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: STATUSBAR_HEIGHT }}>
+      <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 0) }}>
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title="Buy Ticket" />
         {this.state.paymenturl != null ? (
@@ -908,8 +906,8 @@ export default class buyTicket extends Component {
                     <View style={styles.divider}></View>
                     <Text style={styles.upperText}>Start - End Date</Text>
                     <Text style={styles.bottomText}>
-                      {moment(this.state?.from_date).format('DD MMM YYYY')} -{' '}
-                      {moment(this.state.to_date).format('DD MMM YYYY')}
+                      {moment(this.state?.from_date).format('ddd MMM YYYY')} -{' '}
+                      {moment(this.state.to_date).format('ddd MMM YYYY')}
                     </Text>
                     <View style={styles.divider}></View>
                     <Text style={styles.upperText}>Timings</Text>

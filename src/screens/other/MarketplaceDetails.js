@@ -312,7 +312,7 @@ export default class MarketplaceDetails extends Component {
             <View style={styles.container}>
                 <StatusBar barStyle={'light-content'} translucent backgroundColor="transparent" />
                 <View
-                    style={styles.backBtnPosition}>
+                    style={[styles.backBtnPosition, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
                     <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                         <Image
                             source={IMAGE.ArrowLeft}
@@ -352,8 +352,8 @@ export default class MarketplaceDetails extends Component {
                                             flexWrap: 'wrap',
                                             marginHorizontal: 15
                                         }}>
-                                        {this.state.event.hashtags.map(item => (
-                                            <Text style={styles.tagText}>#{item.title}</Text>
+                                        {this.state.event.hashtags.map((item,index) => (
+                                            <Text key={`hastagList${index}`} style={styles.tagText}>#{item.title}</Text>
                                         ))}
                                     </ScrollView>
                                     : null
@@ -522,8 +522,7 @@ export default class MarketplaceDetails extends Component {
                                             <ReadMore
                                                 numberOfLines={4}
                                                 style={styles.desText}
-                                                seeMoreText=' ...read more'
-                                                ellipsis=''
+                                                seeMoreText='read more'
                                                 seeMoreStyle={{ color: color.btnBlue }}>
                                                 {strippedHtml}
                                             </ReadMore>
@@ -785,7 +784,7 @@ const styles = StyleSheet.create({
         left: 15,
         top: STATUSBAR_HEIGHT + 15,
         zIndex: 1
-    },
+      },
     bodyContainer: {
         marginTop: -30,
         height: 30,

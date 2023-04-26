@@ -1,5 +1,5 @@
 {
-  "name": "LybertineApp",
+  "name": "lybertine-app",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -18,11 +18,11 @@
     "@react-native-community/datetimepicker": "^6.7.5",
     "@react-native-community/netinfo": "^9.3.8",
     "@react-native-community/push-notification-ios": "^1.10.1",
-    "@react-native-firebase/app": "^15.0.0",
-    "@react-native-firebase/auth": "^15.7.0",
+    "@react-native-firebase/app": "^17.4.2",
+    "@react-native-firebase/auth": "^17.4.2",
     "@react-native-firebase/dynamic-links": "^17.3.2",
     "@react-native-firebase/messaging": "^15.7.0",
-    "@react-native-google-signin/google-signin": "^7.2.2",
+    "@react-native-google-signin/google-signin": "^9.0.2",
     "@react-native-picker/picker": "^2.4.8",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/drawer": "^6.6.2",
