@@ -92,6 +92,7 @@ export const ApiUrl = {
   scanTicket: `${apiBaseUrl}events/scan-ticket`,
   eventFilter: `${apiBaseUrl}events/filter`,
   eventIndex: `${apiBaseUrl}events/index`,
+  eventReport: `${apiBaseUrl}events/report-booking`,
   organizerEvents: `${apiBaseUrl}events/organizer-events`,
   courses: `${apiBaseUrl}courses`,
   getCityBasedOncountry: `${apiBaseUrl}events/getCityBasedOncountry`,

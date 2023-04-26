@@ -73,7 +73,7 @@ export default class TicketMediaScreen extends Component {
 
   render() {
     return (
-      <ScrollView>
+      <View>
         {this.state.isLoading ?
           <FlatList
             data={[1, 2, 3,4]}
@@ -98,7 +98,7 @@ export default class TicketMediaScreen extends Component {
               />
             </View>
           ) : (
-            <View style={{ marginBottom: hp(70) }}>
+            <View style={{ height: hp(75) }}>
               <FlatList
                 //   horizontal
                 showsVerticalScrollIndicator={false}
@@ -112,7 +112,6 @@ export default class TicketMediaScreen extends Component {
                       })
                     }
                     style={{
-                      marginRight: 10,
                       marginTop: 20,
                       backgroundColor: color.background,
                       borderRadius: 10,
@@ -144,7 +143,8 @@ export default class TicketMediaScreen extends Component {
               />
             </View>
           )}
-      </ScrollView>
+          
+      </View>
     );
   }
 }

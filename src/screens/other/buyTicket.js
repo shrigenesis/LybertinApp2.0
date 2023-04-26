@@ -23,7 +23,7 @@ import {
 import RNPickerSelect from 'react-native-picker-select';
 import BraintreeDropIn from 'react-native-braintree-dropin-ui';
 import Loader from './../../component/loader';
-import CountDown from 'react-native-countdown-component';
+import CountDown from 'react-native-countdown-fixed';
 import { APIRequest, APIRequestWithFile, ApiUrl } from './../../utils/api';
 import moment from 'moment';
 import { User } from '../../utils/user';
@@ -384,6 +384,7 @@ export default class buyTicket extends Component {
               text1: res?.message
             })
             if (res.message == 'Congrats! Booking Successful.') {
+              console.log('first==');
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
               if (res?.clientToken) {
@@ -455,6 +456,7 @@ export default class buyTicket extends Component {
                 type: 'success',
                 text1: 'Congrats! Booking Successful.'
               })
+              console.log('sec==');
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
               console.log(res?.url);
@@ -468,7 +470,7 @@ export default class buyTicket extends Component {
         console.log(err?.response);
         Toast.show({
           type: 'error',
-          text1: 'Something went wrong'
+          text1: err?.response?.data?.message
         })
       },
     );
@@ -906,8 +908,8 @@ export default class buyTicket extends Component {
                     <View style={styles.divider}></View>
                     <Text style={styles.upperText}>Start - End Date</Text>
                     <Text style={styles.bottomText}>
-                      {moment(this.state?.from_date).format('ddd MMM YYYY')} -{' '}
-                      {moment(this.state.to_date).format('ddd MMM YYYY')}
+                      {moment(this.state?.from_date).format('DD MMM YYYY')} -{' '}
+                      {moment(this.state.to_date).format('DD MMM YYYY')}
                     </Text>
                     <View style={styles.divider}></View>
                     <Text style={styles.upperText}>Timings</Text>

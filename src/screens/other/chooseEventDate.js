@@ -46,14 +46,21 @@ export default class chooseEventDate extends Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={{ ...styles.container }}>
-          <View style={{ flex: 1, paddingTop:STATUSBAR_HEIGHT }}>
+          <View style={{ flex: 1, paddingTop: STATUSBAR_HEIGHT }}>
             <Header title="Choose Event Date" />
             <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
             <FlatList
               showsVerticalScrollIndicator={false}
               data={this.state.formatted_schedule_dates}
               renderItem={({ item: d }, index) => (
-                <View>
+                <View style={{
+                  backgroundColor: !d.can_book ? '#00000024' : null,
+                  borderWidth: 1,
+                  paddingVertical:10,
+                  borderColor: color.lightGray
+                  
+                }}>
+
                   <TouchableOpacity
                     onPress={() => {
                       this.setState({
@@ -61,6 +68,7 @@ export default class chooseEventDate extends Component {
                         selectedDate: d.date_value,
                       });
                     }}
+                    disabled={!d.can_book}
                     style={{
                       marginRight: 10,
                       borderRadius: 10,
@@ -146,19 +154,20 @@ export default class chooseEventDate extends Component {
                       )}
                     </View>
                   </TouchableOpacity>
-                  <View style={styles.divider}></View>
+                  {/* <View style={styles.divider}></View> */}
                 </View>
               )}
             />
           </View>
 
           <TouchableOpacity
-            onPress={() =>
+            onPress={() =>{
               this.state.selected !== 0 &&
               this.props.navigation.navigate('buyTicket', {
                 event_id: this.state.eventId,
                 date: this.state.selectedDate,
               })
+            }
             }
             style={{
               flex: 0.08,

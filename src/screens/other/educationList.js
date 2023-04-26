@@ -267,7 +267,7 @@ const EducationList = ({ navigation }) => {
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.top_selling}
-                      keyExtractor={index => `featuredEvents-${index}`}
+                      keyExtractor={index => `featuredEventsTop-${index}`}
                       renderItem={({ item, index }) => renderEventBox(item, index)}
                       //Setting the number of column
                       numColumns={2}
@@ -287,12 +287,12 @@ const EducationList = ({ navigation }) => {
                         })
                       }>
                       <Text style={style.seeAllText}>See all</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>    
                   </View> : null}
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.live_conferences}
-                      keyExtractor={index => `featuredEvents-${index}`}
+                      keyExtractor={index => `featuredEventsconferences-${index}`}
                       renderItem={({ item, index }) => renderEventBox(item, index)}
                       //Setting the number of column
                       numColumns={2}

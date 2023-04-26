@@ -149,13 +149,13 @@ const Marketplace = ({ navigation }) => {
           </View>
           <View
             style={styles.bodyContainer}>
-            {Interests ?
+            {Interests?.length>0 ?
               <>
-                {Interests.length > 3 ?
+                {Interests?.length > 3 ?
                   <View style={{ height: 55 }}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                       <TopButtonGroup />
-                    </ScrollView>
+                    </ScrollView> 
                   </View> :
                   <TopButtonGroup />
                 }

@@ -522,7 +522,8 @@ export default class MarketplaceDetails extends Component {
                                             <ReadMore
                                                 numberOfLines={4}
                                                 style={styles.desText}
-                                                seeMoreText='read more'
+                                                seeMoreText=' ...read more'
+                                                ellipsis=''
                                                 seeMoreStyle={{ color: color.btnBlue }}>
                                                 {strippedHtml}
                                             </ReadMore>
@@ -784,7 +785,7 @@ const styles = StyleSheet.create({
         left: 15,
         top: STATUSBAR_HEIGHT + 15,
         zIndex: 1
-      },
+    },
     bodyContainer: {
         marginTop: -30,
         height: 30,

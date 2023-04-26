@@ -26,7 +26,7 @@ import {
 import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import CountDown from 'react-native-countdown-component';
+import CountDown from 'react-native-countdown-fixed';
 import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
@@ -311,8 +311,9 @@ export default class eventDetails extends Component {
                     <ReadMore
                       numberOfLines={4}
                       style={styles.desText}
-                      seeMoreText='read more'
-                      seeMoreStyle={{ color: color.btnBlue }}>
+                      seeMoreText=' ...read more'
+                      ellipsis=''
+                      seeMoreStyle={{ color: color.btnBlue}}>
                       {this.state.strippedHtml}
                     </ReadMore>
                   </View>
@@ -577,10 +578,9 @@ const styles = StyleSheet.create({
     marginTop: '1%',
   },
   desText: {
-    fontSize: Platform.OS == 'ios' ? 16 : 15,
+    fontSize: fontSize.size13,
     fontFamily: fontFamily.Medium,
-    color: '#191926',
-    marginTop: '4%',
+    color: color.blueMagenta,
   },
   ticketsText: {
     fontSize: 23,

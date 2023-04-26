@@ -44,7 +44,7 @@ const TicketVideoScreen = (props) => {
   };
 
   return (
-    <ScrollView>
+    <View>
       {isLoading ?
         <FlatList
           data={[1, 2, 3, 4]}
@@ -65,7 +65,7 @@ const TicketVideoScreen = (props) => {
             />
           </View>
         ) : (
-          <View style={{ marginBottom: hp(70) }}>
+          <ScrollView style={{height:hp(75) }}>
             {Videos.map((d) => (
               <View style={{
                 marginTop: 20,
@@ -75,9 +75,9 @@ const TicketVideoScreen = (props) => {
                 <EducationVideoListItemBooking item={d} purchased={true} />
               </View>
             ))}
-          </View>
+          </ScrollView>
         )}
-    </ScrollView>
+    </View>
   )
 }
 

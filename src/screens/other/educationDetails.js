@@ -293,8 +293,9 @@ export default class educationDetails extends Component {
                         <ReadMore
                           numberOfLines={4}
                           style={styles.desText}
-                          seeMoreText='read more'
-                          seeMoreStyle={{ color: color.btnBlue }}>
+                          seeMoreText=' ...read more'
+                          ellipsis=''
+                          seeMoreStyle={{ color: color.btnBlue}}>
                           {this.state.strippedHtml}
                         </ReadMore>
                       </View>
