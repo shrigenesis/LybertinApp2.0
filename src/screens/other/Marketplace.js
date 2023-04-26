@@ -241,7 +241,6 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: fontSize.size10,
     color: color.blackRussian,
-    fontWeight: fontFamily.Medium,
   },
   selectedTextStyle: {
     color: color.violet

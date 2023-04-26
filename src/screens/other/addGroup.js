@@ -440,11 +440,9 @@ const EditGroup = ({navigation, route}) => {
               </Text>
               {/* <Image source={IMAGE.search} style={{height:20,width:20,tintColor:'#000',resizeMode:'contain'}} /> */}
             </View>
-            <FlatList
-              data={contactList}
-              keyExtractor={index => index}
-              renderItem={({item, index}) => (
+              {contactList.map((item, index) => (
                 <RippleTouchable
+                  key={`ContactListAddGroup-${index}`}
                   onPress={() => {
                     selectUser(item.id);
                   }}>
@@ -470,8 +468,8 @@ const EditGroup = ({navigation, route}) => {
                     </View>
                   </View>
                 </RippleTouchable>
-              )}
-            />
+              ))
+            }
           </View>
         </ScrollView>
 

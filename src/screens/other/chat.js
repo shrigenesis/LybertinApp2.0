@@ -21,6 +21,7 @@ import {
   APIRequestWithFile,
   ApiUrl,
   IMAGEURL,
+  socketUrl,
 } from './../../utils/api';
 import { useIsFocused } from '@react-navigation/native';
 import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
@@ -30,8 +31,7 @@ import Toast from 'react-native-toast-message';
 
 import { Divider } from 'react-native-elements';
 
-// const Socket = io.connect('https://nodejs.shrigenesis.com/');
-const Socket = io.connect('https://lybertinesocketchat.shrigenesis.com');
+const Socket = io.connect(socketUrl);
 
 class Chat extends React.Component {
   constructor(props) {
@@ -55,7 +55,7 @@ class Chat extends React.Component {
     this.snapPoints = [1, 300];
   }
 
-  componentDidMount() {
+  componentDidMount() { 
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
 

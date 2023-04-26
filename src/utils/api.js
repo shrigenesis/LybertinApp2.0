@@ -15,7 +15,7 @@ export const twitterFailUrl = `${BASEURL}/twitterFail`
 
 let apiBaseUrl = `${BASEURL}/api/`;
 let apiMarketingBaseUrl = `${BASEURL}/marketing/`;
-export const socketUrl = 'https://nodejs.shrigenesis.com/';
+export const socketUrl = 'https://lybertinesocketchat.shrigenesis.com';
 export const termsUrl = `${BASEURL}/terms`
 // export const IMAGEURL = new User().getPrefixurl();
 export const IMAGEURL = `${BASEURL}/storage`;

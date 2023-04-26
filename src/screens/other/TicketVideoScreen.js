@@ -66,12 +66,14 @@ const TicketVideoScreen = (props) => {
           </View>
         ) : (
           <ScrollView style={{height:hp(75) }}>
-            {Videos.map((d) => (
+            {Videos.map((d,index) => (
               <View style={{
                 marginTop: 20,
                 backgroundColor: color.white,
                 borderRadius: 10,
-              }}>
+              }}
+              key={`videolist-${index}`}
+              >
                 <EducationVideoListItemBooking item={d} purchased={true} />
               </View>
             ))}

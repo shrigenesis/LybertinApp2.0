@@ -254,7 +254,7 @@ export default class educationDetails extends Component {
                         marginHorizontal: 15
                       }}>
                       {this.state.Course?.hashtags.map(item => (
-                        <Text style={styles.tagText}>#{item.title}</Text>
+                        <Text key={`item-${item.title}`} style={styles.tagText}>#{item.title}</Text>
                       ))}
                     </ScrollView>
                     : null

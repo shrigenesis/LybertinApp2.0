@@ -143,7 +143,7 @@ const MarketplaceListItem = ({ Event }) => {
                   flexWrap: 'wrap',
                 }}>
                 {Event.hashtags.map(item => (
-                  <Text style={styles.tagText}>#{item.title}</Text>
+                  <Text key={`hastag-${item.title}`} style={styles.tagText}>#{item.title}</Text>
                 ))}
               </ScrollView>
               <TouchableOpacity
