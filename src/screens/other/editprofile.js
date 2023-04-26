@@ -716,10 +716,8 @@ const EditProfile = ({ navigation, route }) => {
                 }}
               />
             </TouchableOpacity>
-            <FlatList
-              data={countryCode}
-              style={{ paddingVertical: hp(5) }}
-              renderItem={({ item: d }) => (
+            <View style={{paddingVertical: hp(5)}}>
+              {countryCode.map((d, index) => (
                 <TouchableOpacity
                   style={{
                     flexDirection: 'row',
@@ -745,10 +743,8 @@ const EditProfile = ({ navigation, route }) => {
                     + {d.calling_code} - {d.country_name}
                   </Text>
                 </TouchableOpacity>
-              )}
-            //Setting the number of column
-            // numColumns={2}
-            />
+              ))}
+            </View>
             <TouchableOpacity onPress={() => setvisible(false)}>
               <Text
                 style={{

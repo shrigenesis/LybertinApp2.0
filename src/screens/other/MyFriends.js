@@ -134,8 +134,10 @@ const MyFriends = ({ navigation, route }) => {
 
           {friends.length > 0 ? (
             <>
-              {friends?.map(item => (
+              {friends?.map((item,index) => (
+
                 <RippleTouchable
+                  key={`to-${index}`}
                   onPress={() =>
                     navigation.navigate('UserProfile', { data: item })
                   }

@@ -407,11 +407,9 @@ const EditGroup = ({ navigation, route }) => {
               }}
             />
           </View>
-          <FlatList
-            data={contactList}
-            keyExtractor={index => index}
-            renderItem={({ item, index }) => (
+            {contactList.map((item, index ) => (
               <RippleTouchable
+                key={`ContactListEditGroup-${index}`}
                 onPress={() => {
                   selectUser(item.id);
                 }}>
@@ -436,8 +434,7 @@ const EditGroup = ({ navigation, route }) => {
                   </View>
                 </View>
               </RippleTouchable>
-            )}
-          />
+            ))}
         </View>
       </ScrollView>
 

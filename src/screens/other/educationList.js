@@ -206,7 +206,7 @@ const EducationList = ({ navigation }) => {
               style={style.listContainer}>
               <SectionTitleWithBtn />
               <FlatList
-                keyExtractor={index => `featuredEvents-${index}`}
+                // keyExtractor={index => `featuredEvents-${index}`}
                 showsVerticalScrollIndicator={false}
                 data={[0, 1, 2, 3, 4, 6]}
                 numColumns={2}
@@ -242,8 +242,9 @@ const EducationList = ({ navigation }) => {
                     <FlatList
                       data={Course?.data?.featured}
                       reload={getEvents}
-                      keyExtractor={index => `upcomingEvents-${index}`}
+                      
                       renderItem={({ item, index }) => renderEventBox(item, index)}
+                      keyExtractor={item => `upcomingEvents-${item.id}`}
                       //Setting the number of column
                       numColumns={2}
                     />
@@ -267,8 +268,9 @@ const EducationList = ({ navigation }) => {
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.top_selling}
-                      keyExtractor={index => `featuredEventsTop-${index}`}
+                      
                       renderItem={({ item, index }) => renderEventBox(item, index)}
+                      keyExtractor={item => `featuredEventsTop-${item.id}`}
                       //Setting the number of column
                       numColumns={2}
                     />
@@ -292,8 +294,10 @@ const EducationList = ({ navigation }) => {
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.live_conferences}
-                      keyExtractor={index => `featuredEventsconferences-${index}`}
+                      
                       renderItem={({ item, index }) => renderEventBox(item, index)}
+                      // keyExtractor={index => `featuredEventsconferences-${index}`}
+                      keyExtractor={item => `featuredEventsconferences-${item.id}`}
                       //Setting the number of column
                       numColumns={2}
                     />
