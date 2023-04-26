@@ -229,12 +229,14 @@ class GroupChat extends React.Component {
       APIRequest(
         config,
         res => {
+          console.log(res); 
           this.setState({
-            replyOn: null
+            replyOn: undefined
           });
           this.setMessages(res);
         },
         err => {
+          console.log(err); 
           this.setState({ isLoading: false });
         },
       );
@@ -358,7 +360,7 @@ class GroupChat extends React.Component {
               inverted={true}
               // onContentSizeChange={() => chatListRef.current.scrollToEnd({ animated: true })}
               data={this.state.chatList}
-              keyExtractor={item => String(item.id)}
+              // keyExtractor={item => String(item.id)}
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
               renderItem={({ item, index }) => (
