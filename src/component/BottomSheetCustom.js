@@ -5,6 +5,7 @@ import { BottomSheet, Button } from 'react-native-elements'
 import LottieView from 'lottie-react-native'
 import { color } from '../constant'
 import { Divider } from 'react-native-elements'
+import LottieView from 'lottie-react-native'
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
