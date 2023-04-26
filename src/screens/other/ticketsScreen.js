@@ -27,30 +27,84 @@ export default class TicketScreen extends Component {
     };
   }
   componentDidMount() {
-    this.props.navigation.addListener('focus', async() => {
+    this.props.navigation.addListener('focus', async () => {
       // StatusBar.setBackgroundColor('#000000')
       await this.setState({
         ...this.state,
         bkg: '#000000'
       })
       console.log('Screen.js focused', this.state.bkg)
-      
+
     });
-  } 
+  }
 
   // componentWillUnmount() {
   //   this._navListener.remove();
   // }
+
+  Report = () => {
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          reportBottomSheetRef?.current?.present();
+        }}>
+        <Image
+          source={IMAGE.report}
+          style={{
+            height: 20,
+            width: 20,
+            resizeMode: 'contain',
+            marginRight: 10,
+          }}
+        />
+      </TouchableOpacity>
+    )
+  }
+
+
+
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
 
-          <StatusBar 
-          barStyle={'dark-content'}  
-          backgroundColor={color.lightGray}
-           />
-           <Header headStyle={{backgroundColor:color.lightGray}} title='My Booking' />
+          <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
+
+          <Header headStyle={{backgroundColor: color.lightGray}} title="My Bookings" />
+
+          {/* <View style={{ marginHorizontal: '4%', marginVertical: '6%' }}>
+            <View style={styles.headerContainer}>
+              <TouchableOpacity
+                style={{ height: 30, width: 30 }}
+                onPress={() => this.props.navigation.goBack()}>
+                <Image
+                  source={IMAGE.back}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    resizeMode: 'contain',
+                  }}
+                />
+              </TouchableOpacity>
+              <Text style={styles.headerText}>
+                My Bookings
+              </Text>
+              <TouchableOpacity
+                onPress={() => {
+                  reportBottomSheetRef?.current?.present();
+                }}>
+                <Image
+                  source={IMAGE.report}
+                  style={{
+                    height: 20,
+                    width: 20,
+                    resizeMode: 'contain',
+                    marginRight: 10,
+                  }}
+                />
+              </TouchableOpacity>
+            </View>
+          </View> */}
 
           <View style={styles.bodyContainer}>
             <View style={{ marginHorizontal: '3%' }}>
@@ -113,7 +167,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'space-between',
     alignContent: 'center',
     alignItems: 'center',
-    marginTop: Platform.OS == 'ios' ? hp(4) : 2,
+    // marginTop: Platform.OS == 'ios' ? hp(4) : 2,
   },
   bodyContainer: {
     backgroundColor: color.white,

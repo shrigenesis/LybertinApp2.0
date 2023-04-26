@@ -31,7 +31,7 @@ import Toast from 'react-native-toast-message';
 import { Divider } from 'react-native-elements';
 
 // const Socket = io.connect('https://nodejs.shrigenesis.com/');
-const Socket = io.connect('http://devdemo.shrigenesis.com:3011');
+const Socket = io.connect('https://lybertinesocketchat.shrigenesis.com');
 
 class Chat extends React.Component {
   constructor(props) {
@@ -59,12 +59,12 @@ class Chat extends React.Component {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
 
-      setTimeout(() => {
+      // setTimeout(() => {
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
         this.fetchChatList(user_id);
       }
-      }, 300);
+      // }, 300);
 
       this.socketEvents();
     });
@@ -72,7 +72,7 @@ class Chat extends React.Component {
 
   socketEvents = () => {
     let userdata = new User().getuserdata();
-    console.log(Socket);
+
     Socket.emit('setup', userdata.id);
     Socket.on('connected', () => {
       console.log('join connected');
@@ -102,8 +102,10 @@ class Chat extends React.Component {
 
   onTyping = isTyping => {
     if (isTyping) {
+      console.log('typing');
       Socket.emit('typing', this.state.roomId);
     } else {
+      console.log('stop typing');
       Socket.emit('stop typing', this.state.roomId);
     }
   };
@@ -146,10 +148,9 @@ class Chat extends React.Component {
       res => {
         if (res.status) {
           let data = res?.conversation?.data;
+          console.log(res.roomId,"-----------------------");
           if (res.roomId) {
-            this.socketEvents();
-
-            // Socket.emit('join chat', res.roomId);
+            Socket.emit('join chat', res.roomId);
           }
           let chatData = this.state.chatList.concat(data);
 
@@ -334,8 +335,7 @@ class Chat extends React.Component {
                         }}
                       />
                     )}
-
-                    <View style={{ marginLeft: wp(3), marginTop: hp(1.5) }}>
+                    <View style={{ marginLeft: wp(3), marginTop: hp(1.5) , width:wp(60)}}>
                       <Text numberOfLines={1} style={styles.heading} >
                         {this.props?.route?.params?.userName}
                       </Text>

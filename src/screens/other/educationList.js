@@ -206,7 +206,7 @@ const EducationList = ({ navigation }) => {
               style={style.listContainer}>
               <SectionTitleWithBtn />
               <FlatList
-                keyExtractor={index => `educationListFilter-${index}`}
+                keyExtractor={index => `featuredEvents-${index}`}
                 showsVerticalScrollIndicator={false}
                 data={[0, 1, 2, 3, 4, 6]}
                 numColumns={2}
@@ -242,7 +242,7 @@ const EducationList = ({ navigation }) => {
                     <FlatList
                       data={Course?.data?.featured}
                       reload={getEvents}
-                      keyExtractor={index => `upcomingEducation-${index}`}
+                      keyExtractor={index => `upcomingEvents-${index}`}
                       renderItem={({ item, index }) => renderEventBox(item, index)}
                       //Setting the number of column
                       numColumns={2}
@@ -267,7 +267,7 @@ const EducationList = ({ navigation }) => {
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.top_selling}
-                      keyExtractor={index => `educationLisTop-${index}`}
+                      keyExtractor={index => `featuredEventsTop-${index}`}
                       renderItem={({ item, index }) => renderEventBox(item, index)}
                       //Setting the number of column
                       numColumns={2}
@@ -287,12 +287,12 @@ const EducationList = ({ navigation }) => {
                         })
                       }>
                       <Text style={style.seeAllText}>See all</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>    
                   </View> : null}
                   <View style={style.listItem}>
                     <FlatList
                       data={Course?.data?.live_conferences}
-                      keyExtractor={index => `educationListLive-${index}`}
+                      keyExtractor={index => `featuredEventsconferences-${index}`}
                       renderItem={({ item, index }) => renderEventBox(item, index)}
                       //Setting the number of column
                       numColumns={2}

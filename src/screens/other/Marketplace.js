@@ -149,13 +149,13 @@ const Marketplace = ({ navigation }) => {
           </View>
           <View
             style={styles.bodyContainer}>
-            {Interests ?
+            {Interests?.length>0 ?
               <>
-                {Interests.length > 3 ?
+                {Interests?.length > 3 ?
                   <View style={{ height: 55 }}>
                     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                       <TopButtonGroup />
-                    </ScrollView>
+                    </ScrollView> 
                   </View> :
                   <TopButtonGroup />
                 }
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   textStyle: {
     fontSize: fontSize.size10,
     color: color.blackRussian,
-    // fontWeight: fontFamily.Regular,
+    fontWeight: fontFamily.Medium,
   },
   selectedTextStyle: {
     color: color.violet
@@ -253,11 +253,11 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     borderWidth: 0,
-    borderRadius: 20,
+    borderRadius: 20
   },
   buttonContainerStyle: {
     borderWidth: 0,
-    borderColor: color.white,
+    borderColor: 'white',
     borderRadius: 20,
   },
 });

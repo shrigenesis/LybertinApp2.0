@@ -150,7 +150,7 @@ const Withdraw = ({ navigation, route }) => {
                                     keyboardType='number-pad'
                                     autoFocus={true}
                                     maxLength={3}
-                                    value={Money.toString()}
+                                    value={Money}
                                     style={styles.coinText}
                                     placeholder="   0"
                                     editable={true}
@@ -198,14 +198,14 @@ const Withdraw = ({ navigation, route }) => {
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={setACNumber}
-                                    value={ACNumber.toString()}
+                                    value={ACNumber}
                                     keyboardType='number-pad'
                                     placeholder="Account Number"
                                 />
                                 <TextInput
                                     style={styles.input}
                                     onChangeText={setACCode}
-                                    value={ACCode.toString()}
+                                    value={ACCode}
                                     keyboardType='number-pad'
                                     placeholder="Code"
                                 /></>}

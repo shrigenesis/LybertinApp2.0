@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useMemo } from 'react';
 import {
   View,
   Text,
@@ -7,7 +7,8 @@ import {
   ScrollView,
   SafeAreaView,
   StatusBar,
-  Pressable
+  Pressable,
+  TouchableOpacity
 } from 'react-native';
 import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
@@ -21,7 +22,10 @@ import moment from 'moment';
 import { Download } from './../../utils/download';
 import { User } from '../../utils/user';
 import RedirectToMap from '../../utils/RedirectToMap';
+import Toast from 'react-native-toast-message'
+import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 
+const reportPoints = [1, hp(55)];
 
 export default class TicketDetails extends Component {
   constructor(props) {
@@ -31,8 +35,10 @@ export default class TicketDetails extends Component {
       isLoading: false,
       isVisible: false,
       qrCode: '',
-      userdata: new User().getuserdata(),
+      settext:'',
+      userdata: new User().getuserdata()
     };
+    this.reportBottomSheetRef = React.createRef();
   }
 
   componentDidMount = () => {
@@ -92,6 +98,42 @@ export default class TicketDetails extends Component {
       },
     );
   };
+
+
+  _reportStory = (text) => {
+    console.log(text);
+    let config = {
+      url: ApiUrl.eventReport,
+      method: 'post',
+      body: {
+        booking_id:this.state.ticket?.id, 
+        reason: text,
+      },
+    };
+    console.log(config);
+    APIRequest(
+      config,
+      res => {
+        if (res?.status) {
+          Toast.show({
+            type: 'success',
+            text1: res?.message
+          })
+          this.props.navigation.goBack(); 
+        }
+      },
+      err => {
+        console.log(err?.response);
+        Toast.show({
+          type: 'info',
+          text1: 'Something went wrong'
+        })
+        this.props.navigation.goBack();
+      },
+    );
+  };
+
+
   downlodTicket = () => {
     this.setState({ isLoading: true });
     const id = this.state.ticket?.id;
@@ -147,12 +189,31 @@ export default class TicketDetails extends Component {
     return d;
   }
 
+
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
         <Loader type="dots" isLoading={this.state.isLoading} />
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
-        <Header title={'Ticket Details'} />
+        <Header title={'Ticket Details'}
+          RightIcon={() => (
+            <TouchableOpacity
+              onPress={() => {
+                this.reportBottomSheetRef?.current?.present();
+              }}>
+              <Image
+                source={IMAGE.report}
+                style={{
+                  height: 20,
+                  width: 20,
+                  resizeMode: 'contain',
+                  marginRight: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+        />
+
         <ScrollView style={styles.container}>
           <View style={styles.wrapperView}>
             <View style={styles.qrWrapper}>
@@ -296,6 +357,89 @@ export default class TicketDetails extends Component {
             </View>
           </View>
         </ScrollView>
+
+
+        <BottomSheetModal
+          ref={this.reportBottomSheetRef}
+          index={1}
+          snapPoints={reportPoints}
+          onChange={v => {
+            console.log(v);
+          }}
+          backdropComponent={BottomSheetBackdrop}>
+          <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
+            <Text style={styles.roportHeading}>Report</Text>
+            <Text style={styles.subHeading}>Why Are You Reporting This Post?</Text>
+          </View>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                this._reportStory("It's spam"),
+                this.reportBottomSheetRef?.current?.close(),
+                this.props.navigation.goBack(),
+              ];
+            }}
+            style={styles.cardBlock}>
+            <Text style={styles.cardText}>It's spam</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                this._reportStory("Nudity or sexual activity"),
+                this.reportBottomSheetRef?.current?.close(),
+                this.props.navigation.goBack(),
+              ];
+            }}
+            style={styles.cardBlock}>
+            <Text style={styles.cardText}>Nudity or sexual activity</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                this._reportStory("I just don't like it"),
+                this.reportBottomSheetRef?.current?.close(),
+                this.props.navigation.goBack(),
+              ];
+            }}
+            style={styles.cardBlock}>
+            <Text style={styles.cardText}>I just don't like it</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                this._reportStory( "Hate speech or symbols"),
+                this.reportBottomSheetRef?.current?.close(),
+                this.props.navigation.goBack(),
+              ];
+            }}
+            style={styles.cardBlock}>
+            <Text style={styles.cardText}>Hate speech or symbols</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                this._reportStory("Bullying or harassment"),
+                this.reportBottomSheetRef?.current?.close(),
+                this.props.navigation.goBack(),
+              ];
+            }}
+            style={styles.cardBlock}>
+            <Text style={styles.cardText}>Bullying or harassment</Text>
+          </TouchableOpacity>
+          <View>
+            <Button
+              onPress={() => this.reportBottomSheetRef?.current?.close()}
+              btnStyle={{
+                marginTop: hp(2),
+                alignSelf: 'center',
+                backgroundColor: color.red,
+                width: wp(90),
+                height: hp(6),
+              }}
+              label={'Cancel'}
+            />
+          </View>
+        </BottomSheetModal>
       </SafeAreaView>
     );
   }
@@ -401,5 +545,27 @@ const styles = StyleSheet.create({
     flex: 1,
     width: wp(40),
     height: hp(6),
+  },
+  roportHeading: {
+    fontSize: 17,
+    lineHeight: hp(2.5),
+    fontFamily: fontFamily.Bold,
+    color: color.btnBlue,
+    textAlign: 'center',
+  },
+  subHeading: {
+    fontSize: 10,
+    fontFamily: fontFamily.Regular,
+    color: color.textGray2,
+    textAlign: 'center',
+  },
+  cardBlock: {
+    marginLeft: wp(10),
+    paddingRight: wp(7),
+    paddingVertical: hp(2),
+    alignItems: 'center',
+    flexDirection: 'row',
+    borderBottomWidth: 0.5,
+    borderColor: color.borderGray,
   },
 });

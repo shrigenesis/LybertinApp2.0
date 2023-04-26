@@ -117,8 +117,7 @@ const Wallet = ({ navigation }) => {
         <ScrollView style={{ height: hp(70) }}>
           <Text style={styles.desHeading}>Transaction History</Text>
           {status ?
-            <>{data?.data?.length > 0 ? 
-            <FlatList
+            <>{data?.data?.length > 0 ? <FlatList
               data={data.data}
               renderItem={({ item, index }) => (
                 <View
