@@ -2,6 +2,7 @@ import React from 'react'
 import { Pressable, SafeAreaView, TouchableHighlight } from 'react-native'
 import { View, StyleSheet, Text } from 'react-native'
 import { BottomSheet, Button } from 'react-native-elements'
+import LottieView from 'lottie-react-native'
 import { color } from '../constant'
 import { Divider } from 'react-native-elements'
 import {

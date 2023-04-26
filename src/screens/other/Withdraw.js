@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignContent: 'center',
         alignItems: 'center',
-        marginTop: Platform.OS == 'ios' ? hp(4) : hp(4),
+         marginTop: Platform.OS == 'ios' ? 0 : hp(4),
     },
     headerText: {
         fontSize: fontSize.size15,
