@@ -410,7 +410,11 @@ export default class MarketplaceDetails extends Component {
                                         <Tooltip width={250}
                                             popover={<Text style={{ color: "#fff" }}>How many earning on this post</Text>}
                                         >
-                                            <Text style={styles.detailsTitle}>{this.state.event.total_coins_distributed ? NoFormatter(this.state.event.total_coins_distributed) : 0}</Text>
+                                            <Text style={styles.detailsTitle}> 
+                                                {this.state.event.total_coins_distributed<1000 ? 
+                                                parseFloat(this.state.event.total_coins_distributed).toFixed(1) : 
+                                                NoFormatter(this.state.event.total_coins_distributed) }
+                                                </Text>
                                             <Image source={IMAGE.salary} style={styles.engagementImage} />
                                         </Tooltip>
                                         <Tooltip width={250}
@@ -778,6 +782,7 @@ const styles = StyleSheet.create({
         height: 26,
         width: 26,
         resizeMode: 'contain',
+        alignSelf:'center'
     },
     backBtnPosition: {
         position: 'absolute',
