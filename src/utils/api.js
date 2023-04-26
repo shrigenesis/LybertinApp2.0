@@ -66,7 +66,7 @@ export const ApiUrl = {
   groupDetail: `${apiBaseUrl}groups/show/`,
   groupUpdate: `${apiBaseUrl}groups/update/`,
   storyCreate: `${apiBaseUrl}story/create`,
-  viewStory: `${apiBaseUrl}story/view-story`,
+  viewStory: `${apiBaseUrl}story/view-story`, 
   stories: `${apiBaseUrl}story/index`,
   deletestory: `${apiBaseUrl}story/delete-story`, 
   reportstory: `${apiBaseUrl}reported-story/report`,
