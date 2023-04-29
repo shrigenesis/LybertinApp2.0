@@ -326,7 +326,7 @@ export default class MarketplaceDetails extends Component {
                 {this.state.isLoading !== true ?
                     <ScrollView style={{ flex: 0.92 }}>
                         <SliderBox
-                            images={this.state.event.images ? this.sliderImageArray(this.state.event.images) : [1]}
+                            images={this.state.event.images && this.sliderImageArray(this.state.event.images)}
                             sliderBoxHeight={300}
                             onCurrentImagePressed={index => console.warn(`image ${index} pressed`)}
                             dotColor={color.btnBlue}
