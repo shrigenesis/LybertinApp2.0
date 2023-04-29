@@ -401,7 +401,7 @@ const Login = ({ navigation, route }) => {
               <PressableText
                 onPress={() => navigation.navigate('ForgetPassword')}
                 labelStyle={style.forget}
-                text={'Forgot your P assword?'}
+                text={'Forgot your Password?'}
               />
             </View>
             <View style={{ marginTop: hp(4) }}>
