@@ -19,7 +19,8 @@ import { Loader } from '../../component';
 
 const Tag = ['#event', '#event', '#event'];
 
-const MarketplaceListItem = ({ Event }) => {
+const MarketplaceListItem = ({ Event, navigationKey }) => {
+  console.log('sdadasd',navigationKey);
   const navigation = useNavigation();
   const [isLoding, setisLoding] = useState(false);
   const [EarningValue, setEarningValue] = useState({ min: 0, max: 0, type: 'default' });
@@ -91,6 +92,7 @@ const MarketplaceListItem = ({ Event }) => {
             onPress={() =>
               navigation.navigate('marketplaceDetails', {
                 event_id: Event.id,
+                navigationKey:navigationKey
               })
             }
             style={styles.cardContainer}>
@@ -151,6 +153,7 @@ const MarketplaceListItem = ({ Event }) => {
                 onPress={() =>
                   navigation.navigate('marketplaceDetails', {
                     event_id: Event.id,
+                    navigationKey:navigationKey
                   })
                 }
                 style={[styles.button, {

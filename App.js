@@ -23,6 +23,7 @@ import { MenuProvider } from 'react-native-popup-menu';
 import Toast from 'react-native-toast-message';
 
 
+
 LogBox.ignoreAllLogs();
 
 const App = () => {
@@ -52,7 +53,6 @@ const App = () => {
       console.log('[App] onOpenNotification: ', notify);
     }
   }, []);
-
 
 
   const init = async () => {

@@ -130,11 +130,10 @@ export default class TicketMediaScreen extends Component {
                           #{d.common_order}
                         </Text>
                         <Text style={styles.dateText} numberOfLines={1}>
-                          {d.event_start_date} to {d.event_end_date}
+                          {d.formatted_date}
                         </Text>
                         <Text style={styles.dateText} numberOfLines={1}>
-                          {/* {d.event_start_time} - {d.event_end_time} */}
-                           {moment(d.event_start_time).format('h:mm:ss a')}
+                          {d.formatted_time}                           
                         </Text>
                       </View>
                     </View>

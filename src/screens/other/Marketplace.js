@@ -24,6 +24,18 @@ import { Header, Loader } from '../../component';
 import EventListSkelton from '../../utils/skeltons/eventListSkelton';
 import MarketingListSkelton from '../../utils/skeltons/MarketingListSkelton';
 import NoRecord from './noRecord';
+import { useIsFocused } from '@react-navigation/native';
+
+
+// const { state, navigate } = this.props.navigation;    
+
+// return (
+//     <View>
+//         <Button title="Go to Page" onPress={ () => {
+//             /* pass key down to *EditPage* */
+//             navigate('EditPage', { go_back_key: state.key });
+//         }} />
+//     </View>
 
 const Marketplace = ({ navigation }) => {
   const [selectedIndex, setselectedIndex] = useState(0);
@@ -31,6 +43,8 @@ const Marketplace = ({ navigation }) => {
   const [Event, setEvent] = useState([]);
   const [isLoding, setisLoding] = useState(false)
   const [status, setstatus] = useState(true)
+  const navigationKey = navigation.getState().key;  
+  const isFocus = useIsFocused();
 
   const updateIndex = e => {
     setselectedIndex(e);
@@ -84,6 +98,14 @@ const Marketplace = ({ navigation }) => {
     );
     getMarketingEventList()
   }, []);
+
+  useEffect(() => {
+    if (isFocus) {
+      setTimeout(() => {
+        getMarketingEventList();
+      });
+    }
+  }, [isFocus])
 
   // Get data when slect interest for filter  
   useEffect(() => {
@@ -170,7 +192,7 @@ const Marketplace = ({ navigation }) => {
               <>{(status && Event.length > 0) ?
                 <FlatList
                   data={Event}
-                  renderItem={({ item }) => <MarketplaceListItem Event={item} />}
+                  renderItem={({ item }) => <MarketplaceListItem navigationKey={navigationKey} Event={item} />}
                   keyExtractor={item => `marketlist-${item.id}`}
                 /> :
                 <NoRecord

@@ -200,7 +200,7 @@ const EducationList = ({ navigation }) => {
 
         </View>
 
-        <ScrollView style={{ zIndex: -10 }}>
+        <View style={{ zIndex: -10 }}>
           {isLoading ? (
             <View
               style={style.listContainer}>
@@ -313,7 +313,7 @@ const EducationList = ({ navigation }) => {
               )}
             </View>
           )}
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </KeyboardAwareScrollView>
   );
@@ -382,7 +382,7 @@ const style = StyleSheet.create({
   },
 
   search: {
-    placeholderTextColor: color.borderGray,
+    // placeholderTextColor: color.borderGray,
     ...Platform.select({
       ios: {
 

@@ -51,6 +51,8 @@ import BottomSheetWebview from '../../component/BottomSheetWebview';
 import TwitterSuccessMessage from './Modal/TwitterSuccessMessage';
 import RedirectToMap from '../../utils/RedirectToMap';
 
+
+
 let strippedHtml
 const sponsorsImage = ['https://lybertine.com/images/danone-logo.png', 'https://lybertine.com/images/Tata-Company.png', 'https://lybertine.com/images/danone-logo.png']
 
@@ -63,6 +65,7 @@ export default class MarketplaceDetails extends Component {
         this.state = {
             selected: 0,
             eventId: this.props.route.params.event_id,
+            navigationKey: this.props.route.params.navigationKey,
             event: {},
             engagement: {},
             showText: 0,
@@ -309,11 +312,11 @@ export default class MarketplaceDetails extends Component {
 
     render() {
         return (
-            <View style={styles.container}>
+            <View style={styles.container}>{console.log(this.state.navigationKey, "===")}
                 <StatusBar barStyle={'light-content'} translucent backgroundColor="transparent" />
                 <View
-                    style={[styles.backBtnPosition, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
-                    <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                    style={[styles.backBtnPosition, { top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15) }]}>
+                    <TouchableOpacity onPress={() => this.props.navigation.navigate('marketplace')}>
                         <Image
                             source={IMAGE.ArrowLeft}
                             style={styles.backImage}
@@ -352,7 +355,7 @@ export default class MarketplaceDetails extends Component {
                                             flexWrap: 'wrap',
                                             marginHorizontal: 15
                                         }}>
-                                        {this.state.event.hashtags.map((item,index) => (
+                                        {this.state.event.hashtags.map((item, index) => (
                                             <Text key={`hastagList${index}`} style={styles.tagText}>#{item.title}</Text>
                                         ))}
                                     </ScrollView>
@@ -410,11 +413,11 @@ export default class MarketplaceDetails extends Component {
                                         <Tooltip width={250}
                                             popover={<Text style={{ color: "#fff" }}>How many earning on this post</Text>}
                                         >
-                                            <Text style={styles.detailsTitle}> 
-                                                {this.state.event.total_coins_distributed<1000 ? 
-                                                parseFloat(this.state.event.total_coins_distributed).toFixed(1) : 
-                                                NoFormatter(this.state.event.total_coins_distributed) }
-                                                </Text>
+                                            <Text style={styles.detailsTitle}>
+                                                {this.state.event.total_coins_distributed < 1000 ?
+                                                    parseFloat(this.state.event.total_coins_distributed).toFixed(1) :
+                                                    NoFormatter(this.state.event.total_coins_distributed)}
+                                            </Text>
                                             <Image source={IMAGE.salary} style={styles.engagementImage} />
                                         </Tooltip>
                                         <Tooltip width={250}
@@ -782,14 +785,14 @@ const styles = StyleSheet.create({
         height: 26,
         width: 26,
         resizeMode: 'contain',
-        alignSelf:'center'
+        alignSelf: 'center'
     },
     backBtnPosition: {
         position: 'absolute',
         left: 15,
         top: STATUSBAR_HEIGHT + 15,
         zIndex: 1
-      },
+    },
     bodyContainer: {
         marginTop: -30,
         height: 30,
