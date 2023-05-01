@@ -200,7 +200,7 @@ const EducationList = ({ navigation }) => {
 
         </View>
 
-        <ScrollView style={{ zIndex: -10 }}>
+        <View style={{ zIndex: -10 }}>
           {isLoading ? (
             <View
               style={style.listContainer}>
@@ -313,7 +313,7 @@ const EducationList = ({ navigation }) => {
               )}
             </View>
           )}
-        </ScrollView>
+        </View>
       </SafeAreaView>
     </KeyboardAwareScrollView>
   );
@@ -326,7 +326,7 @@ const style = StyleSheet.create({
   },
   headerBox: {
     flexDirection: 'row',
-    marginTop: Platform.OS == 'ios' ? 0 : 10,
+    marginTop: Platform.OS == 'ios' ? '4%' : 10,
     paddingLeft: wp(7),
     paddingRight: wp(4),
     justifyContent: 'space-between',
@@ -382,7 +382,7 @@ const style = StyleSheet.create({
   },
 
   search: {
-    placeholderTextColor: color.borderGray,
+    // placeholderTextColor: color.borderGray,
     ...Platform.select({
       ios: {
 

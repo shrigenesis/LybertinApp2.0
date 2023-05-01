@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.size41,
     fontFamily: fontFamily.Semibold,
     color: color.blueMagenta,
-    lineHeight: 45,
+    lineHeight: 60,
   },
   desHeading: {
     fontSize: fontSize.size19,

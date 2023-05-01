@@ -456,7 +456,7 @@ const EditProfile = ({ navigation, route }) => {
                       withLeftDropDown={true}
                       changeText={setnumber}
                       placeholder={'Mobile number'}
-                      keyboardType="Number-pad"
+                      keyboardType="number-pad"
                     />
                   </View>
                 </View>
@@ -679,10 +679,11 @@ const EditProfile = ({ navigation, route }) => {
           visible={visible}
           transparent={true}
           width="auto"
-          height=" "
+          height=""
           overlayStyle={{
             width: wp(85),
             maxWidth: 350,
+            maxHeight: hp(80),
 
             alignSelf: 'center',
             borderRadius: 10,
