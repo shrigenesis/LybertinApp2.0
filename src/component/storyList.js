@@ -172,7 +172,7 @@ const StoryList = ({ navigation, headerFontColor }) => {
     return index;
   };
   const gradientColor = ['#FF4252', '#FF7500', '#FFB700', "#00BF15", "#006DDF", "#C02CDD"];
-  const defaultGradientColor = ['#ffffff', '#ffffff'];
+  const defaultGradientColor = ['#808080', '#808080'];
 
   return (
     <View
