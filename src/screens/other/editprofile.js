@@ -356,8 +356,8 @@ const EditProfile = ({ navigation, route }) => {
               onPress={() => {
                 setimgtype('profile'), bottomSheetRef?.current?.expand();
               }}
-              style={{ justifyContent: 'center' }}>
-              <View style={style.groupProfileView}>
+                style={style.groupProfileView}>
+              <View >
                 {profile ? (
                   <Image
                     source={{ uri: profile?.uri }}
@@ -369,7 +369,7 @@ const EditProfile = ({ navigation, route }) => {
                       overflow: 'hidden',
                     }}
                   />
-                ) : oldProfile ? (
+                ) : oldProfile != 'lybertineApp/default/default.png' ? (
                   <Image
                     source={{ uri: `${IMAGEURL}/${oldProfile}` }}
                     style={{
@@ -387,8 +387,11 @@ const EditProfile = ({ navigation, route }) => {
               <Text
                 style={[
                   style.groupText,
-                  { textAlign: 'center', marginBottom: hp(3), marginTop: -hp(4) },
-                ]}>
+                  { 
+                    textAlign: 'center' ,
+                    position: 'absolute',
+                    bottom: -30
+                  }]}>
                 Upload image
               </Text>
             </TouchableOpacity>
@@ -690,7 +693,7 @@ const EditProfile = ({ navigation, route }) => {
             // backgroundColor:"#3C444C"
             backgroundColor: '#fff',
             marginVertical: '20%',
-            paddingBottom: hp(12),
+            paddingBottom: hp(10),
             overflow: 'hidden',
           }}>
           <View style={{ marginVertical: '5%' }}>
@@ -717,7 +720,7 @@ const EditProfile = ({ navigation, route }) => {
                 }}
               />
             </TouchableOpacity>
-            <View style={{paddingVertical: hp(5)}}>
+            <ScrollView style={{paddingVertical: hp(0)}}>
               {countryCode.map((d, index) => (
                 <TouchableOpacity
                   style={{
@@ -745,14 +748,14 @@ const EditProfile = ({ navigation, route }) => {
                   </Text>
                 </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
             <TouchableOpacity onPress={() => setvisible(false)}>
               <Text
                 style={{
                   marginTop: '5%',
                   fontSize: 14,
                   fontFamily: fontFamily.Regular,
-                  marginHorizontal: '6%',
+                  marginHorizontal: '1%',
                   color: color.btnBlue,
                   textAlign: 'center',
                 }}>

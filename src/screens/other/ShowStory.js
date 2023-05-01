@@ -46,7 +46,7 @@ const Progess = memo(({ storyList, activeIndex, setactiveIndex, navigation }) =>
       }
     }}
     enableProgress={true}
-    duration={10}
+    duration={30}
     barStyle={{
       barActiveColor: '#F5F5F5',
       barInActiveColor: 'gray',
@@ -241,7 +241,7 @@ const ShowStory = ({ navigation, route }) => {
 
     if (file?.image) {
       return (
-        <TouchableOpacity style={{ flex: 1 }}>
+        <TouchableOpacity style={{ flex: 1, marginTop: 30 }}>
           <ImageBackground
             onLoadEnd={() => {
               setisLoading(false);
@@ -322,11 +322,12 @@ const ShowStory = ({ navigation, route }) => {
                     alignItems: 'center',
                     width: wp(100),
                     position: 'absolute',
-                    bottom: 20,
+                    bottom: 70,
                     left: 0,
-                    padding: 50,
-                    borderRadius: 10,
+                    padding: 30,
                     zIndex: -1,
+                    backgroundColor: '#0000006b'
+
                   }}>
                   <Text
                     style={{
@@ -345,9 +346,7 @@ const ShowStory = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           activeOpacity={1}
-          // onPress={() => {
-          //   setactiveIndex(activeIndex+1)
-          // }}
+          style={{marginTop: 30}}
           >
           <TouchableOpacity
             activeOpacity={1}
