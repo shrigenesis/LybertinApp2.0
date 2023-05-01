@@ -20,7 +20,7 @@ import { Overlay } from 'react-native-elements';
 
 import {
   widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
+  heightPercentageToDP as hp, 
 } from 'react-native-responsive-screen';
 import { Button, Loader, pickImage } from './../../component/';
 import IMAGE from '../../constant/image';
