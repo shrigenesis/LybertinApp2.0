@@ -350,7 +350,7 @@ const MyProfile = ({ navigation, route }) => {
                       style={style.profileImg}
                     />
                   ) : (
-                    <Image source={IMAGE.boy} style={style.profileImg} />
+                    <Image source={IMAGE.defaultAvatar} style={style.profileImg} />
                   )}
                 </View>
                 <View style={{ alignSelf: 'center', top: -hp(5) }}>
