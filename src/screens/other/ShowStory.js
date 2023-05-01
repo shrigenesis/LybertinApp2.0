@@ -322,7 +322,7 @@ const ShowStory = ({ navigation, route }) => {
                     alignItems: 'center',
                     width: wp(100),
                     position: 'absolute',
-                    bottom: 70,
+                    bottom: 60,
                     left: 0,
                     padding: 30,
                     zIndex: -1,
