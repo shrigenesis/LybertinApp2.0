@@ -46,7 +46,7 @@ const Progess = memo(({ storyList, activeIndex, setactiveIndex, navigation }) =>
       }
     }}
     enableProgress={true}
-    duration={300}
+    duration={10}
     barStyle={{
       barActiveColor: '#F5F5F5',
       barInActiveColor: 'gray',
@@ -59,7 +59,7 @@ const Progess = memo(({ storyList, activeIndex, setactiveIndex, navigation }) =>
 const ShowStory = ({ navigation, route }) => {
   const bottomSheetRef = useRef(null);
   const reportBottomSheetRef = useRef(null);
-  const snapPoints = useMemo(() => [1, hp(52)], []);
+  const snapPoints = useMemo(() => [1, hp(55)], []);
   const reportPoints = useMemo(() => [1, hp(55)], []);
 
   const [appReady, setAppReady] = useState(false);
@@ -320,19 +320,19 @@ const ShowStory = ({ navigation, route }) => {
                 <View
                   style={{
                     alignItems: 'center',
-                    width: 240,
-                    // justifyContent: 'center',
-
-                    // borderRadius: 120,
+                    width: wp(100),
                     position: 'absolute',
-                    bottom: 120,
-                    //  backgroundColor: 'rgba(0, 0, 0, 0.3)',
-                    // alignContent:"center"
-                    left: 50,
+                    bottom: 20,
+                    left: 0,
+                    padding: 50,
                     borderRadius: 10,
+                    zIndex: -1,
                   }}>
                   <Text
-                    style={{ color: '#fff', fontSize: 20, textAlign: 'center', marginLeft: "16%" }}>
+                    style={{
+                      color: '#fff', fontSize: 20,
+                      textAlign: 'center',
+                    }}>
                     {storyList[activeIndex]?.caption}
                   </Text>
                 </View>
@@ -345,9 +345,34 @@ const ShowStory = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           activeOpacity={1}
-          onPress={() => {
-            // setactiveIndex(activeIndex+1)
-          }}>
+          // onPress={() => {
+          //   setactiveIndex(activeIndex+1)
+          // }}
+          >
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              height: hp(100),
+              width: wp(50),
+              backgroundColor: 'rgb(255, 0, 0,0,0)',
+              position: 'absolute',
+              right: 0,
+            }}
+            onPress={() => {
+              setactiveIndex(activeIndex + 1);
+            }}></TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              height: hp(100),
+              width: wp(50),
+              backgroundColor: 'rgb(255, 0, 0,0,0)',
+              position: 'absolute',
+              left: 0,
+            }}
+            onPress={() => {
+              setactiveIndex(activeIndex - 1);
+            }}></TouchableOpacity>
           <Video
             source={{ uri: `${IMAGEURL}/${file.video}` }}
             ref={videoRef}
@@ -366,7 +391,7 @@ const ShowStory = ({ navigation, route }) => {
               setisplay(false);
             }}
             resizeMode={'cover'}
-            style={{ height: '84%', marginTop: hp(6), width: wp(100) }}
+            style={{ height: '84%', marginTop: hp(6), width: wp(100), zIndex:-1 }}
           />
           {!hideControles && !isLoading && _showIcon()}
           <TouchableOpacity
@@ -572,18 +597,43 @@ const ShowStory = ({ navigation, route }) => {
             />
             {storyList[activeIndex]?.story_type == 'HYPERLINK' ? (
               <TouchableOpacity
-                onPress={() => {
-                  setactiveIndex(activeIndex + 1);
-                }}
+                // onPress={() => {
+                //   setactiveIndex(activeIndex + 1);
+                // }}
                 style={{
                   backgroundColor: '#fff',
                   height: '100%',
                   alignItems: 'center',
+                  marginTop: 30,
                 }}>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{
+                    height: hp(100),
+                    width: wp(50),
+                    backgroundColor: 'rgb(255, 0, 0,0,0)',
+                    position: 'absolute',
+                    right: 0,
+                  }}
+                  onPress={() => {
+                    setactiveIndex(activeIndex + 1);
+                  }}></TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={1}
+                  style={{
+                    height: hp(100),
+                    width: wp(50),
+                    backgroundColor: 'rgb(255, 0, 0,0,0)',
+                    position: 'absolute',
+                    left: 0,
+                  }}
+                  onPress={() => {
+                    setactiveIndex(activeIndex - 1);
+                  }}></TouchableOpacity>
                 <Text
                   style={{
                     fontSize: 40,
-                    marginTop: '90%',
+                    marginTop: '40%',
                     color: '#000000',
                     fontFamily: fontFamily.Bold,
                   }}>
@@ -606,6 +656,7 @@ const ShowStory = ({ navigation, route }) => {
                       position: 'absolute',
                       bottom: 120,
                       right: 20,
+                      zIndex: 1,
                     }}>
                     <Icon name={'plus'} style={{ fontSize: 25, color: '#fff' }} />
                   </TouchableOpacity>
@@ -945,7 +996,8 @@ const Renderurlview = ({ url }) => {
       <View
         style={{
           backgroundColor: '#f5f5f5',
-          height: 40,
+          // height: 100,
+          padding: 10,
           marginTop: 50,
           paddingHorizontal: 40,
           alignItems: 'center',
@@ -965,6 +1017,7 @@ const Renderurlview = ({ url }) => {
                 }
               })
             }
+
             style={{
               marginHorizontal: 50,
               paddingVertical: 10,
@@ -972,7 +1025,9 @@ const Renderurlview = ({ url }) => {
               marginTop: '90%',
               color: 'blue',
               fontFamily: fontFamily.Bold,
-            }}>
+            }}
+            numberOfLines={1}
+          >
             {url}
           </Text>
         </Text>
