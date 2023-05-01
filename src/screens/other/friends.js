@@ -346,7 +346,7 @@ const ChatList = ({ navigation }) => {
                     style={{ height: 20, width: 20, resizeMode: 'contain' }}
                   />
                 </View>
-                <Text style={{ color: color.iconGray }}>Search</Text>
+                <Text style={{ color: color.iconGray }}>Search using username and Email</Text>
                 {/* <TextInput
                 onFocus={() => {navigation.navigate('Search')}}
                 style={{ paddingVertical: 0, color: color.textGray2 }}

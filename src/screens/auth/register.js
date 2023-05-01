@@ -451,17 +451,6 @@ const Register = ({ navigation }) => {
                 icon={IMAGE.user}
               />
               <Textinput
-                error={usernameError}
-                value={username}
-                style={{ backgroundColor: 'white' }}
-                onBlur={checkusername}
-                changeText={v => {
-                  setusername(v);
-                }}
-                placeholder={'Username'}
-                icon={IMAGE.user}
-              />
-              <Textinput
                 error={emailError}
                 value={email}
                 style={{ backgroundColor: 'white' }}
@@ -473,6 +462,17 @@ const Register = ({ navigation }) => {
                 placeholder={'Email Address'}
                 isEmail={true}
                 icon={IMAGE.mail}
+              />
+              <Textinput
+                error={usernameError}
+                value={username}
+                style={{ backgroundColor: 'white' }}
+                onBlur={checkusername}
+                changeText={v => {
+                  setusername(v);
+                }}
+                placeholder={'Username'}
+                icon={IMAGE.user}
               />
               <Textinput
                 value={password}

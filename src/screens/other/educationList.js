@@ -326,7 +326,7 @@ const style = StyleSheet.create({
   },
   headerBox: {
     flexDirection: 'row',
-    marginTop: Platform.OS == 'ios' ? 0 : 10,
+    marginTop: Platform.OS == 'ios' ? '4%' : 10,
     paddingLeft: wp(7),
     paddingRight: wp(4),
     justifyContent: 'space-between',

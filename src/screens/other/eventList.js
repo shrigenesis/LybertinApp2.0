@@ -291,7 +291,7 @@ const EventList = ({ navigation }) => {
               <View
                 style={{
                   flexDirection: 'row',
-                  marginTop: Platform.OS == 'ios' ? 0 : 10,
+                  marginTop: Platform.OS == 'ios' ? '4%' : 10,
                   paddingLeft: wp(7),
                   paddingRight: wp(4),
                   justifyContent: 'space-between',
@@ -390,7 +390,7 @@ const EventList = ({ navigation }) => {
           ) : (
             <>
               {status == 'true' ? (
-                <>
+                <View style={{backgroundColor:color.lightGray}}>
                   {upcomingEvents.length > 0 ?
                     <>
                       <View
@@ -475,7 +475,7 @@ const EventList = ({ navigation }) => {
                       </View>
                     </> : null}
 
-                </>
+                </View>
               ) : (
                 <NoRecord
                   image={IMAGE.noConversation}

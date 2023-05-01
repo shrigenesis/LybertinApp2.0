@@ -128,6 +128,7 @@ const Marketplace = ({ navigation }) => {
         onPress={e => updateIndex(e)}
         selectedIndex={selectedIndex}
         buttons={Interests}
+        buttonStyle={{borderWidth:0, borderColor:'#fff'}}
         textStyle={styles.textStyle}
         selectedTextStyle={styles.selectedTextStyle}
         selectedButtonStyle={styles.selectedButtonStyle}
@@ -274,11 +275,11 @@ const styles = StyleSheet.create({
   },
   containerStyle: {
     borderWidth: 0,
-    borderRadius: 20
+    borderRadius: 0
   },
   buttonContainerStyle: {
     borderWidth: 0,
     borderColor: 'white',
-    borderRadius: 20,
+    borderRightColor:'#fff'
   },
 });

@@ -585,9 +585,10 @@ const styles = StyleSheet.create({
   bottomCheckoutBox: {
     flexDirection: 'row',
     backgroundColor: color.btnBlue,
-    padding: 10,
+    paddingVertical: 10,
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: Platform.OS == "ios" ? 20 : 10,
   },
   ultimateText: {
     fontSize: fontSize.size15,
@@ -743,7 +744,7 @@ const styles = StyleSheet.create({
   },
   checkoutTextBox: {
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   checkoutImage: {
     width: 7,

@@ -172,6 +172,8 @@ const StoryList = ({ navigation, headerFontColor }) => {
     return index;
   };
   const gradientColor = ['#FF4252', '#FF7500', '#FFB700', "#00BF15", "#006DDF", "#C02CDD"];
+  const defaultGradientColor = ['#ffffff', '#ffffff'];
+
   return (
     <View
       style={{
@@ -204,22 +206,26 @@ const StoryList = ({ navigation, headerFontColor }) => {
                     <View>
                       {checkuseradd() != -1 ? (
                         <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-                          <Image
-                            source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                            style={[
-                              style.imgBox
-                            ]}
-                          />
+                          {userdata.avatar != 'lybertineApp/default/default.png' ? (
+                            <Image
+                              source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+                              style={style.imgBox}
+                            />
+                          ) : (
+                            <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+                          )}
                         </LinearGradient>
                       ) : (
-                        <View style={style.storyWrapper}>
-                          <Image
-                            source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                            style={[
-                              style.imgBox
-                            ]}
-                          />
-                        </View>
+                        <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
+                          {userdata.avatar != 'lybertineApp/default/default.png' ? (
+                            <Image
+                              source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+                              style={style.imgBox}
+                            />
+                          ) : (
+                            <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+                          )}
+                        </LinearGradient>
 
                       )}
 
@@ -405,5 +411,6 @@ const style = StyleSheet.create({
     color: color.white,
     width: 70,
   },
+
 });
 export default StoryList;

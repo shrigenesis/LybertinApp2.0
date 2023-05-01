@@ -7,13 +7,16 @@ import {
   Image,
   TouchableOpacity,
   ImageBackground,
-  ScrollView
+  ScrollView,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import { heightPercentageToDP as hp , widthPercentageToDP as wp} from 'react-native-responsive-screen';
 import { color,IMAGE,fontFamily } from '../../constant/';
 import {Button,Textinput} from './../../component/';
 import {APIRequest,ApiUrl} from './../../utils/api';
 import Toast from 'react-native-toast-message';
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 
 const ForgetPassword  = ({navigation}) => {
@@ -73,6 +76,15 @@ const ForgetPassword  = ({navigation}) => {
 
   return (
     <View style={style.forgetView}>
+      <View
+          style={[
+            style.backBtnPosition,
+            {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15)},
+          ]}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <Image source={IMAGE.ArrowLeft} style={style.backImage} />
+          </TouchableOpacity>
+        </View>
       <ScrollView>
         <View>
           <Image source={IMAGE.shape_bg} style={{height:hp(45),resizeMode:'contain',top:-hp(14),position:'absolute',width:wp(100)}} />
@@ -164,6 +176,17 @@ const style = StyleSheet.create({
   forgetView:{
     flex:1,
     backgroundColor:color.background2
-  }
+  },
+  backBtnPosition: {
+    position: 'absolute',
+    left: 15,
+    top: STATUSBAR_HEIGHT + 15,
+    zIndex: 1,
+  },
+  backImage: {
+    height: 32,
+    width: 32,
+    resizeMode: 'contain',
+  },
 });
 export default ForgetPassword;

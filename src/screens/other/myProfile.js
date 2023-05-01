@@ -344,7 +344,7 @@ const MyProfile = ({ navigation, route }) => {
                   />
                 )}
                 <View style={{ alignSelf: 'center', top: -hp(6) }}>
-                  {userdata.avatar ? (
+                  {userdata.avatar != 'lybertineApp/default/default.png' ? (
                     <Image
                       source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
                       style={style.profileImg}

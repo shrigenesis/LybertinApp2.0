@@ -170,7 +170,7 @@ const Search = ({navigation, route}) => {
               onSubmitEditing={() => {
                 search && searchfilter(search);
               }}
-              placeholder="Search..."
+              placeholder= {route?.params?.isGroupSearch? 'Search using group name':'Search using username and Email'}
               placeholderTextColor={'lightgray'}
             />
             {/* </View> */}

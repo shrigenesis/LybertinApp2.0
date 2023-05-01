@@ -272,7 +272,7 @@ const GroupList = ({ navigation }) => {
                     style={{ height: 20, width: 20, resizeMode: 'contain' }}
                   />
                 </View>
-                <Text style={{ color: color.iconGray }}>Search</Text>
+                <Text style={{ color: color.iconGray }}>Search using group name</Text>
 
               </View>
             </TouchableOpacity>
