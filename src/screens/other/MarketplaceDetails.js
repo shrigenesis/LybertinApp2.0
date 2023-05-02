@@ -385,7 +385,7 @@ export default class MarketplaceDetails extends Component {
                 <View style={styles.shareWrapp}>
                   <Text style={styles.heading}>{this.state.event.title}</Text>
                 </View>
-                {this.state.event.hashtags.length > 0 ? (
+                {this.state.event.hashtags?.length > 0 ? (
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -498,7 +498,8 @@ export default class MarketplaceDetails extends Component {
                         </Text>
                       }>
                       <Text style={styles.detailsTitle}>
-                        {this.state.event.total_coins_distributed < 1000
+                        {this.state.event.total_coins_distributed===null? 0:
+                        this.state.event.total_coins_distributed < 1000
                           ? parseFloat(
                               this.state.event.total_coins_distributed,
                             ).toFixed(1)

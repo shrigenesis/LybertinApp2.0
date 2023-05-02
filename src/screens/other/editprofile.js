@@ -365,7 +365,7 @@ const EditProfile = ({ navigation, route }) => {
                     source={{ uri: profile?.uri }}
                     style={{
                       height: hp(14),
-                      width: wp(30),
+                      width: wp(35),
                       resizeMode: 'cover',
                       borderRadius: 20,
                       overflow: 'hidden',

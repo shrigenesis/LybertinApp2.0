@@ -104,7 +104,7 @@ const EditGroup = ({ navigation, route }) => {
   const [oldCover, setoldCover] = useState(route?.params?.coverImage);
   const [oldProfile, setoldProfile] = useState(route?.params?.image);
   const [groupId, setgroupId] = useState(route?.params?.group_id);
-  
+
   const [imgtype, setimgtype] = useState('cover');
 
   const isFocus = useIsFocused();
@@ -407,34 +407,38 @@ const EditGroup = ({ navigation, route }) => {
               }}
             />
           </View>
-            {contactList.map((item, index ) => (
-              <RippleTouchable
-                key={`ContactListEditGroup-${index}`}
-                onPress={() => {
-                  selectUser(item.id);
+          {contactList.map((item, index) => (
+            <RippleTouchable
+              key={`ContactListEditGroup-${index}`}
+              onPress={() => {
+                selectUser(item.id);
+              }}>
+              <View
+                style={{
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  paddingVertical: hp(1),
+                  paddingLeft: wp(5),
                 }}>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    paddingVertical: hp(1),
-                    paddingLeft: wp(5),
-                  }}>
-                  <View style={style.imgview}>
-                    <Image
-                      source={{ uri: `${IMAGEURL}/${item.avatar}` }}
-                      style={style.imgBox}
-                    />
-                  </View>
-                  <View style={style.chatView}>
-                    <Text style={[style.typeText, { marginBottom: 0 }]}>
-                      {item.name}
-                    </Text>
-                    <Radio active={selectUserList.indexOf(item.id) != -1} />
-                  </View>
+                <View style={style.imgview}>
+                  <Image
+                    source={{ uri: `${IMAGEURL}/${item.avatar}` }}
+                    style={style.imgBox}
+                  />
                 </View>
-              </RippleTouchable>
-            ))}
+                <View style={style.chatView}>
+                  <Text style={[style.typeText, { marginBottom: 0 }]}>
+                    {item.name}
+                  </Text>
+                  <Radio
+                    onPress={() => {
+                      selectUser(item.id);
+                    }}
+                    active={selectUserList.indexOf(item.id) != -1} />
+                </View>
+              </View>
+            </RippleTouchable>
+          ))}
         </View>
       </ScrollView>
 

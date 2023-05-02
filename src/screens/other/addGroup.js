@@ -18,14 +18,14 @@ import {
   StatusBar,
   SafeAreaView,
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import { IMAGE, color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, Header, Radio, Button, Loader} from '../../component/';
+import { RippleTouchable, Header, Radio, Button, Loader } from '../../component/';
 // import Loader from '../../component/loader';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import {
   APIRequest,
   ApiUrl,
@@ -33,13 +33,13 @@ import {
   IMAGEURL,
 } from './../../utils/api';
 import Toast from 'react-native-toast-message';
-import {pickImage} from '../../component/';
-import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
+import { pickImage } from '../../component/';
+import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 export const RenderBottomSheet = memo(
-  ({setCover, setProfile, type, bottomSheetRef, snapPoints, file}) => {
+  ({ setCover, setProfile, type, bottomSheetRef, snapPoints, file }) => {
     return (
       <BottomSheet
         ref={bottomSheetRef}
@@ -48,8 +48,8 @@ export const RenderBottomSheet = memo(
         onChange={v => {
           console.log(v);
         }}
-        style={{elevation: 10, shadowColor: '#000'}}
-        backgroundStyle={{borderRadius: 20}}
+        style={{ elevation: 10, shadowColor: '#000' }}
+        backgroundStyle={{ borderRadius: 20 }}
         backdropComponent={BottomSheetBackdrop}>
         <TouchableOpacity
           onPress={() =>
@@ -93,7 +93,7 @@ export const RenderBottomSheet = memo(
   },
 );
 
-const EditGroup = ({navigation, route}) => {
+const EditGroup = ({ navigation, route }) => {
   const [isLoading, setisLoading] = useState(false);
   const [contactList, setcontactList] = useState([]);
   const [selectUserList, setselectUserList] = useState([]);
@@ -203,14 +203,14 @@ const EditGroup = ({navigation, route}) => {
       body.append('media_privacy', MediaPrivacy);
       body.append('users', selectUserList.join(','));
       body.append('welcome_message', welcomeMessage);
-      
+
       if (profile) {
         body.append('photo', profile);
       }
       if (cover) {
         body.append('cover_photo', cover);
       }
-      
+
       let group_id = route?.params?.group_id;
       let url = group_id
         ? `${ApiUrl.groupUpdate}${group_id}`
@@ -269,7 +269,7 @@ const EditGroup = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={style.safeArea}>
-      <View style={{flex: 1, backgroundColor: color.background}}>
+      <View style={{ flex: 1, backgroundColor: color.background }}>
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header
           title={group}
@@ -277,7 +277,7 @@ const EditGroup = ({navigation, route}) => {
             <TouchableOpacity onPress={createGroup}>
               <Image
                 source={IMAGE.check_mark}
-                style={{height: 20, width: 20, tintColor: color.btnBlue, resizeMode: 'contain'}}
+                style={{ height: 20, width: 20, tintColor: color.btnBlue, resizeMode: 'contain' }}
               />
             </TouchableOpacity>
           )}
@@ -292,19 +292,19 @@ const EditGroup = ({navigation, route}) => {
               style={style.coverView}>
               {cover ? (
                 <Image
-                  source={{uri: cover?.uri}}
-                  style={{height: hp(25), width: wp(100), resizeMode: 'cover'}}
+                  source={{ uri: cover?.uri }}
+                  style={{ height: hp(25), width: wp(100), resizeMode: 'cover' }}
                 />
               ) : oldCover ? (
                 <Image
-                  source={{uri: `${IMAGEURL}/${oldCover}`}}
-                  style={{height: hp(25), width: wp(100), resizeMode: 'cover'}}
+                  source={{ uri: `${IMAGEURL}/${oldCover}` }}
+                  style={{ height: hp(25), width: wp(100), resizeMode: 'cover' }}
                 />
               ) : (
                 <>
                   <Image
                     source={IMAGE.upload_cover}
-                    style={{height: 40, width: 40, resizeMode: 'contain'}}
+                    style={{ height: 40, width: 40, resizeMode: 'contain' }}
                   />
                   <Text style={style.groupText}>Upload group cover image</Text>
                 </>
@@ -314,11 +314,11 @@ const EditGroup = ({navigation, route}) => {
               onPress={() => {
                 setimgtype('profile'), bottomSheetRef?.current?.expand();
               }}
-              style={{justifyContent: 'center'}}>
+              style={{ justifyContent: 'center' }}>
               <View style={style.groupProfileView}>
                 {profile ? (
                   <Image
-                    source={{uri: profile?.uri}}
+                    source={{ uri: profile?.uri }}
                     style={{
                       height: hp(14),
                       width: wp(30),
@@ -329,7 +329,7 @@ const EditGroup = ({navigation, route}) => {
                   />
                 ) : oldProfile ? (
                   <Image
-                    source={{uri: `${IMAGEURL}/${oldProfile}`}}
+                    source={{ uri: `${IMAGEURL}/${oldProfile}` }}
                     style={{
                       height: hp(14),
                       width: wp(30),
@@ -345,7 +345,7 @@ const EditGroup = ({navigation, route}) => {
               <Text
                 style={[
                   style.groupText,
-                  {textAlign: 'center', marginBottom: hp(3), marginTop: -hp(4)},
+                  { textAlign: 'center', marginBottom: hp(3), marginTop: -hp(4) },
                 ]}>
                 Upload Group image
               </Text>
@@ -377,12 +377,12 @@ const EditGroup = ({navigation, route}) => {
                 style={style.inputStyle}
               />
             </View>
-            <View style={{marginLeft: wp(5), marginVertical: hp(2)}}>
+            <View style={{ marginLeft: wp(5), marginVertical: hp(2) }}>
               <View style={{}}>
                 <Text style={style.typeText}>Group Type</Text>
                 <View>
                   <Radio
-                    style={{marginBottom: '2%'}}
+                    style={{ marginBottom: '2%' }}
                     onPress={() => setgroupType(1)}
                     active={groupType == 1}
                     label={'Open (group member can send messages)'}
@@ -394,11 +394,11 @@ const EditGroup = ({navigation, route}) => {
                   />
                 </View>
               </View>
-              <View style={{marginTop: hp(2)}}>
+              <View style={{ marginTop: hp(2) }}>
                 <Text style={style.typeText}>Group Privacy</Text>
                 <View>
                   <Radio
-                    style={{marginBottom: '2%'}}
+                    style={{ marginBottom: '2%' }}
                     onPress={() => setgroupPrivacy(1)}
                     active={groupPrivacy == 1}
                     label={'Public (group members can add/remove member)'}
@@ -410,11 +410,11 @@ const EditGroup = ({navigation, route}) => {
                   />
                 </View>
               </View>
-              <View style={{marginTop: hp(2)}}>
+              <View style={{ marginTop: hp(2) }}>
                 <Text style={style.typeText}>Media Privacy</Text>
                 <View>
                   <Radio
-                    style={{marginBottom: '2%'}}
+                    style={{ marginBottom: '2%' }}
                     onPress={() => setMediaPrivacy(1)}
                     active={MediaPrivacy == 1}
                     label={'Public (group member can attach media)'}
@@ -435,40 +435,44 @@ const EditGroup = ({navigation, route}) => {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              <Text style={[style.typeText, {marginBottom: 0}]}>
+              <Text style={[style.typeText, { marginBottom: 0 }]}>
                 Select Group Members
               </Text>
               {/* <Image source={IMAGE.search} style={{height:20,width:20,tintColor:'#000',resizeMode:'contain'}} /> */}
             </View>
-              {contactList.map((item, index) => (
-                <RippleTouchable
-                  key={`ContactListAddGroup-${index}`}
-                  onPress={() => {
-                    selectUser(item.id);
+            {contactList.map((item, index) => (
+              <RippleTouchable
+                key={`ContactListAddGroup-${index}`}
+                onPress={() => {
+                  selectUser(item.id);
+                }}>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    flexDirection: 'row',
+                    paddingVertical: hp(1),
+                    paddingLeft: wp(5),
                   }}>
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      flexDirection: 'row',
-                      paddingVertical: hp(1),
-                      paddingLeft: wp(5),
-                    }}>
-                    <View style={style.imgview}>
-                      <Image
-                        source={{uri: `${IMAGEURL}/${item.avatar}`}}
-                        style={style.imgBox}
-                      />
-                    </View>
-                    <View style={style.chatView}>
-                      <Text style={[style.typeText, {marginBottom: 0}]}>
-                        {item.name}
-                      </Text>
-
-                      <Radio active={selectUserList.indexOf(item.id) != -1} />
-                    </View>
+                  <View style={style.imgview}>
+                    <Image
+                      source={{ uri: `${IMAGEURL}/${item.avatar}` }}
+                      style={style.imgBox}
+                    />
                   </View>
-                </RippleTouchable>
-              ))
+                  <View style={style.chatView}>
+                    <Text style={[style.typeText, { marginBottom: 0 }]}>
+                      {item.name}
+                    </Text>
+                    <Radio
+                      onPress={() => {
+                        selectUser(item.id);
+                      }}
+                      active={selectUserList.indexOf(item.id) != -1}
+                    />
+                  </View>
+                </View>
+              </RippleTouchable>
+            ))
             }
           </View>
         </ScrollView>
