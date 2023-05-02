@@ -9,7 +9,7 @@ import {
   Keyboard,
   SafeAreaView,
 } from 'react-native';
-import { Header } from './../../component/';
+import { Header, Loader } from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -254,7 +254,7 @@ class Chat extends React.Component {
       method: 'post',
       body: formData,
     };
-    console.log('after config', formData);
+    console.log('after config',config, formData);
     APIRequestWithFile(
       config,
       res => {
@@ -424,6 +424,7 @@ class Chat extends React.Component {
               snapPoints={this.snapPoints}
               bottomSheetRef={this.bottomSheetRef}
             />
+            {/* <Loader isLoading={this.state.isLoading} type="dots" /> */}
           </View>
         </View>
       </SafeAreaView>
