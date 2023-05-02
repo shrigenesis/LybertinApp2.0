@@ -62,12 +62,16 @@ export const BottomView = memo(props => {
       onStopRecord();
     };
   }, []);
-  
+
   const [isRecordingStart, setRecordingStart] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [recordingFile, setRecordingFile] = useState('');
   const [replyBoxheight, setReplyBoxheight] = useState('');
   const [height, setheight] = useState(0);
+  const [disable, setdisable] = useState(false)
+
+  var backTimer;
+
   const onStartRecord = async () => {
     if (await requestPermission('audio')) {
       setRecordingTime(0);
@@ -146,10 +150,16 @@ export const BottomView = memo(props => {
     }
 
   }
-  const onLayout=(event)=> {
-    const {height} = event.nativeEvent.layout;
-    setReplyBoxheight( (parseInt(height) + hp(3)));
-    
+  const onLayout = (event) => {
+    const { height } = event.nativeEvent.layout;
+    setReplyBoxheight((parseInt(height) + hp(3)));
+  }
+
+  const StopMultiplePress = ()=>{
+    setdisable(true)
+    setTimeout(()=>{
+      setdisable(false)
+    }, 500)
   }
 
   return (
@@ -170,7 +180,7 @@ export const BottomView = memo(props => {
         style={{
           // flex:1,
           // flexDirection:'column',
-          minHeight:  hp(9) ,
+          minHeight: hp(9),
           marginTop: replyOn ? (replyBoxheight == '' ? hp(8) : replyBoxheight) : hp(1),
           marginBottom: Platform.OS == 'ios' ? hp(2) : 0,
           backgroundColor: '#F6F6F6',
@@ -183,22 +193,22 @@ export const BottomView = memo(props => {
             {file?.fileType == 'pdf' ? (
               <Image
                 source={IMAGE.pdf}
-                style={{resizeMode: 'contain', height: 75, width: 75}}
+                style={{ resizeMode: 'contain', height: 75, width: 75 }}
               />
             ) : file?.fileType == 'photo' || file?.fileType == 'image' ? (
               <Image
-                source={{uri: file.uri}}
-                style={{resizeMode: 'contain', height: 75, width: 75}}
+                source={{ uri: file.uri }}
+                style={{ resizeMode: 'contain', height: 75, width: 75 }}
               />
             ) : (
               <Image
                 source={IMAGE.gallery}
-                style={{resizeMode: 'contain', height: 70, width: 70}}
+                style={{ resizeMode: 'contain', height: 70, width: 70 }}
               />
             )}
             <TouchableOpacity
               onPress={deleteFile}
-              style={{position: 'absolute', zIndex: 999, right: 6}}>
+              style={{ position: 'absolute', zIndex: 999, right: 6 }}>
               <Image
                 source={IMAGE.redCancel}
                 style={{
@@ -218,7 +228,7 @@ export const BottomView = memo(props => {
             showEmojiKeyboard && { marginBottom: hp(35) },
           ]}>
           {replyOn && <View style={styles.replyBox}>
-            <View onLayout={onLayout} style={{flex:0.9}}>
+            <View onLayout={onLayout} style={{ flex: 0.9 }}>
               <Text style={{ color: color.btnBlue }} > {replyOn?.sender?.name}</Text>
               <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
                 {getIconAndMessageOnReplyBox(replyOn)}
@@ -226,7 +236,7 @@ export const BottomView = memo(props => {
 
             </View>
             <View style={{
-              flex:0.1,
+              flex: 0.1,
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'center',
@@ -240,7 +250,7 @@ export const BottomView = memo(props => {
               <TouchableOpacity onPress={removeReplyBox}>
                 <Image
                   source={IMAGE.closeCircle}
-                  style={{ resizeMode: 'contain', height: 20, width: 20, tintColor: color.btnBlue, marginLeft:10}}
+                  style={{ resizeMode: 'contain', height: 20, width: 20, tintColor: color.btnBlue, marginLeft: 10 }}
                 />
               </TouchableOpacity>
 
@@ -293,8 +303,10 @@ export const BottomView = memo(props => {
               />
 
               <TouchableOpacity
+                disabled={disable}
                 onPress={() => {
-                  !isRecordingStart && sendMessage(), setRecordingFile('');
+                    StopMultiplePress()
+                    !isRecordingStart && sendMessage(), setRecordingFile('');
                 }}
                 style={styles.sendbtn}>
                 {!isRecordingStart && (
