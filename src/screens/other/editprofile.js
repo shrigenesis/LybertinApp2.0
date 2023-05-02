@@ -130,7 +130,7 @@ const EditProfile = ({ navigation, route }) => {
   const [dob, setdob] = useState('');
   const snapPoints = [1, hp(26)];
   const [validationError, setValidationError] = useState({});
-
+  var datalocal;
   useFocusEffect(
     React.useCallback(() => {
       fetchProfile();
@@ -139,6 +139,8 @@ const EditProfile = ({ navigation, route }) => {
       };
     }, [navigation]),
   );
+
+  
 
   const setDate = (event, date) => {
     setdob(moment(date).format('YYYY-MM-DD'));
@@ -467,7 +469,6 @@ const EditProfile = ({ navigation, route }) => {
               </View>
               {datePicker && (
                 <DateTimePicker
-                  // display={"spinner"}
                   //  testID="dateTimePicker"
                   value={new Date()}
                   mode={'date'}
@@ -476,8 +477,13 @@ const EditProfile = ({ navigation, route }) => {
                   // onChange={setDate}
                   onChange={(event, value) => {
                     var date = moment(value).format('YYYY-MM-DD');
-                    setdatePicker(false);
-                    setdob(date);
+                    if(event.type === 'set'){
+                      datalocal = date
+                    }
+                    if(event.type === 'dismissed'){
+                      setdatePicker(false);
+                      setdob(datalocal)
+                    }
                   }}
                   maximumDate={new Date()}
 
