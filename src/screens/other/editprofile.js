@@ -376,7 +376,7 @@ const EditProfile = ({ navigation, route }) => {
                     source={{ uri: `${IMAGEURL}/${oldProfile}` }}
                     style={{
                       height: hp(14),
-                      width: wp(30),
+                      width: wp(35),
                       resizeMode: 'cover',
                       borderRadius: 20,
                       overflow: 'hidden',
@@ -848,7 +848,7 @@ const style = StyleSheet.create({
     height: hp(14),
     alignItems: 'center',
     justifyContent: 'center',
-    width: wp(30),
+    width: wp(35),
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#fff',
