@@ -22,7 +22,8 @@ const Radio = props => {
       style={[{flexDirection:'row',marginRight:wp(5),alignItems:'center'},{...style}]}
       onPress={() => {
         onPress(!active);
-      }}>
+      }}
+      >
         <View style={[styles.outerStyle, {...outerStyle},(active)&&{height: 18,width: 18,borderColor:color.btnBlue}]}>
           {(active)&&
             <View style={[styles.innerStyle,{...innerStyle}]}/>

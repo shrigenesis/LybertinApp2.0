@@ -279,7 +279,7 @@ const EventList = ({ navigation }) => {
   const optimizedFn = useCallback(debounce(handleSearchChange), [search]);
 
   return (
-    <KeyboardAwareScrollView keyboardShouldPersistTaps={true}>
+    <KeyboardAwareScrollView bounces={false} keyboardShouldPersistTaps={true}>
       <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
         <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
         {/* <View style={style.appBar} />

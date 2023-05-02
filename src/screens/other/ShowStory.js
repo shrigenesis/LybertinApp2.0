@@ -20,7 +20,7 @@ import { Overlay } from 'react-native-elements';
 
 import {
   widthPercentageToDP as wp,
-  heightPercentageToDP as hp, 
+  heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { Button, Loader, pickImage } from './../../component/';
 import IMAGE from '../../constant/image';
@@ -34,7 +34,7 @@ import { StoryContainer, ProgressBar } from 'react-native-stories-view';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { User } from '../../utils/user';
 
-const Progess = memo(({ storyList, activeIndex, setactiveIndex, navigation }) => (
+const Progess = memo(({storyList, activeIndex, setactiveIndex, navigation }) => (
   <ProgressBar
     images={storyList}
     progressIndex={activeIndex}
@@ -346,13 +346,13 @@ const ShowStory = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           activeOpacity={1}
-          style={{marginTop: 30}}
-          >
+          style={{ marginTop: 30 }}
+        >
           <TouchableOpacity
             activeOpacity={1}
             style={{
               height: hp(100),
-              width: wp(50),
+              width: wp(30),
               backgroundColor: 'rgb(255, 0, 0,0,0)',
               position: 'absolute',
               right: 0,
@@ -364,7 +364,7 @@ const ShowStory = ({ navigation, route }) => {
             activeOpacity={1}
             style={{
               height: hp(100),
-              width: wp(50),
+              width: wp(30),
               backgroundColor: 'rgb(255, 0, 0,0,0)',
               position: 'absolute',
               left: 0,
@@ -385,31 +385,39 @@ const ShowStory = ({ navigation, route }) => {
             onLoadStart={() => {
               setisLoading(true);
             }}
+            bufferConfig={{
+              minBufferMs: 15000,
+              maxBufferMs: 50000,
+              bufferForPlaybackMs: 2500,
+              bufferForPlaybackAfterRebufferMs: 5000
+            }}
             onEnd={() => {
               sethideControles(false);
               setisplay(false);
             }}
             resizeMode={'cover'}
-            style={{ height: '84%', marginTop: hp(6), width: wp(100), zIndex:-1 }}
+            style={{ height: '84%', marginTop: hp(6), width: wp(100), zIndex: -1 }}
           />
           {!hideControles && !isLoading && _showIcon()}
-          <TouchableOpacity
-            onPress={() => {
-              bottomSheetRef?.current?.present();
-            }}
-            style={{
-              alignItems: 'center',
-              justifyContent: 'center',
-              backgroundColor: color.btnBlue,
-              height: 60,
-              width: 60,
-              borderRadius: 120,
-              position: 'absolute',
-              bottom: 5,
-              right: 20,
-            }}>
-            <Icon name={'plus'} style={{ fontSize: 25, color: '#fff' }} />
-          </TouchableOpacity>
+          {id == storyList[activeIndex]?.user_id ? (
+            <TouchableOpacity
+              onPress={() => {
+                bottomSheetRef?.current?.present();
+              }}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: color.btnBlue,
+                height: 60,
+                width: 60,
+                borderRadius: 120,
+                position: 'absolute',
+                bottom: 5,
+                right: 20,
+              }}>
+              <Icon name={'plus'} style={{ fontSize: 25, color: '#fff' }} />
+            </TouchableOpacity>)
+            : null}
           {storyList[activeIndex]?.caption != '' && (
             <View
               style={{
@@ -584,7 +592,7 @@ const ShowStory = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity
+          <TouchableOpacity 
             activeOpacity={1}
             onPress={() => _hideControles()}
             style={style.storyView}>

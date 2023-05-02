@@ -33,7 +33,7 @@ const IMAGE = {
   friend_request: require('./../assets/images/friend_request.png'),
   boy: require('./../assets/images/boy.webp'),
   delete: require('./../assets/images/delete.png'),
-  profile_view: require('./../assets/images/profile_view.png'),
+  profile_view: require('./../assets/images/ly_cover.png'),
   smile: require('./../assets/images/smile.png'),
   add: require('./../assets/images/add.png'),
   download: require('./../assets/images/download.png'),

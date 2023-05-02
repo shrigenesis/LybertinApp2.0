@@ -134,7 +134,7 @@ const EducationList = ({ navigation }) => {
   const optimizedFn = useCallback(debounce(handleSearchChange), []);
 
   return (
-    <KeyboardAwareScrollView keyboardShouldPersistTaps={true}>
+    <KeyboardAwareScrollView bounces={false}  keyboardShouldPersistTaps={true}>
       <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
       <SafeAreaView style={style.container}>
         <View>

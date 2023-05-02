@@ -44,9 +44,9 @@ const VideoPlayer = ({ route, navigation }) => {
                 <View style={styles.container}>
                     <View
                         style={{
-                            position:'absolute',
-                            left:20,
-                            top:45,
+                            position: 'absolute',
+                            left: 20,
+                            top: 45,
                         }}>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
                             <Image
@@ -78,6 +78,12 @@ const VideoPlayer = ({ route, navigation }) => {
                         onError={onError}
                         hideShutterView={true}
                         fullscreenOrientation="all"
+                        bufferConfig={{
+                            minBufferMs: 15000,
+                            maxBufferMs: 50000,
+                            bufferForPlaybackMs: 2500,
+                            bufferForPlaybackAfterRebufferMs: 5000
+                        }}
                     // fullscreenOrientation={'landscape'}
                     />
                 </View>
