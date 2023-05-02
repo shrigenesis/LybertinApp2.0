@@ -35,7 +35,7 @@ import { pickImage } from './../../../component/';
 import { IMAGEURL } from '../../../utils/api';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
-
+ 
 export const BottomView = memo(props => {
   const [showEmojiKeyboard, setshowEmojiKeyboard] = useState(false);
   const {
