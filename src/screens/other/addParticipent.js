@@ -18,14 +18,14 @@ import {
   ScrollView,
   StatusBar,
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import { IMAGE, color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, Header, Radio, Button, Loader} from '../../component/';
+import { RippleTouchable, Header, Radio, Button, Loader } from '../../component/';
 // import Loader from '../../component/loader';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import {
   APIRequest,
   ApiUrl,
@@ -33,10 +33,11 @@ import {
   IMAGEURL,
 } from './../../utils/api';
 import Toast from 'react-native-toast-message';
-import {pickImage} from '../../component/';
-import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
+import { pickImage } from '../../component/';
+import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import NoRecord from './noRecord';
 
 
 let apiMethod = '/add-members';
@@ -59,7 +60,7 @@ export default class addParticipent extends Component {
   }
 
   getGroupInfo = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let config = {
       url: `${ApiUrl.groupDetail}${this.state.groupId}`,
       method: 'get',
@@ -73,7 +74,7 @@ export default class addParticipent extends Component {
         });
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         console.log(err?.response?.data);
       },
     );
@@ -97,7 +98,7 @@ export default class addParticipent extends Component {
   addUser = () => {
     console.log('selected user list sedn', this.state.selectUserList);
 
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let config = {
       url: `${apiUrl}/${this.state.groupId}${apiMethod}`,
       method: 'post',
@@ -122,7 +123,7 @@ export default class addParticipent extends Component {
         }
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         console.log(err?.response?.data);
       },
     );
@@ -131,58 +132,65 @@ export default class addParticipent extends Component {
   render() {
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
-      <View style={{flex: 1, backgroundColor: color.background}}>
-        <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
-        <Header
-          title={'Add Participants'}
-          RightIcon={() =>
-            this.state.selected == 0 ||
-            this.state.selectUserList.length == 0 ? (
-              <Text
-                // onPress={() => this.addUser()}
-                style={styles.editText}></Text>
-            ) : (
-              <TouchableOpacity onPress={() => this.addUser()}>
-                <Text style={styles.editText}>add</Text>
-              </TouchableOpacity>
-            )
-          }
-        />
-        <FlatList
-          data={this.state.participents}
-          renderItem={({item: d}) => (
-            <View>
-              <RippleTouchable
-                onPress={() => {
-                  [this.selectUser(d.id), this.setState({selected: 1})];
-                }}>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    paddingVertical: hp(1),
-                    paddingLeft: wp(5),
+        <View style={{ flex: 1, backgroundColor: color.background }}>
+          <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+          <Header
+            title={'Add Participants'}
+            RightIcon={() =>
+              this.state.selected == 0 ||
+                this.state.selectUserList.length == 0 ? (
+                <Text
+                  // onPress={() => this.addUser()}
+                  style={styles.editText}></Text>
+              ) : (
+                <TouchableOpacity onPress={() => this.addUser()}>
+                  <Text style={styles.editText}>add</Text>
+                </TouchableOpacity>
+              )
+            }
+          />
+          {this.state.participents.length > 0 ? <FlatList
+            data={this.state.participents}
+            renderItem={({ item: d }) => (
+              <View>
+                <RippleTouchable
+                  onPress={() => {
+                    [this.selectUser(d.id), this.setState({ selected: 1 })];
                   }}>
-                  <View style={styles.imgview}>
-                    <Image
-                      source={{uri: `${IMAGEURL}/${d.avatar}`}}
-                      style={styles.imgBox}
-                    />
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      paddingVertical: hp(1),
+                      paddingLeft: wp(5),
+                    }}>
+                    <View style={styles.imgview}>
+                      <Image
+                        source={{ uri: `${IMAGEURL}/${d.avatar}` }}
+                        style={styles.imgBox}
+                      />
+                    </View>
+                    <View style={styles.chatView}>
+                      <Text style={[styles.typeText, { marginBottom: 0 }]}>
+                        {d.name}
+                      </Text>
+                      <Radio
+                        active={this.state.selectUserList.indexOf(d.id) != -1}
+                      />
+                    </View>
                   </View>
-                  <View style={styles.chatView}>
-                    <Text style={[styles.typeText, {marginBottom: 0}]}>
-                      {d.name}
-                    </Text>
-                    <Radio
-                      active={this.state.selectUserList.indexOf(d.id) != -1}
-                    />
-                  </View>
-                </View>
-              </RippleTouchable>
-            </View>
-          )}
-        />
-      </View>
+                </RippleTouchable>
+              </View>
+            )}
+          /> :
+            <NoRecord
+              image={IMAGE.noFriends}
+              title="No Participents found"
+              // description="You will get Upcoming and poular events here."
+              showButton={false}
+            />
+          }
+        </View>
       </SafeAreaView>
     );
   }
