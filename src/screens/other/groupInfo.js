@@ -108,7 +108,7 @@ export default class groupInfo extends Component {
       res => {
         Toast.show({
           type: 'success',
-          text1:res?.message
+          text1: 'Group left successfully'
         })
       },
       err => {

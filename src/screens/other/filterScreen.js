@@ -559,6 +559,7 @@ export default class filterScreen extends Component {
                     color: color.textGray2,
                     marginLeft: '18%',
                   }}
+                  value={this.state.input}
                   onChangeText={v => this.setState({ input: v })}
                   placeholder={`Type Event Name`}
                   placeholderTextColor={'#000'}

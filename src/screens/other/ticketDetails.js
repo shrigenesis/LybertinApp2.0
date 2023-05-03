@@ -369,7 +369,7 @@ export default class TicketDetails extends Component {
           backdropComponent={BottomSheetBackdrop}>
           <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
             <Text style={styles.roportHeading}>Report</Text>
-            <Text style={styles.subHeading}>Why Are You Reporting This Post?</Text>
+            <Text style={styles.subHeading}>Why Are You Reporting This ticket?</Text>
           </View>
           <TouchableOpacity
             onPress={() => {

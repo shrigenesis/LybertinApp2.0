@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, useCallback, FC} from 'react';
+import React, {useState, useEffect, useCallback, FC, useRef} from 'react';
 import {
   View,
   Text,
@@ -29,6 +29,7 @@ import NoRecord from './noRecord';
 const Search = ({navigation, route}) => {
   const [searchList, setsearchList] = useState([]);
   const [search, setSearch] = useState('');
+  const inputRef = useRef();
 
   const focus = useIsFocused();
   useEffect(() => {
@@ -39,7 +40,7 @@ const Search = ({navigation, route}) => {
   }, [focus]);
 
   const searchfilter = text => {
-    if (typeof text === undefined || text == null || text == '' ) {
+    if (typeof text === undefined || text == null || text == '') {
       return setsearchList([]);
     }
     let config = {
@@ -140,7 +141,6 @@ const Search = ({navigation, route}) => {
   };
   const optimizedFn = useCallback(debounce(handleChange), []);
 
-
   return (
     <View style={{flex: 1, backgroundColor: color.white}}>
       <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
@@ -160,6 +160,7 @@ const Search = ({navigation, route}) => {
               />
             </View>
             <TextInput
+              ref={inputRef}
               autoFocus
               onChangeText={text => {
                 setSearch(text);
@@ -170,7 +171,11 @@ const Search = ({navigation, route}) => {
               onSubmitEditing={() => {
                 search && searchfilter(search);
               }}
-              placeholder= {route?.params?.isGroupSearch? 'Search using group name':'Search using username and Email'}
+              placeholder={
+                route?.params?.isGroupSearch
+                  ? 'Search using group name'
+                  : 'Search using username and Email'
+              }
               placeholderTextColor={'lightgray'}
             />
             {/* </View> */}
@@ -179,8 +184,10 @@ const Search = ({navigation, route}) => {
             ) : (
               <TouchableOpacity
                 onPress={() => {
-                  setSearch('');
-                  searchfilter();
+                  // setSearch('');
+                  // searchfilter();
+                  setSearch(route?.params?.search);
+                  searchfilter(route?.params?.search);
                 }}
                 style={{position: 'absolute', right: wp(5)}}>
                 <Icon
@@ -207,20 +214,25 @@ const Search = ({navigation, route}) => {
           </View>
         ) : (
           <>
-          {search?.length > 0 && (
-
-            <NoRecord
-              image={
-                route?.params?.isGroupSearch ? IMAGE?.noGroup : IMAGE?.noFriends
-              }
-              title={`${route?.params?.isGroupSearch  ? 'No group found' : 'No user found'} `}
-              description=""
-              buttonText="Create a group"
-              navigation={navigation}
-              navigateTo={'GroupChat'}
-              showButton={false}
-            />
-          )}
+            {search?.length > 0 && (
+              <NoRecord
+                image={
+                  route?.params?.isGroupSearch
+                    ? IMAGE?.noGroup
+                    : IMAGE?.noFriends
+                }
+                title={`${
+                  route?.params?.isGroupSearch
+                    ? 'No group found'
+                    : 'No user found'
+                } `}
+                description=""
+                buttonText="Create a group"
+                navigation={navigation}
+                navigateTo={'GroupChat'}
+                showButton={false}
+              />
+            )}
           </>
         )}
       </View>

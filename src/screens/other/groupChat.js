@@ -9,6 +9,7 @@ import {
   Image,
   TouchableOpacity,
   Keyboard,
+  Pressable,
 } from 'react-native';
 import { Header, Loader } from './../../component/';
 import {
@@ -69,6 +70,7 @@ class GroupChat extends React.Component {
       if (group_id) {
         this.setState({
           group_id: group_id,
+          chatList: [],
         });
         this.fetchGroupDetail(group_id);
         this.fetchChatList(group_id);
@@ -309,7 +311,7 @@ class GroupChat extends React.Component {
                     }}
                   />
                 </TouchableOpacity>
-                <TouchableOpacity
+                <Pressable
                   onPress={() => {
                     this.props.navigation.navigate('groupInfo', {
                       groupId: this.state.groupId,
@@ -349,7 +351,7 @@ class GroupChat extends React.Component {
                     <Text style={styles.heading}>{name}</Text>
                     <Text style={styles.onlineText}>{description}</Text>
                   </View>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             )}
             title={null}

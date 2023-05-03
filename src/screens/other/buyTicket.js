@@ -841,7 +841,7 @@ export default class buyTicket extends Component {
     };
 
     return (
-      <SafeAreaView style={{ flex:1 }}>
+      <SafeAreaView style={{ flex:1, backgroundColor: color.white }}>
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title="Buy Ticket" />
         {this.state.paymenturl != null ? (
@@ -883,14 +883,13 @@ export default class buyTicket extends Component {
             />
           </View>
         ) : (
-          <SafeAreaView style={{ flex: 1, marginTop:-35}}>
-            <KeyboardAwareScrollView>
+          <SafeAreaView style={{ flex: 1, marginTop: Platform.OS ==='ios'? -45: -35, zIndex:-1}}>
               <ScrollView>
                 <View style={styles.container}>
                   <Loader type="dots" isLoading={this.state.isloading} />
 
                   <View style={{ marginHorizontal: '4%', marginVertical: 0 }}>
-                    <View style={styles.divider}></View>
+                    {/* <View style={styles.divider}></View> */}
                     <Text style={styles.upperText}>Event Category</Text>
                     <Text style={styles.bottomText}>
                       {this.state.ticketDetail.title}
@@ -980,8 +979,11 @@ export default class buyTicket extends Component {
                                     this.checkSaleIslive(item)
                                       ? styles.ticketPriceOld
                                       : {}
-                                  }>
-                                  <View style={styles.ticketQtyWrapper}>
+                                  }
+                                  >
+                                  <View 
+                                  // style={styles.ticketQtyWrapper}
+                                  >
                                     <Text style={{ marginRight: 5 }}>
                                       {!this.checkSaleIslive(item)
                                         ? this.getQtyText(item)
@@ -1472,7 +1474,6 @@ export default class buyTicket extends Component {
                   </View>
                 )}
               </ScrollView>
-            </KeyboardAwareScrollView>
           </SafeAreaView>
         )}
       </SafeAreaView>

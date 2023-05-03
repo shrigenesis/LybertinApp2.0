@@ -63,6 +63,10 @@ const UserProfile = ({navigation, route}) => {
           getuserInfo(userId);
           console.log('send request API ', res, '////');
         }
+        Toast.show({
+          type: 'info',
+          text1: 'Friend request sent successfully.'
+        });
         setisLoading(false);
       },
       err => {
@@ -73,7 +77,6 @@ const UserProfile = ({navigation, route}) => {
   };
 
   const rejectRequest = () => {
-    alert('fff')
     setisLoading(true);
     let config = {
       url: ApiUrl.withdrawReq,
@@ -89,6 +92,10 @@ const UserProfile = ({navigation, route}) => {
         getuserInfo(userId);
         if (res.status) {
         }
+        Toast.show({
+          type: 'info',
+          text1: 'Friend request withdraw successfully.'
+        });
         setisLoading(false);
       },
       err => {

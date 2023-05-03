@@ -183,10 +183,10 @@ const _renderMessage = (item, style, videoRef, direction) => {
     case 9:
       return (
         <>
+          <Text style={styles.centerChatTime}>{getTime(item.created_at)}</Text>
           <View style={styles.badgeTextWrapper}>
             <Text style={styles.badges}>{item.message}</Text>
           </View>
-          <Text style={styles.centerChatTime}>{getTime(item.created_at)}</Text>
         </>
       ); //MESSAGE_TYPE_BADGES
     case 10:

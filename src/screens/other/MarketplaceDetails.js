@@ -342,7 +342,7 @@ export default class MarketplaceDetails extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <StatusBar
           barStyle={'light-content'}
           translucent
@@ -351,7 +351,7 @@ export default class MarketplaceDetails extends Component {
         <View
           style={[
             styles.backBtnPosition,
-            {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15)},
+            {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 120 : 85)},
           ]}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Image source={IMAGE.ArrowLeft} style={styles.backImage} />
@@ -873,7 +873,7 @@ export default class MarketplaceDetails extends Component {
           </ScrollView>
         )}
         <Loader isLoading={this.state.isLoading} type={'dots'} />
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -883,6 +883,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     borderColor: color.white,
+    marginTop:-(STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 60 : 15))
   },
   backButton: {
     backgroundColor: color.white,
