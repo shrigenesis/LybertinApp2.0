@@ -841,11 +841,11 @@ export default class buyTicket extends Component {
     };
 
     return (
-      <View style={{ flex: 1, backgroundColor: '#fff', paddingTop: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 0) }}>
+      <SafeAreaView style={{ flex:1 }}>
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title="Buy Ticket" />
         {this.state.paymenturl != null ? (
-          <View style={{ flex: 1 }}>
+          <View style={{ flex:1 }}>
             <View
               style={{
                 flexDirection: 'row',
@@ -883,7 +883,7 @@ export default class buyTicket extends Component {
             />
           </View>
         ) : (
-          <SafeAreaView style={{ flex: 1 }}>
+          <SafeAreaView style={{ flex: 1, marginTop:-35}}>
             <KeyboardAwareScrollView>
               <ScrollView>
                 <View style={styles.container}>
@@ -1475,7 +1475,7 @@ export default class buyTicket extends Component {
             </KeyboardAwareScrollView>
           </SafeAreaView>
         )}
-      </View>
+      </SafeAreaView>
     );
   }
 }
