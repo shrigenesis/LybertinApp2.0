@@ -39,7 +39,8 @@ export default class EducationShowAll extends Component {
       url: ApiUrl.educationListFilter,
       method: 'post',
       body: {
-        filter_type: this.state.filter_type,
+        filter_type: this.state.filter_type!=='live'? this.state.filter_type: '' ,
+        course_type: this.state.filter_type==='live'? this.state.filter_type: '' 
       },
     };
     APIRequest(

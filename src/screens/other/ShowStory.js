@@ -46,7 +46,7 @@ const Progess = memo(({storyList, activeIndex, setactiveIndex, navigation }) => 
       }
     }}
     enableProgress={true}
-    duration={30}
+    duration={99}
     barStyle={{
       barActiveColor: '#F5F5F5',
       barInActiveColor: 'gray',

@@ -68,6 +68,7 @@ export default class educationDetails extends Component {
   componentDidMount() {
     this.props.navigation.addListener('focus', async () => {
       this.getEventDetails();
+      this.setState({...this.state, AddedVideoPrice:0,AddedVideoCount:0 })
     });
     this.getEventDetails();
   };
@@ -585,10 +586,11 @@ const styles = StyleSheet.create({
   bottomCheckoutBox: {
     flexDirection: 'row',
     backgroundColor: color.btnBlue,
-    paddingVertical: 10,
+    paddingTop: 15,
+    paddingBottom: Platform.OS == "ios" ? 25 : 15,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: Platform.OS == "ios" ? 20 : 10,
+    paddingHorizontal: Platform.OS == "ios" ? 30 : 10,
   },
   ultimateText: {
     fontSize: fontSize.size15,

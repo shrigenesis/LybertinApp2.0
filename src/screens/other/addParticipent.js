@@ -131,7 +131,7 @@ export default class addParticipent extends Component {
 
   render() {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: color.white }}>
         <View style={{ flex: 1, backgroundColor: color.background }}>
           <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
           <Header
@@ -185,7 +185,7 @@ export default class addParticipent extends Component {
           /> :
             <NoRecord
               image={IMAGE.noFriends}
-              title="No Participents found"
+              title="No participants found"
               // description="You will get Upcoming and poular events here."
               showButton={false}
             />

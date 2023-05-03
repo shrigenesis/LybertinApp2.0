@@ -73,6 +73,7 @@ const RequestList = ({ navigation }) => {
           reqList.splice(index, 1);
           setrequestList(reqList);
         }
+      
         setisLoading(false);
       },
       err => {

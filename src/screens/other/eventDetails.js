@@ -134,6 +134,7 @@ export default class eventDetails extends Component {
       alert(error.message);
     }
   };
+
   render() {
     return (
       // <SafeAreaView style={{flex: 1}}>
@@ -214,7 +215,7 @@ export default class eventDetails extends Component {
                 <Text style={styles.ultimateText}>
                   {this.state.event.excerpt}
                 </Text>
-                {this.state.event.hashtags.length > 0 ?
+                {this.state.event.hashtags?.length > 0 ?
                   <ScrollView
                     horizontal={true}
                     showsHorizontalScrollIndicator={false}
@@ -263,7 +264,7 @@ export default class eventDetails extends Component {
                   />
 
                   <Pressable
-                    onPress={() =>
+                  onPress={()=>
                       RedirectToMap(
                         this.state.event.venue && this.state.event.venue,
                         this.state.event.state && ", " + this.state.event.state,

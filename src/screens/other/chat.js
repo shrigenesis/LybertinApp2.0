@@ -62,6 +62,7 @@ class Chat extends React.Component {
       // setTimeout(() => {
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
+        this.setState({chatList: []})
         this.fetchChatList(user_id);
       }
       // }, 300);
