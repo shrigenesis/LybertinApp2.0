@@ -476,7 +476,7 @@ const EventList = ({ navigation }) => {
                     </> : null}
 
                 </View>
-              ) : (
+              ) : ( 
                 <NoRecord
                   image={IMAGE.noConversation}
                   title="No Event found"
