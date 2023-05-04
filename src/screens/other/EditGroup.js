@@ -131,6 +131,13 @@ const EditGroup = ({ navigation, route }) => {
     setselectUserList(data);
   };
 
+  const RemoveMember = () => {
+    alert('RemoveMember')
+  }
+  const AddMember = () => {
+    alert('AddMember')
+  }
+
   const fetchGroupDetail = () => {
     let config = {
       url: `${ApiUrl.groupDetail}${groupId}`,
@@ -180,7 +187,6 @@ const EditGroup = ({ navigation, route }) => {
         method: 'post',
         body: body,
       };
-
       APIRequestWithFile(
         config,
         res => {

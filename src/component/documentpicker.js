@@ -76,6 +76,7 @@ export const pickImage = async (type = 'image', cb, mediaType = 'mixed') => {
     imgFunction(config, response => {
       if (response.assets && response.assets[0]) {
         let image = response.assets[0];
+        console.log(image);
         let file = {
           uri: image.uri,
           type: image.type,

@@ -181,7 +181,37 @@ export const APIRequestWithFile = async (config = {}, onSuccess, onError) => {
         Authorization: `Bearer ${token}`,
       },
     };
-
+    console.log('config',data);
+    axios(data)
+      .then(res => {
+        if (res.status == 200 || res.status == 201) {
+          onSuccess(res.data);
+        }
+      })
+      .catch(err => {
+        onError(err);
+      });
+  } catch (error) {
+    Toast.show({
+      type: 'error',
+      text1: error
+    });
+  }
+};
+export const APIRequestWithFile1 = async (config = {}, onSuccess, onError) => {
+  const token = new User().getToken();
+  try {
+    let data = {
+      method: config.method,
+      url: config.url,
+      data: config.body,
+      headers: {
+       
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+      },
+    };
+    console.log('config',data);
     axios(data)
       .then(res => {
         if (res.status == 200 || res.status == 201) {

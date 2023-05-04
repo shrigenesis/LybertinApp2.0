@@ -50,6 +50,7 @@ export default class addParticipent extends Component {
     this.state = {
       participents: [],
       selectUserList: [],
+      group_members: [],
       groupId: this.props.route.params.groupId,
       selected: 0,
     };
@@ -71,6 +72,7 @@ export default class addParticipent extends Component {
       res => {
         this.setState({
           participents: res.data.add_more_participent_list,
+          group_members: res.data.group_members
         });
       },
       err => {
@@ -79,6 +81,56 @@ export default class addParticipent extends Component {
       },
     );
   };
+
+
+   RemoveMember = (id) => {
+    let config = {
+      url: `${apiUrl}/removemember/${this.state.groupId}/members/${id}`,
+      method: 'post',
+    };
+    console.log('config', config);
+    APIRequest(
+      config,
+      res => {
+        if (res?.status) {
+          fetchGroupDetail();
+          Toast.show({
+            type: 'success',
+            text1: 'Remove Participent successful '
+          })
+          this.getGroupInfo()
+        }
+      },
+      err => {
+        console.log(err?.response?.data);
+      },
+    );
+  }
+   AddMember = (id) => {
+    let config = {
+      url: `${apiUrl}/${this.state.groupId}${apiMethod}`,
+      method: 'post',
+      body: {
+        members: id,
+      },
+    };
+    console.log('config', config);
+    APIRequest(
+      config,
+      res => {
+        if (res?.status) {
+          Toast.show({
+            type: 'success',
+            text1: 'Add Participent successful '
+          })
+        }
+        this.getGroupInfo();
+      },
+      err => {
+        console.log(err?.response?.data);
+      },
+    );
+  }
 
   selectUser = id => {
     let index = this.state.selectUserList.indexOf(id);
@@ -136,53 +188,68 @@ export default class addParticipent extends Component {
           <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
           <Header
             title={'Add Participants'}
-            RightIcon={() =>
-              this.state.selected == 0 ||
-                this.state.selectUserList.length == 0 ? (
-                <Text
-                  // onPress={() => this.addUser()}
-                  style={styles.editText}></Text>
-              ) : (
-                <TouchableOpacity onPress={() => this.addUser()}>
-                  <Text style={styles.editText}>add</Text>
-                </TouchableOpacity>
-              )
-            }
+          // RightIcon={() =>
+          //   this.state.selected == 0 ||
+          //     this.state.selectUserList.length == 0 ? (
+          //     <Text
+          //       // onPress={() => this.addUser()}
+          //       style={styles.editText}></Text>
+          //   ) : (
+          //     <TouchableOpacity onPress={() => this.addUser()}>
+          //       <Text style={styles.editText}>add</Text>
+          //     </TouchableOpacity>
+          //   )
+          // }
           />
-          {this.state.participents.length > 0 ? <FlatList
-            data={this.state.participents}
-            renderItem={({ item: d }) => (
-              <View>
-                <RippleTouchable
-                  onPress={() => {
-                    [this.selectUser(d.id), this.setState({ selected: 1 })];
-                  }}>
+          {this.state.participents.length > 0 ?
+            <>
+              <FlatList
+                data={this.state.participents}
+                renderItem={({ item: d }) => (
                   <View
                     style={{
                       alignItems: 'center',
-                      flexDirection: 'row',
-                      paddingVertical: hp(1),
-                      paddingLeft: wp(5),
+                      flexDirection: 'column',
+                      padding: wp(3),
+                      backgroundColor: '#fff',
+                      borderRadius: 10,
+                      elevation: 5,
+                      marginVertical: hp(1),
+                      width: wp(90),
+                      alignSelf: 'center',
                     }}>
-                    <View style={styles.imgview}>
-                      <Image
-                        source={{ uri: `${IMAGEURL}/${d.avatar}` }}
-                        style={styles.imgBox}
-                      />
-                    </View>
-                    <View style={styles.chatView}>
-                      <Text style={[styles.typeText, { marginBottom: 0 }]}>
-                        {d.name}
-                      </Text>
-                      <Radio
-                        active={this.state.selectUserList.indexOf(d.id) != -1}
-                      />
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        paddingVertical: hp(1),
+                        paddingLeft: wp(5),
+                      }}>
+                      <View style={styles.imgview}>
+                        <Image
+                          source={{ uri: `${IMAGEURL}/${d.avatar}` }}
+                          style={styles.imgBox}
+                        />
+                      </View>
+                      <View style={styles.chatView}>
+                        <Text numberOfLines={1} style={[styles.typeText, { marginBottom: 0 , width:wp(30)}]}>
+                          {d.name}
+                        </Text>
+                        <RippleTouchable
+                          onPress={() => {
+                            this.AddMember(d.id)
+                          }}
+                          backgroundColor={color.white}
+                          borderRadius={5}
+                          style={{ ...styles.btn, backgroundColor: '#92969B' }}>
+                          <Text style={styles.btnText}>Add</Text>
+                        </RippleTouchable>
+                      </View>
                     </View>
                   </View>
-                </RippleTouchable>
-              </View>
-            )}
-          /> :
+                )}
+              />
+            </> :
             <NoRecord
               image={IMAGE.noFriends}
               title="No participants found"
@@ -228,5 +295,19 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: fontFamily.Bold,
     color: color.black,
+  },
+  btn: {
+    marginTop: hp(1),
+    justifyContent: 'center',
+    alignItems: 'center',
+    height: hp(4.5),
+    width: wp(25),
+    borderRadius: 20,
+    backgroundColor: color.btnBlue,
+  },
+  btnText: {
+    fontSize: 13,
+    fontFamily: fontFamily.Regular,
+    color: color.white,
   },
 });
