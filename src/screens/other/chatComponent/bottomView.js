@@ -185,7 +185,7 @@ export const BottomView = memo(props => {
           marginBottom: Platform.OS == 'ios' ? hp(2) : 0,
           backgroundColor: '#F6F6F6',
         }}>
-        {/* {file && (
+        {file && (
           <Animated.View
             entering={SlideInLeft}
             exiting={SlideOutDown}
@@ -220,7 +220,7 @@ export const BottomView = memo(props => {
               />
             </TouchableOpacity>
           </Animated.View>
-        )} */}
+        )}
 
         <View
           style={[

@@ -751,7 +751,7 @@ const styles = StyleSheet.create({
   checkoutImage: {
     width: 7,
     height: 10,
-    resizeMode: 'center'
+    resizeMode:'contain'
   },
   joinBtn: { alignItems: 'center' },
   tagText: {

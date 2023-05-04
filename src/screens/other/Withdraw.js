@@ -13,6 +13,7 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
 } from 'react-native';
 import {Button, Divider} from 'react-native-elements';
 import SvgUri from 'react-native-svg-uri';
@@ -145,13 +146,13 @@ const Withdraw = ({navigation, route}) => {
         </View>
       </View>
 
-      <KeyboardAvoidingView behavior="padding">
+      {/* <KeyboardAvoidingView behavior="padding"> */}
           <ScrollView>
           <View
             style={{
               backgroundColor: '#fff',
               marginTop: hp(15),
-              marginBottom: 50,
+              // marginBottom: 50,
               height: bankTab === 'bank' ? '100%' : hp(80),
             }}>
             <View style={styles.inputBox}>
@@ -284,7 +285,7 @@ const Withdraw = ({navigation, route}) => {
             </Text>
           </BottomSheetCustom>
           </ScrollView>
-      </KeyboardAvoidingView>
+      {/* </KeyboardAvoidingView> */}
     </SafeAreaView>
   );
 };
@@ -295,7 +296,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     backgroundColor: color.btnBlue,
-    marginBottom: -50,
+    marginBottom: Platform.OS==='ios'?-50:0,
   },
   headerBox: {
     marginHorizontal: 15,

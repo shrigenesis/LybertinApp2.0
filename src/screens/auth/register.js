@@ -185,7 +185,6 @@ const Register = ({ navigation }) => {
         res => {
           if (res.status) {
             setemailError('');
-            setusername(email)
           }
         },
         err => {

@@ -268,6 +268,7 @@ export default class groupInfo extends Component {
                     onPress={() =>
                       this.props.navigation.navigate('addParticipent', {
                         groupId: this.state.groupId,
+                        groupMembers: this.state.groupMembers
                       })
                     }
                     style={styles.cardBlock}>

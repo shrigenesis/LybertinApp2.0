@@ -311,7 +311,7 @@ class GroupChat extends React.Component {
                     }}
                   />
                 </TouchableOpacity>
-                <Pressable
+                <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.navigate('groupInfo', {
                       groupId: this.state.groupId,
@@ -335,14 +335,14 @@ class GroupChat extends React.Component {
                       width: 40,
                     }}
                   />
-                  <View
-                    // onPress={() => {
-                    //   this.props.navigation.navigate('groupInfo', {
-                    //     groupId: this.state.groupId,
-                    //     privacy:this.props.route.params.privacy,
-                    //     isAdmin:this.state.isAdmin
-                    //   });
-                    // }}
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.props.navigation.navigate('groupInfo', {
+                        groupId: this.state.groupId,
+                        privacy:this.props.route.params.privacy,
+                        isAdmin:this.state.isAdmin
+                      });
+                    }}
                     style={{
                       width: wp(70),
                       marginLeft: wp(3),
@@ -350,8 +350,8 @@ class GroupChat extends React.Component {
                     }}>
                     <Text style={styles.heading}>{name}</Text>
                     <Text style={styles.onlineText}>{description}</Text>
-                  </View>
-                </Pressable>
+                  </TouchableOpacity>
+                </TouchableOpacity>
               </View>
             )}
             title={null}

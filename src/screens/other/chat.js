@@ -19,6 +19,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
   APIRequestWithFile,
+  APIRequestWithFile1,
   ApiUrl,
   IMAGEURL,
   socketUrl,
@@ -243,7 +244,11 @@ class Chat extends React.Component {
       });
       console.log('sendFile  this.state.audioFile', this.state.audioFile);
     } else {
-      formData.append('file', this.state.file);
+      let type = this.state.file.type.split("/")
+      formData.append('file', {
+        ...this.state.file,
+        name: `videos${new Date()}.${type[1]}`
+      });
       console.log('sendFile  File', this.state.file);
     }
 
@@ -255,8 +260,9 @@ class Chat extends React.Component {
       method: 'post',
       body: formData,
     };
+    console.log('sendFile  File', this.state.file);
     console.log('after config',config, formData);
-    APIRequestWithFile(
+    APIRequestWithFile1(
       config,
       res => {
         if (res.status) {

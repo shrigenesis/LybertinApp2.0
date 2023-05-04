@@ -107,11 +107,14 @@ const EditGroup = ({ navigation, route }) => {
   const [oldCover, setoldCover] = useState(route?.params?.coverImage);
   const [oldProfile, setoldProfile] = useState(route?.params?.image);
   const [group, setgroup] = useState(route?.params?.EditGroup);
+  const [group_members, setgroup_members] = useState([])
+  const [add_more_participent_list, setadd_more_participent_list] = useState([])
   const [welcomeMessage, setWelcomeMessage] = useState(route?.params?.welcome_message ? route?.params?.welcome_message : '');
 
 
   const [imgtype, setimgtype] = useState('cover');
-
+  let apiMethod = '/add-members';
+  let apiUrl = ApiUrl.groups;
   const isFocus = useIsFocused();
   useEffect(() => {
     if (isFocus) {
@@ -156,6 +159,8 @@ const EditGroup = ({ navigation, route }) => {
           setgroupPrivacy(data.privacy);
           setgroupType(data.group_type);
           setWelcomeMessage(data?.welcome_message);
+          setgroup_members(data?.group_members)
+          setadd_more_participent_list(data?.add_more_participent_list)
           var datas = [];
           for (let i = 0; i < data?.group_members?.length; i++) {
             datas.push(data?.group_members[i].id);
@@ -174,9 +179,57 @@ const EditGroup = ({ navigation, route }) => {
     );
   };
 
+  const RemoveMember = (id) => {
+    let config = {
+      url: `${apiUrl}/removemember/${route?.params?.group_id}/members/${id}`,
+      method: 'post',
+    };
+    console.log('config', config);
+    APIRequest(
+      config,
+      res => {
+        if (res?.status) {
+          fetchGroupDetail(route?.params?.group_id);
+          Toast.show({
+            type: 'success',
+            text1: 'Remove Participent successful '
+          })
+        }
+      },
+      err => {
+        console.log(err?.response?.data);
+      },
+    );
+  }
+  const AddMember = (id) => {
+    let config = {
+      url: `${apiUrl}/${route?.params?.group_id}${apiMethod}`,
+      method: 'post',
+      body: {
+        members: id,
+      },
+    };
+    console.log('config', config);
+    APIRequest(
+      config,
+      res => {
+        if (res?.status) {
+          fetchGroupDetail(route?.params?.group_id);
+          Toast.show({
+            type: 'success',
+            text1: 'Add Participent successful '
+          })
+        }
+      },
+      err => {
+        console.log(err?.response?.data);
+      },
+    );
+  }
+
   const fetchContactList = () => {
     let config = {
-      url: ApiUrl.my_contacts,
+      url: ApiUrl.friendList,
       method: 'get',
     };
 
@@ -184,7 +237,7 @@ const EditGroup = ({ navigation, route }) => {
       config,
       res => {
         if (res.status) {
-          setcontactList(res.users);
+          setcontactList(res.friends);
         }
       },
       err => {
@@ -440,39 +493,131 @@ const EditGroup = ({ navigation, route }) => {
               </Text>
               {/* <Image source={IMAGE.search} style={{height:20,width:20,tintColor:'#000',resizeMode:'contain'}} /> */}
             </View>
-            {contactList.map((item, index) => (
-              <RippleTouchable
-                key={`ContactListAddGroup-${index}`}
-                onPress={() => {
-                  selectUser(item.id);
-                }}>
-                <View
-                  style={{
-                    alignItems: 'center',
-                    flexDirection: 'row',
-                    paddingVertical: hp(1),
-                    paddingLeft: wp(5),
+            {route?.params?.group_id ?
+              <>
+                {add_more_participent_list.map((item, index) => (
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                      padding: wp(3),
+                      backgroundColor: '#fff',
+                      borderRadius: 10,
+                      elevation: 5,
+                      marginBottom: hp(2),
+                      width: wp(90),
+                      alignSelf: 'center',
+                    }}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        paddingVertical: hp(1),
+                        paddingLeft: wp(5),
+                      }}>
+                      <View style={style.imgview}>
+                        <Image
+                          source={{ uri: `${IMAGEURL}/${item.avatar}` }}
+                          style={style.imgBox}
+                        />
+                      </View>
+                      <View style={style.chatView}>
+                        <Text style={[style.typeText, { marginBottom: 0, width:wp(30) }]}>
+                          {item.name}
+                        </Text>
+                        <RippleTouchable
+                          onPress={() => {
+                            AddMember(item.id);
+                          }}
+                          backgroundColor={color.iconGray}
+                          borderRadius={5}
+                          style={style.btn}>
+                          <Text style={style.btnText}>Add</Text>
+                        </RippleTouchable>
+                      </View>
+                    </View>
+                  </View>
+                ))}
+                {group_members.map((item, index) => (
+                  !item.is_admin?
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      flexDirection: 'column',
+                      padding: wp(3),
+                      backgroundColor: '#fff',
+                      borderRadius: 10,
+                      elevation: 5,
+                      marginBottom: hp(2),
+                      width: wp(90),
+                      alignSelf: 'center',
+                    }}>
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        flexDirection: 'row',
+                        paddingVertical: hp(1),
+                        paddingLeft: wp(5),
+                      }}>
+                      <View style={style.imgview}>
+                        <Image
+                          source={{ uri: `${IMAGEURL}/${item.avatar}` }}
+                          style={style.imgBox}
+                        />
+                      </View>
+                      <View style={style.chatView}>
+                        <Text style={[style.typeText, { marginBottom: 0 ,width:wp(30)}]}>
+                          {item.name}
+                        </Text>
+                        <RippleTouchable
+                          onPress={() => {
+                            RemoveMember(item.id)
+                          }}
+                          backgroundColor={color.white}
+                          borderRadius={5}
+                          style={{ ...style.btn, backgroundColor: '#92969B' }}>
+                          <Text style={style.btnText}>Remove</Text>
+                        </RippleTouchable>
+                      </View>
+                    </View>
+                  </View>
+                  :null
+                ))}
+
+              </> :
+              contactList.map((item, index) => (
+                <RippleTouchable
+                  key={`ContactListAddGroup-${index}`}
+                  onPress={() => {
+                    selectUser(item.id);
                   }}>
-                  <View style={style.imgview}>
-                    <Image
-                      source={{ uri: `${IMAGEURL}/${item.avatar}` }}
-                      style={style.imgBox}
-                    />
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      flexDirection: 'row',
+                      paddingVertical: hp(1),
+                      paddingLeft: wp(5),
+                    }}>
+                    <View style={style.imgview}>
+                      <Image
+                        source={{ uri: `${IMAGEURL}/${item.avatar}` }}
+                        style={style.imgBox}
+                      />
+                    </View>
+                    <View style={style.chatView}>
+                      <Text style={[style.typeText, { marginBottom: 0,width:wp(30) }]}>
+                        {item.name}
+                      </Text>
+                      <Radio
+                        onPress={() => {
+                          selectUser(item.id);
+                        }}
+                        active={selectUserList.indexOf(item.id) != -1}
+                      />
+                    </View>
                   </View>
-                  <View style={style.chatView}>
-                    <Text style={[style.typeText, { marginBottom: 0 }]}>
-                      {item.name}
-                    </Text>
-                    <Radio
-                      onPress={() => {
-                        selectUser(item.id);
-                      }}
-                      active={selectUserList.indexOf(item.id) != -1}
-                    />
-                  </View>
-                </View>
-              </RippleTouchable>
-            ))
+                </RippleTouchable>
+              ))
             }
           </View>
         </ScrollView>
@@ -593,17 +738,21 @@ const style = StyleSheet.create({
     resizeMode: 'cover',
   },
   btn: {
-    alignSelf: 'center',
-    marginTop: hp(4),
+    marginTop: hp(1),
     justifyContent: 'center',
     alignItems: 'center',
     height: hp(4.5),
-    width: wp(45),
+    width: wp(25),
     borderRadius: 20,
     backgroundColor: color.btnBlue,
   },
   bodySection: {
     top: -hp(3),
+  },
+  btnText: {
+    fontSize: 13,
+    fontFamily: fontFamily.Regular,
+    color: color.white,
   },
 });
 export default EditGroup;
