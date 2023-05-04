@@ -105,7 +105,7 @@ const MyProfile = ({ navigation, route }) => {
     try {
       const result = await Share.share({
         message:
-          'https://play.google.com/store/apps/details?id=com.lybertineapp',
+          'https://lybertine.com',
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {

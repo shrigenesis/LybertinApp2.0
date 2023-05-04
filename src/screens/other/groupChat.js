@@ -255,7 +255,12 @@ class GroupChat extends React.Component {
         type: 'audio/mp3',
       });
     } else {
-      formData.append('file', this.state.file);
+      let type = this.state.file.type.split("/")
+      formData.append('file', {
+        ...this.state.file,
+        name: `videos${new Date()}.${type[1]}`
+      });
+      // formData.append('file', this.state.file);
     }
 
     this.setState({ isLoading: true });
