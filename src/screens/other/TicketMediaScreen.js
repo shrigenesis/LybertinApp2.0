@@ -35,7 +35,10 @@ export default class TicketMediaScreen extends Component {
   }
 
   componentDidMount = () => {
-    this.getTickets();
+    this.props.navigation.addListener('focus', async () => {
+      this.getTickets();
+      console.log('Screen.js focused')
+    });
   };
 
   getTickets = () => {

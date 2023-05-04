@@ -128,7 +128,6 @@ export default class filterScreen extends Component {
         country_id: id,
       },
     };
-
     APIRequest(
       config,
       res => {
@@ -756,6 +755,7 @@ export default class filterScreen extends Component {
                         newCountryId: d.id,
                         selectedCountry: d.country_name,
                         showCity: '1',
+                        countryId:d.id
                       }),
                       this.getCity(d.id),
                       this.chooseCountry(),

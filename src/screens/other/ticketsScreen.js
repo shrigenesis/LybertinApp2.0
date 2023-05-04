@@ -31,7 +31,8 @@ export default class TicketScreen extends Component {
       // StatusBar.setBackgroundColor('#000000')
       await this.setState({
         ...this.state,
-        bkg: '#000000'
+        bkg: '#000000',
+        activeTab: 'EVENTS'
       })
       console.log('Screen.js focused', this.state.bkg)
 
