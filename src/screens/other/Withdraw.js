@@ -39,7 +39,7 @@ const Withdraw = ({navigation, route}) => {
   const [status, setstatus] = useState(true);
   const [Money, setMoney] = useState('');
   const {processing_fee, wallet_balance} = route.params;
-
+ 
   // Send mony request for withdraw money
   const postMonyRequest = () => {
     let config = {
