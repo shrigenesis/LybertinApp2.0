@@ -11,7 +11,9 @@ import {
   FlatList,
   TouchableOpacity,
   Modal,
+  Alert,
   Platform,
+
 } from 'react-native';
 import { color, fontFamily, IMAGE } from '../constant';
 import {
@@ -27,157 +29,19 @@ import { User } from '../utils/user';
 import { useIsFocused } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Stories from "react-native-stories-media";
+import { Toast } from 'react-native-toast-message/lib/src/Toast';
+import BottomSheetWebview from './BottomSheetWebview';
 
-const data = [
-  {
-    username: "Guilherme",
-    title: "Title story",
-    profile:
-      "https://avatars2.githubusercontent.com/u/26286830?s=460&u=5d586a3783a6edeb226c557240c0ba47294a4229&v=4",
-    stories: [
-      {
-        id: 0,
-        url:
-          "https://avatars2.githubusercontent.com/u/26286830?s=460&u=5d586a3783a6edeb226c557240c0ba47294a4229&v=4",
-        type: "image",
-        duration: 2,
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-    ],
-  },
-  {
-    username: "Bruno",
-    profile: "https://avatars2.githubusercontent.com/u/45196619?s=460&v=4",
-    title: "Travel",
-    stories: [
-      {
-        id: 0,
-        url:
-          "https://images.unsplash.com/photo-1500099817043-86d46000d58f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 1,
-        url: "https://www.w3schools.com/html/mov_bbb.mp4",
-        type: "video",
-        duration: 4,
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 2,
-        url:
-          "https://images.unsplash.com/photo-1476292026003-1df8db2694b8?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-        isReadMore: false,
-        url_readmore: "",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 3,
-        url:
-          "https://images.unsplash.com/photo-1498982261566-1c28c9cf4c02?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-        isReadMore: true,
-      },
-    ],
-  },
-  {
-    username: "Steve Jobs",
-    profile:
-      "https://s3.amazonaws.com/media.eremedia.com/uploads/2012/05/15181015/stevejobs.jpg",
-    title: "Tech",
-    stories: [
-      {
-        id: 1,
-        url:
-          "https://images.unsplash.com/photo-1515578706925-0dc1a7bfc8cb?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 3,
-        url:
-          "https://images.unsplash.com/photo-1496287437689-3c24997cca99?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 4,
-        url:
-          "https://images.unsplash.com/photo-1514870262631-55de0332faf6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-    ],
-  },
-  {
-    username: "Jacob",
-    profile:
-      "https://images.unsplash.com/profile-1531581190171-0cf831d86212?dpr=2&auto=format&fit=crop&w=150&h=150&q=60&crop=faces&bg=fff",
-    title: "News",
-    stories: [
-      {
-        id: 4,
-        url:
-          "https://images.unsplash.com/photo-1512101176959-c557f3516787?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 5,
-        url:
-          "https://images.unsplash.com/photo-1478397453044-17bb5f994100?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=800&q=60",
-        type: "image",
-        duration: 2,
-
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-      {
-        id: 4,
-        url:
-          "https://images.unsplash.com/photo-1505118380757-91f5f5632de0?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=581&q=80",
-        type: "image",
-        duration: 2,
-        isReadMore: true,
-        url_readmore: "https://github.com/iguilhermeluis",
-        created: "2021-01-07T03:24:00",
-      },
-    ],
-  },
-];
-
-const StoryList = ({ navigation, headerFontColor }) => {
+const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
+  const [text, settext] = useState([]);
+  const [reportId, setReportId] = useState(0);
+  const [isShowBottomSheet, setisShowBottomSheet] = useState(false);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => [1, hp(58)], []);
   const [stories, setStories] = useState([0]);
   const [morestory, setmorestory] = useState(false);
   let userdata = new User().getuserdata();
+  const reportPoints = useMemo(() => [1, hp(55)], []);
 
 
   const RenderBottomSheet = memo(({ bottomSheetRef, snapPoints, file }) => (
@@ -278,6 +142,52 @@ const StoryList = ({ navigation, headerFontColor }) => {
     }
   }, [isFocus]);
 
+  const _deleteStory = (storyId) => {
+
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to delete?',
+      [
+        {
+          text: 'NO',
+          onPress: () => null,
+          style: 'Cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => [doDeleteAction(storyId)],
+        },
+      ],
+    );
+
+  };
+
+  const doDeleteAction = (storyId) => {
+
+    let config = {
+      url: ApiUrl.deletestory,
+      method: 'post',
+      body: {
+        story_id: storyId,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        if (res?.alert?.status) {
+          Toast.show({
+            type: 'success',
+            text1: res?.alert?.message
+          })
+          fetchStorys();
+        }
+      },
+      err => {
+
+      },
+    );
+  }
+
   const fetchStorys = () => {
     let config = {
       url: ApiUrl.stories,
@@ -289,7 +199,6 @@ const StoryList = ({ navigation, headerFontColor }) => {
     APIRequest(
       config,
       res => {
-        console.log('adadadasdsad', res);
         if (res.status) {
           if (res.stories?.length) {
             setStories(res.stories);
@@ -306,6 +215,38 @@ const StoryList = ({ navigation, headerFontColor }) => {
       },
     );
   };
+
+  const _reportStory = () => {
+   
+   
+    let config = {
+      url: ApiUrl.reportstory,
+      method: 'post',
+      body: {
+        reported_to: reportId,
+        text: text,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log("-------------------------------------------RESPONSE",res);
+        setisShowBottomSheet(false);
+        if (res?.success) {
+          Toast.show({
+            type: 'success',
+            text1: res?.message
+          });
+          fetchStorys();
+        }
+      },
+      err => {
+        setisShowBottomSheet(false);
+        console.log(err?.response);
+      },
+    );
+  };
+
 
   const getUserDetail = (data, key) => {
     if (data) {
@@ -324,134 +265,271 @@ const StoryList = ({ navigation, headerFontColor }) => {
   return (
     <View
       style={{
-        // height: hp(10),
-        // borderBottomWidth: 0.5,
-        // borderColor: color.borderGray,
+        height: hp(13),
+        borderBottomWidth: 0.5,
+        borderColor: color.borderGray,
+
+
       }}>
-       <Stories data={data} />  
-      {/* {stories?.length > 0 && (
-        <FlatList
-          data={stories}
-          keyExtractor={item => String(item.id)}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ alignItems: 'center', paddingLeft: wp(7) }}
-          horizontal={true}
-          renderItem={({ item, index }) => {
-            if (index == 0) {
-              return (
-                <>
-                  <TouchableOpacity
-                    activeOpacity={0.5}
-                    onPress={() => {
-                      item?.user_id == userdata?.id
-                        ? navigation.navigate('ShowStory', {
-                          list: item.view_stories,
-                        })
-                        : bottomSheetRef?.current?.present();
-                    }}
-                    style={style.imgview}>
+      <View style={{
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: storyBackGroundColor,
+        marginLeft: wp(1.5),
 
-                    <View>
-                      {checkuseradd() != -1 ? (
-                        <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-                          {userdata.avatar != 'lybertineApp/default/default.png' ? (
-                            <Image
-                              source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                              style={style.imgBox}
-                            />
-                          ) : (
-                            <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
-                          )}
-                        </LinearGradient>
-                      ) : (
-                        <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
-                          {userdata.avatar != 'lybertineApp/default/default.png' ? (
-                            <Image
-                              source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                              style={style.imgBox}
-                            />
-                          ) : (
-                            <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
-                          )}
-                        </LinearGradient>
+      }}>
 
-                      )}
-
-                      {checkuseradd() == -1 && (
-                        <View style={style.blueDot}>
-                          <Icon
-                            name={'plus'}
-                            style={{ fontSize: 7, color: '#fff' }}
-                          />
-                        </View>
-                      )}
-                    </View>
-
-                    <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
-                      {checkuseradd() != -1 ? 'Your Story' : 'Add Story'}
-                    </Text>
-                  </TouchableOpacity>
-                  {morestory && item?.user_id != userdata?.id && (
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate('ShowStory', {
-                          list: item.view_stories,
-                        });
-                      }}
-                      style={style.imgview}>
-                      <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-                        <Image
-                          source={{
-                            uri: `${IMAGEURL}/${getUserDetail(
-                              item.view_stories,
-                              'avatar',
-                            )}`,
-                          }}
-                          style={[
-                            style.imgBox
-                          ]}
-                        />
-                      </LinearGradient>
-
-                      <Text style={!headerFontColor ? style.storyText : style.storyTextTheme} numberOfLines={1}>
-                        {(getUserDetail(item.view_stories, 'name').length > 7) ?
-                          (((getUserDetail(item.view_stories, 'name')).substring(0, 7)) + '...') : getUserDetail(item.view_stories, 'name')}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
-                </>
-              );
-            } else {
-              return (
-                <TouchableOpacity
-                  onPress={() => {
-                    navigation.navigate('ShowStory', { list: item.view_stories });
-                  }}
-                  style={style.imgview}>
-                  <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-                    <Image
-                      source={{
-                        uri: `${IMAGEURL}/${getUserDetail(
-                          item.view_stories,
-                          'avatar',
-                        )}`,
-                      }}
-                      style={[
-                        style.imgBox,
-                        // { borderWidth: 2, borderColor: color.btnBlue },
-                      ]}
-                    />
-                  </LinearGradient>
-                  <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
-                    {(getUserDetail(item.view_stories, 'name').length > 7) ?
-                      (((getUserDetail(item.view_stories, 'name')).substring(0, 7)) + '...') : getUserDetail(item.view_stories, 'name')}
-                  </Text>
-                </TouchableOpacity>
-              );
-            }
+        <TouchableOpacity
+          activeOpacity={0.5}
+          onPress={() => {
+            bottomSheetRef?.current?.present();
           }}
-        />
-      )}
+          style={style.imgview}>
+
+          <View>
+            {checkuseradd() != -1 ? (
+              <LinearGradient colors={gradientColor} style={style.storyWrapper}>
+                {userdata.avatar != 'lybertineApp/default/default.png' ? (
+                  <Image
+                    source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+                    style={style.imgBox}
+                  />
+                ) : (
+                  <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+                )}
+              </LinearGradient>
+            ) : (
+              <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
+                {userdata.avatar != 'lybertineApp/default/default.png' ? (
+                  <Image
+                    source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+                    style={style.imgBox}
+                  />
+                ) : (
+                  <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+                )}
+              </LinearGradient>
+
+            )}
+
+
+            <View style={style.blueDot}>
+              <Icon
+                name={'plus'}
+                style={{ fontSize: 7, color: '#fff' }}
+              />
+            </View>
+
+          </View>
+
+          <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
+            Add Story
+          </Text>
+        </TouchableOpacity>
+        <Stories 
+            deleteOnPress={(id) => {_deleteStory(id) }} 
+            reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }} 
+           data={stories} titleStyle={
+          !headerFontColor ? style.storyText : style.storyTextTheme
+        } />
+        {/* <Stories deleteOnPress={(id)=>{_deleteStory(id)}} data={stories} titleStyle={
+          !headerFontColor ? style.storyText : style.storyTextTheme
+        } /> */}
+
+      </View>
+      {/* {stories?.length > 0 && (
+        // <FlatList
+        //   data={stories}
+        //   keyExtractor={item => String(item.id)}
+        //   showsHorizontalScrollIndicator={false}
+        //   contentContainerStyle={{ alignItems: 'center', paddingLeft: wp(7) }}
+        //   horizontal={true}
+        //   renderItem={({ item, index }) => {
+        //     if (index == 0) {
+        //       return (
+        //         <>
+        //           <TouchableOpacity
+        //             activeOpacity={0.5}
+        //             onPress={() => {
+        //               item?.user_id == userdata?.id
+        //                 ? navigation.navigate('ShowStory', {
+        //                   list: item.view_stories,
+        //                 })
+        //                 : bottomSheetRef?.current?.present();
+        //             }}
+        //             style={style.imgview}>
+
+        //             <View>
+        //               {checkuseradd() != -1 ? (
+        //                 <LinearGradient colors={gradientColor} style={style.storyWrapper}>
+        //                   {userdata.avatar != 'lybertineApp/default/default.png' ? (
+        //                     <Image
+        //                       source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+        //                       style={style.imgBox}
+        //                     />
+        //                   ) : (
+        //                     <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+        //                   )}
+        //                 </LinearGradient>
+        //               ) : (
+        //                 <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
+        //                   {userdata.avatar != 'lybertineApp/default/default.png' ? (
+        //                     <Image
+        //                       source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+        //                       style={style.imgBox}
+        //                     />
+        //                   ) : (
+        //                     <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+        //                   )}
+        //                 </LinearGradient>
+
+        //               )}
+
+        //               {checkuseradd() == -1 && (
+        //                 <View style={style.blueDot}>
+        //                   <Icon
+        //                     name={'plus'}
+        //                     style={{ fontSize: 7, color: '#fff' }}
+        //                   />
+        //                 </View>
+        //               )}
+        //             </View>
+
+        //             <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
+        //               {checkuseradd() != -1 ? 'Your Story' : 'Add Story'}
+        //             </Text>
+        //           </TouchableOpacity>
+        //           {morestory && item?.user_id != userdata?.id && (
+        //             <TouchableOpacity
+        //               onPress={() => {
+        //                 navigation.navigate('ShowStory', {
+        //                   list: item.view_stories,
+        //                 });
+        //               }}
+        //               style={style.imgview}>
+        //               <LinearGradient colors={gradientColor} style={style.storyWrapper}>
+        //                 <Image
+        //                   source={{
+        //                     uri: `${IMAGEURL}/${getUserDetail(
+        //                       item.view_stories,
+        //                       'avatar',
+        //                     )}`,
+        //                   }}
+        //                   style={[
+        //                     style.imgBox
+        //                   ]}
+        //                 />
+        //               </LinearGradient>
+
+        //               <Text style={!headerFontColor ? style.storyText : style.storyTextTheme} numberOfLines={1}>
+        //                 {(getUserDetail(item.view_stories, 'name').length > 7) ?
+        //                   (((getUserDetail(item.view_stories, 'name')).substring(0, 7)) + '...') : getUserDetail(item.view_stories, 'name')}
+        //               </Text>
+        //             </TouchableOpacity>
+        //           )}
+        //         </>
+        //       );
+        //     } else {
+        //       return (
+        //         <TouchableOpacity
+        //           onPress={() => {
+        //             navigation.navigate('ShowStory', { list: item.view_stories });
+        //           }}
+        //           style={style.imgview}>
+        //           <LinearGradient colors={gradientColor} style={style.storyWrapper}>
+        //             <Image
+        //               source={{
+        //                 uri: `${IMAGEURL}/${getUserDetail(
+        //                   item.view_stories,
+        //                   'avatar',
+        //                 )}`,
+        //               }}
+        //               style={[
+        //                 style.imgBox,
+        //                 // { borderWidth: 2, borderColor: color.btnBlue },
+        //               ]}
+        //             />
+        //           </LinearGradient>
+        //           <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
+        //             {(getUserDetail(item.view_stories, 'name').length > 7) ?
+        //               (((getUserDetail(item.view_stories, 'name')).substring(0, 7)) + '...') : getUserDetail(item.view_stories, 'name')}
+        //           </Text>
+        //         </TouchableOpacity>
+        //       );
+        //     }
+        //   }}
+        // />
+      )} */}
+      <BottomSheetWebview
+        cancelBtn={{
+          color: color.lightGray,
+          title: 'Cancel',
+          textColor: color.btnBlue,
+        }}
+        isShowBottomSheet={isShowBottomSheet}
+        setisShowBottomSheet={setisShowBottomSheet}>
+       
+          <View style={{ height: 500 }}>
+            <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
+              <Text style={style.roportHeading}>Report</Text>
+              <Text style={style.subHeading}>Why Are You Reporting This Post?</Text>
+            </View>
+            <TouchableOpacity
+              onPress={() => {
+                [
+                  settext("It's spam"),
+                  _reportStory()
+                ];
+              }}
+              style={style.cardBlock}>
+              <Text style={style.cardText}>It's spam</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                [
+                  settext('Nudity or sexual activity'),
+                  _reportStory()
+                ];
+              }}
+              style={style.cardBlock}>
+              <Text style={style.cardText}>Nudity or sexual activity</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                [
+                  settext("I just don't like it"),
+                  _reportStory()
+                ];
+              }}
+              style={style.cardBlock}>
+              <Text style={style.cardText}>I just don't like it</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                [
+                  settext('Hate speech or symbols'),
+                  _reportStory()
+
+                ];
+              }}
+              style={style.cardBlock}>
+              <Text style={style.cardText}>Hate speech or symbols</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                [
+                  settext('Bullying or harassment'),
+                  _reportStory()
+
+                ];
+              }}
+              style={style.cardBlock}>
+              <Text style={style.cardText}>Bullying or harassment</Text>
+            </TouchableOpacity>
+          </View>
+       
+      </BottomSheetWebview>
+
       <RenderBottomSheet
         file={file => {
           bottomSheetRef?.current?.close(),
@@ -459,7 +537,8 @@ const StoryList = ({ navigation, headerFontColor }) => {
         }}
         snapPoints={snapPoints}
         bottomSheetRef={bottomSheetRef}
-      /> */}
+      />
+
     </View>
   );
 };
@@ -521,11 +600,11 @@ const style = StyleSheet.create({
   },
   imgview: {
     alignItems: 'center',
-    marginRight: wp(3),
+    marginRight: wp(1),
+    marginLeft: wp(4),
     paddingVertical: hp(1),
     overflow: 'hidden',
     borderColor: color.black,
-    marginLeft: wp(-2),
   },
   storyWrapper:
   {
@@ -546,7 +625,7 @@ const style = StyleSheet.create({
   storyText: {
     textAlign: 'center',
     fontSize: 13,
-    marginTop: 10,
+    marginTop: wp(1),
     fontFamily: fontFamily.Regular,
     color: color.btnBlue,
     width: 70,
@@ -554,7 +633,7 @@ const style = StyleSheet.create({
   storyTextTheme: {
     textAlign: 'center',
     fontSize: 13,
-    marginTop: 10,
+    marginTop: wp(1),
     fontFamily: fontFamily.Regular,
     color: color.white,
     width: 70,

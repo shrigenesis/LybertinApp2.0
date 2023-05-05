@@ -252,7 +252,7 @@ const GroupList = ({ navigation }) => {
           <Text style={style.heading}>Lybertine</Text>
           <UserProfileImage />
         </View>
-        <StoryList />
+        <StoryList storyBackGroundColor={color.white} />
         <View>
           <View
             style={{
@@ -267,6 +267,7 @@ const GroupList = ({ navigation }) => {
               }}>
               <View style={style.input}>
                 <View style={{ position: 'absolute', left: wp(3) }}>
+                  
                   <Image
                     source={IMAGE.search2}
                     style={{ height: 20, width: 20, resizeMode: 'contain' }}

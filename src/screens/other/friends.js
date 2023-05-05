@@ -326,7 +326,7 @@ const ChatList = ({ navigation }) => {
           <Text style={style.heading}>Lybertine</Text>
           <UserProfileImage />
         </View>
-        <StoryList navigation={navigation} /> 
+        <StoryList storyBackGroundColor={color.white} navigation={navigation} /> 
         <View
           style={{
             borderBottomWidth: 0.5,
