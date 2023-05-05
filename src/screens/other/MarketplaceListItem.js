@@ -20,7 +20,6 @@ import { Loader } from '../../component';
 const Tag = ['#event', '#event', '#event'];
 
 const MarketplaceListItem = ({ Event, navigationKey }) => {
-  console.log('sdadasd',navigationKey);
   const navigation = useNavigation();
   const [isLoding, setisLoding] = useState(false);
   const [EarningValue, setEarningValue] = useState({ min: 0, max: 0, type: 'default' });
