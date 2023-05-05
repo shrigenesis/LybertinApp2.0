@@ -143,7 +143,7 @@ const Wallet = ({ navigation }) => {
                     <Text style={styles.historyDisc}>{item.description === "" ? item.updated_at : item.description}</Text>
                   </View>
                   <View style={{ width: '20%' }}>
-                    <Text style={styles.historyCoin}>{item.amount}</Text>
+                    <Text style={styles.historyCoin}>{item.type==='Earned' && '+' }{item.amount}</Text>
                     <Text style={{ ...styles.historyDisc, color: color.liteGreen, textAlign: 'center' }}>
                       {item.widthrawal_status !== 'None' ? item.widthrawal_status : null}
                     </Text>

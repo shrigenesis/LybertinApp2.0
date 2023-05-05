@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   TextInput,
   Image,
@@ -15,7 +15,7 @@ import {
   Keyboard,
   Platform,
 } from 'react-native';
-import {Button, Divider} from 'react-native-elements';
+import { Button, Divider } from 'react-native-elements';
 import SvgUri from 'react-native-svg-uri';
 import {
   widthPercentageToDP as wp,
@@ -23,13 +23,13 @@ import {
 } from 'react-native-responsive-screen';
 import Toast from 'react-native-toast-message';
 
-import {color, fontFamily, fontSize, IMAGE} from '../../constant';
+import { color, fontFamily, fontSize, IMAGE } from '../../constant';
 import BottomSheetCustom from '../../component/BottomSheetCustom';
 import TextLineSkelton from '../../utils/skeltons/TextLineSkelton';
-import {ApiUrl, APIRequest} from '../../utils/api';
+import { ApiUrl, APIRequest } from '../../utils/api';
 import { KeyboardAvoidingView } from 'react-native';
 
-const Withdraw = ({navigation, route}) => {
+const Withdraw = ({ navigation, route }) => {
   const [ACName, setACName] = useState('');
   const [ACNumber, setACNumber] = useState('');
   const [ACCode, setACCode] = useState('');
@@ -38,15 +38,15 @@ const Withdraw = ({navigation, route}) => {
   const [isShowBottomSheet, setisShowBottomSheet] = useState(false);
   const [status, setstatus] = useState(true);
   const [Money, setMoney] = useState('');
-  const {processing_fee, wallet_balance} = route.params;
- 
+  const { processing_fee, wallet_balance } = route.params;
+
   // Send mony request for withdraw money
   const postMonyRequest = () => {
     let config = {
       url: ApiUrl.widthdrawalRequest,
       method: 'post',
       body: {
-        amount: parseInt(Money)+processing_fee,
+        amount: parseInt(Money) +  parseInt(processing_fee),
         widthdrawl_info: {
           type: bankTab,
           data: bankTab === 'bank' ? [ACName, ACNumber, ACCode] : [PaypalID],
@@ -146,8 +146,9 @@ const Withdraw = ({navigation, route}) => {
         </View>
       </View>
 
-      {/* <KeyboardAvoidingView behavior="padding"> */}
-          <ScrollView>
+      <KeyboardAvoidingView >
+      <SafeAreaView>
+        <ScrollView>
           <View
             style={{
               backgroundColor: '#fff',
@@ -160,7 +161,7 @@ const Withdraw = ({navigation, route}) => {
                 <>
                   {/* <Text style={styles.coinText}>10</Text> */}
                   <TextInput
-                    onChangeText={(v)=> setMoney(v)}
+                    onChangeText={(v) => setMoney(v)}
                     keyboardType="decimal-pad"
                     autoFocus={true}
                     maxLength={3}
@@ -181,12 +182,12 @@ const Withdraw = ({navigation, route}) => {
                 justifyContent: 'space-evenly',
                 marginVertical: 20,
               }}>
-              <View style={{...styles.flexRow}}>
+              <View style={{ ...styles.flexRow }}>
                 <Image style={styles.coinStyle} source={IMAGE.coin} />
                 <Text style={styles.topText}> Processing Fees</Text>
                 <Text style={styles.topTextBold}> +{processing_fee}</Text>
               </View>
-              <View style={{...styles.flexRow}}>
+              <View style={{ ...styles.flexRow }}>
                 <Image style={styles.coinStyle} source={IMAGE.coin} />
                 <Text style={styles.topText}> Available Balance</Text>
                 <Text style={styles.topTextBold}> +{wallet_balance}</Text>
@@ -204,7 +205,7 @@ const Withdraw = ({navigation, route}) => {
                     bankTab === 'bank' ? styles.bankBoxActive : styles.bankBox
                   }>
                   <Image
-                    style={[styles.bankImage, {width: 50}]}
+                    style={[styles.bankImage, { width: 50 }]}
                     source={IMAGE.bank}
                   />
                   <Text>Bank</Text>
@@ -216,7 +217,7 @@ const Withdraw = ({navigation, route}) => {
                     bankTab === 'paypal' ? styles.bankBoxActive : styles.bankBox
                   }>
                   <Image
-                    style={[styles.bankImage, {width: 40}]}
+                    style={[styles.bankImage, { width: 40 }]}
                     source={IMAGE.paypal}
                   />
                   <Text>PayPal</Text>
@@ -284,9 +285,10 @@ const Withdraw = ({navigation, route}) => {
               Your payment request has been successfully submitted to Admin
             </Text>
           </BottomSheetCustom>
-          </ScrollView>
-      {/* </KeyboardAvoidingView> */}
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
+      </KeyboardAvoidingView>
+    </SafeAreaView >
   );
 };
 
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     backgroundColor: color.btnBlue,
-    marginBottom: Platform.OS==='ios'?-50:0,
+    marginBottom: Platform.OS === 'ios' ? -50 : 0,
   },
   headerBox: {
     marginHorizontal: 15,
@@ -357,7 +359,7 @@ const styles = StyleSheet.create({
     borderColor: color.white,
     borderWidth: 1,
     shadowColor: color.black,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowOpacity: 0.1,
     elevation: 1,
     shadowRadius: 11,
