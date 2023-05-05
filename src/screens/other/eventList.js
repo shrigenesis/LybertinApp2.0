@@ -300,7 +300,7 @@ const EventList = ({ navigation }) => {
                 <UserProfileImage />
               </View>
             </View>
-            <StoryList navigation={navigation} headerFontColor={"themeColor"} />
+            <StoryList navigation={navigation} storyBackGroundColor={color.btnBlue} headerFontColor={"themeColor"} />
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'}>
               <View style={{ backgroundColor: color.btnBlue }}>
                 <View

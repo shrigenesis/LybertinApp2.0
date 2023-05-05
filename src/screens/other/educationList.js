@@ -146,7 +146,7 @@ const EducationList = ({ navigation }) => {
                 <UserProfileImage />
               </View>
             </View>
-            <StoryList navigation={navigation} headerFontColor={"themeColor"} />
+            <StoryList storyBackGroundColor={color.btnBlue} navigation={navigation} headerFontColor={"themeColor"} />
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'}>
               <View style={{ backgroundColor: color.btnBlue }}>
                 <View
