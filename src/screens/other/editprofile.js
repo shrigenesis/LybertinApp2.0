@@ -18,6 +18,7 @@ import {
   ScrollView,
   StatusBar,
   SafeAreaView,
+  Platform,
 } from 'react-native';
 import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
@@ -467,7 +468,7 @@ const EditProfile = ({ navigation, route }) => {
                 </View>
                 {hasError('phone')}
               </View>
-              {datePicker && (
+              {(datePicker && Platform.OS==='ios') && (
                 <DateTimePicker
                   //  testID="dateTimePicker"
                   value={new Date()}
@@ -484,6 +485,24 @@ const EditProfile = ({ navigation, route }) => {
                       setdatePicker(false);
                       setdob(datalocal)
                     }
+                  }}
+                  maximumDate={new Date()}
+
+                // onChange={(day)=>this.onChange(day)}
+                />
+              )}
+              {(datePicker && Platform.OS==='android') && (
+                <DateTimePicker
+                  //  testID="dateTimePicker"
+                  value={new Date()}
+                  mode={'date'}
+                  is24Hour={false}
+                  display="default"
+                  // onChange={setDate}
+                  onChange={(event, value) => {
+                    var date = moment(value).format('YYYY-MM-DD');
+                    setdatePicker(false);
+                    setdob(date)
                   }}
                   maximumDate={new Date()}
 

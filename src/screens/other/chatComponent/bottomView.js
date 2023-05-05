@@ -159,7 +159,7 @@ export const BottomView = memo(props => {
     setdisable(true)
     setTimeout(()=>{
       setdisable(false)
-    }, 500)
+    }, 2000)
   }
 
   return (

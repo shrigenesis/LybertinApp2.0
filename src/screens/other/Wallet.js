@@ -13,11 +13,22 @@ import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import { User } from '../../utils/user';
 import { APIRequest, ApiUrl, IMAGEURL } from '../../utils/api';
 import NoRecord from './noRecord';
+import { useIsFocused } from '@react-navigation/native';
 
 const Wallet = ({ navigation }) => {
   const userdata = new User().getuserdata();
   const [status, setstatus] = useState(true);
   const [data, setdata] = useState([])
+
+
+
+  const focus = useIsFocused();
+  useEffect(() => {
+    if (focus) {
+      getWalletTransaction()
+    }
+  }, [focus]);
+
 
   const getWalletTransaction = () => {
     let config = {
@@ -132,7 +143,7 @@ const Wallet = ({ navigation }) => {
                     <Text style={styles.historyDisc}>{item.description === "" ? item.updated_at : item.description}</Text>
                   </View>
                   <View style={{ width: '20%' }}>
-                    <Text style={styles.historyCoin}>{item.amount}</Text>
+                    <Text style={styles.historyCoin}>{item.type==='Earned' && '+' }{item.amount}</Text>
                     <Text style={{ ...styles.historyDisc, color: color.liteGreen, textAlign: 'center' }}>
                       {item.widthrawal_status !== 'None' ? item.widthrawal_status : null}
                     </Text>

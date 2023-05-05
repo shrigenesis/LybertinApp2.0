@@ -1,3 +1,5 @@
+/* eslint-disable prettier/prettier */
+/* eslint-disable react/no-unstable-nested-components */
 import React, { useState, memo, useEffect, useRef, useMemo } from 'react';
 import {
   View,
