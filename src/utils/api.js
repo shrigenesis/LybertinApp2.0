@@ -107,7 +107,7 @@ export const ApiUrl = {
   getDeeplink: `${apiMarketingBaseUrl}generate-promotional-event-deeplink`,
   registerDeeplink: `${apiMarketingBaseUrl}register-deeplink-receiver`,
   getMarketingEventList: `${BASEURL}/event_marketing`,
-  getMarketingEventDetails: `${BASEURL}/event_marketing/details`,
+  getMarketingEventDetails: `${BASEURL}/event_marketing/eventInfo`,
   getWalletTransaction: `${apiMarketingBaseUrl}wallet-transactions`,
   widthdrawalRequest: `${apiMarketingBaseUrl}widthdrawal-request`,
   twitterPost: `${apiMarketingBaseUrl}post-on-twitter`,
