@@ -184,7 +184,7 @@ export default class MarketplaceDetails extends Component {
   };
 
   // Post on twitter
-  PostTwitter = permission => {
+  PostTwitter = (permission, Message) => {
     if (permission) {
       this.setState({
         ...this.state,
@@ -196,7 +196,7 @@ export default class MarketplaceDetails extends Component {
         method: 'post',
         body: {
           event_id: this.state.event.id,
-          text: this.state.twitterMassage,
+          text: Message,
         },
       };
       APIRequest(
@@ -230,6 +230,7 @@ export default class MarketplaceDetails extends Component {
       this.setState({...this.state, twitterConfirmMessage: false});
     }
   };
+
 
   settwitterSuccessMessage = () => {
     this.getEventDetails();

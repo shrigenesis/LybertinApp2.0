@@ -13,11 +13,22 @@ import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import { User } from '../../utils/user';
 import { APIRequest, ApiUrl, IMAGEURL } from '../../utils/api';
 import NoRecord from './noRecord';
+import { useIsFocused } from '@react-navigation/native';
 
 const Wallet = ({ navigation }) => {
   const userdata = new User().getuserdata();
   const [status, setstatus] = useState(true);
   const [data, setdata] = useState([])
+
+
+
+  const focus = useIsFocused();
+  useEffect(() => {
+    if (focus) {
+      getWalletTransaction()
+    }
+  }, [focus]);
+
 
   const getWalletTransaction = () => {
     let config = {

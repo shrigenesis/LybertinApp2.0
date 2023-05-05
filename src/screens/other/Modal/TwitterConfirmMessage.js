@@ -13,12 +13,12 @@ const TwitterConfirmMessage = (props) => {
                 transparent={true}
                 visible={props.twitterConfirmMessage}
                 onRequestClose={() => {
-                    props.PostTwitter(false)
+                    props.PostTwitter(false, Message)
                 }}
             >
                 <View style={styles.centeredView}>
                     <Pressable
-                        onPress={() => props.PostTwitter(false)}
+                        onPress={() => props.PostTwitter(false, Message)}
                         style={styles.closeBtn}>
                         <Image style={styles.closeBtnImage} source={IMAGE.close} />
                     </Pressable>
@@ -48,7 +48,7 @@ const TwitterConfirmMessage = (props) => {
                         <View style={styles.btnBox}>
                             <Pressable
                                 style={[styles.button, styles.buttonClose]}
-                                onPress={() => props.PostTwitter(true)}>
+                                onPress={() => props.PostTwitter(true, Message)}>
                                 <Text style={styles.textStyle}>Go Ahead</Text>
                             </Pressable>
                         </View>

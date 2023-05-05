@@ -46,7 +46,7 @@ const Withdraw = ({navigation, route}) => {
       url: ApiUrl.widthdrawalRequest,
       method: 'post',
       body: {
-        amount: parseInt(Money)+5,
+        amount: parseInt(Money)+processing_fee,
         widthdrawl_info: {
           type: bankTab,
           data: bankTab === 'bank' ? [ACName, ACNumber, ACCode] : [PaypalID],
