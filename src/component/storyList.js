@@ -38,7 +38,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [isShowBottomSheet, setisShowBottomSheet] = useState(false);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => [1, hp(58)], []);
-  const [stories, setStories] = useState([0]);
+  const [stories, setStories] = useState([]);
   const [morestory, setmorestory] = useState(false);
   let userdata = new User().getuserdata();
   const reportPoints = useMemo(() => [1, hp(55)], []);
@@ -205,8 +205,6 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             setmorestory(true);
           } else {
             setmorestory(false);
-
-            setStories([1]);
           }
         }
       },
@@ -217,8 +215,8 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   };
 
   const _reportStory = () => {
-   
-   
+
+
     let config = {
       url: ApiUrl.reportstory,
       method: 'post',
@@ -230,7 +228,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     APIRequest(
       config,
       res => {
-        console.log("-------------------------------------------RESPONSE",res);
+        console.log("-------------------------------------------RESPONSE", res);
         setisShowBottomSheet(false);
         if (res?.success) {
           Toast.show({
@@ -266,8 +264,8 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     <View
       style={{
         height: hp(13),
-        borderBottomWidth: 0.5,
-        borderColor: color.borderGray,
+        // borderBottomWidth: 0.5,
+        // borderColor: color.borderGray,
 
 
       }}>
@@ -287,32 +285,16 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
           style={style.imgview}>
 
           <View>
-            {checkuseradd() != -1 ? (
-              <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-                {userdata.avatar != 'lybertineApp/default/default.png' ? (
-                  <Image
-                    source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                    style={style.imgBox}
-                  />
-                ) : (
-                  <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
-                )}
-              </LinearGradient>
-            ) : (
-              <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
-                {userdata.avatar != 'lybertineApp/default/default.png' ? (
-                  <Image
-                    source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                    style={style.imgBox}
-                  />
-                ) : (
-                  <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
-                )}
-              </LinearGradient>
-
-            )}
-
-
+            <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
+              {userdata.avatar != 'lybertineApp/default/default.png' ? (
+                <Image
+                  source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+                  style={style.imgBox}
+                />
+              ) : (
+                <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
+              )}
+            </LinearGradient>
             <View style={style.blueDot}>
               <Icon
                 name={'plus'}
@@ -326,12 +308,12 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             Add Story
           </Text>
         </TouchableOpacity>
-        <Stories 
-            deleteOnPress={(id) => {_deleteStory(id) }} 
-            reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }} 
-           data={stories} titleStyle={
-          !headerFontColor ? style.storyText : style.storyTextTheme
-        } />
+        <Stories
+          deleteOnPress={(id) => { _deleteStory(id) }}
+          reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
+          data={stories} titleStyle={
+            !headerFontColor ? style.storyText : style.storyTextTheme
+          } />
         {/* <Stories deleteOnPress={(id)=>{_deleteStory(id)}} data={stories} titleStyle={
           !headerFontColor ? style.storyText : style.storyTextTheme
         } /> */}
@@ -468,66 +450,66 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         }}
         isShowBottomSheet={isShowBottomSheet}
         setisShowBottomSheet={setisShowBottomSheet}>
-       
-          <View style={{ height: 500 }}>
-            <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
-              <Text style={style.roportHeading}>Report</Text>
-              <Text style={style.subHeading}>Why Are You Reporting This Post?</Text>
-            </View>
-            <TouchableOpacity
-              onPress={() => {
-                [
-                  settext("It's spam"),
-                  _reportStory()
-                ];
-              }}
-              style={style.cardBlock}>
-              <Text style={style.cardText}>It's spam</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                [
-                  settext('Nudity or sexual activity'),
-                  _reportStory()
-                ];
-              }}
-              style={style.cardBlock}>
-              <Text style={style.cardText}>Nudity or sexual activity</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                [
-                  settext("I just don't like it"),
-                  _reportStory()
-                ];
-              }}
-              style={style.cardBlock}>
-              <Text style={style.cardText}>I just don't like it</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                [
-                  settext('Hate speech or symbols'),
-                  _reportStory()
 
-                ];
-              }}
-              style={style.cardBlock}>
-              <Text style={style.cardText}>Hate speech or symbols</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                [
-                  settext('Bullying or harassment'),
-                  _reportStory()
-
-                ];
-              }}
-              style={style.cardBlock}>
-              <Text style={style.cardText}>Bullying or harassment</Text>
-            </TouchableOpacity>
+        <View style={{ height: 500 }}>
+          <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
+            <Text style={style.roportHeading}>Report</Text>
+            <Text style={style.subHeading}>Why Are You Reporting This Post?</Text>
           </View>
-       
+          <TouchableOpacity
+            onPress={() => {
+              [
+                settext("It's spam"),
+                _reportStory()
+              ];
+            }}
+            style={style.cardBlock}>
+            <Text style={style.cardText}>It's spam</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                settext('Nudity or sexual activity'),
+                _reportStory()
+              ];
+            }}
+            style={style.cardBlock}>
+            <Text style={style.cardText}>Nudity or sexual activity</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                settext("I just don't like it"),
+                _reportStory()
+              ];
+            }}
+            style={style.cardBlock}>
+            <Text style={style.cardText}>I just don't like it</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                settext('Hate speech or symbols'),
+                _reportStory()
+
+              ];
+            }}
+            style={style.cardBlock}>
+            <Text style={style.cardText}>Hate speech or symbols</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              [
+                settext('Bullying or harassment'),
+                _reportStory()
+
+              ];
+            }}
+            style={style.cardBlock}>
+            <Text style={style.cardText}>Bullying or harassment</Text>
+          </TouchableOpacity>
+        </View>
+
       </BottomSheetWebview>
 
       <RenderBottomSheet
