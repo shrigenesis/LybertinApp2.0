@@ -38,11 +38,10 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [isShowBottomSheet, setisShowBottomSheet] = useState(false);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => [1, hp(58)], []);
-  const [stories, setStories] = useState([0]);
+  const [stories, setStories] = useState([]);
   const [morestory, setmorestory] = useState(false);
   let userdata = new User().getuserdata();
   const reportPoints = useMemo(() => [1, hp(55)], []);
-
 
   const RenderBottomSheet = memo(({ bottomSheetRef, snapPoints, file }) => (
     <BottomSheetModal
@@ -50,7 +49,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
       index={1}
       snapPoints={snapPoints}
       onChange={v => {
-        console.log(v);
+        // console.log(v);
       }}
       backdropComponent={BottomSheetBackdrop}>
       <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
@@ -206,7 +205,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
           } else {
             setmorestory(false);
 
-            setStories([1]);
+            // setStories([1]);
           }
         }
       },
@@ -266,7 +265,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     <View
       style={{
         height: hp(13),
-        borderBottomWidth: 0.5,
+        // borderBottomWidth: 0.5,
         borderColor: color.borderGray,
 
 
@@ -326,12 +325,12 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             Add Story
           </Text>
         </TouchableOpacity>
-        <Stories 
+        {stories?.length>0? <Stories 
             deleteOnPress={(id) => {_deleteStory(id) }} 
             reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }} 
            data={stories} titleStyle={
           !headerFontColor ? style.storyText : style.storyTextTheme
-        } />
+        } /> : null}
         {/* <Stories deleteOnPress={(id)=>{_deleteStory(id)}} data={stories} titleStyle={
           !headerFontColor ? style.storyText : style.storyTextTheme
         } /> */}
