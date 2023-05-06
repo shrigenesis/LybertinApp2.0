@@ -386,68 +386,68 @@ export default class buyTicket extends Component {
             if (res.message == 'Congrats! Booking Successful.') {
               this.props?.navigation?.navigate('ticketsScreen');
             } else {
-              if (res?.clientToken) {
-                setTimeout(async () => {
-                  await BraintreeDropIn.show({
-                    clientToken: res?.clientToken,
-                    merchantIdentifier: 't29vnqfp3tdh7r44d',
-                    googlePayMerchantId: 'googlePayMerchantId',
-                    countryCode: 'US', //apple pay setting
-                    currencyCode: 'USD', //apple pay setting
-                    merchantName: 'Your Merchant Name for Apple Pay',
-                    orderTotal: this.calculatetotal(),
-                    googlePay: false,
-                    applePay: false,
-                    vaultManager: true,
-                    payPal: true,
-                    cardDisabled: true,
-                    darkTheme: true,
-                  })
-                    .then(result => {
-                      this.setState({ isloading: true });
+              // if (res?.clientToken) {
+              //   setTimeout(async () => {
+              //     await BraintreeDropIn.show({
+              //       clientToken: res?.clientToken,
+              //       merchantIdentifier: 't29vnqfp3tdh7r44d',
+              //       googlePayMerchantId: 'googlePayMerchantId',
+              //       countryCode: 'US', //apple pay setting
+              //       currencyCode: 'USD', //apple pay setting
+              //       merchantName: 'Your Merchant Name for Apple Pay',
+              //       orderTotal: this.calculatetotal(),
+              //       googlePay: false,
+              //       applePay: false,
+              //       vaultManager: true,
+              //       payPal: true,
+              //       cardDisabled: true,
+              //       darkTheme: true,
+              //     })
+              //       .then(result => {
+              //         this.setState({ isloading: true });
 
-                      var dd = {
-                        transaction_id: res?.transaction_id,
-                        paymentMethodNonce: result?.nonce,
-                      };
-                      let config = {
-                        url: ApiUrl.paypalProcessPayment,
-                        method: 'post',
-                        body: dd,
-                      };
+              //         var dd = {
+              //           transaction_id: res?.transaction_id,
+              //           paymentMethodNonce: result?.nonce,
+              //         };
+              //         let config = {
+              //           url: ApiUrl.paypalProcessPayment,
+              //           method: 'post',
+              //           body: dd,
+              //         };
 
-                      APIRequest(
-                        config,
+              //         APIRequest(
+              //           config,
 
-                        res => {
-                          this.setState({ isloading: false });
+              //           res => {
+              //             this.setState({ isloading: false });
 
-                          if (res.status) {
-                            this.setState({ successmoda: true });
-                          }
-                        },
-                        err => {
-                          this.setState({ isloading: false });
+              //             if (res.status) {
+              //               this.setState({ successmoda: true });
+              //             }
+              //           },
+              //           err => {
+              //             this.setState({ isloading: false });
 
-                          console.log(err);
-                        },
-                      );
-                    })
+              //             console.log(err);
+              //           },
+              //         );
+              //       })
 
-                    .catch(error => {
-                      console.log(error);
-                      Toast.show({
-                        type: 'error',
-                        text1: error.code
-                      })
-                      this.setState({ isloading: false });
+              //       .catch(error => {
+              //         console.log(error);
+              //         Toast.show({
+              //           type: 'error',
+              //           text1: error.code
+              //         })
+              //         this.setState({ isloading: false });
 
-                      if (error.code === 'USER_CANCELLATION') {
-                      } else {
-                      }
-                    });
-                }, 1000);
-              }
+              //         if (error.code === 'USER_CANCELLATION') {
+              //         } else {
+              //         }
+              //       });
+              //   }, 1000);
+              // }
             }
           } else {
             if (res?.message == 'Congrats! Booking Successful.') {
@@ -476,26 +476,35 @@ export default class buyTicket extends Component {
 
   bookTickects = () => {
     if (this.state.attendees.length > 0) {
-      console.log(this.state.attendees, "======================");
+      var hasError =  false; 
       for (let index = 0; index < this.state.attendees.length; index++) {
         if (!this.state.attendees[index].name) {
+          hasError =  true; 
           Toast.show({
             type: 'info',
             text1: 'Please Enter Name'
           })
         } else if (!this.state.attendees[index].phone) {
+          hasError =  true; 
           Toast.show({
             type: 'info',
             text1: 'Please Enter Mobile No.'
           })
         } else if (!this.state.attendees[index].address) {
+          hasError =  true; 
           Toast.show({
             type: 'info',
             text1: 'Please Enter Address'
           })
-        }else{
-          this.bookticket('7')
         }
+      }
+      if(!hasError){
+        this.bookticket('7');
+      }else{
+        Toast.show({
+          type: 'info',
+          text1: 'Please fill all required Info'
+        })
       }
     }else{
       Toast.show({
