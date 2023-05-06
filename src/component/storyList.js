@@ -43,13 +43,14 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   let userdata = new User().getuserdata();
   const reportPoints = useMemo(() => [1, hp(55)], []);
 
+
   const RenderBottomSheet = memo(({ bottomSheetRef, snapPoints, file }) => (
     <BottomSheetModal
       ref={bottomSheetRef}
       index={1}
       snapPoints={snapPoints}
       onChange={v => {
-        // console.log(v);
+        console.log(v);
       }}
       backdropComponent={BottomSheetBackdrop}>
       <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
@@ -307,15 +308,12 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             Add Story
           </Text>
         </TouchableOpacity>
-        {stories?.length>0? <Stories 
-            deleteOnPress={(id) => {_deleteStory(id) }} 
-            reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }} 
-           data={stories} titleStyle={
-          !headerFontColor ? style.storyText : style.storyTextTheme
-        } /> : null}
-        {/* <Stories deleteOnPress={(id)=>{_deleteStory(id)}} data={stories} titleStyle={
-          !headerFontColor ? style.storyText : style.storyTextTheme
-        } /> */}
+        {stories.length > 0 ? <Stories
+          deleteOnPress={(id) => { _deleteStory(id) }}
+          reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
+          data={stories} titleStyle={
+            !headerFontColor ? style.storyText : style.storyTextTheme
+          } />: null}
 
       </View>
       {/* {stories?.length > 0 && (
