@@ -28,6 +28,7 @@ import BottomSheetCustom from '../../component/BottomSheetCustom';
 import TextLineSkelton from '../../utils/skeltons/TextLineSkelton';
 import { ApiUrl, APIRequest } from '../../utils/api';
 import { KeyboardAvoidingView } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const Withdraw = ({ navigation, route }) => {
   const [ACName, setACName] = useState('');
@@ -116,7 +117,7 @@ const Withdraw = ({ navigation, route }) => {
   }, [isShowBottomSheet]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAwareScrollView bounces={false} style={styles.container} >
       <StatusBar
         barStyle={'light-content'}
         translucent
@@ -146,15 +147,14 @@ const Withdraw = ({ navigation, route }) => {
         </View>
       </View>
 
-      <KeyboardAvoidingView >
-      <SafeAreaView>
-        <ScrollView>
+      {/* <SafeAreaView> */}
+        {/* <SafeAreaView> */}
           <View
             style={{
               backgroundColor: '#fff',
-              marginTop: hp(15),
+              // marginTop: hp(15),
               // marginBottom: 50,
-              height: bankTab === 'bank' ? '100%' : hp(80),
+              // height: bankTab === 'bank' ? '100%' : hp(80),
             }}>
             <View style={styles.inputBox}>
               {status ? (
@@ -285,24 +285,23 @@ const Withdraw = ({ navigation, route }) => {
               Your payment request has been successfully submitted to Admin
             </Text>
           </BottomSheetCustom>
-        </ScrollView>
-      </SafeAreaView>
-      </KeyboardAvoidingView>
-    </SafeAreaView >
+        {/* </SafeAreaView> */}
+      {/* </SafeAreaView> */}
+    </KeyboardAwareScrollView>
   );
 };
 
 export default Withdraw;
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    width: null,
-    backgroundColor: color.btnBlue,
-    marginBottom: Platform.OS === 'ios' ? -50 : 0,
-  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: color.white,
+  // },
   headerBox: {
-    marginHorizontal: 15,
-    marginVertical: '6%',
+    width: wp(100),
+    backgroundColor:color.btnBlue,
+    paddingTop: Platform.OS == 'ios' ? 70: 20,
+    paddingBottom: 150
   },
   headerContainer: {
     flexDirection: 'row',

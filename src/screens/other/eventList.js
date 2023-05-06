@@ -279,7 +279,7 @@ const EventList = ({ navigation }) => {
   const optimizedFn = useCallback(debounce(handleSearchChange), [search]);
 
   return (
-    <KeyboardAwareScrollView bounces={false} keyboardShouldPersistTaps={true}>
+    // <KeyboardAwareScrollView bounces={false} keyboardShouldPersistTaps={true}>
       <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
         <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
         {/* <View style={style.appBar} />
@@ -369,7 +369,7 @@ const EventList = ({ navigation }) => {
 
         </View>
 
-        <View style={{ zIndex: -10 }}>
+        <View style={{ zIndex: -10, backgroundColor: '#fff', flex:1 }}>
           {isLoading ? (
             <View
               style={{
@@ -477,18 +477,20 @@ const EventList = ({ navigation }) => {
 
                 </View>
               ) : ( 
+                <View style={{marginTop:hp(30)}}>
                 <NoRecord
                   image={IMAGE.noConversation}
                   title="No Event found"
                   description="You will get Upcoming and poular events here."
                   showButton={false}
                 />
+                </View>
               )}
             </>
           )}
         </View>
       </SafeAreaView>
-    </KeyboardAwareScrollView>
+    // </KeyboardAwareScrollView>
   );
 };
 

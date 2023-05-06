@@ -57,7 +57,6 @@ const EducationList = ({ navigation }) => {
   useEffect(() => {
     if (isFocus) {
       setTimeout(() => {
-        setSearch('');
         getEvents('');
       });
     }
@@ -134,9 +133,9 @@ const EducationList = ({ navigation }) => {
   const optimizedFn = useCallback(debounce(handleSearchChange), []);
 
   return (
-    <KeyboardAwareScrollView bounces={false}  keyboardShouldPersistTaps={true}>
-      <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
+    // <KeyboardAwareScrollView bounces={false}  keyboardShouldPersistTaps={true}>
       <SafeAreaView style={style.container}>
+      <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
         <View>
           <View>
             <View>
@@ -146,7 +145,7 @@ const EducationList = ({ navigation }) => {
                 <UserProfileImage />
               </View>
             </View>
-            <StoryList navigation={navigation} headerFontColor={"themeColor"} />
+            <StoryList storyBackGroundColor={color.btnBlue} navigation={navigation} headerFontColor={"themeColor"} />
             <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'}>
               <View style={{ backgroundColor: color.btnBlue }}>
                 <View
@@ -200,7 +199,7 @@ const EducationList = ({ navigation }) => {
 
         </View>
 
-        <View style={{ zIndex: -10 }}>
+        <View style={{ zIndex: -10, backgroundColor: color.background, flex:1 }}>
           {isLoading ? (
             <View
               style={style.listContainer}>
@@ -217,9 +216,10 @@ const EducationList = ({ navigation }) => {
             </View>
           ) : (
             <View
-              style={{
-                backgroundColor: color.background,
-              }}
+              // style={{
+              //   backgroundColor: color.background,
+              //   flex:1
+              // }}
             >
               {(status && (Course?.data?.featured.length > 0 || Course?.data?.top_selling.length > 0 || Course?.data?.live_conferences.length > 0)) ? (
                 <>
@@ -304,18 +304,20 @@ const EducationList = ({ navigation }) => {
                   </View>
                 </>
               ) : (
+                <View style={{marginTop:hp(30)}}>
                 <NoRecord
                   image={IMAGE.noConversation}
                   title="No Courses found"
                   description="You will get Featured and Live conferences Courses here."
                   showButton={false}
                 />
+                </View>
               )}
             </View>
           )}
         </View>
       </SafeAreaView>
-    </KeyboardAwareScrollView>
+    // </KeyboardAwareScrollView>
   );
 };
 
