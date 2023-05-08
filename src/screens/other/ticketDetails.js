@@ -245,10 +245,7 @@ export default class TicketDetails extends Component {
               <View style={styles.textWrapper}>
                 <Text style={styles.upperText}>Venue</Text>
                 <Pressable
-                  onPress={() => RedirectToMap(
-                    this.state.ticket.event_venue, this.state.ticket.city,
-                    this.state.ticket.state
-                  )}
+                  onPress={() => RedirectToMap(`${this.state.ticket?.event_venue}+${this.state?.ticket.city}+${this.state?.ticket.state}`)}
                   style={styles.bottomText}>
                   <Text>
                     {this.state.ticket.event_venue} , {this.state.ticket.city} ,{' '}

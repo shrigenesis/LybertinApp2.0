@@ -307,15 +307,12 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             Add Story
           </Text>
         </TouchableOpacity>
-        <Stories
+        {stories.length > 0 ? <Stories
           deleteOnPress={(id) => { _deleteStory(id) }}
           reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
           data={stories} titleStyle={
             !headerFontColor ? style.storyText : style.storyTextTheme
-          } />
-        {/* <Stories deleteOnPress={(id)=>{_deleteStory(id)}} data={stories} titleStyle={
-          !headerFontColor ? style.storyText : style.storyTextTheme
-        } /> */}
+          } />: null}
 
       </View>
       {/* {stories?.length > 0 && (

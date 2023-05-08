@@ -25,9 +25,15 @@ import { APIRequest, ApiUrl } from './../../utils/api';
 import moment from 'moment';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 
 
 import { SafeAreaView } from 'react-native-safe-area-context';
+
+
+var datalocal;
+var datalocal1;
+
 
 export default class filterScreen extends Component {
   constructor(props) {
@@ -71,12 +77,14 @@ export default class filterScreen extends Component {
 
   setDate = (event, date) => {
     this.setState({ dob: moment(date).format('YYYY-MM-DD'), datePicker: false });
+    datalocal=''
   };
   setDate1 = (event, date) => {
     this.setState({
       dob1: moment(date).format('YYYY-MM-DD'),
       datePicker1: false,
     });
+    datalocal1=''
   };
 
   getEvents = () => {
@@ -185,6 +193,8 @@ export default class filterScreen extends Component {
                     price: 0,
                     country: 0,
                     city: 0,
+                    dob1: '',
+                    dob: '',
                   })
                 }
                 style={styles.clearAllText}>
@@ -193,28 +203,30 @@ export default class filterScreen extends Component {
             </View>
           </View>
 
-          {this.state.datePicker && (
-            <DateTimePicker
-
-              value={new Date()}
-              mode={'date'}
-              is24Hour={false}
-              display="default"
-              onChange={this.setDate}
-
-            />
-          )}
-          {this.state.datePicker1 && (
-            <DateTimePicker
-
-              value={new Date()}
-              mode={'date'}
-              is24Hour={false}
-              display="default"
-              onChange={this.setDate1}
-
-            />
-          )}
+            <DatePicker
+                modal
+                open={this.state.datePicker}
+                mode={'date'}
+                date={new Date()}
+                onConfirm={date => {
+                  this.setDate('event', date);
+                }}
+                onCancel={() => {
+                  this.setState({...this.state, datePicker: false})
+                }}
+              />
+            <DatePicker
+                modal
+                open={this.state.datePicker1}
+                mode={'date'}
+                date={new Date()}
+                onConfirm={date => {
+                  this.setDate1('event', date);
+                }}
+                onCancel={() => {
+                  this.setState({...this.state, datePicker1: false})
+                }}
+              />
           <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
             <View>
               <TouchableOpacity

@@ -16,6 +16,7 @@ import {
   Share,
   Pressable,
   SafeAreaView,
+  Linking,
 } from 'react-native';
 import {SliderBox} from 'react-native-image-slider-box';
 import {IMAGE, color, fontFamily, fontSize} from '../../constant';
@@ -70,6 +71,8 @@ const MarketplaceDetails = props => {
   const [twitterMassage, settwitterMassage] = useState('');
   const [webviewUrl, setwebviewUrl] = useState('');
   const [twitterSuccessMessage, settwitterSuccessMessage] = useState(false);
+  const [isExtend, setisExtend] = useState(false);
+  const [strippedHtml, setstrippedHtml] = useState('');
 
   const SetTwitterSuccessMessage = () => {
     getEventDetails();
@@ -88,7 +91,7 @@ const MarketplaceDetails = props => {
           setEvent(res.marketing_event_info.event);
           settag_group(res.marketing_event_info.tag_group);
           let myHTML = res.marketing_event_info.event.description;
-          strippedHtml = HtmlToText(myHTML);
+          setstrippedHtml(HtmlToText(myHTML));
         }
         setisLoading(false);
         console.log(res);
@@ -114,6 +117,7 @@ const MarketplaceDetails = props => {
   }, []);
 
   const OtherShare = () => {
+    setisShowBottomSheet(false);
     setisLoading(true);
     let config = {
       url: `${ApiUrl.getDeeplink}`,
@@ -198,7 +202,7 @@ const MarketplaceDetails = props => {
                 type: 'success',
                 text1: res.message,
               });
-              setisShowBottomSheet(false)
+              setisShowBottomSheet(false);
             }
           }
           setisLoading(false);
@@ -231,12 +235,12 @@ const MarketplaceDetails = props => {
         config,
         res => {
           if (res.status) {
-            settwitterConfirmMessage(true);
             settwitterMassage(
               `${
                 res.promotional_text ? res.promotional_text : ''
               }Book your tickets at ${res.deep_link}`,
             );
+            settwitterConfirmMessage(true);
           }
           setisLoading(false);
         },
@@ -250,6 +254,18 @@ const MarketplaceDetails = props => {
       setisShowBottomSheet(false);
     }
   };
+  const SetIsShowBottomSheet=() =>{
+    setopenWebview(false);
+    setisPostTwitter(false);
+    setwebviewUrl('');
+    settwitterSuccessMessage(false);
+    setisShowBottomSheet(false);
+    settwitterAuthorization(false);
+    settwitterConfirmMessage(false);
+    settwitterMassage('');
+  }
+
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -428,6 +444,25 @@ const MarketplaceDetails = props => {
                   </View>
                 </View>
                 <View style={styles.imageContainer}>
+                    <Image
+                      source={IMAGE.category}
+                      style={{
+                        height: 22,
+                        width: 22,
+                        resizeMode: 'contain',
+                        marginRight: '4%',
+                        tintColor: color.btnBlue,
+                      }}
+                    />
+
+                    <View>
+                      <Text style={styles.dateText}>Category</Text>
+                      <Text style={styles.timeText} numberOfLines={1}>
+                        {event?.category_name}
+                      </Text>
+                    </View>
+                  </View>
+                <View style={styles.imageContainer}>
                   <Image source={IMAGE.star_earn} style={styles.dateStyle} />
                   <View>
                     <Text style={styles.dateText}>Earnings</Text>
@@ -456,12 +491,7 @@ const MarketplaceDetails = props => {
 
                   <Pressable
                     onPress={() =>
-                      RedirectToMap(
-                        event.venue && event.venue,
-                        event.state && ', ' + event.state,
-                        event.city && ', ' + event.city,
-                        event.zipcode && ', ' + event.zipcode,
-                      )
+                      RedirectToMap(`${event?.venue}+${event?.state}+${event?.city}+${event?.zipcode}`)
                     }>
                     <Text style={styles.dateText}>Location</Text>
                     <Text style={styles.timeText} numberOfLines={2}>
@@ -492,13 +522,15 @@ const MarketplaceDetails = props => {
                   <View>
                     <View style={styles.descriptionWrapper}>
                       <Text style={styles.desHeading}>Event Description</Text>
-                      <ReadMore
-                        numberOfLines={4}
-                        style={styles.desText}
-                        seeMoreText="read more"
-                        seeMoreStyle={{color: color.btnBlue}}>
+                      <Text numberOfLines={isExtend ? -1 : 2}>
                         {strippedHtml}
-                      </ReadMore>
+                      </Text>
+                      <TouchableOpacity onPress={() => setisExtend(d => !d)}>
+                        <Text
+                          style={{color: color.btnBlue, textAlign: 'right'}}>
+                          {isExtend ? 'less more' : '...read more'}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
                 )}
@@ -533,134 +565,131 @@ const MarketplaceDetails = props => {
                       </View>
                     );
                   })}
-
-                <BottomSheetWebview
-                  cancelBtn={{
-                    color: color.lightGray,
-                    title: 'Cancel',
-                    textColor: color.btnBlue,
-                  }}
-                  isShowBottomSheet={isShowBottomSheet}
-                  setisShowBottomSheet={setisShowBottomSheet}>
-                  {openWebview && isPostTwitter ? (
-                    <View style={{height: 500}}>
-                      <WebView
-                        source={{uri: webviewUrl}}
-                        onNavigationStateChange={navState => {
-                          // Keep track of going back navigation within component
-                          console.log('navstate', navState);
-                          if (navState?.url.includes(twitterSuccessUrl)) {
-                            Toast.show({
-                              type: 'info',
-                              text1: 'tweeted successfully',
-                            });
-                            setopenWebview(false);
-                            setisPostTwitter(false);
-                            setwebviewUrl('');
-                            settwitterSuccessMessage(false);
-                            setisShowBottomSheet(false);
-                            settwitterAuthorization(false);
-                            settwitterConfirmMessage(false);
-                            settwitterMassage('');
-                          }
-                          if (navState?.url.includes(twitterFailUrl)) {
-                            Toast.show({
-                              type: 'error',
-                              text1: res.message,
-                            });
-                            setopenWebview(false);
-                            setisPostTwitter(false);
-                            setwebviewUrl('');
-                            settwitterSuccessMessage(false);
-                            setisShowBottomSheet(false);
-                            settwitterAuthorization(false);
-                            settwitterConfirmMessage(false);
-                            settwitterMassage('');
-                            
-                          }
-                        }}
-                      />
-                    </View>
-                  ) : (
-                    <>
-                      <Text
-                        style={{
-                          textAlign: 'center',
-                          fontSize: fontSize.size21,
-                          fontFamily: fontFamily.Bold,
-                          color: color.blueMagenta,
-                          marginBottom: 20,
-                        }}>
-                        Share Your Post
-                      </Text>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'space-around',
-                        }}>
-                        <TouchableOpacity
-                          onPress={() => OtherShare()}
-                          activeOpacity={0.9}
-                          style={styles.twitterShareBtn}>
-                          <View
-                            style={[
-                              styles.shareIconBox,
-                              {backgroundColor: color.lightGray},
-                            ]}>
-                            <Image
-                              style={styles.shareIcon}
-                              source={IMAGE.shareMarketplace}
-                            />
-                          </View>
-                          <Text style={styles.buttonText}>Other</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                          onPress={() => {
-                            settwitterAuthorization(true);
-                          }}
-                          activeOpacity={0.9}
-                          style={styles.twitterShareBtn}>
-                          <View
-                            style={[
-                              styles.shareIconBox,
-                              {backgroundColor: color.twitterColor},
-                            ]}>
-                            <Image
-                              style={styles.shareIcon}
-                              source={IMAGE.twitter}
-                            />
-                          </View>
-                          <Text style={styles.buttonText}>Twitter</Text>
-                          <Text style={styles.recommendText}>we recommend</Text>
-                        </TouchableOpacity>
-                      </View>
-                    </>
-                  )}
-
-                  {twitterAuthorization ? (
-                    <TwitterAuthorization
-                      twitterAuthorization={twitterAuthorization}
-                      TwittwrShare={TwittwrShare}
-                    />
-                  ) : null}
-                  {twitterConfirmMessage ? (
-                    <TwitterConfirmMessage
-                      twitterMassage={twitterMassage}
-                      twitterConfirmMessage={twitterConfirmMessage}
-                      PostTwitter={PostTwitter}
-                    />
-                  ) : null}
-                  {twitterSuccessMessage ? (
-                    <TwitterSuccessMessage
-                      confetti={true}
-                      SetTwitterSuccessMessage={SetTwitterSuccessMessage}
-                    />
-                  ) : null}
-                </BottomSheetWebview>
               </View>
             </View>
           </>
         )}
+
+        <BottomSheetWebview
+          cancelBtn={{
+            color: color.lightGray,
+            title: 'Cancel',
+            textColor: color.btnBlue,
+          }}
+          isShowBottomSheet={isShowBottomSheet}
+          setisShowBottomSheet={SetIsShowBottomSheet}>
+          {openWebview && isPostTwitter ? (
+            <View style={{height: 500}}>
+              <WebView
+                source={{uri: webviewUrl}}
+                onNavigationStateChange={navState => {
+                  // Keep track of going back navigation within component
+                  console.log('navstate', navState);
+                  if (navState?.url.includes(twitterSuccessUrl)) {
+                    Toast.show({
+                      type: 'info',
+                      text1: 'Tweeted successfully',
+                    });
+                    setopenWebview(false);
+                    setisPostTwitter(false);
+                    setwebviewUrl('');
+                    settwitterSuccessMessage(false);
+                    setisShowBottomSheet(false);
+                    settwitterAuthorization(false);
+                    settwitterConfirmMessage(false);
+                    settwitterMassage('');
+                    getEventDetails();
+                  }
+                  if (navState?.url.includes(twitterFailUrl)) {
+                    Toast.show({
+                      type: 'error',
+                      text1: res.message,
+                    });
+                    setopenWebview(false);
+                    setisPostTwitter(false);
+                    setwebviewUrl('');
+                    settwitterSuccessMessage(false);
+                    setisShowBottomSheet(false);
+                    settwitterAuthorization(false);
+                    settwitterConfirmMessage(false);
+                    settwitterMassage('');
+                  }
+                }}
+              />
+            </View>
+          ) : (
+            <>
+              <Text
+                style={{
+                  textAlign: 'center',
+                  fontSize: fontSize.size21,
+                  fontFamily: fontFamily.Bold,
+                  color: color.blueMagenta,
+                  marginBottom: 20,
+                }}>
+                Share Your Post
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                }}>
+                <TouchableOpacity
+                  onPress={() => OtherShare()}
+                  activeOpacity={0.9}
+                  style={styles.twitterShareBtn}>
+                  <View
+                    style={[
+                      styles.shareIconBox,
+                      {backgroundColor: color.lightGray},
+                    ]}>
+                    <Image
+                      style={styles.shareIcon}
+                      source={IMAGE.shareMarketplace}
+                    />
+                  </View>
+                  <Text style={styles.buttonText}>Other</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    settwitterAuthorization(true);
+                  }}
+                  activeOpacity={0.9}
+                  style={styles.twitterShareBtn}>
+                  <View
+                    style={[
+                      styles.shareIconBox,
+                      {backgroundColor: color.twitterColor},
+                    ]}>
+                    <Image style={styles.shareIcon} source={IMAGE.twitter} />
+                  </View>
+                  <Text style={styles.buttonText}>Twitter</Text>
+                  <Text style={styles.recommendText}>we recommend</Text>
+                </TouchableOpacity>
+              </View>
+            </>
+          )}
+
+          {twitterAuthorization ? (
+            <TwitterAuthorization
+              twitterAuthorization={twitterAuthorization}
+              TwittwrShare={TwittwrShare}
+            />
+          ) : null}
+          {twitterConfirmMessage ? (
+            <TwitterConfirmMessage
+              twitterMassage={twitterMassage}
+              twitterConfirmMessage={twitterConfirmMessage}
+              PostTwitter={PostTwitter}
+            />
+          ) : null}
+          {/* {twitterSuccessMessage ? (
+            <TwitterSuccessMessage
+              confetti={true}
+              SetTwitterSuccessMessage={SetTwitterSuccessMessage}
+            />
+          ) : null} */}
+        </BottomSheetWebview>
       </ScrollView>
     </SafeAreaView>
   );

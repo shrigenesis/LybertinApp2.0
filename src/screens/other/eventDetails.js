@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect, FC, Component } from 'react';
+import React, {useState, useEffect, FC, Component} from 'react';
 import {
   View,
   Text,
@@ -17,28 +17,28 @@ import {
   Share,
   Pressable,
   Linking,
+  TouchableHighlight,
 } from 'react-native';
-import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { RippleTouchable, StoryList } from '../../component/';
+import {RippleTouchable, StoryList} from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
 import CountDown from 'react-native-countdown-fixed';
-import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { SliderBox } from "react-native-image-slider-box";
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {SliderBox} from 'react-native-image-slider-box';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 import HtmlToText from '../../utils/HtmlToText';
 import ReadMore from '@fawazahmed/react-native-read-more';
 import RedirectToMap from '../../utils/RedirectToMap';
-
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 let myHTML = '';
@@ -58,8 +58,9 @@ export default class eventDetails extends Component {
       images: [],
       tag_group_new: [],
       isLoading: true,
+      isExtend: false,
     };
-    this.strippedHtml = ""
+    this.strippedHtml = '';
   }
 
   componentDidMount = () => {
@@ -90,14 +91,14 @@ export default class eventDetails extends Component {
             hosts: res.tag_groups.speaker,
             dance: res.tag_groups.dance,
             images: res.event.images,
-            strippedHtml: HtmlToText(res.event.description)
+            strippedHtml: HtmlToText(res.event.description),
           });
           // setrequestCount(res.follow_requests);
         }
-        this.setState({ ...this.state, isLoading: false })
+        this.setState({...this.state, isLoading: false});
       },
       err => {
-        this.setState({ ...this.state, isLoading: false })
+        this.setState({...this.state, isLoading: false});
         console.log(err);
       },
     );
@@ -108,13 +109,13 @@ export default class eventDetails extends Component {
     const currentDateTime = moment();
     return eventDateTime.diff(currentDateTime, 'seconds');
   }
-  sliderImageArray = (images) => {
+  sliderImageArray = images => {
     let res = [];
     for (let i = 0; i < images.length; i++) {
-      res.push(images[i].img)
+      res.push(images[i].img);
     }
     return res;
-  }
+  };
 
   onShare = async () => {
     try {
@@ -139,34 +140,41 @@ export default class eventDetails extends Component {
     return (
       // <SafeAreaView style={{flex: 1}}>
       <>
-        {!this.state.isLoading ? <View style={styles.container}>
-          <StatusBar barStyle={'dark-content'} translucent={true} backgroundColor={color.transparent} />
-          <View
-            style={[styles.backBtn, {top: STATUSBAR_HEIGHT + (Platform.OS == "ios" ? 50 : 15)}]}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <Image
-                source={IMAGE.ArrowLeft}
-                style={styles.backBtnImage}
-              />
-            </TouchableOpacity>
-          </View>
-          <ScrollView style={{ flex: 0.92 }}>
-            <SliderBox
-              images={this.sliderImageArray(this.state.images)}
-              sliderBoxHeight={300}
-              onCurrentImagePressed={index => console.warn(`image ${index} pressed`)}
-              dotColor={color.btnBlue}
-              inactiveDotColor={color.black}
-              dotStyle={{
-                width: 20,
-                height: 5,
-                borderRadius: 5,
-                marginBottom: Platform.OS == "ios" ? 50 : 80,
-                padding: 0,
-                margin: -5,
-              }}
+        {!this.state.isLoading ? (
+          <View style={styles.container}>
+            <StatusBar
+              barStyle={'dark-content'}
+              translucent={true}
+              backgroundColor={color.transparent}
             />
-            {/* <FlatList
+            <View
+              style={[
+                styles.backBtn,
+                {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15)},
+              ]}>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Image source={IMAGE.ArrowLeft} style={styles.backBtnImage} />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={{flex: 0.92}}>
+              <SliderBox
+                images={this.sliderImageArray(this.state.images)}
+                sliderBoxHeight={300}
+                onCurrentImagePressed={index =>
+                  console.warn(`image ${index} pressed`)
+                }
+                dotColor={color.btnBlue}
+                inactiveDotColor={color.black}
+                dotStyle={{
+                  width: 20,
+                  height: 5,
+                  borderRadius: 5,
+                  marginBottom: Platform.OS == 'ios' ? 50 : 80,
+                  padding: 0,
+                  margin: -5,
+                }}
+              />
+              {/* <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
             data={this.state.images}
@@ -182,111 +190,58 @@ export default class eventDetails extends Component {
                 }}></ImageBackground>
             )}
           /> */}
-            <View
-              style={{
-                marginTop: -30,
-                height: 30,
-                borderTopLeftRadius: 30,
-                borderTopRightRadius: 30,
-                backgroundColor: '#F9F9FA',
-              }}></View>
-            <View
-              style={{
-                // borderTopLeftRadius: 40,
-                // borderTopRightRadius: 40,
-                backgroundColor: '#F9F9FA',
-              }}>
-              <View>
-                <View style={styles.shareWrapp}>
-                  <Text style={styles.heading}>{this.state.event.title}</Text>
-                  <TouchableOpacity onPress={() => this.onShare()}>
-                    <Image
-                      source={IMAGE.ShareIco}
-                      style={{
-                        height: 25,
-                        width: 25,
-                        resizeMode: 'contain',
-                        marginRight: 20,
-                        tintColor: color.btnBlue,
-                      }}
-                    />
-                  </TouchableOpacity>
-                </View>
-                <Text style={styles.ultimateText}>
-                  {this.state.event.excerpt}
-                </Text>
-                {this.state.event.hashtags?.length > 0 ?
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}
-                    style={{
-                      flexDirection: 'row',
-                      margin: 5,
-                      flexWrap: 'wrap',
-                      marginHorizontal: 15
-                    }}>
-                    {this.state.event.hashtags.map(item => (
-                      <Text style={styles.tagText}>#{item.title}</Text>
-                    ))}
-                  </ScrollView>
-                  : null
-                }
-
-                <View style={styles.imageContainer}>
-                  <Image
-                    source={IMAGE.dateColor}
-                    style={{
-                      height: 22,
-                      width: 22,
-                      resizeMode: 'contain',
-                      marginRight: '4%',
-                      tintColor: color.btnBlue,
-                    }}
-                  />
-                  <View>
-                    <Text style={styles.dateText}>Date & Time</Text>
-                    <Text style={styles.timeText}>
-                      {this.state.event.event_timing_formatted}
-                    </Text>
+              <View
+                style={{
+                  marginTop: -30,
+                  height: 30,
+                  borderTopLeftRadius: 30,
+                  borderTopRightRadius: 30,
+                  backgroundColor: '#F9F9FA',
+                }}></View>
+              <View
+                style={{
+                  // borderTopLeftRadius: 40,
+                  // borderTopRightRadius: 40,
+                  backgroundColor: '#F9F9FA',
+                }}>
+                <View>
+                  <View style={styles.shareWrapp}>
+                    <Text style={styles.heading}>{this.state.event.title}</Text>
+                    <TouchableOpacity onPress={() => this.onShare()}>
+                      <Image
+                        source={IMAGE.ShareIco}
+                        style={{
+                          height: 25,
+                          width: 25,
+                          resizeMode: 'contain',
+                          marginRight: 20,
+                          tintColor: color.btnBlue,
+                        }}
+                      />
+                    </TouchableOpacity>
                   </View>
-                </View>
+                  <Text style={styles.ultimateText}>
+                    {this.state.event.excerpt}
+                  </Text>
+                  {this.state.event.hashtags?.length > 0 ? (
+                    <ScrollView
+                      horizontal={true}
+                      showsHorizontalScrollIndicator={false}
+                      style={{
+                        flexDirection: 'row',
+                        margin: 5,
+                        flexWrap: 'wrap',
+                        marginHorizontal: 15,
+                      }}>
+                      {this.state.event.hashtags.map(item => (
+                        <Text style={styles.tagText}>#{item.title}</Text>
+                      ))}
+                    </ScrollView>
+                  ) : null}
 
-                <View style={styles.imageContainer}>
-                  <Image
-                    source={IMAGE.locationColor}
-                    style={{
-                      height: 22,
-                      width: 22,
-                      resizeMode: 'contain',
-                      marginRight: '4%',
-                      tintColor: color.btnBlue,
-                    }}
-                  />
-
-                  <Pressable
-                  onPress={()=>
-                      RedirectToMap(
-                        this.state.event.venue && this.state.event.venue,
-                        this.state.event.state && ", " + this.state.event.state,
-                        this.state.event.city && ", " + this.state.event.city,
-                        this.state.event.zipcode && ", " + this.state.event.zipcode
-                      )
-                    }
-                  >
-                    <Text style={styles.dateText}>Location</Text>
-                    <Text style={styles.timeText} numberOfLines={2}>
-                      {this.state.event.venue && this.state.event.venue}
-                      {this.state.event.state && ", " + this.state.event.state}
-                      {this.state.event.city && ", " + this.state.event.city}
-                      {this.state.event.zipcode && ", " + this.state.event.zipcode}
-                    </Text>
-                  </Pressable>
-                </View>
-
-                {this.state.event.repetitive === 1 ? (
                   <View style={styles.imageContainer}>
                     <Image
-                      source={IMAGE.eventColor}
+                      source={IMAGE.category}
                       style={{
                         height: 22,
                         width: 22,
@@ -297,200 +252,284 @@ export default class eventDetails extends Component {
                     />
 
                     <View>
-                      <Text style={styles.dateText}>Event type</Text>
-                      <Text style={styles.timeText} numberOfLines={2}>
-                        {this.state.event.event_type_text}
+                      <Text style={styles.dateText}>Category</Text>
+                      <Text style={styles.timeText} numberOfLines={1}>
+                        {this.state.event?.category_name}
                       </Text>
                     </View>
                   </View>
-                ) : (
-                  <View></View>
-                )}
-                <View style={styles.descriptionWrapper}>
-                  <Text style={styles.desHeading}>Event Description</Text>
-                  <View>
-                    <ReadMore
-                      numberOfLines={4}
-                      style={styles.desText}
-                      seeMoreText='read more'
-                      seeMoreStyle={{ color: color.btnBlue }}>
-                      {this.state.strippedHtml}
-                    </ReadMore>
-                  </View>
-                </View>
 
-                {this.state.isRepetative === true && (
-                  <View style={styles.ticketWrapper}>
-                    <View>
-                      <Text style={styles.ticketsText}>Get Your Tickets</Text>
-                      <Text style={styles.eventDate}>Choose Event Date</Text>
-                    </View>
-                    <FlatList
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      data={this.state.repititiveSchedule}
-                      renderItem={({ item: d }) => (
-                        <TouchableOpacity
-                          onPress={() => [
-                            this.setState({
-                              selected: d.id,
-                            }),
-                            this.props.navigation.navigate('chooseEventDate', {
-                              allData: d,
-                            }),
-                          ]}
-                          style={{
-                            borderColor:
-                              this.state.selected == d.id ? color.white : color.white,
-                            // borderWidth: 2,
-                            marginRight: 10,
-                            borderRadius: 10,
-                            marginTop: 5,
-                            backgroundColor: color.btnBlue
-                          }}>
-                          <View
-                            style={{
-                              flexDirection: 'row',
-                              justifyContent: 'space-around',
-                              alignItems: 'center',
-                              borderColor: color.white,
-                              borderWidth: 2,
-                              padding: 10,
-                              borderRadius: 10,
-
-
-                            }}>
-                            {this.state.selected == d.id ? (
-                              <Image
-                                source={IMAGE.dateColor}
-                                style={styles.bottomImage}
-                              />
-                            ) : (
-                              <Image
-                                source={IMAGE.date}
-                                style={styles.bottomImage}
-                              />
-                            )}
-
-                            <View>
-                              <Text
-                                style={{
-                                  fontSize: Platform.OS == 'ios' ? 15 : 13,
-                                  fontFamily: fontFamily.Semibold,
-                                  color:
-                                    this.state.selected == d.id
-                                      ? color.white
-                                      : color.white,
-                                }}>
-                                {d.days_event}
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize: Platform.OS == 'ios' ? 15 : 14,
-                                  fontFamily: fontFamily.Bold,
-                                  color:
-                                    this.state.selected == d.id
-                                      ? color.white
-                                      : color.white,
-                                }}>
-                                {d.event_schedule_formatted}
-                              </Text>
-                            </View>
-                          </View>
-                        </TouchableOpacity>
-                      )}
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={IMAGE.dateColor}
+                      style={{
+                        height: 22,
+                        width: 22,
+                        resizeMode: 'contain',
+                        marginRight: '4%',
+                        tintColor: color.btnBlue,
+                      }}
                     />
-                    <View style={styles.saleWrapper}>
-                      <CountDown
-                        until={this.getSaleExpirationSeconds(
-                          this.state.event.end_date,
-                        )}
-                        size={15}
-                        onFinish={() => this.saleFinished()}
-                        digitTxtStyle={{ color: color.btnBlue }}
-                        digitStyle={{
-                          backgroundColor: '#fff',
-                          marginTop: 0,
-                        }}
-                        timeLabelStyle={{
-                          fontSize: 12,
-                          fontFamily: fontFamily.Semibold,
-                          color: '#000',
-                        }}
-                        timeToShow={['D', 'H', 'M', 'S']}
-                        timeLabels={{
-                          d: 'D',
-                          h: 'H',
-                          m: 'M',
-                          s: 'S',
+                    <View>
+                      <Text style={styles.dateText}>Date & Time</Text>
+                      <Text style={styles.timeText}>
+                        {this.state.event.event_timing_formatted}
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={IMAGE.locationColor}
+                      style={{
+                        height: 22,
+                        width: 22,
+                        resizeMode: 'contain',
+                        marginRight: '4%',
+                        tintColor: color.btnBlue,
+                      }}
+                    />
+
+                    <Pressable
+                      onPress={() =>
+                        RedirectToMap(`${this.state.event?.venue}+${this.state.event?.state}+${this.state.event?.city}+${this.state.event?.zipcode}`)
+                      }>
+                      <Text style={styles.dateText}>Location</Text>
+                      <Text style={styles.timeText} numberOfLines={2}>
+                        {this.state.event.venue && this.state.event.venue}
+                        {this.state.event.state &&
+                          ', ' + this.state.event.state}
+                        {this.state.event.city && ', ' + this.state.event.city}
+                        {this.state.event.zipcode &&
+                          ', ' + this.state.event.zipcode}
+                      </Text>
+                    </Pressable>
+                  </View>
+
+                  {this.state.event.repetitive === 1 ? (
+                    <View style={styles.imageContainer}>
+                      <Image
+                        source={IMAGE.eventColor}
+                        style={{
+                          height: 22,
+                          width: 22,
+                          resizeMode: 'contain',
+                          marginRight: '4%',
+                          tintColor: color.btnBlue,
                         }}
                       />
+
+                      <View>
+                        <Text style={styles.dateText}>Event type</Text>
+                        <Text style={styles.timeText} numberOfLines={2}>
+                          {this.state.event.event_type_text}
+                        </Text>
+                      </View>
+                    </View>
+                  ) : (
+                    <View></View>
+                  )}
+                  <View style={styles.descriptionWrapper}>
+                    <Text style={styles.desHeading}>Event Description</Text>
+                    <View>
+                      <Text numberOfLines={this.state.isExtend ? -1 : 2}>
+                        {this.state.strippedHtml}
+                      </Text>
+                      <TouchableOpacity
+                        onPress={() =>
+                          this.setState({
+                            ...this.state,
+                            isExtend: !this.state.isExtend,
+                          })
+                        }>
+                        <Text
+                          style={{color: color.btnBlue, textAlign: 'right'}}>
+                          {this.state.isExtend ? 'less more' : '...read more'}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                   </View>
-                )}
-                {this.state.tag_group_new?.length > 0 &&
-                  this.state.tag_group_new?.map((itt, indx) => {
-                    return (
-                      <View style={styles.eventItems} key={indx}>
-                        <Text style={styles.ticketsText}>{itt?.name}</Text>
-                        <FlatList
-                          horizontal
-                          showsHorizontalScrollIndicator={false}
-                          data={itt?.items}
-                          renderItem={({ item, index }) => (
+
+                  {this.state.isRepetative === true && (
+                    <View style={styles.ticketWrapper}>
+                      <View>
+                        <Text style={styles.ticketsText}>Get Your Tickets</Text>
+                        <Text style={styles.eventDate}>Choose Event Date</Text>
+                      </View>
+                      <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        data={this.state.repititiveSchedule}
+                        renderItem={({item: d}) => (
+                          <TouchableOpacity
+                            onPress={() => [
+                              this.setState({
+                                selected: d.id,
+                              }),
+                              this.props.navigation.navigate(
+                                'chooseEventDate',
+                                {
+                                  allData: d,
+                                },
+                              ),
+                            ]}
+                            style={{
+                              borderColor:
+                                this.state.selected == d.id
+                                  ? color.white
+                                  : color.white,
+                              // borderWidth: 2,
+                              marginRight: 10,
+                              borderRadius: 10,
+                              marginTop: 5,
+                              backgroundColor: color.btnBlue,
+                            }}>
                             <View
-                              style={styles.eventTagInner}>
-                              <View style={styles.tagIMageWrapper}>
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'space-around',
+                                alignItems: 'center',
+                                borderColor: color.white,
+                                borderWidth: 2,
+                                padding: 10,
+                                borderRadius: 10,
+                              }}>
+                              {this.state.selected == d.id ? (
                                 <Image
-                                  source={{ uri: `${IMAGEURL}/${item.image}` }}
-                                  style={styles.profileImage}
+                                  source={IMAGE.dateColor}
+                                  style={styles.bottomImage}
                                 />
-                              </View>
-                              <View style={{ margin: 8 }}>
-                                <Text style={styles.nameText}>{item.title}</Text>
-                                <Text style={styles.proText}>{item.type}</Text>
+                              ) : (
+                                <Image
+                                  source={IMAGE.date}
+                                  style={styles.bottomImage}
+                                />
+                              )}
+
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: Platform.OS == 'ios' ? 15 : 13,
+                                    fontFamily: fontFamily.Semibold,
+                                    color:
+                                      this.state.selected == d.id
+                                        ? color.white
+                                        : color.white,
+                                  }}>
+                                  {d.days_event}
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize: Platform.OS == 'ios' ? 15 : 14,
+                                    fontFamily: fontFamily.Bold,
+                                    color:
+                                      this.state.selected == d.id
+                                        ? color.white
+                                        : color.white,
+                                  }}>
+                                  {d.event_schedule_formatted}
+                                </Text>
                               </View>
                             </View>
+                          </TouchableOpacity>
+                        )}
+                      />
+                      <View style={styles.saleWrapper}>
+                        <CountDown
+                          until={this.getSaleExpirationSeconds(
+                            this.state.event.end_date,
                           )}
+                          size={15}
+                          onFinish={() => this.saleFinished()}
+                          digitTxtStyle={{color: color.btnBlue}}
+                          digitStyle={{
+                            backgroundColor: '#fff',
+                            marginTop: 0,
+                          }}
+                          timeLabelStyle={{
+                            fontSize: 12,
+                            fontFamily: fontFamily.Semibold,
+                            color: '#000',
+                          }}
+                          timeToShow={['D', 'H', 'M', 'S']}
+                          timeLabels={{
+                            d: 'D',
+                            h: 'H',
+                            m: 'M',
+                            s: 'S',
+                          }}
                         />
                       </View>
-                    );
-                  })}
+                    </View>
+                  )}
+                  {this.state.tag_group_new?.length > 0 &&
+                    this.state.tag_group_new?.map((itt, indx) => {
+                      return (
+                        <View style={styles.eventItems} key={indx}>
+                          <Text style={styles.ticketsText}>{itt?.name}</Text>
+                          <FlatList
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            data={itt?.items}
+                            renderItem={({item, index}) => (
+                              <View style={styles.eventTagInner}>
+                                <View style={styles.tagIMageWrapper}>
+                                  <Image
+                                    source={{uri: `${IMAGEURL}/${item.image}`}}
+                                    style={styles.profileImage}
+                                  />
+                                </View>
+                                <View style={{margin: 8}}>
+                                  <Text style={styles.nameText}>
+                                    {item.title}
+                                  </Text>
+                                  <Text style={styles.proText}>
+                                    {item.type}
+                                  </Text>
+                                </View>
+                              </View>
+                            )}
+                          />
+                        </View>
+                      );
+                    })}
+                </View>
               </View>
-            </View>
-          </ScrollView>
-          {this.state.isRepetative == false && (
-            <TouchableOpacity
-              onPress={() =>
-                this.state.isRepetative == false
-                  ? this.props.navigation.navigate('buyTicket', {
-                    event_id: this.state.eventId,
-                    date: {
-                      start_date: this.state?.event?.start_date,
-                      end_date: this.state?.event?.end_date,
-                      start_time: this.state?.event?.start_time,
-                      end_time: this.state?.event?.end_time
-                    },
-                  })
-                  :
-                  Toast.show({
-                    type: 'error',
-                    text1: 'Choose event date'
-                  })
-              }
-              style={{
-                flex: 0.08,
-                backgroundColor:
-                  this.state.isRepetative == true && this.state.selected == 0
-                    ? 'gray'
-                    : color.btnBlue,
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}>
-              <Text style={styles.buttonText}>Get Tickets</Text>
-            </TouchableOpacity>
-          )}
-        </View> : <DetailsSkelton />}
+            </ScrollView>
+            {this.state.isRepetative == false && (
+              <TouchableOpacity
+                onPress={() =>
+                  this.state.isRepetative == false
+                    ? this.props.navigation.navigate('buyTicket', {
+                        event_id: this.state.eventId,
+                        date: {
+                          start_date: this.state?.event?.start_date,
+                          end_date: this.state?.event?.end_date,
+                          start_time: this.state?.event?.start_time,
+                          end_time: this.state?.event?.end_time,
+                        },
+                      })
+                    : Toast.show({
+                        type: 'error',
+                        text1: 'Choose event date',
+                      })
+                }
+                style={{
+                  flex: 0.08,
+                  backgroundColor:
+                    this.state.isRepetative == true && this.state.selected == 0
+                      ? 'gray'
+                      : color.btnBlue,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.buttonText}>Get Tickets</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+        ) : (
+          <DetailsSkelton />
+        )}
       </>
       // </SafeAreaView>
     );
@@ -513,7 +552,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontFamily: fontFamily.Bold,
     color: color.black,
-    marginHorizontal: 15
+    marginHorizontal: 15,
   },
   ultimateText: {
     fontSize: Platform.OS == 'ios' ? 16 : 15,
@@ -521,7 +560,7 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Medium,
     marginTop: '4%',
     marginBottom: '6%',
-    marginHorizontal: 15
+    marginHorizontal: 15,
   },
   imageContainer: {
     flexDirection: 'row',
@@ -531,20 +570,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingBottom: 15,
     borderBottomWidth: 1,
-    borderBottomColor: color.borderGray
+    borderBottomColor: color.borderGray,
   },
   ticketWrapper: {
     marginTop: 15,
     paddingHorizontal: 15,
     // backgroundColor: '#e8dcec',
-    paddingVertical: 15
+    paddingVertical: 15,
   },
   eventItems: {
     paddingHorizontal: 15,
-    marginTop: 20
+    marginTop: 20,
   },
-  eventTagInner:
-  {
+  eventTagInner: {
     backgroundColor: color.extralightSlaty,
     borderColor: '#DEDEDE',
     borderWidth: 1,
@@ -608,7 +646,7 @@ const styles = StyleSheet.create({
   tagIMageWrapper: {
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   profileImage: {
     width: '100%',
@@ -645,14 +683,14 @@ const styles = StyleSheet.create({
   },
   shareWrapp: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center"
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   backBtn: {
     position: 'absolute',
     left: 15,
-    zIndex: 1
+    zIndex: 1,
   },
   backBtnImage: {
     height: 32,

@@ -140,7 +140,9 @@ const Wallet = ({ navigation }) => {
                   </View>
                   <View style={{ width: '60%' }}>
                     <Text style={styles.historyTitle}>{item.type}</Text>
-                    <Text style={styles.historyDisc}>{item.description === "" ? item.updated_at : item.description}</Text>
+                    <Text style={styles.historyDisc}>{item.created_at}</Text>
+                    {/* <Text style={styles.historyDisc}>({item.description === "" ? '' : item.description})</Text> */}
+                    
                   </View>
                   <View style={{ width: '20%' }}>
                     <Text style={styles.historyCoin}>{item.type==='Earned' && '+' }{item.amount}</Text>
