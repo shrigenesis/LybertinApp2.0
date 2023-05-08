@@ -369,7 +369,7 @@ const EventList = ({ navigation }) => {
 
         </View>
 
-        <View style={{ zIndex: -10, backgroundColor: '#fff', flex:1 }}>
+        <ScrollView style={{ zIndex: -10, backgroundColor: '#fff', flex:1 }}>
           {isLoading ? (
             <View
               style={{
@@ -477,7 +477,7 @@ const EventList = ({ navigation }) => {
 
                 </View>
               ) : ( 
-                <View style={{marginTop:hp(30)}}>
+                <View >
                 <NoRecord
                   image={IMAGE.noConversation}
                   title="No Event found"
@@ -488,7 +488,7 @@ const EventList = ({ navigation }) => {
               )}
             </>
           )}
-        </View>
+        </ScrollView>
       </SafeAreaView>
     // </KeyboardAwareScrollView>
   );

@@ -215,7 +215,7 @@ const EducationList = ({ navigation }) => {
               />
             </View>
           ) : (
-            <View
+            <ScrollView
               // style={{
               //   backgroundColor: color.background,
               //   flex:1
@@ -304,7 +304,7 @@ const EducationList = ({ navigation }) => {
                   </View>
                 </>
               ) : (
-                <View style={{marginTop:hp(30)}}>
+                <View>
                 <NoRecord
                   image={IMAGE.noConversation}
                   title="No Courses found"
@@ -313,7 +313,7 @@ const EducationList = ({ navigation }) => {
                 />
                 </View>
               )}
-            </View>
+            </ScrollView>
           )}
         </View>
       </SafeAreaView>

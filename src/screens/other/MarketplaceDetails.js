@@ -588,7 +588,7 @@ const MarketplaceDetails = props => {
                   if (navState?.url.includes(twitterSuccessUrl)) {
                     Toast.show({
                       type: 'info',
-                      text1: 'tweeted successfully',
+                      text1: 'Tweeted successfully',
                     });
                     setopenWebview(false);
                     setisPostTwitter(false);
@@ -598,6 +598,7 @@ const MarketplaceDetails = props => {
                     settwitterAuthorization(false);
                     settwitterConfirmMessage(false);
                     settwitterMassage('');
+                    getEventDetails();
                   }
                   if (navState?.url.includes(twitterFailUrl)) {
                     Toast.show({
@@ -682,12 +683,12 @@ const MarketplaceDetails = props => {
               PostTwitter={PostTwitter}
             />
           ) : null}
-          {twitterSuccessMessage ? (
+          {/* {twitterSuccessMessage ? (
             <TwitterSuccessMessage
               confetti={true}
               SetTwitterSuccessMessage={SetTwitterSuccessMessage}
             />
-          ) : null}
+          ) : null} */}
         </BottomSheetWebview>
       </ScrollView>
     </SafeAreaView>
