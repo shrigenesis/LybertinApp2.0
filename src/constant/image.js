@@ -172,6 +172,7 @@ const IMAGE = {
   friendsMarket:  require('./../assets/images/friendsMarket.png'),
   booking:  require('./../assets/images/booking.png'),
   salary:  require('./../assets/images/salary.png'),
+  category:  require('./../assets/images/category.png'),
 };
 
 export default IMAGE;

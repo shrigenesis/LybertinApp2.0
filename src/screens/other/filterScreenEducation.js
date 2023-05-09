@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect, FC, Component } from 'react';
+import React, {useState, useEffect, FC, Component} from 'react';
 import {
   View,
   Text,
@@ -10,25 +10,24 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
-
   Platform,
   StatusBar,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import {IMAGE, color, fontFamily} from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Overlay } from 'react-native-elements';
+import {Overlay} from 'react-native-elements';
 
-import { APIRequest, ApiUrl } from './../../utils/api';
+import {APIRequest, ApiUrl} from './../../utils/api';
 
 import moment from 'moment';
 
 import DateTimePicker from '@react-native-community/datetimepicker';
+import DatePicker from 'react-native-date-picker';
 
-
-import { SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 export default class filterScreenEducation extends Component {
   constructor(props) {
@@ -71,7 +70,7 @@ export default class filterScreenEducation extends Component {
   };
 
   setDate = (event, date) => {
-    this.setState({ dob: moment(date).format('YYYY-MM-DD'), datePicker: false });
+    this.setState({dob: moment(date).format('YYYY-MM-DD'), datePicker: false});
   };
   setDate1 = (event, date) => {
     this.setState({
@@ -92,10 +91,7 @@ export default class filterScreenEducation extends Component {
       config,
 
       res => {
-        console.log(
-          'API response =====',
-          res.filters.categories
-        );
+        console.log('API response =====', res.filters.categories);
 
         if (res.status) {
           this.setState({
@@ -127,13 +123,18 @@ export default class filterScreenEducation extends Component {
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
-         <StatusBar
+        <StatusBar
           barStyle={'dark-content'}
           translucent
           backgroundColor={color.lightGray}
         />
         <ScrollView style={styles.container}>
-          <View style={{ backgroundColor: color.lightGray, paddingTop: 15, paddingBottom: 10, }}>
+          <View
+            style={{
+              backgroundColor: color.lightGray,
+              paddingTop: 15,
+              paddingBottom: 10,
+            }}>
             <View style={styles.headerContainer}>
               <Text style={styles.headerText}>Filter by</Text>
               <Text
@@ -142,11 +143,11 @@ export default class filterScreenEducation extends Component {
                     input: '',
                     hashTagInput: '',
                     hashtag: 0,
-                    input:0,
+                    input: 0,
                     category: 0,
                     date: 0,
-                    dob:'',
-                    dob1:'',
+                    dob: '',
+                    dob1: '',
                   })
                 }
                 style={styles.clearAllText}>
@@ -154,30 +155,31 @@ export default class filterScreenEducation extends Component {
               </Text>
             </View>
           </View>
-
-          {this.state.datePicker && (
-            <DateTimePicker
-
-              value={new Date()}
-              mode={'date'}
-              is24Hour={false}
-              display="default"
-              onChange={this.setDate}
-
-            />
-          )}
-          {this.state.datePicker1 && (
-            <DateTimePicker
-
-              value={new Date()}
-              mode={'date'}
-              is24Hour={false}
-              display="default"
-              onChange={this.setDate1}
-
-            />
-          )}
-          <View style={{ flexDirection: 'row', justifyContent: 'flex-start' }}>
+          <DatePicker
+            modal
+            open={this.state.datePicker}
+            mode={'date'}
+            date={new Date()}
+            onConfirm={date => {
+              this.setDate('event', date);
+            }}
+            onCancel={() => {
+              this.setState({...this.state, datePicker: false});
+            }}
+          />
+          <DatePicker
+            modal
+            open={this.state.datePicker1}
+            mode={'date'}
+            date={new Date()}
+            onConfirm={date => {
+              this.setDate1('event', date);
+            }}
+            onCancel={() => {
+              this.setState({...this.state, datePicker1: false});
+            }}
+          />
+          <View style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
             <View>
               <TouchableOpacity
                 onPress={() =>
@@ -189,7 +191,8 @@ export default class filterScreenEducation extends Component {
                 style={[
                   styles.categoryContainer,
                   {
-                    borderColor: this.state.event == 0 ? color.iconGray : '#fff',
+                    borderColor:
+                      this.state.event == 0 ? color.iconGray : '#fff',
                     backgroundColor:
                       this.state.event == 0 ? color.background2 : '#fff',
                   },
@@ -207,8 +210,7 @@ export default class filterScreenEducation extends Component {
                       width: 4.42,
                       backgroundColor:
                         this.state.event == 0 ? '#fff' : color.btnBlue,
-                    }}>
-                  </View>
+                    }}></View>
                   <Text style={styles.categotyText}>Search Course</Text>
                   {this.state.event == '0' ? (
                     <View></View>
@@ -328,7 +330,8 @@ export default class filterScreenEducation extends Component {
                 style={[
                   styles.categoryContainer,
                   {
-                    borderColor: this.state.hashtag == 0 ? color.iconGray : '#fff',
+                    borderColor:
+                      this.state.hashtag == 0 ? color.iconGray : '#fff',
                     backgroundColor:
                       this.state.hashtag == 0 ? color.background2 : '#fff',
                   },
@@ -346,8 +349,7 @@ export default class filterScreenEducation extends Component {
                       width: 4.42,
                       backgroundColor:
                         this.state.hashtag == 0 ? '#fff' : color.btnBlue,
-                    }}>
-                  </View>
+                    }}></View>
                   <Text style={styles.categotyText}>Hastags</Text>
                   {this.state.hashtag == '0' ? (
                     <View></View>
@@ -367,10 +369,10 @@ export default class filterScreenEducation extends Component {
             </View>
             <View>
               <View style={styles.input}>
-                <View style={{ position: 'absolute', left: wp(3) }}>
+                <View style={{position: 'absolute', left: wp(3)}}>
                   <Image
                     source={IMAGE.search}
-                    style={{ height: 20, width: 20, resizeMode: 'contain' }}
+                    style={{height: 20, width: 20, resizeMode: 'contain'}}
                   />
                 </View>
                 <TextInput
@@ -379,9 +381,9 @@ export default class filterScreenEducation extends Component {
                     color: color.textGray2,
                     marginLeft: '18%',
                   }}
-                  onChangeText={v => this.setState({ input: v })}
+                  onChangeText={v => this.setState({input: v})}
                   placeholder={`Type Course Name`}
-                  value= {this.state.input}
+                  value={this.state.input}
                   placeholderTextColor={'#000'}
                 />
               </View>
@@ -404,7 +406,7 @@ export default class filterScreenEducation extends Component {
               {this.state.date == 1 && (
                 <View>
                   <TouchableOpacity
-                    onPress={() => this.setState({ datePicker: true })}
+                    onPress={() => this.setState({datePicker: true})}
                     style={styles.input}>
                     {this.state.dob == '' ? (
                       <Text style={styles.selectText}>Start Date</Text>
@@ -413,7 +415,7 @@ export default class filterScreenEducation extends Component {
                     )}
                   </TouchableOpacity>
                   <TouchableOpacity
-                    onPress={() => this.setState({ datePicker1: true })}
+                    onPress={() => this.setState({datePicker1: true})}
                     style={styles.input}>
                     {this.state.dob1 == '' ? (
                       <Text style={styles.selectText}>End Date</Text>
@@ -425,10 +427,10 @@ export default class filterScreenEducation extends Component {
               )}
               {this.state.hashtag == 1 && (
                 <View style={styles.input}>
-                  <View style={{ position: 'absolute', left: wp(3) }}>
+                  <View style={{position: 'absolute', left: wp(3)}}>
                     <Image
                       source={IMAGE.search}
-                      style={{ height: 20, width: 20, resizeMode: 'contain' }}
+                      style={{height: 20, width: 20, resizeMode: 'contain'}}
                     />
                   </View>
                   <TextInput
@@ -437,7 +439,7 @@ export default class filterScreenEducation extends Component {
                       color: color.textGray2,
                       marginLeft: '18%',
                     }}
-                    onChangeText={v => this.setState({ hashTagInput: v })}
+                    onChangeText={v => this.setState({hashTagInput: v})}
                     placeholder={`Type Hashtags`}
                     placeholderTextColor={'#000'}
                   />
@@ -445,7 +447,7 @@ export default class filterScreenEducation extends Component {
               )}
             </View>
           </View>
-          <View style={{ flexDirection: 'row' }}>
+          <View style={{flexDirection: 'row'}}>
             <TouchableOpacity
               onPress={() => this.props.navigation.goBack()}
               style={styles.closeButton}>
@@ -457,7 +459,7 @@ export default class filterScreenEducation extends Component {
                   category: this.state.selectedCategory,
                   date: this.state.dob,
                   input: this.state.input,
-                  hashtag:  this.state.hashTagInput ,
+                  hashtag: this.state.hashTagInput,
                   endDate: this.state.dob1,
                 })
               }
@@ -476,7 +478,7 @@ export default class filterScreenEducation extends Component {
             <View style={styles.overlayStyle}>
               <FlatList
                 data={this.state.category1}
-                renderItem={({ item: d }) => (
+                renderItem={({item: d}) => (
                   <TouchableOpacity
                     onPress={() => [
                       this.setState({
@@ -501,7 +503,7 @@ export default class filterScreenEducation extends Component {
             <View style={styles.overlayStyle}>
               <FlatList
                 data={this.state.price1}
-                renderItem={({ item: d }) => (
+                renderItem={({item: d}) => (
                   <TouchableOpacity
                     onPress={() => [
                       this.setState({
@@ -526,7 +528,7 @@ export default class filterScreenEducation extends Component {
             <View style={styles.overlayStyle}>
               <FlatList
                 data={this.state.country1}
-                renderItem={({ item: d }) => (
+                renderItem={({item: d}) => (
                   <TouchableOpacity
                     onPress={() => [
                       this.setState({
@@ -554,7 +556,7 @@ export default class filterScreenEducation extends Component {
             <View style={styles.overlayStyle}>
               <FlatList
                 data={this.state.city1}
-                renderItem={({ item: d }) => (
+                renderItem={({item: d}) => (
                   <TouchableOpacity
                     onPress={() => [
                       this.setState({
@@ -568,7 +570,6 @@ export default class filterScreenEducation extends Component {
               />
             </View>
           </Overlay>
-
         </ScrollView>
       </SafeAreaView>
     );
@@ -591,7 +592,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: '2.5%',
     marginTop: Platform.OS == 'ios' ? 0 : 0,
-
   },
   headerText: {
     fontSize: 19,

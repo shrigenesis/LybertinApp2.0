@@ -14,7 +14,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "278272557601-k55mgjthbptv8ar537obde191n0devj7.apps.googleusercontent.com",
+          "client_id": "278272557601-j1khjmvhj42rq8kvcr63afl4qbrok37u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lybertineapp",
+            "certificate_hash": "abb9fecab5ab4bc498a1282eec07d604d774a18b"
+          }
+        },
+        {
+          "client_id": "278272557601-ka2qsoo5i5m19taduvvjefrouhma16vl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -29,6 +37,13 @@
             {
               "client_id": "278272557601-k55mgjthbptv8ar537obde191n0devj7.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "278272557601-92ouhgdihq9t2fdv93do1vk22m8miecj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.demo.lybertineApp1"
+              }
             }
           ]
         }

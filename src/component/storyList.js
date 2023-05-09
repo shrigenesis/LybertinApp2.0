@@ -257,8 +257,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     let index = stories.findIndex(v => v.user_id == userdata?.id);
     return index;
   };
-  const gradientColor = ['#FF4252', '#FF7500', '#FFB700', "#00BF15", "#006DDF", "#C02CDD"];
-  const defaultGradientColor = ['#808080', '#808080'];
+   const defaultGradientColor = ['#808080', '#808080'];
 
   return (
     <View
@@ -308,15 +307,12 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             Add Story
           </Text>
         </TouchableOpacity>
-        <Stories
+        {stories.length > 0 ? <Stories
           deleteOnPress={(id) => { _deleteStory(id) }}
           reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
           data={stories} titleStyle={
             !headerFontColor ? style.storyText : style.storyTextTheme
-          } />
-        {/* <Stories deleteOnPress={(id)=>{_deleteStory(id)}} data={stories} titleStyle={
-          !headerFontColor ? style.storyText : style.storyTextTheme
-        } /> */}
+          } />: null}
 
       </View>
       {/* {stories?.length > 0 && (
