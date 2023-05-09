@@ -60,12 +60,21 @@ const PostStory = ({ navigation, route }) => {
     setisLoading(true);
     let formdata = new FormData();
     let type = route.params?.file?.fileType == 'photo' ? 'image' : 'video';
-    formdata.append(type, route.params.file);
+    if (route.params?.file?.fileType === 'video') {
+      let typevip = route.params?.file.type.split("/")
+      formdata.append(type, {
+        ...route.params?.file,
+        name: `videos${new Date()}.${typevip[1]}`
+      });
+    }else{
+      formdata.append(type, route.params.file);
+    }
+    // formdata.append(type, route.params.file);
     formdata.append('caption', message);
     formdata.append('story_type', 'MEDIA');
 
     let config = {
-      url: ApiUrl.storyCreate,
+      url: ApiUrl.storyCreate, 
       method: 'post',
       body: formdata,
     };
