@@ -28,9 +28,10 @@ import { APIRequest, ApiUrl, IMAGEURL } from '../utils/api';
 import { User } from '../utils/user';
 import { useIsFocused } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import Stories from "react-native-stories-media";
+// import Stories from "react-native-stories-media";
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import BottomSheetWebview from './BottomSheetWebview';
+import Stories from './Story';
 
 const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [text, settext] = useState([]);
