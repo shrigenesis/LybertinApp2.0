@@ -293,7 +293,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
               ) : (
                 <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
               )}
-            </LinearGradient>
+            </LinearGradient> 
             <View style={style.blueDot}>
               <Icon
                 name={'plus'}

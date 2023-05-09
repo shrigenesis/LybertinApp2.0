@@ -69,6 +69,8 @@ const PostStory = ({navigation, route}) => {
       method: 'post',
       body: formdata,
     };
+ 
+    console.log('con', config);
 
     APIRequestWithFile(
       config,
@@ -121,7 +123,7 @@ const PostStory = ({navigation, route}) => {
     }
   };
 
-  const _hideControles = () => {
+  const _hideControles = () => { 
     if (hideControles) {
       sethideControles(false);
       setTimeout(() => {

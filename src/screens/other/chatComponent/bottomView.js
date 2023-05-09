@@ -33,9 +33,10 @@ import { EmojiKeyboard } from './../../../component/';
 import { requestPermission } from './../../../component/documentpicker';
 import { pickImage } from './../../../component/';
 import { IMAGEURL } from '../../../utils/api';
+import VideoPlayer from '../VideoPlayer';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
- 
+
 export const BottomView = memo(props => {
   const [showEmojiKeyboard, setshowEmojiKeyboard] = useState(false);
   const {
@@ -155,12 +156,31 @@ export const BottomView = memo(props => {
     setReplyBoxheight((parseInt(height) + hp(3)));
   }
 
-  const StopMultiplePress = ()=>{
+  const StopMultiplePress = () => {
     setdisable(true)
-    setTimeout(()=>{
+    setTimeout(() => {
       setdisable(false)
     }, 2000)
   }
+
+
+  useEffect(() => {
+    console.log('file log', file, file?.fileType);
+    // if (file?.fileType == 'pdf') {
+    //   console.log('pdf');
+    //   sendMessage()
+    // }else if(file?.fileType == 'video' || file?.fileType === "video/mp4"){
+    //   console.log('Videos');
+    //   sendMessage()
+    // }else{
+    //   if(file?.fileType == 'photo' || file?.fileType == 'image'){
+    //     console.log('camera');
+    //     sendMessage()
+    //   } else{
+    //     console.log('gallery');
+    //   }
+    // }
+  }, [file])
 
   return (
     <KeyboardAvoidingView
@@ -170,6 +190,11 @@ export const BottomView = memo(props => {
       {!isRecordingStart && (
         <SoundPlayer
           close={() => {
+            setRecordingFile('');
+            onStopRecord();
+          }}
+          Send={() => {
+            sendMessage();
             setRecordingFile('');
             onStopRecord();
           }}
@@ -190,38 +215,58 @@ export const BottomView = memo(props => {
             entering={SlideInLeft}
             exiting={SlideOutDown}
             style={styles.fileView}>
-            {file?.fileType == 'pdf' ? (
-              <Image
-                source={IMAGE.pdf}
-                style={{ resizeMode: 'contain', height: 75, width: 75 }}
-              />
-            ) : file?.fileType == 'photo' || file?.fileType == 'image' ? (
-              <Image
-                source={{ uri: file.uri }}
-                style={{ resizeMode: 'contain', height: 75, width: 75 }}
-              />
-            ) : (
-              <Image
-                source={IMAGE.gallery}
-                style={{ resizeMode: 'contain', height: 70, width: 70 }}
-              />
-            )}
-            <TouchableOpacity
-              onPress={deleteFile}
-              style={{ position: 'absolute', zIndex: 999, right: 6 }}>
-              <Image
-                source={IMAGE.redCancel}
+              <TouchableOpacity
+                onPress={deleteFile}
                 style={{
-                  color: color.red,
-                  height: 20,
-                  width: 20,
-                  resizeMode: 'contain',
-                }}
-              />
-            </TouchableOpacity>
+                  position: 'absolute', left: 15, top:15 ,  zIndex:999
+                }}>
+                <Image
+                  source={IMAGE.redCancel}
+                  style={{
+                    color: color.red,
+                    height: 30,
+                    width: 30,
+                    resizeMode: 'contain',
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={()=>sendMessage()}
+                style={{
+                   position: 'absolute', right: 10 , bottom:100, zIndex:999
+                }}>
+                <Image
+                  source={IMAGE.send}
+                  style={{
+                    color: color.red,
+                    height: 30,
+                    width: 30,
+                    resizeMode: 'contain',
+                  }}
+                />
+              </TouchableOpacity>
+            <View style={{alignItems:'center'}}>
+              {file?.fileType == 'pdf' ? (
+                <Image
+                  source={IMAGE.pdf}
+                  style={{ resizeMode: 'contain', height: 100, width: 100, marginTop: hp(30) }}
+                />
+              ) : null}
+              {file?.fileType == 'photo' || file?.fileType == 'image' ? (
+                <Image
+                  source={{ uri: file.uri }}
+                  style={{ resizeMode: 'contain', height: hp(100), width: wp(100) }}
+                />
+              ) : null}
+              {file?.fileType == 'video' || file?.fileType === "video/mp4"? (
+                <Image
+                  source={IMAGE.video}
+                  style={{ resizeMode: 'contain', height: 100, width: 1000 , marginTop: hp(30)}}
+                />
+              ): null}
+            </View>
           </Animated.View>
         )}
-
         <View
           style={[
             styles.msgSendViewWrapper,
@@ -305,8 +350,8 @@ export const BottomView = memo(props => {
               <TouchableOpacity
                 disabled={disable}
                 onPress={() => {
-                    StopMultiplePress()
-                    !isRecordingStart && sendMessage(), setRecordingFile('');
+                  StopMultiplePress()
+                  !isRecordingStart && sendMessage(), setRecordingFile('');
                 }}
                 style={styles.sendbtn}>
                 {!isRecordingStart && (
@@ -358,7 +403,7 @@ export const BottomView = memo(props => {
                       ? pickImage(
                         'camera',
                         res => {
-                          setFile(res);
+                          setFile(res); 
                         },
                         'image',
                       )
@@ -398,10 +443,12 @@ const styles = StyleSheet.create({
     right: 5,
   },
   fileView: {
-    width: wp(20),
-    marginBottom: hp(7),
-    marginTop: hp(1),
-    left: wp(4),
+    width:wp(100),
+    height: hp(100),
+    // marginBottom: hp(7),
+    // marginTop: hp(1),
+    // left: wp(4),
+    backgroundColor:'#000'
   },
   recordingTimer: {
     fontFamily: fontFamily.Thin,
