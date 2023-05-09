@@ -120,7 +120,7 @@ const Login = ({ navigation, route }) => {
           email: 'none',
           phone_number: '',
         };
-        socialLogin(data);
+        socialLogin(data); 
       }
     } catch (e) {
     }
@@ -166,7 +166,7 @@ const Login = ({ navigation, route }) => {
   const _googleLogin = async () => {
     try {
       GoogleSignin.signOut();
-      setisLoading(true);
+      setisLoading(true); 
       // Get the users ID token
       const { idToken } = await GoogleSignin.signIn();
       console.log(idToken);

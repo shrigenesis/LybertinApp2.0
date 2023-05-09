@@ -72,6 +72,8 @@ const PostStory = ({navigation, route}) => {
  
     console.log('con', config);
 
+    console.log("config",config);
+
     APIRequestWithFile(
       config,
       res => {
