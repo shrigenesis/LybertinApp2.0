@@ -25,17 +25,19 @@ import { Circle, Svg, Line } from 'react-native-svg';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Button, pickImage } from '.';
 import { APIRequest, ApiUrl, IMAGEURL } from '../utils/api';
-import { User } from '../utils/user';  
+import { User } from '../utils/user';
 import { useIsFocused } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import BottomSheetWebview from './BottomSheetWebview';
 import Stories from './Story';
+import BottomSheetUploadFile from './BottomSheetUploadFile';
 
 const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [text, settext] = useState([]);
   const [reportId, setReportId] = useState(0);
   const [isShowBottomSheet, setisShowBottomSheet] = useState(false);
+  const [isShowBottomSheet1, setisShowBottomSheet1] = useState(false);
   const bottomSheetRef = useRef(null);
   const snapPoints = useMemo(() => [1, hp(58)], []);
   const [stories, setStories] = useState([]);
@@ -215,8 +217,6 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   };
 
   const _reportStory = () => {
-
-
     let config = {
       url: ApiUrl.reportstory,
       method: 'post',
@@ -257,7 +257,14 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     let index = stories.findIndex(v => v.user_id == userdata?.id);
     return index;
   };
-   const defaultGradientColor = ['#808080', '#808080'];
+  const defaultGradientColor = ['#808080', '#808080'];
+
+
+  // Post Story
+  const PostStory=(file)=>{
+    setisShowBottomSheet1(false)
+    navigation.navigate('PostStory', { file: file });
+  }
 
   return (
     <View
@@ -279,7 +286,8 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={() => {
-            bottomSheetRef?.current?.present();
+            // bottomSheetRef?.current?.present();
+            setisShowBottomSheet1(true)
           }}
           style={style.imgview}>
 
@@ -293,13 +301,13 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
               ) : (
                 <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
               )}
-            </LinearGradient> 
+            </LinearGradient>
             <View style={style.blueDot}>
               <Icon
                 name={'plus'}
                 style={{ fontSize: 7, color: '#fff' }}
               />
-            </View> 
+            </View>
 
           </View>
 
@@ -312,7 +320,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
           reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
           data={stories} titleStyle={
             !headerFontColor ? style.storyText : style.storyTextTheme
-          } />: null}
+          } /> : null}
 
       </View>
       {/* {stories?.length > 0 && (
@@ -438,6 +446,94 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         //   }}
         // />
       )} */}
+      <BottomSheetUploadFile
+        cancelBtn={{
+          color: color.lightGray,
+          title: 'Cancel',
+          textColor: color.btnBlue,
+        }}
+        isShowBottomSheet={isShowBottomSheet1}
+        setisShowBottomSheet={setisShowBottomSheet1}>
+
+        <View>
+          <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
+            <Text style={style.roportHeading}>Report</Text>
+            <Text style={style.subHeading}>Why are you reporting this story?</Text>
+          </View>
+          <View>
+            <TouchableOpacity
+              onPress={() =>
+                pickImage(
+                  'camera',
+                  res => {
+                    // file(res);
+                    PostStory(res)
+                  },
+                  'photo',
+                )
+              }
+              style={style.cardBlock}>
+              <Image source={IMAGE.camera} style={style.icon} />
+              <Text style={style.cardText}>Take Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                pickImage(
+                  'image',
+                  res => {
+                    PostStory(res)
+                  },
+                  'photo',
+                )
+              }
+              style={style.cardBlock}>
+              <Image source={IMAGE.camera} style={style.icon} />
+              <Text style={style.cardText}>Select Photo</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                pickImage(
+                  'camera',
+                  res => {
+                    PostStory(res)
+                  },
+                  'video',
+                )
+              }
+              style={style.cardBlock}>
+              <Image source={IMAGE.video} style={style.icon} />
+              <Text style={style.cardText}>Take Video</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                pickImage(
+                  'image',
+                  res => {
+                    PostStory(res)
+                  },
+                  'video',
+                )
+              }
+              style={style.cardBlock}>
+              <Image source={IMAGE.video_add} style={style.icon} />
+              <Text style={style.cardText}>Select Video</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setisShowBottomSheet1(false)
+                navigation.navigate('addTextStory')
+              }}
+              style={style.cardBlock}>
+              <Image source={IMAGE.link} style={style.icon} />
+              <Text style={style.cardText}>Add Hyperlink</Text>
+            </TouchableOpacity>
+          </View>
+
+        </View>
+
+      </BottomSheetUploadFile>
+
+
       <BottomSheetWebview
         cancelBtn={{
           color: color.lightGray,
@@ -448,7 +544,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         setisShowBottomSheet={setisShowBottomSheet}>
 
         <View>
-          <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom:10}}>
+          <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
             <Text style={style.roportHeading}>Report</Text>
             <Text style={style.subHeading}>Why are you reporting this story?</Text>
           </View>
@@ -507,7 +603,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
               alignItems: 'center',
               flexDirection: 'row',
             }}
-            >
+          >
             <Text style={style.cardText}>Bullying or harassment</Text>
           </TouchableOpacity>
         </View>
@@ -622,7 +718,7 @@ const style = StyleSheet.create({
     color: color.white,
     width: 70,
   },
-  roportHeading:{
+  roportHeading: {
     fontSize: fontSize.size15,
     fontFamily: fontFamily.Bold,
     textAlign: 'center',
