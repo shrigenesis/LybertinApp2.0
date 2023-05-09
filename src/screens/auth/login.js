@@ -120,7 +120,7 @@ const Login = ({ navigation, route }) => {
           email: 'none',
           phone_number: '',
         };
-        socialLogin(data);
+        socialLogin(data); 
       }
     } catch (e) {
     }
