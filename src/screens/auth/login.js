@@ -166,7 +166,7 @@ const Login = ({ navigation, route }) => {
   const _googleLogin = async () => {
     try {
       GoogleSignin.signOut();
-      setisLoading(true);
+      setisLoading(true); 
       // Get the users ID token
       const { idToken } = await GoogleSignin.signIn();
       console.log(idToken);
