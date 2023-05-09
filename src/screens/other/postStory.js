@@ -70,6 +70,8 @@ const PostStory = ({navigation, route}) => {
       body: formdata,
     };
 
+    console.log("config",config);
+
     APIRequestWithFile(
       config,
       res => {
