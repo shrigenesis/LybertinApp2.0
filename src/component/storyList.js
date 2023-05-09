@@ -32,6 +32,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import BottomSheetWebview from './BottomSheetWebview';
 import Stories from './Story';
 import BottomSheetUploadFile from './BottomSheetUploadFile';
+import BottomSheetMarketplace from './BottomSheetMarketplace';
 
 const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [text, settext] = useState([]);
@@ -457,8 +458,8 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
 
         <View>
           <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
-            <Text style={style.roportHeading}>Report</Text>
-            <Text style={style.subHeading}>Why are you reporting this story?</Text>
+            <Text style={style.roportHeading}>Add Story</Text>
+            <Text style={style.subHeading}>Post Photo Video To Your Story</Text>
           </View>
           <View>
             <TouchableOpacity

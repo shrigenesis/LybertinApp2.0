@@ -52,7 +52,9 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
       setisFirstLoad(true)
     },100)
     if (story.type === 'image') {
-      setLoaded(true);
+      if(Platform.OS==='ios'){
+        setLoaded(true);
+      }
     }
   }, [story])
 
