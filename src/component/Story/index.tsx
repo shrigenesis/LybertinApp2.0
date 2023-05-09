@@ -38,7 +38,7 @@ const Stories = (props: Props) => {
 
   const onStorySelect = (index: number) => {
     setCurrentUserIndex(index);
-    setModel(true);
+      setModel(true);
   };
 
   const onStoryClose = () => {
@@ -138,6 +138,7 @@ const Stories = (props: Props) => {
           {props.data.map((item, index) => (
             <StoryContainer
               key={item.title}
+              itemIndex={currentUserIndex}
               onClose={onStoryClose}
               onStoryNext={onStoryNext}
               onStoryPrevious={onStoryPrevious}

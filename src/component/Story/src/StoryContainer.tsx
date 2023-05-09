@@ -28,10 +28,11 @@ type Props = {
   reportOnPress: (id: number) => void;
   isNewStory: boolean;
   textReadMore: string;
+  itemIndex: number
 };
 
 const StoryContainer: React.FC<Props> = (props: Props) => {
-  const { dataStories, deleteOnPress, reportOnPress } = props;
+  const { dataStories, deleteOnPress, reportOnPress, itemIndex } = props;
   const { stories = [] } = dataStories || {};
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isModelOpen, setModel] = useState(false);
@@ -40,17 +41,21 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
   const [duration, setDuration] = useState(3);
   const story = stories.length ? stories[currentIndex] : {};
   const { isReadMore }: StoryType = story || {};
+  const [isFirstLoad, setisFirstLoad] = useState(false)
 
   // const onVideoLoaded = (length) => {
   //   props.onVideoLoaded(length.duration);
   // };
 
   useEffect(() => {
-    if(story.type==='image'){
+    setTimeout(()=>{
+      setisFirstLoad(true)
+    },100)
+    if (story.type === 'image') {
       setLoaded(true);
     }
-  },[story])
-  
+  }, [story])
+
 
   const changeStory = (evt: NativeTouchEvent) => {
     if (evt.locationX > SCREEN_WIDTH / 2) {
@@ -148,7 +153,9 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
   };
 
   return (
-    <GestureRecognizer
+    <>
+    {isFirstLoad?
+      <GestureRecognizer
       onSwipeDown={onSwipeDown}
       onSwipeUp={onSwipeUp}
       config={config}
@@ -173,6 +180,7 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
 
           {loading()}
 
+          
           <UserView
             name={dataStories?.username}
             profile={dataStories?.profile}
@@ -182,10 +190,6 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
             deleteOnPress={deleteOnPress}
             reportOnPress={reportOnPress}
           />
-
-          {/* {isReadMore && (
-            <Readmore title={props.textReadMore} onReadMore={onReadMoreOpen} />
-          )} */}
 
           <ProgressArray
             next={nextStory}
@@ -199,6 +203,12 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
             length={stories.map((_, i) => i)}
             progress={{ id: currentIndex }}
           />
+         
+
+          {/* {isReadMore && (
+            <Readmore title={props.textReadMore} onReadMore={onReadMoreOpen} />
+          )} */}
+          
         </View>
 
         {/* <Modal
@@ -211,7 +221,8 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
           <WebView source={{ uri: stories[currentIndex].url_readmore }} />
         </Modal> */}
       </TouchableOpacity>
-    </GestureRecognizer>
+    </GestureRecognizer>:null}
+    </>
   );
 };
 
@@ -221,8 +232,8 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: Platform.OS === 'ios'?  15 : 0,
-    paddingBottom: Platform.OS === 'ios'?  15 : 0
+    paddingTop: Platform.OS === 'ios' ? 15 : 0,
+    paddingBottom: Platform.OS === 'ios' ? 15 : 0
   },
   progressBarArray: {
     flexDirection: "row",
