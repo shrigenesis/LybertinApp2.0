@@ -299,7 +299,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
                 name={'plus'}
                 style={{ fontSize: 7, color: '#fff' }}
               />
-            </View>
+            </View> 
 
           </View>
 
