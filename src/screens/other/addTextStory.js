@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     borderWidth: 0,
-    fontSize: 40,
+    fontSize: 30,
     height: Platform.OS == 'ios' ? '150%' : 300,
   },
   placeText: {
