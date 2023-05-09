@@ -33,7 +33,7 @@ console.log('RenderBottomSheet',bottomSheetRef);
             'camera',
             res => {
               file(res);
-              sendFile()
+              // sendFile()
             },
             'photo',
           )
@@ -48,7 +48,7 @@ console.log('RenderBottomSheet',bottomSheetRef);
             'image',
             res => {
               file(res);
-              sendFile()
+              // sendFile()
             },
             'photo',
           )
@@ -63,7 +63,7 @@ console.log('RenderBottomSheet',bottomSheetRef);
             'camera',
             res => {
               file(res);
-              sendFile()
+              // sendFile()
             },
             'video',
           )
@@ -78,7 +78,7 @@ console.log('RenderBottomSheet',bottomSheetRef);
             'image',
             res => {
               file(res);
-              sendFile()
+              // sendFile()
             },
             'video',
           )
@@ -92,7 +92,7 @@ console.log('RenderBottomSheet',bottomSheetRef);
         onPress={() =>
           pickDocument(res => {
             file(res);
-            sendFile()
+            // sendFile()
           })
         }
         style={styles.cardBlock}>

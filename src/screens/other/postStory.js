@@ -69,6 +69,8 @@ const PostStory = ({navigation, route}) => {
       method: 'post',
       body: formdata,
     };
+ 
+    console.log('con', config);
 
     console.log("config",config);
 
@@ -123,7 +125,7 @@ const PostStory = ({navigation, route}) => {
     }
   };
 
-  const _hideControles = () => {
+  const _hideControles = () => { 
     if (hideControles) {
       sethideControles(false);
       setTimeout(() => {

@@ -49,7 +49,7 @@ import {Overlay} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import DatePicker from 'react-native-date-picker';
+
 
 export const RenderBottomSheet = memo(
   ({setCover, setProfile, type, bottomSheetRef, snapPoints, file}) => {
@@ -279,6 +279,7 @@ const EditProfile = ({navigation, route}) => {
       APIRequestWithFile(
         config,
         res => {
+          console.log(res);
           setisLoading(state => !state);
           Toast.show({
             type: 'success',
@@ -291,9 +292,10 @@ const EditProfile = ({navigation, route}) => {
           setisLoading(state => !state);
           Toast.show({
             type: 'error',
-            text1: res?.alert?.message,
+            text1: err?.message
           });
           if (err?.response?.status == 422) {
+            console.log(err?.response?.data?.error)
             setValidationError(err?.response?.data?.error);
           }
         },
