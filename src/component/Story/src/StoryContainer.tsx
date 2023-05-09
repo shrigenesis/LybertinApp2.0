@@ -47,7 +47,9 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
   //   props.onVideoLoaded(length.duration);
   // };
 
-  useEffect(() => {    
+  useEffect(() => {
+    console.log(stories);
+        
     setTimeout(()=>{
       setisFirstLoad(true)
     },100)

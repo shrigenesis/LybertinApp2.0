@@ -107,7 +107,7 @@ const PostStory = ({ navigation, route }) => {
             }}
             onError={err => console.log(err)}
             onLoad={() => {
-              _hideControles(), setisplay(false);
+              //  setisplay(true);
             }}
             onEnd={() => {
               sethideControles(false);
@@ -115,7 +115,6 @@ const PostStory = ({ navigation, route }) => {
             }}
             resizeMode={'cover'}
             style={{ height: '100%', width: wp(100) }}
-            paused={true}
           />
           {!hideControles && _showIcon()}
         </View>
