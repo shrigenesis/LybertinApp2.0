@@ -56,14 +56,14 @@ class Chat extends React.Component {
     this.snapPoints = [1, 300];
   }
 
-  componentDidMount() { 
+  componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
 
       // setTimeout(() => {
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
-        this.setState({chatList: []})
+        this.setState({ chatList: [] })
         this.fetchChatList(user_id);
       }
       // }, 300);
@@ -150,7 +150,7 @@ class Chat extends React.Component {
       res => {
         if (res.status) {
           let data = res?.conversation?.data;
-          console.log(res.roomId,"-----------------------");
+          console.log(res.roomId, "-----------------------");
           if (res.roomId) {
             Socket.emit('join chat', res.roomId);
           }
@@ -233,7 +233,7 @@ class Chat extends React.Component {
   };
 
   sendFile = async () => {
-    console.log('sendFile');
+    console.log('sendFile::');
     let formData = new FormData();
 
     if (this.state.audioFile != '') {
@@ -261,7 +261,8 @@ class Chat extends React.Component {
       body: formData,
     };
     console.log('sendFile  File', this.state.file);
-    console.log('after config',config, formData);
+    console.log('after config', config, formData);
+    this.setState({ file: undefined })
     APIRequestWithFile1(
       config,
       res => {
@@ -277,6 +278,7 @@ class Chat extends React.Component {
     );
   };
   render() {
+    console.log('=======================', this.state.file);
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -342,7 +344,7 @@ class Chat extends React.Component {
                         }}
                       />
                     )}
-                    <View style={{ marginLeft: wp(3), marginTop: hp(1.5) , width:wp(60)}}>
+                    <View style={{ marginLeft: wp(3), marginTop: hp(1.5), width: wp(60) }}>
                       <Text numberOfLines={1} style={styles.heading} >
                         {this.props?.route?.params?.userName}
                       </Text>
@@ -369,6 +371,67 @@ class Chat extends React.Component {
               title={null}
             />
           </View>
+          
+          {/* <View
+            style={{
+              height: hp(100),
+              width: wp(100),
+              backgroundColor:
+                color.black,
+              zIndex: 99999999,
+              marginTop: -50,
+              display: !this.state.file===undefined? 'block':
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => this.setState({ file: undefined })}
+              style={{
+                position: 'absolute', left: 10, top: 10
+              }}>
+              <Image
+                source={IMAGE.redCancel}
+                style={{
+                  color: color.red,
+                  height: 30,
+                  width: 30,
+                  resizeMode: 'contain',
+                }}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={this.deleteFile}
+              style={{
+                position: 'absolute', right: 20, bottom: 40
+              }}>
+              <Image
+                source={IMAGE.send}
+                style={{
+                  color: color.red,
+                  height: 30,
+                  width: 30,
+                  resizeMode: 'contain',
+                }}
+              />
+            </TouchableOpacity>
+            <View>
+              {this.state.file?.fileType == 'pdf' ? (
+                <Image
+                  source={IMAGE.pdf}
+                  style={{ resizeMode: 'contain', height: 100, width: 100 }}
+                />
+              ) : this.state.file?.fileType == 'photo' || this.state.file?.fileType == 'image' ? (
+                <Image
+                  source={{ uri: this.state.file.uri }}
+                  style={{ resizeMode: 'contain', height: hp(100), width: wp(90) }}
+                />
+              ) : (
+                <Image
+                  source={IMAGE.gallery}
+                  style={{ resizeMode: 'contain', height: 100, width: 1000 }}
+                />
+              )}
+            </View>
+          </View> */}
 
           <View style={{ flex: 1 }}>
             <FlatList
@@ -433,6 +496,7 @@ class Chat extends React.Component {
             />
             {/* <Loader isLoading={this.state.isLoading} type="dots" /> */}
           </View>
+
         </View>
       </SafeAreaView>
     );

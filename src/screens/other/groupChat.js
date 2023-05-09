@@ -272,7 +272,7 @@ class GroupChat extends React.Component {
       method: 'post',
       body: formData,
     };
-
+    this.setState({ file: undefined })
     APIRequestWithFile(
       config,
       res => {
@@ -434,6 +434,9 @@ class GroupChat extends React.Component {
                     }}
                     emojiSelect={v => {
                       this.setState({ message: `${this.state.message}${v}` });
+                    }}
+                    setFile={file => {
+                      this.setState({ file: file });
                     }}
                   />
                 ) : (

@@ -8,7 +8,7 @@ import Animated, { BounceInLeft, FadeOutUp } from 'react-native-reanimated';
 import { color, fontFamily } from '../constant';
 import Toast from 'react-native-toast-message';
 
-const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false }) => {
+const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, Send=()=>{} }) => {
     const [isPlay, setIsPlay] = useState(false);
     const [totalDuration, settotalDuration] = useState(0);
     const [playTime, setplayTime] = useState(0);
@@ -134,7 +134,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false })
                     }
                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Slider
-                            style={{ width: wp(70), marginLeft: wp(5) }}
+                            style={{ width: wp(55), marginLeft: wp(5) }}
                             trackStyle={styles.track}
                             thumbStyle={styles.thumb}
                             minimumTrackTintColor='#31a4db'
@@ -148,6 +148,12 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false })
                             close();
                         }} style={{ paddingLeft: wp(5) }}>
                             <Icon name='times' style={{ fontSize: 20, color: '#000' }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            stopSound();
+                            Send();
+                        }} style={{ paddingLeft: wp(5) }}>
+                            <Icon name='send' style={{ fontSize: 20, color: '#000' }} />
                         </TouchableOpacity>
                     </View>
                 </Animated.View>
