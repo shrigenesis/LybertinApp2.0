@@ -15,7 +15,7 @@ import {
   Platform,
 
 } from 'react-native';
-import { color, fontFamily, IMAGE } from '../constant';
+import { color, fontFamily, fontSize, IMAGE } from '../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -25,7 +25,7 @@ import { Circle, Svg, Line } from 'react-native-svg';
 import { BottomSheetModal, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import { Button, pickImage } from '.';
 import { APIRequest, ApiUrl, IMAGEURL } from '../utils/api';
-import { User } from '../utils/user';
+import { User } from '../utils/user';  
 import { useIsFocused } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
 import Stories from "react-native-stories-media";
@@ -447,10 +447,10 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         isShowBottomSheet={isShowBottomSheet}
         setisShowBottomSheet={setisShowBottomSheet}>
 
-        <View style={{ height: 500 }}>
-          <View style={{ alignSelf: 'center', paddingVertical: hp(1) }}>
+        <View>
+          <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom:10}}>
             <Text style={style.roportHeading}>Report</Text>
-            <Text style={style.subHeading}>Why Are You Reporting This Post?</Text>
+            <Text style={style.subHeading}>Why are you reporting this story?</Text>
           </View>
           <TouchableOpacity
             onPress={() => {
@@ -501,7 +501,13 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
 
               ];
             }}
-            style={style.cardBlock}>
+            style={{
+              paddingRight: wp(7),
+              paddingTop: hp(2),
+              alignItems: 'center',
+              flexDirection: 'row',
+            }}
+            >
             <Text style={style.cardText}>Bullying or harassment</Text>
           </TouchableOpacity>
         </View>
@@ -548,7 +554,7 @@ const style = StyleSheet.create({
     color: color.black,
   },
   cardBlock: {
-    marginLeft: wp(10),
+    // marginLeft: wp(10),
     paddingRight: wp(7),
     paddingVertical: hp(2),
     alignItems: 'center',
@@ -616,6 +622,12 @@ const style = StyleSheet.create({
     color: color.white,
     width: 70,
   },
+  roportHeading:{
+    fontSize: fontSize.size15,
+    fontFamily: fontFamily.Bold,
+    textAlign: 'center',
+    marginBottom: 10,
+  }
 
 });
 export default StoryList;

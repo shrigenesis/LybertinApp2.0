@@ -196,22 +196,22 @@ export default class TicketDetails extends Component {
         <Loader type="dots" isLoading={this.state.isLoading} />
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title={'Ticket Details'}
-          RightIcon={() => (
-            <TouchableOpacity
-              onPress={() => {
-                this.reportBottomSheetRef?.current?.present();
-              }}>
-              <Image
-                source={IMAGE.report}
-                style={{
-                  height: 20,
-                  width: 20,
-                  resizeMode: 'contain',
-                  marginRight: 10,
-                }}
-              />
-            </TouchableOpacity>
-          )}
+          // RightIcon={() => (
+          //   <TouchableOpacity
+          //     onPress={() => {
+          //       this.reportBottomSheetRef?.current?.present();
+          //     }}>
+          //     <Image
+          //       source={IMAGE.report}
+          //       style={{
+          //         height: 20,
+          //         width: 20,
+          //         resizeMode: 'contain',
+          //         marginRight: 10,
+          //       }}
+          //     />
+          //   </TouchableOpacity>
+          // )}
         />
 
         <ScrollView style={styles.container}>
