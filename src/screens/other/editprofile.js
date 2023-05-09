@@ -49,6 +49,7 @@ import {Overlay} from 'react-native-elements';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import DatePicker from 'react-native-date-picker';
 
 
 export const RenderBottomSheet = memo(
