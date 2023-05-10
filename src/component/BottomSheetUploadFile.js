@@ -1,8 +1,8 @@
 import React from 'react'
-import { Pressable, SafeAreaView, TouchableHighlight } from 'react-native'
+import { Pressable, SafeAreaView, TouchableHighlight, Platform } from 'react-native'
 import { View, StyleSheet, Text } from 'react-native'
 import { BottomSheet, Button } from 'react-native-elements'
-import { color } from '../constant'
+import { color, fontFamily, fontSize } from '../constant'
 import { Divider } from 'react-native-elements'
 import LottieView from 'lottie-react-native';
 import {
@@ -52,7 +52,44 @@ const BottomSheetUploadFile = (props) => {
     )
 }
 
-export default BottomSheetUploadFile
+const BottomSheetUploadFileStyle = StyleSheet.create({
+    roportHeading: {
+        fontSize: fontSize.size15,
+        fontFamily: fontFamily.Bold,
+        textAlign: 'center',
+        marginBottom: 10,
+    },
+    subHeading: {
+        fontSize: 12,
+        fontFamily: fontFamily.Regular,
+        color: color.textGray2,
+        textAlign: 'center',
+    },
+    cardBlock: {
+        // marginLeft: wp(10),
+        paddingRight: wp(7),
+        paddingVertical: hp(2),
+        alignItems: 'center',
+        flexDirection: 'row',
+        borderBottomWidth: 0.5,
+        borderColor: color.borderGray,
+    },
+    icon: {
+        resizeMode: 'contain',
+        height: 22,
+        width: 22,
+        tintColor: color.btnBlue,
+    },
+    cardText: {
+        paddingLeft: wp(5),
+        fontSize: Platform.OS === 'ios' ? 15 : 13,
+        fontFamily: fontFamily.Regular,
+        color: color.black,
+    },
+})
+
+
+export  { BottomSheetUploadFile , BottomSheetUploadFileStyle};
 
 const styles = StyleSheet.create({
     outerContainer: {

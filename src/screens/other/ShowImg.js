@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect, useRef} from 'react';
+import React, { useState, memo, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -12,21 +12,21 @@ import {
   PanResponder,
   Dimensions,
 } from 'react-native';
-import {color, fontFamily} from '../../constant/';
+import { color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Header, Loader} from './../../component/';
+import { Header, Loader } from './../../component/';
 import IMAGE from '../../constant/image';
-import {useIsFocused} from '@react-navigation/native';
-import {APIRequestWithFile, ApiUrl, IMAGEURL} from './../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
+import { APIRequestWithFile, ApiUrl, IMAGEURL } from './../../utils/api';
 import Video from 'react-native-video';
-import Animated, {ZoomIn, FadeOut, FadeIn} from 'react-native-reanimated';
-import {Download} from './../../utils/download';
+import Animated, { ZoomIn, FadeOut, FadeIn } from 'react-native-reanimated';
+import { Download } from './../../utils/download';
 import Pdf from 'react-native-pdf';
 
-const ShowImg = ({navigation, route}) => {
+const ShowImg = ({ navigation, route }) => {
   const [appReady, setAppReady] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [isplay, setisplay] = useState(false);
@@ -49,7 +49,7 @@ const ShowImg = ({navigation, route}) => {
   const renderStoryItem = () => {
     let file = route?.params?.file;
     let fileType = route?.params?.fileType;
-    console.log(`${IMAGEURL}/${file}`,'file::::::::fileType::::::::::::')
+    console.log(`${IMAGEURL}/${file}`, 'file::::::::fileType::::::::::::')
     const source = {
       uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf',
       cache: true,
@@ -61,7 +61,7 @@ const ShowImg = ({navigation, route}) => {
             setisLoading(false);
           }}
           onLoadStart={() => setisLoading(true)}
-          source={{uri: `${IMAGEURL}/${file}`}}
+          source={{ uri: `${IMAGEURL}/${file}` }}
           style={style.storyImage}
         />
       );
@@ -110,15 +110,15 @@ const ShowImg = ({navigation, route}) => {
               bufferForPlaybackAfterRebufferMs: 5000,
             }}
             // onError={this.onVideoError}
-            onAudioBecomingNoisy={()=>    setPaused(true)}
-            onAudioFocusChanged={(event)=>{setPaused(!event.hasAudioFocus)}}
+            onAudioBecomingNoisy={() => setPaused(true)}
+            onAudioFocusChanged={(event) => { setPaused(!event.hasAudioFocus) }}
             // onAudioFocusChanged={this.onAudioFocusChanged}
             repeat={false}
 
-            source={{uri: `${IMAGEURL}/${file}`}}
+            source={{ uri: `${IMAGEURL}/${file}` }}
             ref={videoRef}
             paused={paused}
-            onBuffer={({isBuffering}) => {
+            onBuffer={({ isBuffering }) => {
               setisLoading(isBuffering == 1);
             }}
             // onError={err => console.log(err)}
@@ -138,7 +138,7 @@ const ShowImg = ({navigation, route}) => {
               setisplay(false);
             }}
             resizeMode={'cover'}
-            style={{height: '100%', width: wp(100)}}
+            style={{ height: '100%', width: wp(100) }}
           />
           {!hideControles && !isLoading && _showIcon()}
         </View>
@@ -153,7 +153,8 @@ const ShowImg = ({navigation, route}) => {
             marginTop: 25,
           }}>
           <Pdf
-            trustAllCerts={false}
+            // ref={(pdf) => { this.pdf = pdf; }}
+            // trustAllCerts={false}
             source={{
               uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf',
             }}
@@ -193,7 +194,7 @@ const ShowImg = ({navigation, route}) => {
         <TouchableOpacity
           onPress={() => {
             sethideControles(false);
-            videoRef?.current?.setNativeProps({paused: true});
+            videoRef?.current?.setNativeProps({ paused: true });
             setisplay(false);
           }}
           style={{
@@ -216,7 +217,7 @@ const ShowImg = ({navigation, route}) => {
           onPress={() => {
 
             _hideControles();
-            videoRef?.current?.setNativeProps({paused: false});
+            videoRef?.current?.setNativeProps({ paused: false });
 
             setisplay(true);
           }}
@@ -251,47 +252,38 @@ const ShowImg = ({navigation, route}) => {
             <View
               style={{
                 width: wp(100),
-                justifyContent: 'flex-end',
-                paddingRight: wp(16),
+                justifyContent: 'space-between',
+                paddingHorizontal: wp(7),
                 flexDirection: 'row',
-                paddingTop: hp(3),
+                paddingVertical: hp(2),
+                backgroundColor: 'rgba(52, 52, 52, 0.4)'
               }}>
-              <TouchableOpacity onPress={() => Action()}>
-                <Image
-                  source={IMAGE.download}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    tintColor: fileType == 'pdf' ? '#000000' : '#fff',
-                    resizeMode: 'contain',
-                    right: wp(10),
-                  }}
-                />
-              </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => {
-                  videoRef?.current?.setNativeProps({paused: true});
+                  videoRef?.current?.setNativeProps({ paused: true });
                   videoRef?.current?.seek(0);
                   // setIsPlaying(true)
                   setisplay(false);
                   setPaused(true)
                   sethideControles(false);
-                  setTimeout(() => {
-                    // if(route?.params?.iscoming===true){
-                    //   navigation.navigate('Media')
-                    // }else {
-                      navigation.goBack()
-                    // }
-
-                  }, 1000);
+                    navigation.goBack()
                 }}>
                 <Image
-                  source={IMAGE.cancel}
+                  source={IMAGE.close}
                   style={{
-                    height: 20,
-                    width: 20,
+                    height: 30,
+                    width: 30,
                     resizeMode: 'contain',
-                    tintColor: fileType == 'pdf' ? '#000000' : '#fff',
+                  }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => Action()}>
+                <Image
+                  source={IMAGE.download}
+                  style={{
+                    height: 30,
+                    width: 30,
+                    resizeMode: 'contain',
                   }}
                 />
               </TouchableOpacity>
@@ -304,7 +296,7 @@ const ShowImg = ({navigation, route}) => {
               style={style.storyView}>
               {renderStoryItem()}
               {isLoading && (
-                <View style={{position: 'absolute', top: hp(40), left: wp(40)}}>
+                <View style={{ position: 'absolute', top: hp(40), left: wp(40) }}>
                   <Loader isLoading={isLoading} />
                 </View>
               )}
@@ -319,8 +311,10 @@ const ShowImg = ({navigation, route}) => {
               <Pdf
                 trustAllCerts={false}
                 source={{
-                  uri: `${IMAGEURL}${file}`,
+                  uri: `${IMAGEURL}/${file}`,
+                  cache: true
                 }}
+                // source={{uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true}}
                 style={{
                   width: Dimensions.get('window').width,
                   height: Dimensions.get('window').height,
@@ -338,12 +332,11 @@ const style = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: wp(3),
     justifyContent: 'space-between',
     position: 'absolute',
     zIndex: 999,
     width: wp(100),
-    top: hp(2),
+    // top: hp(2),
   },
   icon: {
     tintColor: 'rgba(255, 255, 255, 0.4)',
