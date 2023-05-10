@@ -55,7 +55,7 @@ const PostStory = ({ navigation, route }) => {
   //   return;
   // }, [isFocus]);
 
-  const postStory = () => {
+  const postStory = () => { 
     console.log('message', message);
     setisLoading(true);
     let formdata = new FormData();
