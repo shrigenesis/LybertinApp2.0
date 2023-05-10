@@ -52,7 +52,8 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
         
     setTimeout(()=>{
       setisFirstLoad(true)
-    },100)
+    }, Platform.OS==='ios'? 1000: 100)
+
     if (story.type === 'image') {
       if(Platform.OS==='ios'){
         setLoaded(true);
