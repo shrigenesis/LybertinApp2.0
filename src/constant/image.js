@@ -173,6 +173,9 @@ const IMAGE = {
   booking:  require('./../assets/images/booking.png'),
   salary:  require('./../assets/images/salary.png'),
   category:  require('./../assets/images/category.png'),
+  right:  require('./../assets/images/right.png'),
+  close:  require('./../assets/images/close.png'),
+  videoSend:  require('./../assets/images/videoSend.png'),
 };
 
 export default IMAGE;

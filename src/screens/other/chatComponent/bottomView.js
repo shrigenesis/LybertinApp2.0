@@ -11,6 +11,7 @@ import {
   Platform,
   Keyboard,
   Text,
+  Dimensions
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -34,7 +35,8 @@ import { requestPermission } from './../../../component/documentpicker';
 import { pickImage } from './../../../component/';
 import { IMAGEURL } from '../../../utils/api';
 import VideoPlayer from '../VideoPlayer';
-
+import Video from 'react-native-video';
+import Pdf from 'react-native-pdf';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export const BottomView = memo(props => {
@@ -215,13 +217,21 @@ export const BottomView = memo(props => {
             entering={SlideInLeft}
             exiting={SlideOutDown}
             style={styles.fileView}>
+            <View style={{
+              width:wp(100),
+             height:50, 
+             position:'absolute',
+             top:0,
+             zIndex:999,
+              backgroundColor:'rgba(52, 52, 52, 0.4)'
+              }}> 
               <TouchableOpacity
                 onPress={deleteFile}
                 style={{
-                  position: 'absolute', left: 15, top:15 ,  zIndex:999
+                  position: 'absolute', left: 15, top: 10, zIndex: 999
                 }}>
                 <Image
-                  source={IMAGE.redCancel}
+                  source={IMAGE.close}
                   style={{
                     color: color.red,
                     height: 30,
@@ -231,12 +241,12 @@ export const BottomView = memo(props => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={()=>sendMessage()}
+                onPress={() => sendMessage()}
                 style={{
-                   position: 'absolute', right: 10 , bottom:100, zIndex:999
+                  position: 'absolute', right: 10, top: 10, zIndex: 999
                 }}>
                 <Image
-                  source={IMAGE.send}
+                  source={IMAGE.right}
                   style={{
                     color: color.red,
                     height: 30,
@@ -245,12 +255,27 @@ export const BottomView = memo(props => {
                   }}
                 />
               </TouchableOpacity>
-            <View style={{alignItems:'center'}}>
+            </View>
+            <View style={{ alignItems: 'center' }}>
               {file?.fileType == 'pdf' ? (
-                <Image
-                  source={IMAGE.pdf}
-                  style={{ resizeMode: 'contain', height: 100, width: 100, marginTop: hp(30) }}
-                />
+                <View
+                  style={{
+                    justifyContent: 'flex-start',
+                    alignItems: 'center',
+                  }}>
+                  <Pdf
+                    trustAllCerts={false}
+                    source={{
+                      uri: `${file?.uri}`,
+                      cache: true
+                    }}
+                    // source={{uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true}}
+                    style={{
+                      width: Dimensions.get('window').width,
+                      height: Dimensions.get('window').height,
+                    }}
+                  />
+                </View>
               ) : null}
               {file?.fileType == 'photo' || file?.fileType == 'image' ? (
                 <Image
@@ -258,12 +283,13 @@ export const BottomView = memo(props => {
                   style={{ resizeMode: 'contain', height: hp(100), width: wp(100) }}
                 />
               ) : null}
-              {file?.fileType == 'video' || file?.fileType === "video/mp4"? (
-                <Image
-                  source={IMAGE.video}
-                  style={{ resizeMode: 'contain', height: 100, width: 1000 , marginTop: hp(30)}}
+              {file?.fileType == 'video' || file?.fileType === "video/mp4" ? (
+                < Video
+                  source={{ uri: file?.uri }}
+                  resizeMode={'contain'}
+                  style={{ height: '100%', width: wp(100) }}
                 />
-              ): null}
+              ) : null}
             </View>
           </Animated.View>
         )}
@@ -403,7 +429,7 @@ export const BottomView = memo(props => {
                       ? pickImage(
                         'camera',
                         res => {
-                          setFile(res); 
+                          setFile(res);
                         },
                         'image',
                       )
@@ -443,12 +469,12 @@ const styles = StyleSheet.create({
     right: 5,
   },
   fileView: {
-    width:wp(100),
-    height: hp(100),
+    width: wp(100),
+    height: hp(110),
     // marginBottom: hp(7),
-    // marginTop: hp(1),
+    marginTop: -10,
     // left: wp(4),
-    backgroundColor:'#000'
+    backgroundColor: '#000'
   },
   recordingTimer: {
     fontFamily: fontFamily.Thin,

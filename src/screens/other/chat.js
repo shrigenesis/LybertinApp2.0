@@ -8,8 +8,10 @@ import {
   TouchableOpacity,
   Keyboard,
   SafeAreaView,
+  BackHandler,
+  Alert,
 } from 'react-native';
-import { Header, Loader } from './../../component/';
+import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -29,8 +31,8 @@ import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
 import io from 'socket.io-client';
 import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
-
 import { Divider } from 'react-native-elements';
+import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
 
 const Socket = io.connect(socketUrl);
 
@@ -49,7 +51,8 @@ class Chat extends React.Component {
       roomId: '',
       isOnline: '',
       per_page_count: 0,
-      per_page: 0
+      per_page: 0,
+      isShowBottomSheet: false
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -277,6 +280,18 @@ class Chat extends React.Component {
       },
     );
   };
+
+  // hide Bottom sheet 
+  setisShowBottomSheet = () => {
+    this.setState({ isShowBottomSheet: false })
+  }
+  // Update file from bottom sheet 
+  UpdateFile = (file) => {
+    this.setState({ file: file, isShowBottomSheet: false });
+  }
+
+
+
   render() {
     console.log('=======================', this.state.file);
     return (
@@ -371,7 +386,7 @@ class Chat extends React.Component {
               title={null}
             />
           </View>
-          
+
           {/* <View
             style={{
               height: hp(100),
@@ -475,7 +490,8 @@ class Chat extends React.Component {
                 addPress={() => {
                   console.log('addPress');
                   Keyboard.dismiss();
-                  this.bottomSheetRef?.current?.expand();
+                  // this.bottomSheetRef?.current?.expand();
+                  this.setState({ isShowBottomSheet: true })
                 }}
                 emojiSelect={v => {
                   this.setState({ message: `${this.state.message}${v}` });
@@ -485,7 +501,100 @@ class Chat extends React.Component {
                 }}
               />
             )}
-            <RenderBottomSheet
+
+
+            <BottomSheetUploadFile
+              cancelBtn={{
+                color: color.lightGray,
+                title: 'Cancel',
+                textColor: color.btnBlue,
+              }}
+              isShowBottomSheet={this.state.isShowBottomSheet}
+              setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}>
+
+              <View>
+                {/* <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
+                  <Text style={BottomSheetUploadFileStyle.roportHeading}>Add Story</Text>
+                  <Text style={BottomSheetUploadFileStyle.subHeading}>Post Photo Video To Your Story</Text>
+                </View> */}
+                <View>
+                  <TouchableOpacity
+                    onPress={() =>
+                      pickImage(
+                        'camera',
+                        res => {
+                          // file(res);
+                          this.UpdateFile(res)
+                        },
+                        'photo',
+                      )
+                    }
+                    style={BottomSheetUploadFileStyle.cardBlock}>
+                    <Image source={IMAGE.camera} style={BottomSheetUploadFileStyle.icon} />
+                    <Text style={BottomSheetUploadFileStyle.cardText}>Take Photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      pickImage(
+                        'image',
+                        res => {
+                          this.UpdateFile(res)
+                        },
+                        'photo',
+                      )
+                    }
+                    style={BottomSheetUploadFileStyle.cardBlock}>
+                    <Image source={IMAGE.camera} style={BottomSheetUploadFileStyle.icon} />
+                    <Text style={BottomSheetUploadFileStyle.cardText}>Select Photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      pickImage(
+                        'camera',
+                        res => {
+                          this.UpdateFile(res)
+                        },
+                        'video',
+                      )
+                    }
+                    style={BottomSheetUploadFileStyle.cardBlock}>
+                    <Image source={IMAGE.video} style={BottomSheetUploadFileStyle.icon} />
+                    <Text style={BottomSheetUploadFileStyle.cardText}>Take Video</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      pickImage(
+                        'image',
+                        res => {
+                          this.UpdateFile(res)
+                        },
+                        'video',
+                      )
+                    }
+                    style={BottomSheetUploadFileStyle.cardBlock}>
+                    <Image source={IMAGE.video_add} style={BottomSheetUploadFileStyle.icon} />
+                    <Text style={BottomSheetUploadFileStyle.cardText}>Select Video</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() =>
+                      pickDocument(res => {
+                        this.UpdateFile(res)
+                      })
+                    }
+                    style={BottomSheetUploadFileStyle.cardBlock}>
+                    <Image source={IMAGE.note} style={BottomSheetUploadFileStyle.icon} />
+                    <Text style={BottomSheetUploadFileStyle.cardText}>Document</Text>
+                  </TouchableOpacity>
+
+                </View>
+
+              </View>
+
+            </BottomSheetUploadFile>
+
+
+
+            {/* <RenderBottomSheet
               file={file => {
                 this.setState({ file: file });
                 this.bottomSheetRef?.current?.close();
@@ -493,7 +602,7 @@ class Chat extends React.Component {
               sendFile={this.sendFile}
               snapPoints={this.snapPoints}
               bottomSheetRef={this.bottomSheetRef}
-            />
+            /> */}
             {/* <Loader isLoading={this.state.isLoading} type="dots" /> */}
           </View>
 

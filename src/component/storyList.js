@@ -31,8 +31,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import BottomSheetWebview from './BottomSheetWebview';
 import Stories from './Story';
-import BottomSheetUploadFile from './BottomSheetUploadFile';
-import BottomSheetMarketplace from './BottomSheetMarketplace';
+import {BottomSheetUploadFile} from './BottomSheetUploadFile';
 
 const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [text, settext] = useState([]);
