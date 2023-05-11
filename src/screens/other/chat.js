@@ -33,6 +33,7 @@ import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
 import { Divider } from 'react-native-elements';
 import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
+import AudioContextProvider from '../../context/AudioContext';
 
 const Socket = io.connect(socketUrl);
 
@@ -449,58 +450,62 @@ class Chat extends React.Component {
           </View> */}
 
           <View style={{ flex: 1 }}>
-            <FlatList
-              ref={this.chatListRef}
-              data={this.state.chatList}
-              keyExtractor={item => String(item.id)}
-              inverted={true}
-              onEndReached={this.onScrollHandler}
-              onEndThreshold={1}
-              renderItem={({ item, index }) => (
-                <ChatItem
-                  onImagePress={files =>
-                    this.props.navigation.navigate('ShowImg', {
-                      file: files?.file,
-                      fileType: files?.fileType,
-                    })
+            <AudioContextProvider>
+              <FlatList
+                ref={this.chatListRef}
+                data={this.state.chatList}
+                keyExtractor={item => String(item.id)}
+                inverted={true}
+                onEndReached={this.onScrollHandler}
+                onEndThreshold={1}
+                renderItem={({ item, index }) => (
+                  <ChatItem
+                    onImagePress={files =>
+                      this.props.navigation.navigate('ShowImg', {
+                        file: files?.file,
+                        fileType: files?.fileType,
+                      })
+                    }
+                    user_id={this.props?.route?.params?.user_id}
+                    avatar={this.props?.route?.params?.avatar}
+                    item={item}
+                    index={index}
+                  />
+                )}
+              />
+
+              {this.state.appReady && (
+                <BottomView
+                  message={this.state.message}
+                  file={this.state.file}
+                  audioFile={file => this.setState({ audioFile: file })}
+                  deleteFile={() => this.setState({ file: undefined })}
+                  sendMessage={
+                    this.state.file || this.state.audioFile != ''
+                      ? this.sendFile
+                      : this.sendMessage
                   }
-                  user_id={this.props?.route?.params?.user_id}
-                  avatar={this.props?.route?.params?.avatar}
-                  item={item}
-                  index={index}
+                  textChange={v => {
+                    this.setState({ message: v });
+                    this.onTyping(v != '');
+                  }}
+                  inputFocus={() => this.bottomSheetRef?.current?.close()}
+                  addPress={() => {
+                    console.log('addPress');
+                    Keyboard.dismiss();
+                    // this.bottomSheetRef?.current?.expand();
+                    this.setState({ isShowBottomSheet: true })
+                  }}
+                  emojiSelect={v => {
+                    this.setState({ message: `${this.state.message}${v}` });
+                  }}
+                  setFile={file => {
+                    this.setState({ file: file });
+                  }}
                 />
               )}
-            />
-            {this.state.appReady && (
-              <BottomView
-                message={this.state.message}
-                file={this.state.file}
-                audioFile={file => this.setState({ audioFile: file })}
-                deleteFile={() => this.setState({ file: undefined })}
-                sendMessage={
-                  this.state.file || this.state.audioFile != ''
-                    ? this.sendFile
-                    : this.sendMessage
-                }
-                textChange={v => {
-                  this.setState({ message: v });
-                  this.onTyping(v != '');
-                }}
-                inputFocus={() => this.bottomSheetRef?.current?.close()}
-                addPress={() => {
-                  console.log('addPress');
-                  Keyboard.dismiss();
-                  // this.bottomSheetRef?.current?.expand();
-                  this.setState({ isShowBottomSheet: true })
-                }}
-                emojiSelect={v => {
-                  this.setState({ message: `${this.state.message}${v}` });
-                }}
-                setFile={file => {
-                  this.setState({ file: file });
-                }}
-              />
-            )}
+
+            </AudioContextProvider>
 
 
             <BottomSheetUploadFile

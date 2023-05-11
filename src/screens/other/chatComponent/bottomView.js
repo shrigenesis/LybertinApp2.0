@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { memo, useEffect, useState } from 'react';
+import React, { memo, useEffect, useState, useContext } from 'react';
 import {
   View,
   StyleSheet,
@@ -17,6 +17,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { IMAGE, color, fontFamily, fontSize } from '../../../constant/';
 import SoundPlayer from './../../../component/soundPlayer';
 import Animated, {
@@ -28,8 +29,8 @@ import Animated, {
   FadeOut,
   SlideInDown,
 } from 'react-native-reanimated';
+import Slider from 'react-native-slider'
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { EmojiKeyboard } from './../../../component/';
 import { requestPermission } from './../../../component/documentpicker';
 import { pickImage } from './../../../component/';
@@ -37,6 +38,8 @@ import { IMAGEURL } from '../../../utils/api';
 import VideoPlayer from '../VideoPlayer';
 import Video from 'react-native-video';
 import Pdf from 'react-native-pdf';
+import { AudioContext } from '../../../context/AudioContext';
+import moment from 'moment';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export const BottomView = memo(props => {
@@ -58,6 +61,7 @@ export const BottomView = memo(props => {
     replyOn,
     removeReplyBox = () => { },
   } = props;
+  const audio = useContext(AudioContext);
 
   useEffect(() => {
     return () => {
@@ -184,12 +188,10 @@ export const BottomView = memo(props => {
     // }
   }, [file])
 
-  return (
-    <KeyboardAvoidingView
-      keyboardVerticalOffset={'90'}
-      contentInsetAdjustmentBehavior="automatic"
-      behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-      {!isRecordingStart && (
+  const Audio = () => {
+    if (recordingFile === audio?.audio) {
+      console.log('if');
+      return (
         <SoundPlayer
           close={() => {
             setRecordingFile('');
@@ -202,6 +204,72 @@ export const BottomView = memo(props => {
           }}
           recordingFile={recordingFile}
         />
+      )
+    } else {
+      console.log('else');
+      return (
+        <TouchableOpacity
+          activeOpacity={1}
+          onPress={() => audio?.setaudio(recordingFile)}>
+          <View
+            style={{
+              alignItems: 'center',
+              height: hp(10),
+              flexDirection: 'row',
+              paddingHorizontal: wp(2),
+            }}>
+            <View style={styles.playpause} >
+              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Slider
+                style={{ width: wp(55), marginLeft: wp(5) }}
+                trackStyle={styles.track}
+                thumbStyle={styles.thumb}
+                minimumTrackTintColor='#681F84'
+                thumbTouchSize={{ width: 50, height: 40 }}
+                minimumValue={0}
+                value={0}
+                maximumValue={10}
+              />
+              <TouchableOpacity onPress={() => {
+                setRecordingFile('');
+                onStopRecord();
+              }} style={{ paddingLeft: wp(5) }}>
+                <Icon name='times' style={{ fontSize: 20, color: '#000' }} />
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {
+                sendMessage();
+                setRecordingFile('');
+                onStopRecord();
+              }} style={{ paddingLeft: wp(5) }}>
+                <Icon name='send' style={{ fontSize: 20, color: '#681F84' }} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          {/* <Text>Click</Text> */}
+        </TouchableOpacity>
+      )
+    }
+  }
+
+  return (
+    <KeyboardAvoidingView
+      keyboardVerticalOffset={'90'}
+      contentInsetAdjustmentBehavior="automatic"
+      behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+      {(!isRecordingStart && recordingFile) && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            zIndex: 99,
+            backgroundColor: '#F6F6F6',
+            width: wp(100)
+          }}
+        >
+          {Audio()}
+        </View>
       )}
       <View
         style={{
@@ -218,13 +286,13 @@ export const BottomView = memo(props => {
             exiting={SlideOutDown}
             style={styles.fileView}>
             <View style={{
-              width:wp(100),
-             height:50, 
-             position:'absolute',
-             top:0,
-             zIndex:999,
-              backgroundColor:'rgba(52, 52, 52, 0.4)'
-              }}> 
+              width: wp(100),
+              height: 50,
+              position: 'absolute',
+              top: 0,
+              zIndex: 999,
+              backgroundColor: 'rgba(52, 52, 52, 0.4)'
+            }}>
               <TouchableOpacity
                 onPress={deleteFile}
                 style={{
@@ -337,56 +405,58 @@ export const BottomView = memo(props => {
               </TouchableOpacity>
             )}
             <View style={{ flexDirection: 'row' }}>
-              <TouchableOpacity
-                disabled={group_type == 2}
-                onPress={() => {
-                  !isRecordingStart && setshowEmojiKeyboard(!showEmojiKeyboard);
-                  Keyboard.dismiss();
-                }}
-                style={{
-                  position: 'absolute',
-                  zIndex: 99,
-                  left: wp(5),
-                  top: Platform.OS === 'ios' ? 9 : hp(1.5),
-                }}>
-                <Image
-                  source={IMAGE.smile}
-                  style={{ resizeMode: 'contain', height: 18, width: 18, tintColor: color.btnBlue }}
-                />
-              </TouchableOpacity>
-              <TextInput
-                editable={group_type == 1}
-                // multiline={true}
-                value={message}
-                onFocus={() => {
-                  setshowEmojiKeyboard(false);
-                  inputFocus();
-                }}
-                onContentSizeChange={event => {
-                  setheight(event.nativeEvent.contentSize.height);
-                }}
-                onChangeText={textChange}
-                placeholder={'Write a reply....'}
-                textAlignVertical={'center'}
-                paddingHorizontal={40}
-                placeholderTextColor={color.textGray2}
-                style={[styles.msgSendBox, { height: Math.max(35, height) }]}
-              />
-
-              <TouchableOpacity
-                disabled={disable}
-                onPress={() => {
-                  StopMultiplePress()
-                  !isRecordingStart && sendMessage(), setRecordingFile('');
-                }}
-                style={styles.sendbtn}>
-                {!isRecordingStart && (
-                  <Image
-                    source={IMAGE.send}
-                    style={{ resizeMode: 'contain', height: 18, width: 18, tintColor: color.btnBlue }}
+              {!isRecordingStart &&
+                <>
+                  <TouchableOpacity
+                    disabled={group_type == 2}
+                    onPress={() => {
+                      !isRecordingStart && setshowEmojiKeyboard(!showEmojiKeyboard);
+                      Keyboard.dismiss();
+                    }}
+                    style={{
+                      position: 'absolute',
+                      zIndex: 99,
+                      left: wp(5),
+                      top: Platform.OS === 'ios' ? 9 : hp(1.5),
+                    }}>
+                    <Image
+                      source={IMAGE.smile}
+                      style={{ resizeMode: 'contain', height: 18, width: 18, tintColor: color.btnBlue }}
+                    />
+                  </TouchableOpacity>
+                  <TextInput
+                    editable={group_type == 1}
+                    // multiline={true}
+                    value={message}
+                    onFocus={() => {
+                      setshowEmojiKeyboard(false);
+                      inputFocus();
+                    }}
+                    onContentSizeChange={event => {
+                      setheight(event.nativeEvent.contentSize.height);
+                    }}
+                    onChangeText={textChange}
+                    placeholder={'Write a reply....'}
+                    textAlignVertical={'center'}
+                    paddingHorizontal={40}
+                    placeholderTextColor={color.textGray2}
+                    style={[styles.msgSendBox, { height: Math.max(35, height) }]}
                   />
-                )}
-              </TouchableOpacity>
+                  <TouchableOpacity
+                    disabled={disable}
+                    onPress={() => {
+                      StopMultiplePress()
+                      !isRecordingStart && sendMessage(), setRecordingFile('');
+                    }}
+                    style={styles.sendbtn}>
+                    {!isRecordingStart && (
+                      <Image
+                        source={IMAGE.send}
+                        style={{ resizeMode: 'contain', height: 18, width: 18, tintColor: color.btnBlue }}
+                      />
+                    )}
+                  </TouchableOpacity>
+                </>}
             </View>
             <View
               style={{
@@ -399,7 +469,7 @@ export const BottomView = memo(props => {
                 onPress={() => {
                   pickCamera == 1
                     ? isRecordingStart
-                      ? onStopRecord()
+                      ? console.log('onStopRecord()')
                       : onStartRecord()
                     : console.log('kkkkkk');
                 }}>
@@ -413,15 +483,45 @@ export const BottomView = memo(props => {
                     tintColor: color.btnBlue
                   }}
                 />
-                {isRecordingStart && (
+              </TouchableOpacity>
+              {isRecordingStart && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: wp(15),
+                    width: wp(75),
+                    flexDirection: 'row',
+                    justifyContent: 'space-between'
+                  }}
+                >
                   <Animated.Text
                     entering={FadeInLeft}
                     exiting={SlideOutRight}
-                    style={styles.recordingTimer}>
-                    {recordingTime}
+                  // style={styles.recordingTimer}
+                  >
+                    {moment.utc(recordingTime * 1000).format('mm:ss')}
                   </Animated.Text>
-                )}
-              </TouchableOpacity>
+                  <Text >Recording ...</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      pickCamera == 1
+                        ? isRecordingStart
+                          ? onStopRecord()
+                          : onStartRecord()
+                        : console.log('kkkkkk');
+                    }}>
+                    <Image
+                      source={IMAGE.stop}
+                      style={{
+                        resizeMode: 'contain',
+                        height: 25,
+                        width: 25,
+                        // tintColor: color.btnBlue,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+              )}
               {!isRecordingStart && (
                 <TouchableOpacity
                   onPress={() => {
@@ -479,10 +579,11 @@ const styles = StyleSheet.create({
   recordingTimer: {
     fontFamily: fontFamily.Thin,
     color: '#000',
-    fontSize: 10,
+    fontSize: fontSize.size11,
     position: 'absolute',
-    right: -wp(1),
-    bottom: -hp(1),
+    left: 40,
+    bottom: 5,
+    width: 100
   },
 
   msgSendViewWrapper: {
@@ -543,5 +644,25 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontFamily: fontFamily.Regular,
     fontSize: fontSize.size12
-  }
+  },
+  playpause: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: wp(10),
+    height: hp(4)
+  },
+  track: {
+    height: 3,
+    backgroundColor: '#Fff',
+  },
+  thumb: {
+    width: 10,
+    height: 10,
+    backgroundColor: '#681F84',
+    borderRadius: 10,
+    shadowColor: '#31a4db',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 2,
+    shadowOpacity: 1,
+  },
 });

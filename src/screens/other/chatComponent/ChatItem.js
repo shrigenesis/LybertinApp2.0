@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef } from "react";
+import React, { memo, useContext, useEffect, useRef, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -6,6 +6,7 @@ import {
   Text,
   TouchableOpacity,
   Platform,
+  TouchableHighlight,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -17,6 +18,8 @@ import SoundPlayer from './../../../component/soundPlayer';
 import { IMAGEURL } from '../../../utils/api';
 import { Download } from './../../../utils/download';
 import Video from 'react-native-video';
+import Slider from 'react-native-slider'
+import AudioContextProvider, { AudioContext } from "../../../context/AudioContext";
 const getTime = time => {
   if (time) {
     return moment(time).format('hh:mm');
@@ -40,12 +43,67 @@ const _getStyleSelector = (item, direction) => {
 };
 const _renderMessage = (item, style) => {
   const videoRef = useRef();
+  const audio = useContext(AudioContext);
+
 
   useEffect(() => {
     videoRef?.current?.setNativeProps({
       paused: true,
     });
   }, [])
+
+
+  const Audio = () => {
+
+    if (`${IMAGEURL}/${item.file_name}` === audio?.audio) {
+      return (
+        <SoundPlayer
+          forChat={true}
+          recordingFile={`${IMAGEURL}/${item.file_name}`}
+        />
+      )
+    } else {
+      return (
+        <TouchableOpacity 
+        activeOpacity={1}
+        onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
+          <View
+            style={{
+              // backgroundColor: color.borderGray,
+              alignItems: 'center',
+              marginTop: hp(2),
+              height: hp(4),
+              flexDirection: 'row',
+              paddingRight: wp(5),
+              marginHorizontal: wp(2),
+              padding: 10,
+            }}>
+            <View style={styles.playpause} >
+              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+            </View>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Slider
+                style={{ width: wp(28), marginLeft: wp(3) }}
+                trackStyle={styles.track}
+                thumbStyle={styles.thumb}
+                minimumTrackTintColor='#681F84'
+                thumbTouchSize={{ width: 50, height: 40 }}
+                minimumValue={0}
+                value={0}
+                maximumValue={10}
+                disabled={true}
+              />
+            </View>
+          </View>
+          {/* <Text>Click</Text> */}
+        </TouchableOpacity>
+      )
+    }
+  }
+
+
+
   switch (item.message_type) {
     case 0:
       return (
@@ -100,10 +158,7 @@ const _renderMessage = (item, style) => {
       return (
         <>
           <View style={{ marginBottom: hp(2) }}>
-            <SoundPlayer
-              forChat={true}
-              recordingFile={`${IMAGEURL}/${item.file_name}`}
-            />
+            {Audio()}
           </View>
           <Text style={styles.leftChatTime}>{getTime(item.created_at)}</Text>
         </>
@@ -444,7 +499,27 @@ const styles = StyleSheet.create({
     width: 40,
     resizeMode: 'contain'
   },
-  
+  playpause: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: wp(10),
+    height: hp(4)
+},
+track: {
+  height: 3,
+  backgroundColor: '#Fff',
+},
+thumb: {
+  width: 10,
+  height: 10,
+  backgroundColor: '#681F84',
+  borderRadius: 10,
+  shadowColor: '#31a4db',
+  shadowOffset: { width: 0, height: 0 },
+  shadowRadius: 2,
+  shadowOpacity: 1,
+},
+
   // replyWrapper:{
   //   width:wp(70),
   //   flexDirection: "row",

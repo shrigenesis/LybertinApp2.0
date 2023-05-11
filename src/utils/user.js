@@ -49,6 +49,13 @@ export class User {
   usertype() {
     return SyncStorage.get('type');
   }
+  setAudio(data) {
+    SyncStorage.set('audio', 'data');
+  }
+
+  getAudio() {
+    return SyncStorage.get('audio');
+  }
   clearAllUserData() {
     SyncStorage.set('userdata', null);
     SyncStorage.set('token', null);

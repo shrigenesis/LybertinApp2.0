@@ -176,6 +176,9 @@ const IMAGE = {
   right:  require('./../assets/images/right.png'),
   close:  require('./../assets/images/close.png'),
   videoSend:  require('./../assets/images/videoSend.png'),
+  playFill:  require('./../assets/images/playFill.png'),
+  pauseFill:  require('./../assets/images/pauseFill.png'),
+  stop:  require('./../assets/images/stop.png'),
 };
 
 export default IMAGE;
