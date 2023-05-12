@@ -11,6 +11,8 @@ import {
   Modal,
   PanResponder,
   Dimensions,
+  StatusBar,
+  Platform,
 } from 'react-native';
 import { color, fontFamily } from '../../constant/';
 import {
@@ -246,6 +248,7 @@ const ShowImg = ({ navigation, route }) => {
         flex: 1,
         backgroundColor: fileType == 'pdf' ? '#fff' : color.black,
       }}>
+        <StatusBar  barStyle={'light-content'} backgroundColor={color.white} />
       {appReady && route?.params?.file && (
         <Animated.View entering={ZoomIn}>
           <View style={style.header}>
@@ -336,7 +339,7 @@ const style = StyleSheet.create({
     position: 'absolute',
     zIndex: 999,
     width: wp(100),
-    // top: hp(2),
+    top: Platform.OS==='ios'? hp(6): 0,
   },
   icon: {
     tintColor: 'rgba(255, 255, 255, 0.4)',
