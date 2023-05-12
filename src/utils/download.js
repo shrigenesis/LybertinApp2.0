@@ -34,6 +34,7 @@ export const Download = async (url, ext) => {
             config(options)
                 .fetch('GET', url)
                 .then(async (res) => {
+                    console.log(res,'--------');
                     resolve(res);
                     if (Platform.OS === "ios") {
                         RNFetchBlob.ios.previewDocument('file://' + res.path());

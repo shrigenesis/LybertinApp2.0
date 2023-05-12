@@ -1,4 +1,4 @@
-import React, {useState, memo, useEffect, useRef} from 'react';
+import React, { useState, memo, useEffect, useRef } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,19 +13,19 @@ import {
   SafeAreaView,
   Dimensions,
 } from 'react-native';
-import {color, fontFamily} from '../../constant/';
+import { color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {Header} from './../../component/';
+import { Header } from './../../component/';
 import IMAGE from '../../constant/image';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
-import Loader from '../../component/loader'; 
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
+import Loader from '../../component/loader';
 import Video from 'react-native-video';
 import NoRecord from './noRecord';
 
-const Media = ({navigation, route}) => {
+const Media = ({ navigation, route }) => {
   const [image, setImage] = useState([]);
   const [docs, setdocs] = useState([]);
   const [mediaType, setMediaType] = useState(1);
@@ -48,12 +48,12 @@ const Media = ({navigation, route}) => {
     // return unsubscribe;
   }, []);
 
-  const RenderImages = ({item}) => {
+  const RenderImages = ({ item }) => {
     return (
       <View style={style.listview}>
         <TouchableOpacity
           activeOpacity={0.8}
-          onPress={() => {}}
+          onPress={() => { }}
           style={style.imgCard}>
           {/* <TouchableOpacity onPress={()=>{}} style={{position:'absolute',top:5,right:-wp(3),zIndex:11}}>
           <Icon name="trash" style={{fontSize:15,color:'red',marginRight:wp(5)}} />
@@ -112,7 +112,7 @@ const Media = ({navigation, route}) => {
                     });
                   }}
                   paused={true}
-                  source={{uri: `${IMAGEURL}/${item?.file_name}`}}
+                  source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
                   resizeMode={'cover'}
                   style={{
                     // borderRadius: 15,
@@ -151,10 +151,19 @@ const Media = ({navigation, route}) => {
     );
   };
 
-  const RenderDocs = ({item, index}) => {
+  const RenderDocs = ({ item, index }) => {
     return (
       <View key={index} style={style.listview}>
-        <TouchableOpacity activeOpacity={0.8} style={style.docCard}>
+        <TouchableOpacity activeOpacity={0.8} style={style.docCard}
+          onPress={
+            file => {
+              console.log('file', item);
+              navigation.navigate('ShowImg', {
+                file: item.file_name,
+                fileType: 'pdf',
+              });
+            }
+          }>
           {item.message_type == 2 ? (
             <TouchableOpacity
               onPress={
@@ -171,10 +180,11 @@ const Media = ({navigation, route}) => {
               <Image
                 source={IMAGE.pdf}
                 style={{
-                  height: hp(14),
-                  resizeMode: 'cover',
-                  width: wp(28),
-                  borderRadius: 10,
+                  height: hp(8),
+                  resizeMode: 'contain',
+                  width: wp(15),
+                  // borderRadius: 10,
+                  tintColor: color.btnBlue
                 }}
               />
             </TouchableOpacity>
@@ -211,7 +221,7 @@ const Media = ({navigation, route}) => {
                     });
                   }}
                   paused={!isPlaying}
-                  source={{uri: `${IMAGEURL}/${item?.file_name}`}}
+                  source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
                   resizeMode={'cover'}
                   style={{
                     overflow: 'hidden',
@@ -239,7 +249,7 @@ const Media = ({navigation, route}) => {
             </>
           )}
 
-          <View style={{paddingLeft: wp(3), justifyContent: 'center'}}>
+          <View style={{ paddingLeft: wp(3), justifyContent: 'center' }}>
             <Text style={style.docName}>{item?.file_original_name}</Text>
             {/* <Text style={style.size}>252 KB .pdf</Text> */}
           </View>
@@ -281,7 +291,7 @@ const Media = ({navigation, route}) => {
 
   return (
     <SafeAreaView style={style.safeArea}>
-      <View style={{flex: 1, backgroundColor: color.white}}>
+      <View style={{ flex: 1, backgroundColor: color.white }}>
         <Header title={'Media,Docs'} />
         <Loader isLoading={isLoading} type={'dots'} />
 
@@ -330,7 +340,7 @@ const Media = ({navigation, route}) => {
                     data={image}
                     // keyExtractor={item => String(item.id)}
                     keyExtractor={item => item.file_name}
-                    renderItem={({item}) => <RenderImages item={item} />}
+                    renderItem={({ item }) => <RenderImages item={item} />}
                   />
                 ) : (
                   <>
@@ -352,7 +362,7 @@ const Media = ({navigation, route}) => {
                     key={'docs'}
                     data={docs}
                     keyExtractor={item => String(item)}
-                    renderItem={({item, index}) => (
+                    renderItem={({ item, index }) => (
                       <RenderDocs item={item} index={index} />
                     )}
                   />

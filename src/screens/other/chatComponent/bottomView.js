@@ -87,6 +87,7 @@ export const BottomView = memo(props => {
       audioRecorderPlayer.addRecordBackListener(e => {
         let time = Math.floor(e.currentPosition / 1000);
         if (time != recordingTime) {
+          audio?.setisdisabled(true)
           setRecordingTime(time);
         }
         return;
@@ -97,8 +98,9 @@ export const BottomView = memo(props => {
   };
 
   const onStopRecord = async () => {
+    audio?.setisdisabled(false)
     setRecordingStart(false);
-    const audio = await audioRecorderPlayer.stopRecorder();
+    const AudioRecorderlayer = await audioRecorderPlayer.stopRecorder();
     audioRecorderPlayer.removeRecordBackListener();
   };
 

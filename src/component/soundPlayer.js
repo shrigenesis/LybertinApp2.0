@@ -27,6 +27,12 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
         startSound()
     }, [recordingFile]);
 
+    useEffect(()=>{
+        if(audio?.isdisabled){
+            pauseSound()
+        }
+    },[audio?.isdisabled])
+
     useEffect(() => {
         return () => {
             stopSound()
@@ -34,7 +40,6 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
     }, [])
 
     const startSound = () => {
-        setplayTime(0)
         setIsPlay(true)
         try {
             if (global?.sound) {
@@ -45,6 +50,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                 });
                 return;
             } else {
+                setplayTime(0)
                 sound = new Sound(recordingFile, null, error => {
                     console.log(recordingFile, "recordingFile:::::::");
                     if (error) {
@@ -90,7 +96,6 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                         // setTimeout(()=>{
                             stopSound();
                         // })
-
                     }
                 })
             }, 1);
@@ -121,7 +126,6 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                 global.sound = null
             }
             // setplayTime(0);
-
         } catch (err) {
             close();
             console.log(err);
@@ -144,12 +148,12 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                         padding: 10,
                     }}>
                     {(!isPlay) ?
-                        <TouchableOpacity style={styles.playpause} onPress={startSound}>
+                        <TouchableOpacity disabled={audio?.isdisabled} style={styles.playpause} onPress={startSound}>
                             {/* <Icon name='play' style={{ fontSize: 16, color: '#681F84' }} /> */}
                             <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity style={styles.playpause} onPress={pauseSound}>
+                        <TouchableOpacity disabled={audio?.isdisabled} style={styles.playpause} onPress={pauseSound}>
                             {/* <Icon name='pause' style={{ fontSize: 16, color: '#000' }} /> */}
                             <Image source={IMAGE.pauseFill} style={{ width: 40, height: 40 }} />
                         </TouchableOpacity>
