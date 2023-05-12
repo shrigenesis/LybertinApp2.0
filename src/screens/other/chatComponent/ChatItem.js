@@ -12,7 +12,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily } from '../../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../../constant/';
 import moment from 'moment';
 import SoundPlayer from './../../../component/soundPlayer';
 import { IMAGEURL } from '../../../utils/api';
@@ -22,7 +22,7 @@ import Slider from 'react-native-slider'
 import AudioContextProvider, { AudioContext } from "../../../context/AudioContext";
 const getTime = time => {
   if (time) {
-    return moment(time).format('hh:mm');
+    return moment(time).format('hh:mm A');
   }
 };
 const _getStyleSelector = (item, direction) => {
@@ -44,6 +44,7 @@ const _getStyleSelector = (item, direction) => {
 const _renderMessage = (item, style) => {
   const videoRef = useRef();
   const audio = useContext(AudioContext);
+  // const [oldDate, setoldDate] = useState(new Date())
 
 
   useEffect(() => {
@@ -64,9 +65,10 @@ const _renderMessage = (item, style) => {
       )
     } else {
       return (
-        <TouchableOpacity 
-        activeOpacity={1}
-        onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
+        <TouchableOpacity
+          disabled={audio?.isdisabled}
+          activeOpacity={1}
+          onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
           <View
             style={{
               // backgroundColor: color.borderGray,
@@ -96,13 +98,10 @@ const _renderMessage = (item, style) => {
               />
             </View>
           </View>
-          {/* <Text>Click</Text> */}
         </TouchableOpacity>
       )
     }
   }
-
-
 
   switch (item.message_type) {
     case 0:
@@ -125,7 +124,7 @@ const _renderMessage = (item, style) => {
     case 1:
       return (
         <>
-          <View style={styles.imageOverlayWrapper}>
+          <View style={styles.imageOverlayWrapperImage}>
             <View style={styles.imageOverlay}></View>
             <Image
               source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
@@ -138,10 +137,14 @@ const _renderMessage = (item, style) => {
     case 2:
       return (
         <>
-          <View>
-            <Image source={IMAGE.pdf} style={styles.file} />
+          <View style={styles.flexboxImage}>
+            <Image
+              source={IMAGE.pdf}
+              style={styles.Pdf}
+            />
+            <Text style={styles.PdfName}>{item.file_original_name}</Text>
           </View>
-          <Text style={styles.leftChatTime}>{getTime(item.created_at)}</Text>
+          <Text style={[styles.leftChatTime, { marginRight: 5, marginBottom: 5 }]}>{getTime(item.created_at)}</Text>
         </>
       ); //PDF
     case 3:
@@ -255,6 +258,7 @@ export const ChatItem = React.memo(
         onImagePress({ file: item.file_name, fileType: 'video' });
       }
     };
+
     if (item.from_id == user_id) {
       return (
         <View
@@ -287,7 +291,6 @@ export const ChatItem = React.memo(
             style={[_getStyleSelector(item, 'left')]}>
             {_renderMessage(item, styles.leftChatText)}
           </TouchableOpacity>
-
         </View>
       );
     } else {
@@ -400,6 +403,11 @@ const styles = StyleSheet.create({
   imageOverlayWrapper: {
     position: "relative",
     overflow: "hidden",
+    marginTop: 10
+  },
+  imageOverlayWrapperImage: {
+    position: "relative",
+    overflow: "hidden",
   },
   imageOverlay: {
     borderRadius: 15,
@@ -504,21 +512,39 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: wp(10),
     height: hp(4)
-},
-track: {
-  height: 3,
-  backgroundColor: '#Fff',
-},
-thumb: {
-  width: 10,
-  height: 10,
-  backgroundColor: '#681F84',
-  borderRadius: 10,
-  shadowColor: '#31a4db',
-  shadowOffset: { width: 0, height: 0 },
-  shadowRadius: 2,
-  shadowOpacity: 1,
-},
+  },
+  track: {
+    height: 3,
+    backgroundColor: '#Fff',
+  },
+  thumb: {
+    width: 10,
+    height: 10,
+    backgroundColor: '#681F84',
+    borderRadius: 10,
+    shadowColor: '#31a4db',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 2,
+    shadowOpacity: 1,
+  },
+  flexboxImage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    columnGap: 5
+  },
+  Pdf: {
+    height: 40,
+    width: 40,
+    resizeMode: 'contain',
+    // tintColor: color.btnBlue
+  },
+  PdfName: {
+    fontSize: fontSize.size12,
+    color: color.blackRussian,
+    fontFamily: fontFamily.Medium,
+    maxWidth: wp(70)
+  }
 
   // replyWrapper:{
   //   width:wp(70),

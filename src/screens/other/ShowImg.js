@@ -185,7 +185,7 @@ const ShowImg = ({ navigation, route }) => {
   const Action = () => {
     let file = route?.params?.file;
     let fileType = route?.params?.fileType;
-    let url = `${IMAGEURL}${file}`;
+    let url = `${IMAGEURL}/${file}`;
     let ext = url.split('.').pop();
     Download(url, ext);
   };
@@ -241,7 +241,7 @@ const ShowImg = ({ navigation, route }) => {
   };
   let file = route?.params?.file;
   let fileType = route?.params?.fileType;
-  console.log('file', file);
+  console.log('file',` ${IMAGEURL}/${file}`);
   return (
     <View
       style={{
