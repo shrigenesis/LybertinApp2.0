@@ -184,6 +184,7 @@ const ShowImg = ({ navigation, route }) => {
 
   const Action = () => {
     let file = route?.params?.file;
+    console.log(file, "file")
     let fileType = route?.params?.fileType;
     let url = `${IMAGEURL}/${file}`;
     let ext = url.split('.').pop();
@@ -241,14 +242,14 @@ const ShowImg = ({ navigation, route }) => {
   };
   let file = route?.params?.file;
   let fileType = route?.params?.fileType;
-  console.log('file',` ${IMAGEURL}/${file}`);
+  console.log('file', ` ${IMAGEURL}/${file}`);
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: fileType == 'pdf' ? '#fff' : color.black,
       }}>
-        <StatusBar  barStyle={'light-content'} backgroundColor={color.white} />
+      <StatusBar barStyle={'light-content'} backgroundColor={color.white} />
       {appReady && route?.params?.file && (
         <Animated.View entering={ZoomIn}>
           <View style={style.header}>
@@ -269,7 +270,7 @@ const ShowImg = ({ navigation, route }) => {
                   setisplay(false);
                   setPaused(true)
                   sethideControles(false);
-                    navigation.goBack()
+                  navigation.goBack()
                 }}>
                 <Image
                   source={IMAGE.close}
@@ -339,7 +340,7 @@ const style = StyleSheet.create({
     position: 'absolute',
     zIndex: 999,
     width: wp(100),
-    top: Platform.OS==='ios'? hp(6): 0,
+    top: Platform.OS === 'ios' ? hp(6) : 0,
   },
   icon: {
     tintColor: 'rgba(255, 255, 255, 0.4)',

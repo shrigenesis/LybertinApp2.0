@@ -231,14 +231,14 @@ class GroupChat extends React.Component {
       APIRequest(
         config,
         res => {
-          console.log(res); 
+          console.log(res);
           this.setState({
             replyOn: undefined
           });
           this.setMessages(res);
         },
         err => {
-          console.log(err); 
+          console.log(err);
           this.setState({ isLoading: false });
         },
       );
@@ -256,16 +256,29 @@ class GroupChat extends React.Component {
       });
     } else {
       let type = this.state.file.type.split("/")
-      formData.append('file', {
-        ...this.state.file,
-        name: `videos${new Date()}.${type[1]}`
-      });
+      if (this.state.file != '') {
+        formData.append('file', {
+          uri: this.state.file.uri,
+          name: `images${new Date()}.${type[1]}`,
+          type: this.state.file.type
+        })
+      }
+      else {
+
+        formData.append('file', {
+          ...this.state.file,
+          name: `videos${new Date()}.${type[1]}`
+        });
+      }
+
       // formData.append('file', this.state.file);
     }
 
     this.setState({ isLoading: true });
     formData.append('to_id', `${this.props?.route?.params?.group_id}`);
     formData.append('is_group', 1);
+
+    console.log(formData, "formData")
 
     let config = {
       url: ApiUrl.sendFile,
@@ -344,8 +357,8 @@ class GroupChat extends React.Component {
                     onPress={() => {
                       this.props.navigation.navigate('groupInfo', {
                         groupId: this.state.groupId,
-                        privacy:this.props.route.params.privacy,
-                        isAdmin:this.state.isAdmin
+                        privacy: this.props.route.params.privacy,
+                        isAdmin: this.state.isAdmin
                       });
                     }}
                     style={{
@@ -361,6 +374,7 @@ class GroupChat extends React.Component {
             )}
             title={null}
           />
+          {console.log(this.state.chatList, "this.state.chatList")}
           <View style={{ flex: 1, paddingBottom: 0 }}>
             <FlatList
               ref={this.chatListRef}
@@ -470,6 +484,7 @@ class GroupChat extends React.Component {
 
             <RenderBottomSheet
               file={file => {
+                console.log(file, "file")
                 this.setState({ file: file });
                 this.bottomSheetRef?.current?.close();
               }}

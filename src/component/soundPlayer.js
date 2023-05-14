@@ -20,18 +20,19 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
     let timerRef = useRef();
 
     useEffect(() => {
+        console.log(recordingFile, "recordingFile")
         setplayTime(0);
         settotalDuration(0);
         setIsPlay(false);
         Sound.setCategory('Playback');
-        startSound()
+        // startSound()
     }, [recordingFile]);
 
-    useEffect(()=>{
-        if(audio?.isdisabled){
+    useEffect(() => {
+        if (audio?.isdisabled) {
             pauseSound()
         }
-    },[audio?.isdisabled])
+    }, [audio?.isdisabled])
 
     useEffect(() => {
         return () => {
@@ -94,7 +95,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                     if (parseInt(v) >= duration) {
                         setplayTime(duration);
                         // setTimeout(()=>{
-                            stopSound();
+                        stopSound();
                         // })
                     }
                 })

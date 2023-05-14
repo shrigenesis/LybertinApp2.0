@@ -29,7 +29,7 @@ import {
 
 const getTime = time => {
   if (time) {
-    return moment(time).format('hh:mm');
+    return moment(time).format('DD, MMM hh:mm A');
   }
 };
 
@@ -309,7 +309,7 @@ export const ChatItemgroup = React.memo(
             style={[_getStyleSelector(item, 'left')]}>
             <View style={{ ...styles.chatBoxWarrper }} >
               {item?.reply_to !== null && (
-                <View style={[styles.replyBox,styles.replyBoxLeft]}>
+                <View style={[styles.replyBox, styles.replyBoxLeft]}>
                   <View >
                     <Text style={{ color: color.btnBlue }} >{(JSON.parse(item?.reply_to).name)}</Text>
                     <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
@@ -453,7 +453,7 @@ const styles = StyleSheet.create({
   },
   imageWrapper: {
     marginTop: 10,
-  
+
     borderRadius: 15,
     minWidth: '35%',
     maxWidth: '85%',
@@ -462,7 +462,7 @@ const styles = StyleSheet.create({
   },
   imageWrapperRight: {
     marginTop: 10,
-  
+
     borderRadius: 15,
     minWidth: '35%',
     maxWidth: '85%',
@@ -662,10 +662,10 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems:"flex-start",
+    alignItems: "flex-start",
     borderLeftWidth: 4,
     borderLeftColor: color.btnBlue,
-    borderRadius:5
+    borderRadius: 5
   },
   replyBoxLeft: {
     marginTop: 10,
@@ -682,6 +682,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
     fontFamily: fontFamily.Regular,
     fontSize: fontSize.size12,
-    color:color.btnBlue
+    color: color.btnBlue
   }
 });
