@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useEffect, useContext } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, ActivityIndicator } from 'react-native'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Sound from 'react-native-sound';
@@ -9,11 +9,13 @@ import { IMAGE, color, fontFamily } from '../constant';
 import Toast from 'react-native-toast-message';
 import { AudioContext } from '../context/AudioContext';
 import moment from 'moment';
+import Loader from './loader';
 
 
 const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, Send = () => { } }) => {
     const audio = useContext(AudioContext);
     const [isPlay, setIsPlay] = useState(false);
+    const [isprocessing, setisprocessing] = useState(false)
     const [totalDuration, settotalDuration] = useState(0);
     const [playTime, setplayTime] = useState(0);
     let sound;
@@ -56,8 +58,10 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
             } else {
                 console.log('sec');
                 setplayTime(0)
+                setisprocessing(true)
                 sound = new Sound(recordingFile, Sound.MAIN_BUNDLE, error => {
-                    console.log(recordingFile,null, error, "recordingFile:::::::");
+                    console.log(recordingFile, null, error, "recordingFile:::::::");
+                    setisprocessing(false)
                     if (error) {
                         console.log('error loading sound', error)
                         Toast.show({
@@ -72,11 +76,11 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                             soundPlaying();
                             sound.play((success) => {
                                 if (success) {
-                                  console.log('successfully finished playing');
+                                    console.log('successfully finished playing');
                                 } else {
-                                  console.log('playback failed due to audio decoding errors');
+                                    console.log('playback failed due to audio decoding errors');
                                 }
-                              });
+                            });
                             // sound.setVolume(100);
                         }
                     }
@@ -159,10 +163,10 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                         padding: 10,
                     }}>
                     {(!isPlay) ?
-                        <TouchableOpacity 
-                        disabled={audio?.isdisabled} 
-                        style={styles.playpause} 
-                        onPress={startSound}
+                        <TouchableOpacity
+                            disabled={audio?.isdisabled}
+                            style={styles.playpause}
+                            onPress={startSound}
                         // onPress={()=>alert('ghn')}
                         >
                             {/* <Icon name='play' style={{ fontSize: 16, color: '#681F84' }} /> */}
@@ -188,7 +192,12 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                             disabled={true}
                         />
                     </View>
-                    <Text style={{ position: 'absolute', top: 25, left: 60 }}>{totalDuration > 0 && `${moment.utc(totalDuration * 1000).format('mm:ss')}`}</Text>
+                    {isprocessing ?
+                        <ActivityIndicator style={{ position: 'absolute', top: 25, left: 60 }} color={color.btnBlue} size="small" /> :
+                        <Text style={{ position: 'absolute', top: 25, left: 60 }} >
+                            {totalDuration > 0 && `${moment.utc(totalDuration * 1000).format('mm:ss')}`}
+                        </Text>
+                    }
                 </View>
             )
         } else {

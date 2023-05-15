@@ -270,7 +270,7 @@ class Chat extends React.Component {
     if (this.state.audioFile != '') {
       formData.append('file', {
         uri: this.state.audioFile,
-        ...Platform.select({
+        ...Platform.select({ 
           ios: {
             name: 'test.m4a',
             type: 'audio/m4a',
