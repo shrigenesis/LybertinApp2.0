@@ -15,7 +15,6 @@ import Loader from './loader';
 const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, Send = () => { } }) => {
     const audio = useContext(AudioContext);
     const [isPlay, setIsPlay] = useState(false);
-    const [isprocessing, setisprocessing] = useState(false)
     const [totalDuration, settotalDuration] = useState(0);
     const [playTime, setplayTime] = useState(0);
     let sound;
@@ -58,10 +57,8 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
             } else {
                 console.log('sec');
                 setplayTime(0)
-                setisprocessing(true)
-                sound = new Sound(recordingFile, Sound.MAIN_BUNDLE, error => {
+                sound = new Sound(recordingFile, null, error => {
                     console.log(recordingFile, null, error, "recordingFile:::::::");
-                    setisprocessing(false)
                     if (error) {
                         console.log('error loading sound', error)
                         Toast.show({
@@ -192,11 +189,11 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                             disabled={true}
                         />
                     </View>
-                    {isprocessing ?
-                        <ActivityIndicator style={{ position: 'absolute', top: 25, left: 60 }} color={color.btnBlue} size="small" /> :
+                    {totalDuration > 0 ?
                         <Text style={{ position: 'absolute', top: 25, left: 60 }} >
                             {totalDuration > 0 && `${moment.utc(totalDuration * 1000).format('mm:ss')}`}
-                        </Text>
+                        </Text>:
+                         <ActivityIndicator style={{ position: 'absolute', top: 25, left: 60 }} color={color.btnBlue} size="small" /> 
                     }
                 </View>
             )
