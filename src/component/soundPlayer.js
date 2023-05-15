@@ -66,7 +66,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                             global.sound = sound;
                             soundPlaying();
                             sound.play();
-                            sound.setVolume(100);
+                            // sound.setVolume(100);
                         }
                     }
 

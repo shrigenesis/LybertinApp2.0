@@ -259,13 +259,30 @@ export const ChatItem = React.memo(
       }
     };
 
-    if (item.from_id == user_id) {
+    if (item.type === 'agoDate') {
       return (
-        <View
-          key={String(index)}
-          style={styles.listInner}>
-          {/* <Text>{item.name}</Text> */}
-          {/* {item?.message_type !== 9 && (
+        <View style={{display:'flex', alignItems:'center'}}>
+          <Text style={{
+            textAlign: 'center',
+            backgroundColor: color.lightSlaty,
+            borderRadius: 20, width: wp(30),
+            padding: 2,
+            color: color.black,
+            justifyContent: 'center',
+            marginVertical:20
+          }}>
+            {item.created_time_ago}
+          </Text>
+        </View>
+      )
+    } else {
+      if (item.from_id == user_id) {
+        return (
+          <View
+            key={String(index)}
+            style={styles.listInner}>
+            {/* <Text>{item.name}</Text> */}
+            {/* {item?.message_type !== 9 && (
             <View>
               {avatar ? (
                 <Image
@@ -285,38 +302,39 @@ export const ChatItem = React.memo(
               )}
             </View>
           )} */}
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => Action(item)}
-            style={[_getStyleSelector(item, 'left')]}>
-            {_renderMessage(item, styles.leftChatText)}
-          </TouchableOpacity>
-        </View>
-      );
-    } else {
-      return (
-        <View
-          key={String(index)}
-          style={{
-            marginRight: wp(4),
-            marginRight: item?.message_type == 9 ? '25%' : '4%',
-          }}>
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => Action(item)}
+              style={[_getStyleSelector(item, 'left')]}>
+              {_renderMessage(item, styles.leftChatText)}
+            </TouchableOpacity>
+          </View>
+        );
+      } else {
+        return (
+          <View
+            key={String(index)}
+            style={{
+              marginRight: wp(4),
+              marginRight: item?.message_type == 9 ? '25%' : '4%',
+            }}>
 
-          {/* <TouchableOpacity
+            {/* <TouchableOpacity
             activeOpacity={1}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item)]}>
             {_renderMessage(item, styles.leftChatText, videoRef)}
           </TouchableOpacity> */}
-          <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => Action(item)}
-            // style={styles.rightChatBox}>
-            style={[_getStyleSelector(item, 'right')]}>
-            {_renderMessage(item, styles.rightChatText)}
-          </TouchableOpacity>
-        </View>
-      );
+            <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => Action(item)}
+              // style={styles.rightChatBox}>
+              style={[_getStyleSelector(item, 'right')]}>
+              {_renderMessage(item, styles.rightChatText)}
+            </TouchableOpacity>
+          </View>
+        );
+      }
     }
   },
 );
@@ -403,7 +421,7 @@ const styles = StyleSheet.create({
   imageOverlayWrapper: {
     position: "relative",
     overflow: "hidden",
-    marginTop: 10
+    // marginTop: 10
   },
   imageOverlayWrapperImage: {
     position: "relative",
@@ -483,6 +501,15 @@ const styles = StyleSheet.create({
     paddingBottom: hp(1),
   },
   videoWrapperRight: {
+    backgroundColor: color.chatRight,
+    marginTop: 10,
+    borderRadius: 15,
+    minWidth: "35%",
+    maxWidth: "85%",
+    alignSelf: 'flex-end',
+    padding: 3
+  },
+  videoWrapper: {
     backgroundColor: color.chatRight,
     marginTop: 10,
     borderRadius: 15,
