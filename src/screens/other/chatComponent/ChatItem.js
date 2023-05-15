@@ -246,7 +246,9 @@ const _renderMessage = (item, style) => {
 
 export const ChatItem = React.memo(
   ({ item, user_id, avatar, index, onImagePress }) => {
+    const audio = useContext(AudioContext);
     const Action = item => {
+      audio?.setaudio('');
       // let url = `${IMAGEURL}${item.message}`;
       if (item.message_type == 2) {
         onImagePress({ file: item.file_name, fileType: 'pdf' });
