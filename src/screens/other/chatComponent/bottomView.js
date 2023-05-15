@@ -279,6 +279,7 @@ export const BottomView = memo(props => {
           // flexDirection:'column',
           minHeight: hp(9),
           marginTop: replyOn ? (replyBoxheight == '' ? hp(8) : replyBoxheight) : hp(1),
+          paddingTop: showEmojiKeyboard ? hp(6.5) : 0,
           marginBottom: Platform.OS == 'ios' ? hp(2) : 0,
           backgroundColor: '#F6F6F6',
         }}>
@@ -350,7 +351,7 @@ export const BottomView = memo(props => {
               {file?.fileType == 'photo' || file?.fileType == 'image' ? (
                 <Image
                   source={{ uri: file.uri }}
-                  style={{ resizeMode: 'contain', height: Platform.OS==='ios'? hp(85): hp(100), width: wp(100)}}
+                  style={{ resizeMode: 'contain', height: Platform.OS === 'ios' ? hp(85) : hp(100), width: wp(100) }}
                 />
               ) : null}
               {file?.fileType == 'video' || file?.fileType === "video/mp4" ? (
@@ -572,7 +573,7 @@ const styles = StyleSheet.create({
   },
   fileView: {
     width: wp(100),
-    height: Platform.OS==='ios'?hp(100):hp(110),
+    height: Platform.OS === 'ios' ? hp(100) : hp(110),
     // marginBottom: hp(7),
     marginTop: -10,
     // left: wp(4),

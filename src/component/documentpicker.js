@@ -1,6 +1,6 @@
-import {PermissionsAndroid} from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 import Document from 'react-native-document-picker';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Toast from 'react-native-toast-message';
 import {
   check,
@@ -22,15 +22,15 @@ export const pickDocument = async cb => {
       ],
     })
       .then(res => {
-          let data = res;
+        let data = res;
 
-          let file = {
-            uri: data.uri,
-            type: data.type,
-            name: data.name,
-            fileType: data?.type == 'application/pdf' ? 'pdf' : 'doc',
-          };
-          cb(file);
+        let file = {
+          uri: data.uri,
+          type: data.type,
+          name: data.name,
+          fileType: data?.type == 'application/pdf' ? 'pdf' : 'doc',
+        };
+        cb(file);
       })
       .catch(err => {
         console.log(err);
@@ -40,16 +40,16 @@ export const pickDocument = async cb => {
 export const pickMixed = async cb => {
   let permission = await requestPermission('storage');
   if (permission) {
-    Document.pickSingle({type: [Document.types.images, Document.types.video]})
+    Document.pickSingle({ type: [Document.types.images, Document.types.video] })
       .then(res => {
-          let data = res;
-          let file = {
-            uri: data.uri,
-            type: data.type,
-            name: data.name,
-            fileType: data?.type == 'application/pdf' ? 'pdf' : 'doc',
-          };
-          cb(file);
+        let data = res;
+        let file = {
+          uri: data.uri,
+          type: data.type,
+          name: data.name,
+          fileType: data?.type == 'application/pdf' ? 'pdf' : 'doc',
+        };
+        cb(file);
       })
       .catch(err => {
         console.log(err);
@@ -72,14 +72,14 @@ export const pickImage = async (type = 'image', cb, mediaType = 'mixed') => {
     };
 
     let imgFunction = type == 'image' ? launchImageLibrary : launchCamera;
-    
+
     imgFunction(config, response => {
       if (response.assets && response.assets[0]) {
         let image = response.assets[0];
         console.log(image);
         let file = {
           uri: image.uri,
-          type: image.type,
+          type: image.type == "image/jpg" ? "image/jpeg" : image.type,
           name: image.fileName,
           fileType: mediaType,
         };

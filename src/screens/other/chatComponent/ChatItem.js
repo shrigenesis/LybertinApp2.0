@@ -22,7 +22,7 @@ import Slider from 'react-native-slider'
 import AudioContextProvider, { AudioContext } from "../../../context/AudioContext";
 const getTime = time => {
   if (time) {
-    return moment(time).format('hh:mm A');
+    return moment(time).format('DD, MMM hh:mm A');
   }
 };
 const _getStyleSelector = (item, direction) => {
