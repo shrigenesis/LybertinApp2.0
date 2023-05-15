@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Platform
 
-} from 'react-native';
+} from 'react-native'; 
 
 import {
   widthPercentageToDP as wp,
