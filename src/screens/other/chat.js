@@ -272,8 +272,8 @@ class Chat extends React.Component {
         uri: this.state.audioFile,
         ...Platform.select({
           ios: {
-            name: 'test.mp3',
-            type: 'audio/mp3',
+            name: 'test.m4a',
+            type: 'audio/m4a',
           },
           android: {
             name: 'test.mp3',
