@@ -78,7 +78,6 @@ export const BottomView = memo(props => {
   const [height, setheight] = useState(0);
   const [disable, setdisable] = useState(false)
 
- 
 
   var backTimer;
 
