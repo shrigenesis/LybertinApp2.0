@@ -55,8 +55,15 @@ const PostStory = ({ navigation, route }) => {
   //   return;
   // }, [isFocus]);
 
-  const postStory = () => { 
+  const postStory = () => {
     console.log('message', message);
+    if (route.params?.file?.duration>30) {
+      Toast.show({
+        type: 'info',
+        text1: 'Duration must be less than to 30 sec'
+      });
+      return;
+    }
     setisLoading(true);
     let formdata = new FormData();
     let type = route.params?.file?.fileType == 'photo' ? 'image' : 'video';
@@ -66,15 +73,15 @@ const PostStory = ({ navigation, route }) => {
         ...route.params?.file,
         name: `videos${new Date()}.${typevip[1]}`
       });
-    }else{
+    } else {
       formdata.append(type, route.params.file);
     }
-    // formdata.append(type, route.params.file);
     formdata.append('caption', message);
     formdata.append('story_type', 'MEDIA');
 
+
     let config = {
-      url: ApiUrl.storyCreate, 
+      url: ApiUrl.storyCreate,
       method: 'post',
       body: formdata,
     };
@@ -93,6 +100,27 @@ const PostStory = ({ navigation, route }) => {
         setisLoading(false);
       },
       err => {
+        if (err.response.status === 422) {
+          let errorMsg =  ''
+          if (err?.response?.data?.error?.video) {
+            errorMsg = err?.response?.data?.error?.video[0]
+          }
+          if (err?.response?.data?.error?.image) {
+            errorMsg =  err?.response?.data?.error?.image[0]
+          }
+          if (err?.response?.data?.error?.story_type) {
+            errorMsg = err?.response?.data?.error?.story_type[0]
+          }
+          Toast.show({
+            type: 'error',
+            text1: errorMsg
+          });
+        } else {
+          Toast.show({
+            type: 'error',
+            text1: err?.message
+          });
+        }
         setisLoading(false);
         console.log(err);
       },
@@ -191,7 +219,7 @@ const PostStory = ({ navigation, route }) => {
   };
 
   return (
-    <KeyboardAwareScrollView  style={{ flex: 1, backgroundColor: color.black}}>
+    <KeyboardAwareScrollView style={{ flex: 1, backgroundColor: color.black }}>
       <View>
         <View style={style.headerContainer}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
@@ -272,7 +300,7 @@ const PostStory = ({ navigation, route }) => {
               </View>
             </TouchableOpacity>
           </View>
-      )}
+        )}
       </View>
     </KeyboardAwareScrollView>
 

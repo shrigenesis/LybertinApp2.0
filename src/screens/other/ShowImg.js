@@ -139,7 +139,7 @@ const ShowImg = ({ navigation, route }) => {
               sethideControles(false);
               setisplay(false);
             }}
-            resizeMode={'cover'}
+            resizeMode={'contain'}
             style={{ height: '100%', width: wp(100) }}
           />
           {!hideControles && !isLoading && _showIcon()}

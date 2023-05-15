@@ -114,7 +114,14 @@ const _renderMessage = (item, style, videoRef, direction) => {
             <Text style={styles.generalSenderText}>{item.sender.name}</Text>
           )}
 
-          <Image source={IMAGE.pdf} style={styles.file} />
+          <View style={styles.flexboxImage}>
+            <Image
+              source={IMAGE.pdf}
+              style={styles.Pdf}
+            />
+            <Text style={styles.PdfName}>{item.file_original_name}</Text>
+          </View>
+          {/* <Image source={IMAGE.pdf} style={styles.pdf} /> */}
           <Text style={styles.leftChatTime}>{getTime(item.created_at)}</Text>
         </View>
       ); //PDF
@@ -683,5 +690,23 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Regular,
     fontSize: fontSize.size12,
     color: color.btnBlue
+  },
+  flexboxImage: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    columnGap: 5
+  },
+  Pdf: {
+    height: 40,
+    width: 40,
+    resizeMode: 'contain',
+    // tintColor: color.btnBlue
+  },
+  PdfName: {
+    fontSize: fontSize.size12,
+    color: color.blackRussian,
+    fontFamily: fontFamily.Medium,
+    maxWidth: wp(70)
   }
 });
