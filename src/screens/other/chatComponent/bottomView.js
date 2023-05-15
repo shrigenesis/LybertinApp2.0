@@ -40,6 +40,9 @@ import Video from 'react-native-video';
 import Pdf from 'react-native-pdf';
 import { AudioContext } from '../../../context/AudioContext';
 import moment from 'moment';
+import RNFetchBlob from 'react-native-blob-util';
+
+const dirs = RNFetchBlob.fs.dirs;
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export const BottomView = memo(props => {
@@ -77,13 +80,18 @@ export const BottomView = memo(props => {
   const [height, setheight] = useState(0);
   const [disable, setdisable] = useState(false)
 
+  const path = Platform.select({
+    ios: 'audio.m4a',
+    android: `${dirs.CacheDir}/audio.mp3`,
+  });
+
   var backTimer;
 
   const onStartRecord = async () => {
     if (await requestPermission('audio')) {
       setRecordingTime(0);
       setRecordingStart(true);
-      const result = await audioRecorderPlayer.startRecorder();
+      const result = await audioRecorderPlayer.startRecorder(path);
       audioRecorderPlayer.addRecordBackListener(e => {
         let time = Math.floor(e.currentPosition / 1000);
         if (time != recordingTime) {
