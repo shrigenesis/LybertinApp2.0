@@ -56,7 +56,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
             } else {
                 console.log('sec');
                 setplayTime(0)
-                sound = new Sound(recordingFile, null, error => {
+                sound = new Sound(recordingFile, Sound.MAIN_BUNDLE, error => {
                     console.log(recordingFile,null, error, "recordingFile:::::::");
                     if (error) {
                         console.log('error loading sound', error)
