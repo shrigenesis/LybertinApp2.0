@@ -959,7 +959,7 @@ export default class buyTicket extends Component {
                                       item?.sale_end_date,
                                     )}
                                     size={15}
-                                    onFinish={() => this.saleFinished()}
+                                    // onFinish={() => this.saleFinished()}
                                     digitTxtStyle={{ color: color.btnBlue }}
                                     digitStyle={{
                                       backgroundColor: '#fff',

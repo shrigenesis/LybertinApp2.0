@@ -440,7 +440,7 @@ export default class eventDetails extends Component {
                             this.state.event.end_date,
                           )}
                           size={15}
-                          onFinish={() => this.saleFinished()}
+                          // onFinish={() => this.saleFinished()}
                           digitTxtStyle={{color: color.btnBlue}}
                           digitStyle={{
                             backgroundColor: '#fff',
