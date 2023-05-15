@@ -82,6 +82,7 @@ export const pickImage = async (type = 'image', cb, mediaType = 'mixed') => {
           type: image.type == "image/jpg" ? "image/jpeg" : image.type,
           name: image.fileName,
           fileType: mediaType,
+          duration: image.duration
         };
         cb(file);
       }
