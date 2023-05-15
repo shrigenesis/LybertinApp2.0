@@ -270,8 +270,17 @@ class Chat extends React.Component {
     if (this.state.audioFile != '') {
       formData.append('file', {
         uri: this.state.audioFile,
-        name: 'test.mp3',
-        type: 'audio/mp3', 
+        ...Platform.select({
+          ios: {
+            name: 'test.m4a',
+            type: 'audio/m4a',
+          },
+          android: {
+            name: 'test.mp3',
+            type: 'audio/mp3',
+          }
+        })
+
       });
       console.log('sendFile  this.state.audioFile', this.state.audioFile);
     } else if (this.state.file.fileType === 'pdf') {
