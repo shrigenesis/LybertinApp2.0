@@ -146,6 +146,30 @@ class Chat extends React.Component {
     }
   };
 
+  // addDateInChatList = (items) => {
+  //   const modifieditems = [];
+  //   // loop through items array
+  //   for (let i = 0; i < items.length; i++) {
+  //     const currentItem = items[i];
+  //     // check if current date already exists in modifieditems array
+  //     const currentDateIndex = modifieditems.findIndex(item => item.created_time_ago === currentItem.created_time_ago);
+
+  //     if (currentDateIndex === -1) {
+  //       // if current date doesn't exist, add a label object and then add the current item
+  //       modifieditems.push(currentItem);
+  //       if (!currentItem.created_time_ago.includes("hrs")) {
+  //         modifieditems.push({ type: 'agoDate', created_time_ago: currentItem.created_time_ago });
+  //       }
+  //     } else {
+  //       // if current date already exists, just add the current item
+  //       modifieditems.splice(currentDateIndex + 1, 0, currentItem);
+  //     }
+  //   }
+  //   this.setState({
+  //     chatList: modifieditems
+  //   })
+  // }
+
   fetchChatList = user_id => {
     this.setState({isLoading: true});
     let config = {
@@ -162,7 +186,7 @@ class Chat extends React.Component {
             Socket.emit('join chat', res.roomId);
           }
           let chatData = this.state.chatList.concat(data);
-
+          // this.addDateInChatList(chatData)
           this.setState({
             chatList: chatData,
             roomId: res.roomId,

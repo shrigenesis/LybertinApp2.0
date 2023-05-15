@@ -5,8 +5,7 @@ export const AudioContext = createContext();
 const AudioContextProvider =(props)=> {
 const [audio, setaudio] = useState('')
 const [isdisabled, setisdisabled] = useState(false)
-const [oldDate, setoldDate] = useState('gg')
-const data={audio, setaudio, isdisabled, setisdisabled, oldDate, setoldDate}
+const data={audio, setaudio, isdisabled, setisdisabled}
     return (
       <AudioContext.Provider
         value={data}

@@ -23,7 +23,8 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
         console.log(recordingFile, "recordingFile")
         setplayTime(0);
         settotalDuration(0);
-        setIsPlay(false);
+        // setIsPlay(false);
+        startSound();
         Sound.setCategory('Playback');
         // startSound()
     }, [recordingFile]);
@@ -41,9 +42,11 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
     }, [])
 
     const startSound = () => {
+        console.log('startSound');
         setIsPlay(true)
         try {
             if (global?.sound) {
+                console.log('firzst');
                 global?.sound.getCurrentTime((seconds) => {
                     global?.sound.setCurrentTime(seconds);
                     soundPlaying();
@@ -51,23 +54,30 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                 });
                 return;
             } else {
+                console.log('sec');
                 setplayTime(0)
                 sound = new Sound(recordingFile, null, error => {
-                    console.log(recordingFile, "recordingFile:::::::");
+                    console.log(recordingFile,null, error, "recordingFile:::::::");
                     if (error) {
                         console.log('error loading sound', error)
-                        // Toast.show({
-                        //     type: 'info',
-                        //     text1: 'Damaged Audio'
-                        // })
+                        Toast.show({
+                            type: 'info',
+                            text1: 'Damaged Audio'
+                        })
                         setIsPlay(false)
                         return
                     } else {
                         if (sound) {
                             global.sound = sound;
                             soundPlaying();
-                            sound.play();
-                            sound.setVolume(100);
+                            sound.play((success) => {
+                                if (success) {
+                                  console.log('successfully finished playing');
+                                } else {
+                                  console.log('playback failed due to audio decoding errors');
+                                }
+                              });
+                            // sound.setVolume(100);
                         }
                     }
 
@@ -149,7 +159,12 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                         padding: 10,
                     }}>
                     {(!isPlay) ?
-                        <TouchableOpacity disabled={audio?.isdisabled} style={styles.playpause} onPress={startSound}>
+                        <TouchableOpacity 
+                        disabled={audio?.isdisabled} 
+                        style={styles.playpause} 
+                        onPress={startSound}
+                        // onPress={()=>alert('ghn')}
+                        >
                             {/* <Icon name='play' style={{ fontSize: 16, color: '#681F84' }} /> */}
                             <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
                         </TouchableOpacity>

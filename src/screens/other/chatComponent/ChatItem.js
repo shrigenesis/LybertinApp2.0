@@ -55,7 +55,6 @@ const _renderMessage = (item, style) => {
 
 
   const Audio = () => {
-
     if (`${IMAGEURL}/${item.file_name}` === audio?.audio) {
       return (
         <SoundPlayer
@@ -247,8 +246,9 @@ const _renderMessage = (item, style) => {
 
 export const ChatItem = React.memo(
   ({ item, user_id, avatar, index, onImagePress }) => {
-
+    const audio = useContext(AudioContext);
     const Action = item => {
+      audio?.setaudio('');
       // let url = `${IMAGEURL}${item.message}`;
       if (item.message_type == 2) {
         onImagePress({ file: item.file_name, fileType: 'pdf' });
@@ -259,6 +259,23 @@ export const ChatItem = React.memo(
       }
     };
 
+    // if (item.type === 'agoDate') {
+    //   return (
+    //     <View style={{display:'flex', alignItems:'center'}}>
+    //       <Text style={{
+    //         textAlign: 'center',
+    //         backgroundColor: color.lightSlaty,
+    //         borderRadius: 20, width: wp(30),
+    //         padding: 2,
+    //         color: color.black,
+    //         justifyContent: 'center',
+    //         marginVertical:20
+    //       }}>
+    //         {item.created_time_ago}
+    //       </Text>
+    //     </View>
+    //   )
+    // } else {
     if (item.from_id == user_id) {
       return (
         <View
@@ -318,6 +335,7 @@ export const ChatItem = React.memo(
         </View>
       );
     }
+
   },
 );
 const styles = StyleSheet.create({
@@ -403,7 +421,7 @@ const styles = StyleSheet.create({
   imageOverlayWrapper: {
     position: "relative",
     overflow: "hidden",
-    marginTop: 10
+    // marginTop: 10
   },
   imageOverlayWrapperImage: {
     position: "relative",
@@ -483,6 +501,15 @@ const styles = StyleSheet.create({
     paddingBottom: hp(1),
   },
   videoWrapperRight: {
+    backgroundColor: color.chatRight,
+    marginTop: 10,
+    borderRadius: 15,
+    minWidth: "35%",
+    maxWidth: "85%",
+    alignSelf: 'flex-end',
+    padding: 3
+  },
+  videoWrapper: {
     backgroundColor: color.chatRight,
     marginTop: 10,
     borderRadius: 15,
