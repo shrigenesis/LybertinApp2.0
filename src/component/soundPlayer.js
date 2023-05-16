@@ -55,7 +55,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                 });
                 return;
             } else {
-                console.log('sec');
+                console.log('sec'); 
                 setplayTime(0)
                 sound = new Sound(recordingFile, null, error => {
                     console.log(recordingFile, null, error, "recordingFile:::::::");
