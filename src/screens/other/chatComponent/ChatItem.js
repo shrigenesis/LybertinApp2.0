@@ -178,6 +178,7 @@ const _renderMessage = (item, style) => {
                   paused: true,
                 });
               }}
+              paused={true}
               source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
               resizeMode={'cover'}
               style={styles.video}
@@ -546,9 +547,9 @@ const styles = StyleSheet.create({
   thumb: {
     width: 10,
     height: 10,
-    backgroundColor: '#681F84',
+    backgroundColor: color.btnBlue,
     borderRadius: 10,
-    shadowColor: '#31a4db',
+    shadowColor: color.btnBlue,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
