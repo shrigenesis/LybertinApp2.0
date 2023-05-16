@@ -202,6 +202,7 @@ export const BottomView = memo(props => {
             onStopRecord();
           }}
           Send={() => {
+            audio?.setaudio('')
             sendMessage();
             setRecordingFile('');
             onStopRecord();
@@ -243,6 +244,7 @@ export const BottomView = memo(props => {
                 <Icon name='times' style={{ fontSize: 20, color: '#000' }} />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => {
+                audio?.setaudio('')
                 sendMessage();
                 setRecordingFile('');
                 onStopRecord();
@@ -314,7 +316,10 @@ export const BottomView = memo(props => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => sendMessage()}
+                onPress={() =>{ 
+                  audio?.setaudio('')
+                  sendMessage()
+                }}
                 style={{
                   position: 'absolute', right: 10, top: 10, zIndex: 999
                 }}>
@@ -402,7 +407,11 @@ export const BottomView = memo(props => {
           </View>}
           <View style={styles.msgSendView}>
             {!isRecordingStart && (
-              <TouchableOpacity disabled={media_privacy == 2} onPress={addPress}>
+              <TouchableOpacity disabled={media_privacy == 2}
+                onPress={() => {
+                  addPress()
+                  audio?.setaudio('')
+                }}>
                 <Image
                   source={IMAGE.add}
                   style={{ resizeMode: 'contain', height: 25, width: 25, tintColor: color.btnBlue }}
@@ -452,7 +461,7 @@ export const BottomView = memo(props => {
                     disabled={disable}
                     onPress={() => {
                       StopMultiplePress()
-                      !isRecordingStart && sendMessage(), setRecordingFile('');
+                      !isRecordingStart && sendMessage(), setRecordingFile(''),audio?.setaudio('');
                     }}
                     style={styles.sendbtn}>
                     {!isRecordingStart && (

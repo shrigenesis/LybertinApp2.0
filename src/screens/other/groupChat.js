@@ -417,7 +417,6 @@ class GroupChat extends React.Component {
             )}
             title={null}
           />
-          {console.log(this.state.chatList, "this.state.chatList")}
           <View style={{ flex: 1, paddingBottom: 0 }}>
             <AudioContextProvider>
               <FlatList
@@ -485,32 +484,32 @@ class GroupChat extends React.Component {
                             this.state.mediaPrivacy == 1)
                           ? (
                             this.setState({ isShowBottomSheet: true })
-                           
-                  )
-                  : alert(
-                  'You do not have access to send media in this group.',
-                  );
-                  Keyboard.dismiss();
+
+                          )
+                          : alert(
+                            'You do not have access to send media in this group.',
+                          );
+                        Keyboard.dismiss();
                       }}
-                  emojiSelect={v => {
-                    this.setState({ message: `${this.state.message}${v}` });
-                  }}
-                  setFile={file => {
-                    this.setState({ file: file });
-                  }}
+                      emojiSelect={v => {
+                        this.setState({ message: `${this.state.message}${v}` });
+                      }}
+                      setFile={file => {
+                        this.setState({ file: file });
+                      }}
                     />
                   ) : (
-                  <View style={{ height: 60 }}>
-                    <Text
-                      style={{
-                        fontSize: 16,
-                        textAlign: 'center',
-                        marginLeft: 1,
-                        marginTop: 3,
-                      }}>
-                      You can't send messages to this group.
-                    </Text>
-                  </View>
+                    <View style={{ height: 60 }}>
+                      <Text
+                        style={{
+                          fontSize: 16,
+                          textAlign: 'center',
+                          marginLeft: 1,
+                          marginTop: 3,
+                        }}>
+                        You can't send messages to this group.
+                      </Text>
+                    </View>
                   )}
                 </>
               ) : (
@@ -528,7 +527,6 @@ class GroupChat extends React.Component {
                 </View>
               )}
             </AudioContextProvider>
-
 
             <BottomSheetUploadFile
               cancelBtn={{
