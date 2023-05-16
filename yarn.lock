@@ -7153,11 +7153,6 @@ react-native-codegen@^0.71.5:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-compressor@^1.6.1:
-  version "1.6.1"
-  resolved "https://registry.yarnpkg.com/react-native-compressor/-/react-native-compressor-1.6.1.tgz#f1e4b765f172c649a453f39b3b7478554f825596"
-  integrity sha512-SmyRPWIQY7RPz50bXkkhLcIjoMMIB62rJJls9cG7XCeMIN/I8TFijmXZjEWrgzRlUMBa0JMr7AIXSLvcMp9hfA==
-
 react-native-countdown-component@^2.7.1:
   version "2.7.1"
   resolved "https://registry.yarnpkg.com/react-native-countdown-component/-/react-native-countdown-component-2.7.1.tgz#d1e1278d792b0bb6b1bf58972e8a3ad758926a86"

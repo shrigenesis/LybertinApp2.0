@@ -10,6 +10,7 @@ import {
   SafeAreaView,
   BackHandler,
   Alert,
+  Platform,
 } from 'react-native';
 import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
@@ -312,7 +313,7 @@ class Chat extends React.Component {
       res => {
         if (res.status) {
           this.setMessages(res);
-          console.log('sendFile', res);
+          console.log('sendFile', res); 
         }
       },
       err => {

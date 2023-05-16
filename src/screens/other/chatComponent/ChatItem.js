@@ -44,7 +44,6 @@ const _getStyleSelector = (item, direction) => {
 const _renderMessage = (item, style) => {
   const videoRef = useRef();
   const audio = useContext(AudioContext);
-  // const [oldDate, setoldDate] = useState(new Date())
 
 
   useEffect(() => {

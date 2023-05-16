@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useRef } from 'react';
+import React, { useRef, useContext, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -18,12 +18,14 @@ import moment from 'moment';
 import SoundPlayer from './../../../component/soundPlayer';
 import { IMAGEURL } from '../../../utils/api';
 import Video from 'react-native-video';
+import Slider from 'react-native-slider'
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu'; // 
+import { AudioContext } from '../../../context/AudioContext';
 
 
 
@@ -75,6 +77,63 @@ const _getStyleSelector = (item, direction) => {
 };
 
 const _renderMessage = (item, style, videoRef, direction) => {
+  const audio = useContext(AudioContext);
+
+
+  useEffect(() => {
+    videoRef?.current?.setNativeProps({
+      paused: true,
+    });
+  }, [])
+
+  const Audio = () => {
+    if (`${IMAGEURL}/${item.file_name}` === audio?.audio) {
+      return (
+        <SoundPlayer
+          forChat={true}
+          recordingFile={`${IMAGEURL}/${item.file_name}`}
+        />
+      )
+    } else {
+      return (
+        <TouchableOpacity
+          disabled={audio?.isdisabled}
+          activeOpacity={1}
+          onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
+          <View
+            style={{
+              // backgroundColor: color.borderGray,
+              alignItems: 'center',
+              marginTop: hp(2),
+              height: hp(4),
+              flexDirection: 'row',
+              paddingRight: wp(5),
+              marginHorizontal: wp(2),
+              padding: 10,
+            }}>
+            <View style={styles.playpause} >
+              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+            </View>
+
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Slider
+                style={{ width: wp(28), marginLeft: wp(3) }}
+                trackStyle={styles.track}
+                thumbStyle={styles.thumb}
+                minimumTrackTintColor='#681F84'
+                thumbTouchSize={{ width: 50, height: 40 }}
+                minimumValue={0}
+                value={0}
+                maximumValue={10}
+                disabled={true}
+              />
+            </View>
+          </View>
+        </TouchableOpacity>
+      )
+    }
+  }
+
   switch (item.message_type) {
     case 0:
       return (
@@ -142,13 +201,14 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return (
         <View>
           {direction === 'left' && (
-            <Text style={styles.generalSenderText}>{item.sender.name}</Text>
+            <Text style={[styles.generalSenderText, {paddingBottom:0}]}>{item.sender.name}</Text>
           )}
+          {Audio()}
 
-          <SoundPlayer
+          {/* <SoundPlayer
             forChat={true}
             recordingFile={`${IMAGEURL}/${item.file_name}`}
-          />
+          /> */}
           <Text style={styles.leftChatTime}>{getTime(item.created_at)}</Text>
         </View>
       ); //VOICE
@@ -206,8 +266,10 @@ const _renderMessage = (item, style, videoRef, direction) => {
 
 export const ChatItemgroup = React.memo(
   ({ item, user_id, avatar, index, onImagePress, menu, replyOn }) => {
+    const audio = useContext(AudioContext);
     const videoRef = useRef();
     const Action = item => {
+      audio?.setaudio('');
       // let url = `${IMAGEURL}${item.message}`;
       if (item.message_type == 2) {
         onImagePress({ file: item.file_name, fileType: 'pdf' });
@@ -690,6 +752,26 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Regular,
     fontSize: fontSize.size12,
     color: color.btnBlue
+  },
+  playpause: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: wp(10),
+    height: hp(4)
+  },
+  track: {
+    height: 3,
+    backgroundColor: '#Fff',
+  },
+  thumb: {
+    width: 10,
+    height: 10,
+    backgroundColor: '#681F84',
+    borderRadius: 10,
+    shadowColor: '#31a4db',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 2,
+    shadowOpacity: 1,
   },
   flexboxImage: {
     flexDirection: 'row',
