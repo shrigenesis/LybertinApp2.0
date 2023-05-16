@@ -570,7 +570,7 @@ const styles = StyleSheet.create({
     fontSize: fontSize.size12,
     color: color.blackRussian,
     fontFamily: fontFamily.Medium,
-    maxWidth: wp(70)
+    maxWidth: wp(60)
   }
 
   // replyWrapper:{
