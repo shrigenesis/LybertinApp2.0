@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
     thumb: {
         width: 10,
         height: 10,
-        backgroundColor: '#681F84',
+        backgroundColor: '#681F84', 
         borderRadius: 10,
         shadowColor: '#31a4db',
         shadowOffset: { width: 0, height: 0 },
