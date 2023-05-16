@@ -316,7 +316,7 @@ export const BottomView = memo(props => {
                 />
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() =>{ 
+                onPress={() => {
                   audio?.setaudio('')
                   sendMessage()
                 }}
@@ -461,7 +461,7 @@ export const BottomView = memo(props => {
                     disabled={disable}
                     onPress={() => {
                       StopMultiplePress()
-                      !isRecordingStart && sendMessage(), setRecordingFile(''),audio?.setaudio('');
+                      !isRecordingStart && sendMessage(), setRecordingFile(''), audio?.setaudio('');
                     }}
                     style={styles.sendbtn}>
                     {!isRecordingStart && (
@@ -540,6 +540,7 @@ export const BottomView = memo(props => {
               {!isRecordingStart && (
                 <TouchableOpacity
                   onPress={() => {
+                    audio?.setaudio('')
                     pickCamera == 1
                       ? pickImage(
                         'camera',
@@ -673,9 +674,9 @@ const styles = StyleSheet.create({
   thumb: {
     width: 10,
     height: 10,
-    backgroundColor: '#681F84',
+    backgroundColor: color.btnBlue,
     borderRadius: 10,
-    shadowColor: '#31a4db',
+    shadowColor: color.btnBlue,
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
