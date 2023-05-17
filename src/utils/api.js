@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 // let BASEURL = 'http://192.168.0.120:8000';
 export const BASEURL = 'https://stage.shrigenesis.com';
 // export const BASEURL = 'https://lybertine.com';
-export const domainUriPrefix='https://lybertineapp.page.link';
+export const domainUriPrefix = 'https://lybertineapp.page.link';
 export const twitterSuccessUrl = `${BASEURL}/twitterSuccess`
 export const twitterFailUrl = `${BASEURL}/twitterFail`
 
@@ -66,9 +66,9 @@ export const ApiUrl = {
   groupDetail: `${apiBaseUrl}groups/show/`,
   groupUpdate: `${apiBaseUrl}groups/update/`,
   storyCreate: `${apiBaseUrl}story/create`,
-  viewStory: `${apiBaseUrl}story/view-story`, 
-  stories: `${apiBaseUrl}story/index`, 
-  deletestory: `${apiBaseUrl}story/delete-story`,  
+  viewStory: `${apiBaseUrl}story/view-story`,
+  stories: `${apiBaseUrl}story/index`,
+  deletestory: `${apiBaseUrl}story/delete-story`,
   reportstory: `${apiBaseUrl}reported-story/report`,
   requestList: `${apiBaseUrl}follow/pendingfriendRequest-list`,
   accpetRequest: `${apiBaseUrl}follow/accept-request`,
@@ -114,10 +114,10 @@ export const ApiUrl = {
 
   // Education 
   educationList: `${apiBaseUrl}courses`,
-  educationListFilter: `${apiBaseUrl}courses-filter`, 
-  educationBuy: `${apiBaseUrl}courses/buy/course`, 
-  educationPurchased: `${apiBaseUrl}courses/purchased`, 
-  educationAddInterest: `${apiBaseUrl}user-courses-interest`, 
+  educationListFilter: `${apiBaseUrl}courses-filter`,
+  educationBuy: `${apiBaseUrl}courses/buy/course`,
+  educationPurchased: `${apiBaseUrl}courses/purchased`,
+  educationAddInterest: `${apiBaseUrl}user-courses-interest`,
 };
 
 export const APIRequest = async (config = {}, onSuccess, onError, noAuth = null) => {
@@ -150,7 +150,7 @@ export const APIRequest = async (config = {}, onSuccess, onError, noAuth = null)
     console.log(data);
     axios(data)
       .then(res => {
-         console.log(res);
+        console.log(res);
         if (res.status == 200 || res.status == 201) {
           onSuccess(res.data);
         }
@@ -168,8 +168,11 @@ export const APIRequest = async (config = {}, onSuccess, onError, noAuth = null)
   }
 };
 
-export const APIRequestWithFile = async (config = {}, onSuccess, onError) => {
+
+
+export const APIRequestWithFile = async (config = {}, onSuccess, onError,  uploadProgress) => {
   const token = new User().getToken();
+  
   try {
     let data = {
       method: config.method,
@@ -180,11 +183,14 @@ export const APIRequestWithFile = async (config = {}, onSuccess, onError) => {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
+      onUploadProgress: (progress) =>
+        uploadProgress(progress, config.uniqueId),
     };
-    console.log('config',data);
+    console.log('config', data);
     axios(data)
       .then(res => {
         if (res.status == 200 || res.status == 201) {
+          console.log(res.data);
           onSuccess(res.data);
         }
       })
@@ -206,12 +212,12 @@ export const APIRequestWithFile1 = async (config = {}, onSuccess, onError) => {
       url: config.url,
       data: config.body,
       headers: {
-       
+
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
     };
-    console.log('config',data);
+    console.log('config', data);
     axios(data)
       .then(res => {
         if (res.status == 200 || res.status == 201) {

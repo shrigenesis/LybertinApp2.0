@@ -127,6 +127,9 @@ const PostStory = ({ navigation, route }) => {
     );
   };
 
+
+
+
   const videoRef = useRef();
   const renderStoryItem = () => {
     let file = route?.params?.file;

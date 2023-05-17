@@ -11,6 +11,7 @@ import {
   Keyboard,
   Pressable,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
@@ -59,6 +60,7 @@ class GroupChat extends React.Component {
       roomId: '',
       menu: [],
       isShowBottomSheet: false,
+      progressFile: [],
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -251,6 +253,8 @@ class GroupChat extends React.Component {
   };
 
   sendFile = async () => {
+    const d = new Date();
+    let ms = d.getMilliseconds();
     let formData = new FormData();
     if (this.state.audioFile != '') {
       formData.append('file', {
@@ -270,8 +274,6 @@ class GroupChat extends React.Component {
       formData.append('file', this.state.file);
     } else {
       let type = this.state.file.type.split("/")
-      const d = new Date();
-      let ms = d.getMilliseconds();
       if (this.state.file != '') {
         formData.append('file', {
           uri: this.state.file.uri,
@@ -300,8 +302,12 @@ class GroupChat extends React.Component {
       url: ApiUrl.sendFile,
       method: 'post',
       body: formData,
+      uniqueId: ms
     };
-    this.setState({ file: undefined })
+    this.setState({
+      file: undefined,
+      progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
+    })
     APIRequestWithFile(
       config,
       res => {
@@ -330,7 +336,16 @@ class GroupChat extends React.Component {
         }
         this.setState({ isLoading: false });
       },
+      (progress, uniqueId) => {
+        let { total, loaded } = progress
+        console.log(total, loaded, uniqueId, this.state.progressFile);
+        const data = this.state.progressFile?.filter((item, i) => item.uniqueId !== uniqueId)
+        if (total === loaded) {
+          this.setState({ progressFile: data })
+        }
+      },
     );
+
   };
 
   // hide Bottom sheet
@@ -345,6 +360,7 @@ class GroupChat extends React.Component {
   render() {
     const { group_type, privacy, media_privacy, name, description } =
       this.state?.groupDetail;
+
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
@@ -430,7 +446,6 @@ class GroupChat extends React.Component {
                 renderItem={({ item, index }) => (
                   <View>
                     {/* <Text>{item.sender.id}</Text> */}
-
                     <ChatItemgroup
                       onImagePress={files =>
                         this.props.navigation.navigate('ShowImg', {
@@ -449,6 +464,45 @@ class GroupChat extends React.Component {
                   </View>
                 )}
               />
+
+              {/* progress of file upload */}
+              {/* {this.state.progressFile.map((item) => (
+                <View style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+                  <View style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-end',
+                    alignSelf: 'flex-end'
+                  }}>
+                    < ActivityIndicator size="small" color="#0000ff" />
+                    <Image style={{
+                      borderRadius: 15,
+                      overflow: 'hidden',
+                      width: 100,
+                      height: 70,
+                      resizeMode: 'cover',
+                    }}
+                      source={item.type === 'video'? IMAGE.media1: IMAGE.media} />
+                  </View>
+                </View>
+              ))} */}
+              {/* <View style={{paddingHorizontal:15, paddingVertical:10}}>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-end',
+                  alignSelf: 'flex-end'
+                }}>
+                  < ActivityIndicator size="small" color="#0000ff" />
+                  <Image style={{
+                    borderRadius: 15,
+                    overflow: 'hidden',
+                    width: 100,
+                    height: 70,
+                    resizeMode: 'cover',
+                  }}
+                    source={IMAGE.media1} />
+                </View>
+              </View> */}
+
               {this.state.is_exit === false ? (
                 <>
                   {(this.state.groupType == 2 && this.state.isAdmin == true) ||
@@ -649,8 +703,8 @@ class GroupChat extends React.Component {
               bottomSheetRef={this.bottomSheetRef}
             /> */}
           </View>
-        </View>
-      </SafeAreaView>
+        </View >
+      </SafeAreaView >
     );
   }
 }
