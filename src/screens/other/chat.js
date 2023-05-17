@@ -353,9 +353,9 @@ class Chat extends React.Component {
   render() {
     console.log('=======================', this.state.file);
     return (
-      <SafeAreaView style={styles.safeArea}>
+      // <SafeAreaView style={styles.safeArea} >
         <View style={styles.container}>
-          <View>
+          <SafeAreaView>
             <Header
               appReady={this.state.appReady}
               isLoading={this.state.isLoading}
@@ -448,70 +448,9 @@ class Chat extends React.Component {
               )}
               title={null}
             />
-          </View>
+          </SafeAreaView>
 
-          {/* <View
-            style={{
-              height: hp(100),
-              width: wp(100),
-              backgroundColor:
-                color.black,
-              zIndex: 99999999,
-              marginTop: -50,
-              display: !this.state.file===undefined? 'block':
-            }}
-          >
-            <TouchableOpacity
-              onPress={() => this.setState({ file: undefined })}
-              style={{
-                position: 'absolute', left: 10, top: 10
-              }}>
-              <Image
-                source={IMAGE.redCancel}
-                style={{
-                  color: color.red,
-                  height: 30,
-                  width: 30,
-                  resizeMode: 'contain',
-                }}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={this.deleteFile}
-              style={{
-                position: 'absolute', right: 20, bottom: 40
-              }}>
-              <Image
-                source={IMAGE.send}
-                style={{
-                  color: color.red,
-                  height: 30,
-                  width: 30,
-                  resizeMode: 'contain',
-                }}
-              />
-            </TouchableOpacity>
-            <View>
-              {this.state.file?.fileType == 'pdf' ? (
-                <Image
-                  source={IMAGE.pdf}
-                  style={{ resizeMode: 'contain', height: 100, width: 100 }}
-                />
-              ) : this.state.file?.fileType == 'photo' || this.state.file?.fileType == 'image' ? (
-                <Image
-                  source={{ uri: this.state.file.uri }}
-                  style={{ resizeMode: 'contain', height: hp(100), width: wp(90) }}
-                />
-              ) : (
-                <Image
-                  source={IMAGE.gallery}
-                  style={{ resizeMode: 'contain', height: 100, width: 1000 }}
-                />
-              )}
-            </View>
-          </View> */}
-
-          <View style={{ flex: 1 }}>
+          <View style={{height:hp(91)}}>
             <AudioContextProvider>
               <FlatList
                 ref={this.chatListRef}
@@ -535,7 +474,6 @@ class Chat extends React.Component {
                   />
                 )}
               />
-
               {this.state.appReady && (
                 <BottomView
                   message={this.state.message}
@@ -676,21 +614,11 @@ class Chat extends React.Component {
                   </TouchableOpacity>
                 </View>
               </View>
-            </BottomSheetUploadFile>
-
-            {/* <RenderBottomSheet
-              file={file => {
-                this.setState({ file: file });
-                this.bottomSheetRef?.current?.close();
-              }}
-              sendFile={this.sendFile}
-              snapPoints={this.snapPoints}
-              bottomSheetRef={this.bottomSheetRef}
-            /> */}
-            {/* <Loader isLoading={this.state.isLoading} type="dots" /> */}
+            </BottomSheetUploadFile>            
           </View>
+
         </View>
-      </SafeAreaView>
+      // </SafeAreaView>
     );
   }
 }

@@ -528,7 +528,7 @@ const MarketplaceDetails = props => {
                       <TouchableOpacity onPress={() => setisExtend(d => !d)}>
                         <Text
                           style={{color: color.btnBlue, textAlign: 'right'}}>
-                          {isExtend ? 'less more' : '...read more'}
+                          {isExtend ? 'less' : '...read more'}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -702,6 +702,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     borderColor: color.white,
+    backgroundColor: color.white,
     marginTop: -(STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 60 : 15)),
   },
   backButton: {

@@ -69,43 +69,9 @@ export default class TicketScreen extends Component {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
 
-          <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
+          <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
 
-          <Header headStyle={{backgroundColor: color.lightGray}} title="My Bookings" />
-
-          {/* <View style={{ marginHorizontal: '4%', marginVertical: '6%' }}>
-            <View style={styles.headerContainer}>
-              <TouchableOpacity
-                style={{ height: 30, width: 30 }}
-                onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={IMAGE.back}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </TouchableOpacity>
-              <Text style={styles.headerText}>
-                My Bookings
-              </Text>
-              <TouchableOpacity
-                onPress={() => {
-                  reportBottomSheetRef?.current?.present();
-                }}>
-                <Image
-                  source={IMAGE.report}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    resizeMode: 'contain',
-                    marginRight: 10,
-                  }}
-                />
-              </TouchableOpacity>
-            </View>
-          </View> */}
+          <Header headStyle={{backgroundColor: color.white}} title="My Bookings" />
 
           <View style={styles.bodyContainer}>
             <View style={{ marginHorizontal: '3%' }}>
@@ -156,12 +122,12 @@ export default class TicketScreen extends Component {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: color.lightGray
+    backgroundColor: color.white
   },
   container: {
     flex: 1,
     width: null,
-    backgroundColor: color.lightGray,
+    backgroundColor: color.white,
   },
   headerContainer: {
     flexDirection: 'row',

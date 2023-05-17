@@ -327,7 +327,7 @@ const Login = ({ navigation, route }) => {
         rate={1.0}
         volume={audioLevel}
         ref={videoRef}
-        muted={isPaused}
+        muted={true}
         paused={isPaused}
         repeat={true}
         resizeMode={'cover'}

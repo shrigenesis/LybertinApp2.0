@@ -32,6 +32,7 @@ import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import BottomSheetWebview from './BottomSheetWebview';
 import Stories from './Story';
 import {BottomSheetUploadFile} from './BottomSheetUploadFile';
+import { log } from 'react-native-reanimated';
 
 const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [text, settext] = useState([]);
@@ -140,9 +141,14 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const isFocus = useIsFocused();
   useEffect(() => {
     if (isFocus) {
+      console.log('story');
       fetchStorys();
     }
   }, [isFocus]);
+
+  const closeStory = ()=>{
+    console.log('closeStory')
+  }
 
   const _deleteStory = (storyId) => {
 
@@ -163,6 +169,8 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     );
 
   };
+
+  
 
   const doDeleteAction = (storyId) => {
 
@@ -206,6 +214,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             setStories(res.stories);
             setmorestory(true);
           } else {
+            setStories(res.stories);
             setmorestory(false);
           }
         }
@@ -318,6 +327,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         {stories.length > 0 ? <Stories
           deleteOnPress={(id) => { _deleteStory(id) }}
           reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
+          closeStory = {()=> closeStory()}
           data={stories} titleStyle={
             !headerFontColor ? style.storyText : style.storyTextTheme
           } /> : null}

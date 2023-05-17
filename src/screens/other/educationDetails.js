@@ -342,7 +342,7 @@ export default class educationDetails extends Component {
                             })
                           }>
                           <Text style={{color: color.btnBlue,  textAlign:'right'}}>
-                            {this.state.isExtend ? 'less more' : '...read more'}
+                            {this.state.isExtend ? 'less' : '...read more'}
                           </Text>
                         </TouchableOpacity>
                       </View>

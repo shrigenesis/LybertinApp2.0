@@ -65,7 +65,7 @@ const TicketVideoScreen = (props) => {
             />
           </View>
         ) : (
-          <ScrollView style={{height:hp(75) }}>
+          <ScrollView style={{height: Platform.OS ==='ios'? hp(70) : hp(75) }}>
             {Videos.map((d,index) => (
               <View style={{
                 marginTop: 20,

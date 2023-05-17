@@ -178,6 +178,14 @@ const ShowStory = ({ navigation, route }) => {
     return;
   }, [isFocus]);
 
+  useEffect(() => {  
+    return () => {
+      console.log('unmount storyList');
+      storyList([])
+    }
+  }, [])
+  
+
   const _deleteStory = () => {
     let file = storyList[activeIndex];
 

@@ -13,7 +13,7 @@ import {
   StatusBar,
 } from 'react-native';
 import React, { Component } from 'react';
-import { IMAGE, color, fontFamily } from '../../constant';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -44,11 +44,13 @@ export default class chooseEventDate extends Component {
   render() {
     console.log(this.state.formatted_schedule_dates);
     return (
-      <SafeAreaView style={styles.safeArea}>
         <View style={{ ...styles.container }}>
           <View style={{ flex: 1, paddingTop: STATUSBAR_HEIGHT }}>
+            <SafeAreaView>
             <Header title="Choose Event Date" />
             <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+            </SafeAreaView>
+            
             <FlatList
               showsVerticalScrollIndicator={false}
               data={this.state.formatted_schedule_dates}
@@ -141,7 +143,7 @@ export default class chooseEventDate extends Component {
                         // alignItems: 'center',
                         // margin: 4,
                       }}>
-                      {this.state.selected === d.id ? (
+                      {d.can_book ? this.state.selected === d.id ? (
                         <Image
                           source={IMAGE.checkNewFill}
                           style={styles.bottomImage}
@@ -151,7 +153,7 @@ export default class chooseEventDate extends Component {
                           source={IMAGE.checkmark_circle_outline}
                           style={styles.bottomImage}
                         />
-                      )}
+                      ): null}
                     </View>
                   </TouchableOpacity>
                   {/* <View style={styles.divider}></View> */}
@@ -178,7 +180,6 @@ export default class chooseEventDate extends Component {
             <Text style={styles.buttonText}>Get Tickets</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
     );
   }
 }
@@ -217,8 +218,8 @@ const styles = StyleSheet.create({
     marginVertical: '5%',
   },
   buttonText: {
-    fontSize: Platform.OS == 'ios' ? 18 : 16,
-    fontFamily: fontFamily.Medium,
+    fontSize: fontSize.size15,
+    fontFamily: fontFamily.Regular,
     color: color.white,
   },
 });
