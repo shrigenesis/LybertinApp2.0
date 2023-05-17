@@ -16,6 +16,7 @@ import Story from "./Story";
 import UserView from "./UserView";
 import ProgressArray from "./ProgressArray";
 import { StoriesType, StoryType } from ".";
+import { heightPercentageToDP, widthPercentageToDP } from "react-native-responsive-screen";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -132,7 +133,9 @@ const StoryContainer: React.FC<Props> = (props: Props) => {
               story={story}
             />
           </View>
-          <ActivityIndicator color="white" />
+          <View style={{position: 'absolute', top: heightPercentageToDP(49), left: widthPercentageToDP(48) }}>
+            <ActivityIndicator color="white" />
+          </View>
         </View>
       );
     }

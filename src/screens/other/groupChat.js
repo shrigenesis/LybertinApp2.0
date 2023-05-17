@@ -304,10 +304,11 @@ class GroupChat extends React.Component {
       body: formData,
       uniqueId: ms
     };
-    this.setState({
-      file: undefined,
-      progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
-    })
+    // this.setState({
+    //   file: undefined,
+    //   progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
+    // })
+    console.log(config);
     APIRequestWithFile(
       config,
       res => {
@@ -433,7 +434,7 @@ class GroupChat extends React.Component {
             )}
             title={null}
           />
-          <View style={{ flex: 1, paddingBottom: 0 }}>
+          <View style={{ height:hp(87)}}>
             <AudioContextProvider>
               <FlatList
                 ref={this.chatListRef}

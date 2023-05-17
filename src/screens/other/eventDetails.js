@@ -204,7 +204,7 @@ export default class eventDetails extends Component {
                   // borderTopRightRadius: 40,
                   backgroundColor: '#F9F9FA',
                 }}>
-                <View>
+                <View style={{paddingBottom: 15}}>
                   <View style={styles.shareWrapp}>
                     <Text style={styles.heading}>{this.state.event.title}</Text>
                     <TouchableOpacity onPress={() => this.onShare()}>
@@ -344,7 +344,7 @@ export default class eventDetails extends Component {
                         }>
                         <Text
                           style={{color: color.btnBlue, textAlign: 'right'}}>
-                          {this.state.isExtend ? 'less more' : '...read more'}
+                          {this.state.isExtend ? 'less' : '...read more'}
                         </Text>
                       </TouchableOpacity>
                     </View>
@@ -677,7 +677,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: fontSize.size15,
     fontFamily: fontFamily.Regular,
     color: color.white,
   },

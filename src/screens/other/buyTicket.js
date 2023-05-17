@@ -13,7 +13,7 @@ import {
   Modal,
   StatusBar,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -850,7 +850,7 @@ export default class buyTicket extends Component {
     };
 
     return (
-      <SafeAreaView style={{ flex:1, backgroundColor: color.white }}>
+      <SafeAreaView edges={['right', 'left', 'top']} style={{ flex:1, backgroundColor: color.white }}>
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title="Buy Ticket" />
         {this.state.paymenturl != null ? (
@@ -892,7 +892,7 @@ export default class buyTicket extends Component {
             />
           </View>
         ) : (
-          <SafeAreaView style={{ flex: 1, marginTop: Platform.OS ==='ios'? -45: -35, zIndex:-1}}>
+          <View style={{ flex: 1, zIndex:-1}}>
               <ScrollView>
                 <View style={styles.container}>
                   <Loader type="dots" isLoading={this.state.isloading} />
@@ -1446,7 +1446,9 @@ export default class buyTicket extends Component {
                     </View>
                   </Modal>
                 </View>
-                {this.state.paymenturl == null && (
+                
+              </ScrollView>
+              {this.state.paymenturl == null && (
                   <View style={{ flexDirection: 'row' }}>
                     {/* <TouchableOpacity
                       onPress={() => {
@@ -1482,8 +1484,7 @@ export default class buyTicket extends Component {
                     </TouchableOpacity>
                   </View>
                 )}
-              </ScrollView>
-          </SafeAreaView>
+          </View>
         )}
       </SafeAreaView>
     );
@@ -1541,6 +1542,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: null,
     backgroundColor: '#fff',
+    paddingVertical:15,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -1747,8 +1749,8 @@ const styles = StyleSheet.create({
     color: color.black,
   },
   buttonText: {
-    fontSize: 15,
-    fontFamily: fontFamily.Semibold,
+    fontSize: fontSize.size15,
+    fontFamily: fontFamily.Regular,
     color: color.white,
   },
   overlayStyle: {

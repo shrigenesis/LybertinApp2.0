@@ -19,39 +19,39 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import {IMAGE, color, fontFamily} from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import Toast from 'react-native-toast-message';
-import { RippleTouchable, Header, Button } from '../../component/';
+import {RippleTouchable, Header, Button} from '../../component/';
 import Loader from '../../component/loader';
-import { useIsFocused } from '@react-navigation/native';
-import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
-import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import { User } from '../../utils/user';
-import { LoginContext } from './../../context/LoginContext';
+import {useIsFocused} from '@react-navigation/native';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
+import BottomSheet, {BottomSheetBackdrop} from '@gorhom/bottom-sheet';
+import {User} from '../../utils/user';
+import {LoginContext} from './../../context/LoginContext';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import NoRecord from './noRecord';
 
-const MyFriends = ({ navigation, route }) => {
+const MyFriends = ({navigation, route}) => {
   const menu = [
     {
       label: 'Personal',
       subMenu: [
-        { label: 'Profile', navigation: 'EditProfile', icon: IMAGE.profile },
-        { label: 'Blocklist', icon: IMAGE.unfriend, navigation: 'Blocklist' },
-        { label: 'My Friends', icon: IMAGE.myFriend, navigation: '' },
+        {label: 'Profile', navigation: 'EditProfile', icon: IMAGE.profile},
+        {label: 'Blocklist', icon: IMAGE.unfriend, navigation: 'Blocklist'},
+        {label: 'My Friends', icon: IMAGE.myFriend, navigation: ''},
       ],
     },
     {
       label: 'General',
       subMenu: [
-        { label: 'Help', icon: IMAGE.help },
-        { label: 'About', icon: IMAGE.about },
-        { label: 'Tell a Friend', icon: IMAGE.tall_friends },
-        { label: 'Logout', icon: IMAGE.block },
+        {label: 'Help', icon: IMAGE.help},
+        {label: 'About', icon: IMAGE.about},
+        {label: 'Tell a Friend', icon: IMAGE.tall_friends},
+        {label: 'Logout', icon: IMAGE.block},
       ],
     },
   ];
@@ -81,7 +81,7 @@ const MyFriends = ({ navigation, route }) => {
         getfriends();
         Toast.show({
           type: 'success',
-          text1: res.message
+          text1: res.message,
         });
         console.log('Api response unfriend===', res);
       },
@@ -122,89 +122,82 @@ const MyFriends = ({ navigation, route }) => {
 
   return (
     <SafeAreaView style={style.safeArea}>
-      <View style={{ flex: 1, backgroundColor: color.white }}>
-        <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
-        <Header
-          title={'My Friends'}
-          headStyle={{backgroundColor: color.lightGray}} 
+        <StatusBar
+          barStyle={'dark-content'}
+          backgroundColor={color.white}
         />
+        <Header title={'My Friends'} />
+        <View style={{flex: 1,  zIndex:-1}}>
+          <ScrollView >
+            <Loader isLoading={isLoading} type={'dots'} />
 
-        <ScrollView style={{paddingTop:30}}>
-          <Loader isLoading={isLoading} type={'dots'} />
+            {friends.length > 0 ? (
+              <>
+                {friends?.map((item, index) => (
+                  <RippleTouchable
+                    key={`to-${index}`}
+                    onPress={() =>
+                      navigation.navigate('UserProfile', {data: item})
+                    }
+                    style={style.cardBlock}>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Image
+                        source={{uri: `${IMAGEURL}/${item.avatar}`}}
+                        style={style.icon}
+                      />
+                      <Text style={style.cardText}>{item.name}</Text>
+                    </View>
+                    <Text
+                      style={{color: 'red'}}
+                      onPress={() => {
+                        Alert.alert(
+                          'Alert',
+                          'Are you sure you want to unfriend?',
+                          [
+                            {
+                              text: 'NO',
+                              onPress: () => null,
+                              style: 'Cancel',
+                            },
+                            {
+                              text: 'YES',
+                              onPress: () => [unfreind(item)],
+                            },
+                          ],
+                        );
+                      }}
 
-          {friends.length > 0 ? (
-            <>
-              {friends?.map((item,index) => (
-
-                <RippleTouchable
-                  key={`to-${index}`}
-                  onPress={() =>
-                    navigation.navigate('UserProfile', { data: item })
-                  }
-                  style={style.cardBlock}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <Image
-                      source={{ uri: `${IMAGEURL}/${item.avatar}` }}
-                      style={style.icon}
-                    />
-                    <Text style={style.cardText}>{item.name}</Text>
-                  </View>
-                  <Text
-                    style={{ color: 'red' }}
-                    onPress={() => {
-                      Alert.alert(
-                        'Alert',
-                        'Are you sure you want to unfriend?',
-                        [
-                          {
-                            text: 'NO',
-                            onPress: () => null,
-                            style: 'Cancel',
-                          },
-                          {
-                            text: 'YES',
-                            onPress: () => [unfreind(item)],
-                          },
-                        ],
-                      );
-                    }}
-
-                  // unfreind(item)
-                  >
-                    Unfriend
-                  </Text>
-                </RippleTouchable>
-              ))}
-            </>
-
-          ) : (
-            <>
-              {!isLoading && (
-                <NoRecord
-                  image={IMAGE.noFriends}
-                  title="No friends"
-                  description="You have not added anyone to the list. Get started by adding friends."
-                  showButton={false}
-                />
-              )}
-            </>
-          )}
-        </ScrollView>
-      </View>
+                      // unfreind(item)
+                    >
+                      Unfriend
+                    </Text>
+                  </RippleTouchable>
+                ))}
+              </>
+            ) : (
+              <>
+                {!isLoading && (
+                  <NoRecord
+                    image={IMAGE.noFriends}
+                    title="No friends"
+                    description="You have not added anyone to the list. Get started by adding friends."
+                    showButton={false}
+                  />
+                )}
+              </>
+            )}
+          </ScrollView>
+        </View>
     </SafeAreaView>
   );
 };
 
 const style = StyleSheet.create({
   safeArea: {
-      flex: 1,
-      backgroundColor: color.white
+    flex: 1,
+    backgroundColor: color.white,
   },
-  // icon: {
-  //   resizeMode: 'contain',
-  //   height: 30,
-  //   width: 30,
-  // },
+
   heading: {
     fontSize: 17,
     lineHeight: hp(2.5),
@@ -268,7 +261,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderBottomColor: color.lightGray,
-    borderBottomWidth:1,
+    borderBottomWidth: 1,
   },
   profileImg: {
     borderWidth: 2,

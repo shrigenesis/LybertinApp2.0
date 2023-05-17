@@ -39,6 +39,8 @@ export default class TicketMediaScreen extends Component {
       this.getTickets();
       console.log('Screen.js focused')
     });
+      this.getTickets();
+    
   };
 
   getTickets = () => {
@@ -101,7 +103,7 @@ export default class TicketMediaScreen extends Component {
               />
             </View>
           ) : (
-            <View style={{ height: hp(75) }}>
+            <View style={{ height: Platform.OS ==='ios'? hp(70) : hp(75) }}>
               <FlatList
                 //   horizontal
                 showsVerticalScrollIndicator={false}

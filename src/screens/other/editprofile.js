@@ -95,10 +95,11 @@ export const RenderBottomSheet = memo(
             btnStyle={{
               marginTop: hp(2),
               alignSelf: 'center',
-              backgroundColor: color.red,
+              backgroundColor: color.lightGray,
               width: wp(90),
               height: hp(6),
             }}
+            labelStyle={{color: color.btnBlue}}
             label={'Cancel'}
           />
         </View>

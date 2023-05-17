@@ -28,6 +28,7 @@ type Props = {
   textReadMore?: string;
   deleteOnPress: (id: number) => void;
   reportOnPress: (id: number) => void;
+  closeStory: ()=> void;
 };
 
 const Stories = (props: Props) => {
@@ -43,6 +44,7 @@ const Stories = (props: Props) => {
 
   const onStoryClose = () => {
     setModel(false);
+    props.closeStory()
   };
 
 

@@ -106,8 +106,8 @@ export default class EmojiKeyboard extends React.PureComponent {
                     <FlatList
                         key={'01'}
                         showsVerticalScrollIndicator={false}
-                        contentContainerStyle={{paddingHorizontal:10}}
-                        numColumns={12}
+                        // contentContainerStyle={{paddingHorizontal:10}}
+                        numColumns={10}
                         data={this.renderEmojiIcons()}
                         initialNumToRender={20}
                         keyExtractor={(item)=>String(item?.unified)}

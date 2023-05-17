@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SafeAreaView, Text, View, TouchableOpacity, StatusBar, StyleSheet, Platform, Image, Alert } from 'react-native'
-import { Loader, Radio } from '../../component'
+import { Header, Loader, Radio } from '../../component'
 import { IMAGE, color, fontSize, fontFamily } from '../../constant'
 import { Button } from 'react-native-elements'
 import { User } from '../../utils/user';
@@ -125,7 +125,7 @@ const Payment = (props) => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar barStyle={'dark-content'} backgroundColor={color.transparent} />
-            <View style={styles.topbar}>
+            {/* <View style={styles.topbar}>
                 <View style={styles.headerContainer}>
                     <TouchableOpacity
                         style={styles.imageBox}
@@ -139,7 +139,10 @@ const Payment = (props) => {
                         Payment
                     </Text>
                 </View>
-            </View>
+            </View> */}
+
+            <Header title='Payment' />
+
             <View style={styles.bodyStyle}>
                 <Text style={styles.headingStyle}>Payment method </Text>
 
@@ -259,7 +262,8 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: null,
-        marginTop: 25,
+        backgroundColor: color.white
+        // marginTop: 25,
     },
     headerContainer: {
         flexDirection: 'row',
@@ -275,7 +279,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     bodyStyle: {
-        padding: 20
+        padding: 20,
+        paddingTop: 50
     },
     headingStyle: {
         fontSize: fontSize.size15,
@@ -295,7 +300,7 @@ const styles = StyleSheet.create({
     },
     topbar: {
         marginHorizontal: '4%',
-        marginVertical: '6%'
+        // marginVertical: '6%'
     },
     PaymentTypeBox: {
         borderWidth: 1,
