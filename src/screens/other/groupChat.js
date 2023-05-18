@@ -529,9 +529,7 @@ class GroupChat extends React.Component {
                 <>
                   {(this.state.groupType == 2 && this.state.isAdmin == true) ||
                     this.state.groupType == 1 ? (
-                    <View
-                      onLayout={(event) => this.updateBottomViewHeight(event)}
-                    >
+                    
                       <BottomView
                         // group_type={group_type}
                         pickCamera={
@@ -576,8 +574,9 @@ class GroupChat extends React.Component {
                         setFile={file => {
                           this.setState({ file: file });
                         }}
+                        updateBottomViewHeight ={this.updateBottomViewHeight.bind(this)}
+
                       />
-                    </View>
                   ) : (
                     <View style={{ height: 60 }}>
                       <Text

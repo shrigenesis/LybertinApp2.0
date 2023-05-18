@@ -147,7 +147,8 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   }, [isFocus]);
 
   const closeStory = ()=>{
-    console.log('closeStory')
+    console.log('closeStory---')
+    doDeleteAction()
   }
 
   const _deleteStory = (storyId) => {
