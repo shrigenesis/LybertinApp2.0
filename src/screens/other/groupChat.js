@@ -224,7 +224,7 @@ class GroupChat extends React.Component {
         }
       }
 
-      this.setState({message:''})
+      this.setState({ message: '' })
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
@@ -297,6 +297,7 @@ class GroupChat extends React.Component {
     this.setState({ isLoading: true });
     formData.append('to_id', `${this.props?.route?.params?.group_id}`);
     formData.append('is_group', 1);
+    formData.append('uniqueId', ms);
 
     console.log(formData, "formData")
 
@@ -324,6 +325,10 @@ class GroupChat extends React.Component {
       config,
       res => {
         if (res.status) {
+          if (res?.conversation?.uniqueId) {
+            const data = this.state.progressFile?.filter((item, i) => item.uniqueId != res?.conversation?.uniqueId)
+            this.setState({ progressFile: data })
+          }
           this.setMessages(res);
         }
       },
@@ -349,11 +354,11 @@ class GroupChat extends React.Component {
         this.setState({ isLoading: false });
       },
       (progress, uniqueId) => {
-        let { total, loaded } = progress
-        const data = this.state.progressFile?.filter((item, i) => item.uniqueId !== uniqueId)
-        if (total === loaded) {
-          this.setState({ progressFile: data })
-        }
+        // let { total, loaded } = progress
+        // const data = this.state.progressFile?.filter((item, i) => item.uniqueId !== uniqueId)
+        // if (total === loaded) {
+        //   this.setState({ progressFile: data })
+        // }
       },
     );
 
@@ -506,7 +511,7 @@ class GroupChat extends React.Component {
                     columnGap: 10,
                   }}>
                     < ActivityIndicator size="small" color="#0000ff" />
-                    <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
+                    <Text style={{ fontStyle: 'italic' }}>Uploading...</Text>
                   </View>
                 </View>
               ))}
@@ -529,54 +534,54 @@ class GroupChat extends React.Component {
                 <>
                   {(this.state.groupType == 2 && this.state.isAdmin == true) ||
                     this.state.groupType == 1 ? (
-                    
-                      <BottomView
-                        // group_type={group_type}
-                        pickCamera={
-                          (this.state.mediaPrivacy == 2 &&
-                            this.state.isAdmin == true) ||
-                          this.state.mediaPrivacy == 1
-                        }
-                        // media_privacy={media_privacy}
-                        message={this.state.message}
-                        replyOn={this.state.replyOn !== undefined ? this.state.replyOn : null}
-                        removeReplyBox={() => this.setState({ replyOn: null })}
-                        file={this.state.file}
-                        audioFile={file => this.setState({ audioFile: file })}
-                        deleteFile={() => this.setState({ file: undefined })}
-                        sendMessage={
-                          this.state.file || this.state.audioFile != ''
-                            ? this.sendFile
-                            : this.sendMessage
-                        }
-                        textChange={v => this.setState({ message: v })}
-                        inputFocus={() => this.bottomSheetRef?.current?.close()}
-                        addPress={() => {
-                          (this.state.groupType == 2 &&
-                            this.state.isAdmin == true) ||
-                            (this.state.groupType == 1 &&
-                              this.state.mediaPrivacy == 2 &&
-                              this.state.isAdmin == true) ||
-                            (this.state.groupType == 1 &&
-                              this.state.mediaPrivacy == 1)
-                            ? (
-                              this.setState({ isShowBottomSheet: true })
 
-                            )
-                            : alert(
-                              'You do not have access to send media in this group.',
-                            );
-                          Keyboard.dismiss();
-                        }}
-                        emojiSelect={v => {
-                          this.setState({ message: `${this.state.message}${v}` });
-                        }}
-                        setFile={file => {
-                          this.setState({ file: file });
-                        }}
-                        updateBottomViewHeight ={this.updateBottomViewHeight.bind(this)}
+                    <BottomView
+                      // group_type={group_type}
+                      pickCamera={
+                        (this.state.mediaPrivacy == 2 &&
+                          this.state.isAdmin == true) ||
+                        this.state.mediaPrivacy == 1
+                      }
+                      // media_privacy={media_privacy}
+                      message={this.state.message}
+                      replyOn={this.state.replyOn !== undefined ? this.state.replyOn : null}
+                      removeReplyBox={() => this.setState({ replyOn: null })}
+                      file={this.state.file}
+                      audioFile={file => this.setState({ audioFile: file })}
+                      deleteFile={() => this.setState({ file: undefined })}
+                      sendMessage={
+                        this.state.file || this.state.audioFile != ''
+                          ? this.sendFile
+                          : this.sendMessage
+                      }
+                      textChange={v => this.setState({ message: v })}
+                      inputFocus={() => this.bottomSheetRef?.current?.close()}
+                      addPress={() => {
+                        (this.state.groupType == 2 &&
+                          this.state.isAdmin == true) ||
+                          (this.state.groupType == 1 &&
+                            this.state.mediaPrivacy == 2 &&
+                            this.state.isAdmin == true) ||
+                          (this.state.groupType == 1 &&
+                            this.state.mediaPrivacy == 1)
+                          ? (
+                            this.setState({ isShowBottomSheet: true })
 
-                      />
+                          )
+                          : alert(
+                            'You do not have access to send media in this group.',
+                          );
+                        Keyboard.dismiss();
+                      }}
+                      emojiSelect={v => {
+                        this.setState({ message: `${this.state.message}${v}` });
+                      }}
+                      setFile={file => {
+                        this.setState({ file: file });
+                      }}
+                      updateBottomViewHeight={this.updateBottomViewHeight.bind(this)}
+
+                    />
                   ) : (
                     <View style={{ height: 60 }}>
                       <Text
