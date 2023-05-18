@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, memo, useEffect } from 'react';
+import React, {useState, useMemo, useRef, memo, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,12 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { Header, Loader, pickDocument, pickImage } from './../../component/';
+import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import {IMAGE, color, fontFamily} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -28,12 +28,12 @@ import {
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
-import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
+import {useIsFocused} from '@react-navigation/native';
+import {BottomView, RenderBottomSheet, ChatItem} from './chatComponent/';
 import io from 'socket.io-client';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import { Divider } from 'react-native-elements';
+import {Divider} from 'react-native-elements';
 import {
   BottomSheetUploadFile,
   BottomSheetUploadFileStyle,
@@ -69,12 +69,12 @@ class Chat extends React.Component {
 
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
-      this.setState({ appReady: true });
+      this.setState({appReady: true});
 
       // setTimeout(() => {
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
-        this.setState({ chatList: [] });
+        this.setState({chatList: []});
         this.fetchChatList(user_id);
       }
       // }, 300);
@@ -96,11 +96,11 @@ class Chat extends React.Component {
 
     Socket.on('typing', () => {
       console.log('typing');
-      this.setState({ isTyping: true });
+      this.setState({isTyping: true});
     });
     Socket.on('stop typing', () => {
       console.log('stop typing');
-      this.setState({ isTyping: false });
+      this.setState({isTyping: false});
     });
 
     Socket.on('message recieved', newMessageRecieved => {
@@ -108,7 +108,7 @@ class Chat extends React.Component {
       // let data = [...this.state.chatList];
       // data.push(newMessageRecieved);
       let data = [newMessageRecieved, ...this.state.chatList];
-      this.setState({ isLoading: false, chatList: data });
+      this.setState({isLoading: false, chatList: data});
       // this.chatListRef?.current?.scrollToEnd({animated: true});
     });
   };
@@ -175,7 +175,7 @@ class Chat extends React.Component {
   // }
 
   fetchChatList = user_id => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.conversations}/${user_id}?page=${this.state.page}`,
       method: 'get',
@@ -202,10 +202,10 @@ class Chat extends React.Component {
           //   this.chatListRef?.current?.scrollToEnd({animated: true});
           // }, 2000);
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
@@ -239,7 +239,7 @@ class Chat extends React.Component {
       });
     } else {
       this.onTyping(false);
-      this.setState({ isLoading: true });
+      this.setState({isLoading: true});
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
@@ -251,7 +251,7 @@ class Chat extends React.Component {
         },
       };
 
-      this.setState({message:''})
+      this.setState({message: ''});
 
       APIRequest(
         config,
@@ -259,7 +259,7 @@ class Chat extends React.Component {
           this.setMessages(res);
         },
         err => {
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
           Toast.show({
             type: 'error',
             text1: err?.response?.data.message,
@@ -285,9 +285,8 @@ class Chat extends React.Component {
           android: {
             name: 'test.mp3',
             type: 'audio/mp3',
-          }
-        })
-
+          },
+        }),
       });
       console.log('sendFile  this.state.audioFile', this.state.audioFile);
     } else if (this.state.file.fileType === 'pdf') {
@@ -301,30 +300,37 @@ class Chat extends React.Component {
       console.log('sendFile  File', this.state.file);
     }
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     formData.append('to_id', `${this.props?.route?.params?.user_id}`);
 
     let config = {
       url: ApiUrl.sendFile,
       method: 'post',
       body: formData,
-      uniqueId: ms
+      uniqueId: ms,
     };
-
 
     if (this.state.audioFile != '') {
       this.setState({
-        file: undefined, audioFile: '',
-        progressFile: [...this.state.progressFile, { type: 'audio', uniqueId: ms }]
-      })
+        file: undefined,
+        audioFile: '',
+        progressFile: [
+          ...this.state.progressFile,
+          {type: 'audio', uniqueId: ms},
+        ],
+      });
     } else {
       this.setState({
-        file: undefined, audioFile: '',
-        progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
-      })
+        file: undefined,
+        audioFile: '',
+        progressFile: [
+          ...this.state.progressFile,
+          {type: this.state.file.fileType, uniqueId: ms},
+        ],
+      });
     }
 
-    console.log('after config', config, formData, );
+    console.log('after config', config, formData);
     APIRequestWithFile1(
       config,
       res => {
@@ -335,31 +341,33 @@ class Chat extends React.Component {
       },
       err => {
         if (err.response.status === 422) {
-          let errorMsg = ''
+          let errorMsg = '';
           if (err?.response?.data?.error?.to_id) {
-            errorMsg = err?.response?.data?.error?.to_id[0]
+            errorMsg = err?.response?.data?.error?.to_id[0];
           }
           if (err?.response?.data?.error?.file) {
-            errorMsg = err?.response?.data?.error?.file[0]
+            errorMsg = err?.response?.data?.error?.file[0];
           }
           Toast.show({
             type: 'error',
-            text1: errorMsg
+            text1: errorMsg,
           });
         } else {
           Toast.show({
             type: 'error',
-            text1: err?.message
+            text1: err?.message,
           });
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
         console.log('sendFile err', err);
       },
       (progress, uniqueId) => {
-        let { total, loaded } = progress
-        const resData = this.state.progressFile?.filter((item, i) => item.uniqueId != uniqueId)
+        let {total, loaded} = progress;
+        const resData = this.state.progressFile?.filter(
+          (item, i) => item.uniqueId != uniqueId,
+        );
         if (total === loaded) {
-          this.setState({ progressFile: resData })
+          this.setState({progressFile: resData});
         }
       },
     );
@@ -367,17 +375,18 @@ class Chat extends React.Component {
 
   // hide Bottom sheet
   setisShowBottomSheet = () => {
-    this.setState({ isShowBottomSheet: false });
+    this.setState({isShowBottomSheet: false});
   };
   // Update file from bottom sheet
   UpdateFile = file => {
-    this.setState({ file: file, isShowBottomSheet: false });
+    this.setState({file: file, isShowBottomSheet: false});
   };
 
   updateBottomViewHeight(event) {
-    let { height } = event.nativeEvent.layout;
+    let {height} = event.nativeEvent.layout;
+    console.log(height, "==========================================================================");
     if (this.state.bottomViewHeight !== height) {
-      this.setState({ bottomViewHeight: height })
+      this.setState({bottomViewHeight: height});
     }
   }
 
@@ -390,7 +399,7 @@ class Chat extends React.Component {
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}
             LeftIcon={() => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
@@ -469,8 +478,8 @@ class Chat extends React.Component {
                       {this.state.isTyping
                         ? 'Typing...'
                         : this.state.isOnline == '1'
-                          ? 'Online'
-                          : 'Offline'}
+                        ? 'Online'
+                        : 'Offline'}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -480,16 +489,17 @@ class Chat extends React.Component {
           />
         </SafeAreaView>
 
-        <View style={{
-          ...Platform.select({
-            ios: {
-              height: hp(91)
-            },
-            android: {
-              flex: 1
-            }
-          })
-        }} >
+        <View
+          style={{
+            ...Platform.select({
+              ios: {
+                height: hp(91),
+              },
+              android: {
+                flex: 1,
+              },
+            }),
+          }}>
           <AudioContextProvider>
             <FlatList
               ref={this.chatListRef}
@@ -498,7 +508,7 @@ class Chat extends React.Component {
               inverted={true}
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
-              renderItem={({ item, index }) => (
+              renderItem={({item, index}) => (
                 <ChatItem
                   onImagePress={files =>
                     this.props.navigation.navigate('ShowImg', {
@@ -514,40 +524,42 @@ class Chat extends React.Component {
               )}
             />
 
-            {this.state.progressFile.map((item) => (
-              <View style={[{ paddingHorizontal: 15, paddingVertical: 10 }, this.state.bottomViewHeight > 500 && { display: 'none' }]}>
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'flex-end',
-                  alignSelf: 'flex-end',
-                  backgroundColor: color.chatRight,
-                  padding: 10,
-                  borderRadius: 10,
-                  columnGap: 10,
-                }}>
-                  < ActivityIndicator size="small" color="#0000ff" />
-                  <Text  style={{fontStyle: 'italic'}}>Uploading...</Text>
+            {this.state.progressFile.map(item => (
+              <View
+                style={[
+                  {paddingHorizontal: 15, paddingVertical: 10},
+                  this.state.bottomViewHeight > 500 && {display: 'none'},
+                ]}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'flex-end',
+                    alignSelf: 'flex-end',
+                    backgroundColor: color.chatRight,
+                    padding: 10,
+                    borderRadius: 10,
+                    columnGap: 10,
+                  }}>
+                  <ActivityIndicator size="small" color="#0000ff" />
+                  <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
                 </View>
               </View>
-            ))}
+            ))} 
 
-
-            {this.state.appReady && (
-              <View
-                onLayout={(event) => this.updateBottomViewHeight(event)}
-              >
+            {/* <View onLayout={event => this.updateBottomViewHeight(event)}> */}
+              {this.state.appReady && (
                 <BottomView
                   message={this.state.message}
                   file={this.state.file}
-                  audioFile={file => this.setState({ audioFile: file })}
-                  deleteFile={() => this.setState({ file: undefined })}
+                  audioFile={file => this.setState({audioFile: file})}
+                  deleteFile={() => this.setState({file: undefined})}
                   sendMessage={
                     this.state.file || this.state.audioFile != ''
                       ? this.sendFile
                       : this.sendMessage
                   }
                   textChange={v => {
-                    this.setState({ message: v });
+                    this.setState({message: v});
                     this.onTyping(v != '');
                   }}
                   inputFocus={() => this.bottomSheetRef?.current?.close()}
@@ -555,17 +567,18 @@ class Chat extends React.Component {
                     console.log('addPress');
                     Keyboard.dismiss();
                     // this.bottomSheetRef?.current?.expand();
-                    this.setState({ isShowBottomSheet: true });
+                    this.setState({isShowBottomSheet: true});
                   }}
                   emojiSelect={v => {
-                    this.setState({ message: `${this.state.message}${v}` });
+                    this.setState({message: `${this.state.message}${v}`});
                   }}
                   setFile={file => {
-                    this.setState({ file: file });
+                    this.setState({file: file});
                   }}
+                  updateBottomViewHeight ={this.updateBottomViewHeight.bind(this)}
                 />
-              </View>
-            )}
+              )}
+            {/* </View> */}
           </AudioContextProvider>
 
           <BottomSheetUploadFile
@@ -678,8 +691,7 @@ class Chat extends React.Component {
             </View>
           </BottomSheetUploadFile>
         </View>
-
-      </View >
+      </View>
       // </SafeAreaView>
     );
   }
