@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import React, { useState, useMemo, useRef, memo, useEffect, useContext } from 'react';
-import {
+import ReactNative, {
   View,
   Text,
   StyleSheet,
@@ -61,6 +61,7 @@ class GroupChat extends React.Component {
       menu: [],
       isShowBottomSheet: false,
       progressFile: [],
+      bottomViewHeight: 0,
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -223,6 +224,7 @@ class GroupChat extends React.Component {
         }
       }
 
+      this.setState({message:''})
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
@@ -304,11 +306,20 @@ class GroupChat extends React.Component {
       body: formData,
       uniqueId: ms
     };
-    // this.setState({
-    //   file: undefined,
-    //   progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
-    // })
+
+    if (this.state.audioFile != '') {
+      this.setState({
+        file: undefined, audioFile: '',
+        progressFile: [...this.state.progressFile, { type: 'audio', uniqueId: ms }]
+      })
+    } else {
+      this.setState({
+        file: undefined, audioFile: '',
+        progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
+      })
+    }
     console.log(config);
+    // this.setState({ file: undefined , audioFile: ''});
     APIRequestWithFile(
       config,
       res => {
@@ -339,7 +350,6 @@ class GroupChat extends React.Component {
       },
       (progress, uniqueId) => {
         let { total, loaded } = progress
-        console.log(total, loaded, uniqueId, this.state.progressFile);
         const data = this.state.progressFile?.filter((item, i) => item.uniqueId !== uniqueId)
         if (total === loaded) {
           this.setState({ progressFile: data })
@@ -357,6 +367,14 @@ class GroupChat extends React.Component {
   UpdateFile = file => {
     this.setState({ file: file, isShowBottomSheet: false });
   };
+
+  updateBottomViewHeight(event) {
+    let { height } = event.nativeEvent.layout;
+    if (this.state.bottomViewHeight !== height) {
+      this.setState({ bottomViewHeight: height })
+    }
+  }
+
 
   render() {
     const { group_type, privacy, media_privacy, name, description } =
@@ -434,7 +452,16 @@ class GroupChat extends React.Component {
             )}
             title={null}
           />
-          <View style={{ height:hp(87)}}>
+          <View style={{
+            ...Platform.select({
+              ios: {
+                height: hp(87)
+              },
+              android: {
+                flex: 1
+              }
+            })
+          }}>
             <AudioContextProvider>
               <FlatList
                 ref={this.chatListRef}
@@ -467,40 +494,34 @@ class GroupChat extends React.Component {
               />
 
               {/* progress of file upload */}
-              {/* {this.state.progressFile.map((item) => (
-                <View style={{ paddingHorizontal: 15, paddingVertical: 10 }}>
+              {this.state.progressFile.map((item) => (
+                <View style={[{ paddingHorizontal: 15, paddingVertical: 10 }, this.state.bottomViewHeight > 500 && { display: 'none' }]}>
                   <View style={{
                     flexDirection: 'row',
                     alignItems: 'flex-end',
-                    alignSelf: 'flex-end'
+                    alignSelf: 'flex-end',
+                    backgroundColor: color.chatRight,
+                    padding: 10,
+                    borderRadius: 10,
+                    columnGap: 10,
                   }}>
                     < ActivityIndicator size="small" color="#0000ff" />
-                    <Image style={{
-                      borderRadius: 15,
-                      overflow: 'hidden',
-                      width: 100,
-                      height: 70,
-                      resizeMode: 'cover',
-                    }}
-                      source={item.type === 'video'? IMAGE.media1: IMAGE.media} />
+                    <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
                   </View>
                 </View>
-              ))} */}
-              {/* <View style={{paddingHorizontal:15, paddingVertical:10}}>
+              ))}
+              {/* <View style={[{paddingHorizontal:15, paddingVertical:10}, this.state.bottomViewHeight>500 && { display:'none'}]}>
                 <View style={{
                   flexDirection: 'row',
                   alignItems: 'flex-end',
-                  alignSelf: 'flex-end'
+                  alignSelf: 'flex-end',
+                  backgroundColor: color.lightSlaty,
+                  padding:10,
+                  borderRadius:10,
+                  columnGap:10,
                 }}>
                   < ActivityIndicator size="small" color="#0000ff" />
-                  <Image style={{
-                    borderRadius: 15,
-                    overflow: 'hidden',
-                    width: 100,
-                    height: 70,
-                    resizeMode: 'cover',
-                  }}
-                    source={IMAGE.media1} />
+                  <Text>Uploading...</Text>
                 </View>
               </View> */}
 
@@ -508,51 +529,55 @@ class GroupChat extends React.Component {
                 <>
                   {(this.state.groupType == 2 && this.state.isAdmin == true) ||
                     this.state.groupType == 1 ? (
-                    <BottomView
-                      // group_type={group_type}
-                      pickCamera={
-                        (this.state.mediaPrivacy == 2 &&
-                          this.state.isAdmin == true) ||
-                        this.state.mediaPrivacy == 1
-                      }
-                      // media_privacy={media_privacy}
-                      message={this.state.message}
-                      replyOn={this.state.replyOn !== undefined ? this.state.replyOn : null}
-                      removeReplyBox={() => this.setState({ replyOn: null })}
-                      file={this.state.file}
-                      audioFile={file => this.setState({ audioFile: file })}
-                      deleteFile={() => this.setState({ file: undefined })}
-                      sendMessage={
-                        this.state.file || this.state.audioFile != ''
-                          ? this.sendFile
-                          : this.sendMessage
-                      }
-                      textChange={v => this.setState({ message: v })}
-                      inputFocus={() => this.bottomSheetRef?.current?.close()}
-                      addPress={() => {
-                        (this.state.groupType == 2 &&
-                          this.state.isAdmin == true) ||
-                          (this.state.groupType == 1 &&
-                            this.state.mediaPrivacy == 2 &&
+                    <View
+                      onLayout={(event) => this.updateBottomViewHeight(event)}
+                    >
+                      <BottomView
+                        // group_type={group_type}
+                        pickCamera={
+                          (this.state.mediaPrivacy == 2 &&
                             this.state.isAdmin == true) ||
-                          (this.state.groupType == 1 &&
-                            this.state.mediaPrivacy == 1)
-                          ? (
-                            this.setState({ isShowBottomSheet: true })
+                          this.state.mediaPrivacy == 1
+                        }
+                        // media_privacy={media_privacy}
+                        message={this.state.message}
+                        replyOn={this.state.replyOn !== undefined ? this.state.replyOn : null}
+                        removeReplyBox={() => this.setState({ replyOn: null })}
+                        file={this.state.file}
+                        audioFile={file => this.setState({ audioFile: file })}
+                        deleteFile={() => this.setState({ file: undefined })}
+                        sendMessage={
+                          this.state.file || this.state.audioFile != ''
+                            ? this.sendFile
+                            : this.sendMessage
+                        }
+                        textChange={v => this.setState({ message: v })}
+                        inputFocus={() => this.bottomSheetRef?.current?.close()}
+                        addPress={() => {
+                          (this.state.groupType == 2 &&
+                            this.state.isAdmin == true) ||
+                            (this.state.groupType == 1 &&
+                              this.state.mediaPrivacy == 2 &&
+                              this.state.isAdmin == true) ||
+                            (this.state.groupType == 1 &&
+                              this.state.mediaPrivacy == 1)
+                            ? (
+                              this.setState({ isShowBottomSheet: true })
 
-                          )
-                          : alert(
-                            'You do not have access to send media in this group.',
-                          );
-                        Keyboard.dismiss();
-                      }}
-                      emojiSelect={v => {
-                        this.setState({ message: `${this.state.message}${v}` });
-                      }}
-                      setFile={file => {
-                        this.setState({ file: file });
-                      }}
-                    />
+                            )
+                            : alert(
+                              'You do not have access to send media in this group.',
+                            );
+                          Keyboard.dismiss();
+                        }}
+                        emojiSelect={v => {
+                          this.setState({ message: `${this.state.message}${v}` });
+                        }}
+                        setFile={file => {
+                          this.setState({ file: file });
+                        }}
+                      />
+                    </View>
                   ) : (
                     <View style={{ height: 60 }}>
                       <Text

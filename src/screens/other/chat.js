@@ -11,6 +11,7 @@ import {
   BackHandler,
   Alert,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
@@ -58,6 +59,8 @@ class Chat extends React.Component {
       per_page_count: 0,
       per_page: 0,
       isShowBottomSheet: false,
+      progressFile: [],
+      bottomViewHeight: 0,
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -248,6 +251,8 @@ class Chat extends React.Component {
         },
       };
 
+      this.setState({message:''})
+
       APIRequest(
         config,
         res => {
@@ -267,7 +272,8 @@ class Chat extends React.Component {
   sendFile = async () => {
     console.log('sendFile::');
     let formData = new FormData();
-
+    const d = new Date();
+    let ms = d.getMilliseconds();
     if (this.state.audioFile != '') {
       formData.append('file', {
         uri: this.state.audioFile,
@@ -288,8 +294,6 @@ class Chat extends React.Component {
       formData.append('file', this.state.file);
     } else {
       let type = this.state.file.type.split('/');
-      const d = new Date();
-      let ms = d.getMilliseconds();
       formData.append('file', {
         ...this.state.file,
         name: `videos${ms}.${type[1]}`,
@@ -304,16 +308,29 @@ class Chat extends React.Component {
       url: ApiUrl.sendFile,
       method: 'post',
       body: formData,
+      uniqueId: ms
     };
-    console.log('sendFile  File', this.state.file);
-    console.log('after config', config, formData);
-    this.setState({ file: undefined });
+
+
+    if (this.state.audioFile != '') {
+      this.setState({
+        file: undefined, audioFile: '',
+        progressFile: [...this.state.progressFile, { type: 'audio', uniqueId: ms }]
+      })
+    } else {
+      this.setState({
+        file: undefined, audioFile: '',
+        progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
+      })
+    }
+
+    console.log('after config', config, formData, );
     APIRequestWithFile1(
       config,
       res => {
         if (res.status) {
           this.setMessages(res);
-          console.log('sendFile', res); 
+          console.log('sendFile', res);
         }
       },
       err => {
@@ -338,6 +355,13 @@ class Chat extends React.Component {
         this.setState({ isLoading: false });
         console.log('sendFile err', err);
       },
+      (progress, uniqueId) => {
+        let { total, loaded } = progress
+        const resData = this.state.progressFile?.filter((item, i) => item.uniqueId != uniqueId)
+        if (total === loaded) {
+          this.setState({ progressFile: resData })
+        }
+      },
     );
   };
 
@@ -350,131 +374,168 @@ class Chat extends React.Component {
     this.setState({ file: file, isShowBottomSheet: false });
   };
 
+  updateBottomViewHeight(event) {
+    let { height } = event.nativeEvent.layout;
+    if (this.state.bottomViewHeight !== height) {
+      this.setState({ bottomViewHeight: height })
+    }
+  }
+
   render() {
-    console.log('=======================', this.state.file);
     return (
       // <SafeAreaView style={styles.safeArea} >
-        <View style={styles.container}>
-          <SafeAreaView>
-            <Header
-              appReady={this.state.appReady}
-              isLoading={this.state.isLoading}
-              LeftIcon={() => (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.goBack();
-                    }}
+      <View style={styles.container}>
+        <SafeAreaView>
+          <Header
+            appReady={this.state.appReady}
+            isLoading={this.state.isLoading}
+            LeftIcon={() => (
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.goBack();
+                  }}
+                  style={{
+                    height: 34,
+                    width: 30,
+                    marginLeft: hp(-1),
+                    marginRight: hp(-2),
+                  }}>
+                  <Icon
+                    name={'angle-left'}
                     style={{
-                      height: 34,
-                      width: 30,
-                      marginLeft: hp(-1),
-                      marginRight: hp(-2),
-                    }}>
-                    <Icon
-                      name={'angle-left'}
+                      fontSize: 30,
+                      color: color.black,
+                      marginLeft: hp(1),
+                    }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    this.props.navigation.navigate('UserProfile', {
+                      data: {
+                        ...this.props?.route?.params,
+                        name: this.props?.route?.params?.userName,
+                      },
+                    });
+                  }}
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    marginLeft: wp(3),
+                  }}>
+                  {this.props?.route?.params?.avatar ? (
+                    <Image
+                      source={{
+                        uri: `${IMAGEURL}/${this.props?.route?.params?.avatar}`,
+                      }}
                       style={{
-                        fontSize: 30,
-                        color: color.black,
-                        marginLeft: hp(1),
+                        marginLeft: wp(2),
+                        borderRadius: 120,
+                        height: 40,
+                        width: 40,
                       }}
                     />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      this.props.navigation.navigate('UserProfile', {
-                        data: {
-                          ...this.props?.route?.params,
-                          name: this.props?.route?.params?.userName,
-                        },
-                      });
-                    }}
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginLeft: wp(3),
-                    }}>
-                    {this.props?.route?.params?.avatar ? (
-                      <Image
-                        source={{
-                          uri: `${IMAGEURL}/${this.props?.route?.params?.avatar}`,
-                        }}
-                        style={{
-                          marginLeft: wp(2),
-                          borderRadius: 120,
-                          height: 40,
-                          width: 40,
-                        }}
-                      />
-                    ) : (
-                      <Image
-                        source={IMAGE.chatgirl}
-                        style={{
-                          marginLeft: wp(2),
-                          borderRadius: 120,
-                          height: 30,
-                          width: 30,
-                        }}
-                      />
-                    )}
-                    <View
+                  ) : (
+                    <Image
+                      source={IMAGE.chatgirl}
                       style={{
-                        marginLeft: wp(3),
-                        marginTop: hp(1.5),
-                        width: wp(60),
-                      }}>
-                      <Text numberOfLines={1} style={styles.heading}>
-                        {this.props?.route?.params?.userName}
-                      </Text>
-                      <Text
-                        style={[
-                          styles.onlineText,
-                          {
-                            color:
-                              this.state.isOnline == '1'
-                                ? 'green'
-                                : color.textGray2,
-                          },
-                        ]}>
-                        {this.state.isTyping
-                          ? 'Typing...'
-                          : this.state.isOnline == '1'
-                            ? 'Online'
-                            : 'Offline'}
-                      </Text>
-                    </View>
-                  </TouchableOpacity>
-                </View>
-              )}
-              title={null}
-            />
-          </SafeAreaView>
+                        marginLeft: wp(2),
+                        borderRadius: 120,
+                        height: 30,
+                        width: 30,
+                      }}
+                    />
+                  )}
+                  <View
+                    style={{
+                      marginLeft: wp(3),
+                      marginTop: hp(1.5),
+                      width: wp(60),
+                    }}>
+                    <Text numberOfLines={1} style={styles.heading}>
+                      {this.props?.route?.params?.userName}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.onlineText,
+                        {
+                          color:
+                            this.state.isOnline == '1'
+                              ? 'green'
+                              : color.textGray2,
+                        },
+                      ]}>
+                      {this.state.isTyping
+                        ? 'Typing...'
+                        : this.state.isOnline == '1'
+                          ? 'Online'
+                          : 'Offline'}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            )}
+            title={null}
+          />
+        </SafeAreaView>
 
-          <View style={{height:hp(91)}}>
-            <AudioContextProvider>
-              <FlatList
-                ref={this.chatListRef}
-                data={this.state.chatList}
-                keyExtractor={item => String(item.id)}
-                inverted={true}
-                onEndReached={this.onScrollHandler}
-                onEndThreshold={1}
-                renderItem={({ item, index }) => (
-                  <ChatItem
-                    onImagePress={files =>
-                      this.props.navigation.navigate('ShowImg', {
-                        file: files?.file,
-                        fileType: files?.fileType,
-                      })
-                    }
-                    user_id={this.props?.route?.params?.user_id}
-                    avatar={this.props?.route?.params?.avatar}
-                    item={item}
-                    index={index}
-                  />
-                )}
-              />
-              {this.state.appReady && (
+        <View style={{
+          ...Platform.select({
+            ios: {
+              height: hp(91)
+            },
+            android: {
+              flex: 1
+            }
+          })
+        }} >
+          <AudioContextProvider>
+            <FlatList
+              ref={this.chatListRef}
+              data={this.state.chatList}
+              keyExtractor={item => String(item.id)}
+              inverted={true}
+              onEndReached={this.onScrollHandler}
+              onEndThreshold={1}
+              renderItem={({ item, index }) => (
+                <ChatItem
+                  onImagePress={files =>
+                    this.props.navigation.navigate('ShowImg', {
+                      file: files?.file,
+                      fileType: files?.fileType,
+                    })
+                  }
+                  user_id={this.props?.route?.params?.user_id}
+                  avatar={this.props?.route?.params?.avatar}
+                  item={item}
+                  index={index}
+                />
+              )}
+            />
+
+            {this.state.progressFile.map((item) => (
+              <View style={[{ paddingHorizontal: 15, paddingVertical: 10 }, this.state.bottomViewHeight > 500 && { display: 'none' }]}>
+                <View style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-end',
+                  alignSelf: 'flex-end',
+                  backgroundColor: color.chatRight,
+                  padding: 10,
+                  borderRadius: 10,
+                  columnGap: 10,
+                }}>
+                  < ActivityIndicator size="small" color="#0000ff" />
+                  <Text  style={{fontStyle: 'italic'}}>Uploading...</Text>
+                </View>
+              </View>
+            ))}
+
+
+            {this.state.appReady && (
+              <View
+                onLayout={(event) => this.updateBottomViewHeight(event)}
+              >
                 <BottomView
                   message={this.state.message}
                   file={this.state.file}
@@ -503,121 +564,122 @@ class Chat extends React.Component {
                     this.setState({ file: file });
                   }}
                 />
-              )}
-            </AudioContextProvider>
+              </View>
+            )}
+          </AudioContextProvider>
 
-            <BottomSheetUploadFile
-              cancelBtn={{
-                color: color.lightGray,
-                title: 'Cancel',
-                textColor: color.btnBlue,
-              }}
-              isShowBottomSheet={this.state.isShowBottomSheet}
-              setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}>
-              <View>
-                {/* <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
+          <BottomSheetUploadFile
+            cancelBtn={{
+              color: color.lightGray,
+              title: 'Cancel',
+              textColor: color.btnBlue,
+            }}
+            isShowBottomSheet={this.state.isShowBottomSheet}
+            setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}>
+            <View>
+              {/* <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
                   <Text style={BottomSheetUploadFileStyle.roportHeading}>Add Story</Text>
                   <Text style={BottomSheetUploadFileStyle.subHeading}>Post Photo Video To Your Story</Text>
                 </View> */}
-                <View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'camera',
-                        res => {
-                          // file(res);
-                          this.UpdateFile(res);
-                        },
-                        'photo',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.camera}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Take Photo
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'image',
-                        res => {
-                          this.UpdateFile(res);
-                        },
-                        'photo',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.camera}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Select Photo
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'camera',
-                        res => {
-                          this.UpdateFile(res);
-                        },
-                        'video',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.video}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Take Video
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'image',
-                        res => {
-                          this.UpdateFile(res);
-                        },
-                        'video',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.video_add}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Select Video
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickDocument(res => {
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'camera',
+                      res => {
+                        // file(res);
                         this.UpdateFile(res);
-                      })
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.note}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Document
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                      },
+                      'photo',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.camera}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Take Photo
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'image',
+                      res => {
+                        this.UpdateFile(res);
+                      },
+                      'photo',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.camera}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Select Photo
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'camera',
+                      res => {
+                        this.UpdateFile(res);
+                      },
+                      'video',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.video}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Take Video
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'image',
+                      res => {
+                        this.UpdateFile(res);
+                      },
+                      'video',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.video_add}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Select Video
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickDocument(res => {
+                      this.UpdateFile(res);
+                    })
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.note}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Document
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </BottomSheetUploadFile>            
-          </View>
-
+            </View>
+          </BottomSheetUploadFile>
         </View>
+
+      </View >
       // </SafeAreaView>
     );
   }
