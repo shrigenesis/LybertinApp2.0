@@ -203,6 +203,7 @@ const MarketplaceDetails = props => {
                 text1: res.message,
               });
               setisShowBottomSheet(false);
+              getEventDetails()
             }
           }
           setisLoading(false);
@@ -304,6 +305,7 @@ const MarketplaceDetails = props => {
             <View
               style={{
                 backgroundColor: color.white,
+                paddingBottom:15
               }}>
               <Text style={styles.mainHeading}>{/* ${this.minPrice()} */}</Text>
               <View>
@@ -715,7 +717,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 5,
     borderRadius: 5,
-    marginBottom: Platform.OS == 'ios' ? 50 : 80,
+    marginBottom: Platform.OS == 'ios' ? 50 : 40,
     padding: 0,
     margin: -5,
   },

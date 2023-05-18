@@ -204,7 +204,7 @@ export const APIRequestWithFile = async (config = {}, onSuccess, onError,  uploa
     });
   }
 };
-export const APIRequestWithFile1 = async (config = {}, onSuccess, onError) => {
+export const APIRequestWithFile1 = async (config = {}, onSuccess, onError, uploadProgress) => {
   const token = new User().getToken();
   try {
     let data = {
@@ -216,6 +216,8 @@ export const APIRequestWithFile1 = async (config = {}, onSuccess, onError) => {
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
+      onUploadProgress: (progress) =>
+        uploadProgress(progress, config.uniqueId),
     };
     console.log('config', data);
     axios(data)

@@ -224,8 +224,8 @@ const style = StyleSheet.create({
   icon: {
     // tintColor: color.whi,
     resizeMode: 'contain',
-    height: 40,
-    width: 40,
+    height: Platform.OS == 'ios' ? 52 : 52,
+    width: Platform.OS == 'ios' ? 52 : 52,
     borderRadius: 120,
     borderWidth: 2,
     borderColor: color.borderGray,
