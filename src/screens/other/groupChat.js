@@ -38,7 +38,8 @@ import AudioContextProvider, { AudioContext } from '../../context/AudioContext';
 
 
 
-const Socket = io.connect(socketUrl);
+// const Socket = io.connect(socketUrl);
+var Socket;
 class GroupChat extends React.Component {
   constructor(props) {
     super(props);
@@ -69,6 +70,9 @@ class GroupChat extends React.Component {
   }
 
 
+  componentWillMount(){
+    Socket = io.connect(socketUrl);
+  }
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
@@ -147,6 +151,10 @@ class GroupChat extends React.Component {
       }
     });
 
+    Socket.on('disconnect', (reason)=>{
+      console.log(reason);
+    })
+
     Socket.on('typing', () => {
       this.setState({ isTyping: true });
     });
@@ -161,7 +169,18 @@ class GroupChat extends React.Component {
   };
 
   componentWillUnmount() {
+    this.removeSocket();
     this.focusListener();
+  }
+
+  removeSocket() {
+    Socket.disconnect();
+    Socket.off('setup');
+    Socket.off('connected');
+    Socket.off('typing');
+    Socket.off('stop typing');
+    Socket.off('message recieved');
+    Socket.off('disconnect');
   }
 
   fetchGroupDetail = group_id => {

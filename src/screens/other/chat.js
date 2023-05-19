@@ -40,8 +40,8 @@ import {
 } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider from '../../context/AudioContext';
 
-const Socket = io.connect(socketUrl);
-
+// const Socket = io.connect(socketUrl);
+var Socket;
 class Chat extends React.Component {
   constructor(props) {
     super(props);
@@ -67,6 +67,10 @@ class Chat extends React.Component {
     this.snapPoints = [1, 300];
   }
 
+  componentWillMount(){
+    Socket = io.connect(socketUrl);
+
+  }
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
@@ -94,6 +98,9 @@ class Chat extends React.Component {
         Socket.emit('join chat', this.state.roomId);
       }
     });
+    Socket.on('disconnect', (reason)=>{
+      console.log(reason);
+    })
 
     Socket.on('typing', () => {
       console.log('typing');
@@ -125,11 +132,13 @@ class Chat extends React.Component {
   };
 
   removeSocket() {
+    Socket.disconnect();
     Socket.off('setup');
     Socket.off('connected');
     Socket.off('typing');
     Socket.off('stop typing');
     Socket.off('message recieved');
+    Socket.off('disconnect');
   }
 
   componentWillUnmount() {
@@ -366,7 +375,6 @@ class Chat extends React.Component {
 
   updateBottomViewHeight(event) {
     let { height } = event.nativeEvent.layout;
-    console.log(height, "==========================================================================");
     if (this.state.bottomViewHeight !== height) {
       this.setState({ bottomViewHeight: height });
     }
