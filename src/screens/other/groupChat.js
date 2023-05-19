@@ -163,6 +163,7 @@ class GroupChat extends React.Component {
     });
 
     Socket.on('message recieved', newMessageRecieved => {
+      console.log(newMessageRecieved, 'message recieved====');
       let data = [newMessageRecieved, ...this.state.chatList];
       this.setState({ isLoading: false, chatList: data });
     });
@@ -211,6 +212,7 @@ class GroupChat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
+    console.log('emit new message', res.conversation.message, this.state.chatList );
 
     let data = [res.conversation, ...this.state.chatList];
 

@@ -1,48 +1,56 @@
 {
   "project_info": {
-    "project_number": "278272557601",
-    "project_id": "lybertineapp-f32dd",
-    "storage_bucket": "lybertineapp-f32dd.appspot.com"
+    "project_number": "1039027435930",
+    "project_id": "lybertin-app",
+    "storage_bucket": "lybertin-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:278272557601:android:b22b53fbdfb167c4bbd960",
+        "mobilesdk_app_id": "1:1039027435930:android:2e2e16cd96b4edd40fa223",
         "android_client_info": {
           "package_name": "com.lybertineapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "278272557601-j1khjmvhj42rq8kvcr63afl4qbrok37u.apps.googleusercontent.com",
+          "client_id": "1039027435930-1o2bkfi4r8ks5v3utbo1dbfev2ltc1ep.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.lybertineapp",
-            "certificate_hash": "abb9fecab5ab4bc498a1282eec07d604d774a18b"
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
           }
         },
         {
-          "client_id": "278272557601-ka2qsoo5i5m19taduvvjefrouhma16vl.apps.googleusercontent.com",
+          "client_id": "1039027435930-q4363f3caiv35jgfuomdvpg86cmg51qf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lybertineapp",
+            "certificate_hash": "fe9e91fd9bc03272209ab767cb2d42d329c8c0f3"
+          }
+        },
+        {
+          "client_id": "1039027435930-rvmunf4rq0v5irfk0g6gbuhispm28ap4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAMtJJwybSIaXTM4yo5UQkEC1A3Mi4sHBY"
+          "current_key": "AIzaSyDYzj6fbWAB5NcryG7fXBpRrSZBKZ1rjpk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "278272557601-k55mgjthbptv8ar537obde191n0devj7.apps.googleusercontent.com",
+              "client_id": "1039027435930-rvmunf4rq0v5irfk0g6gbuhispm28ap4.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "278272557601-92ouhgdihq9t2fdv93do1vk22m8miecj.apps.googleusercontent.com",
+              "client_id": "1039027435930-qc9br5hl9ou9eaj106h6rju2juest8d2.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "org.demo.lybertineApp1"
+                "bundle_id": "org.demo.lybertineApp"
               }
             }
           ]

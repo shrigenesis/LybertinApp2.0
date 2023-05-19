@@ -57,9 +57,8 @@ const Login = ({ navigation, route }) => {
       // Make textInput editable when page is in focus
       setIsFromRegister();
       GoogleSignin.configure({
-     
-        webClientId:
-          '278272557601-j1khjmvhj42rq8kvcr63afl4qbrok37u.apps.googleusercontent.com',
+       webClientId:
+          '1039027435930-rvmunf4rq0v5irfk0g6gbuhispm28ap4.apps.googleusercontent.com',
       });
       messaging()
         .getToken()

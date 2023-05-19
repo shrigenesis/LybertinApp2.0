@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "278272557601",
+    "project_id": "lybertineapp-f32dd",
+    "storage_bucket": "lybertineapp-f32dd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:278272557601:android:b22b53fbdfb167c4bbd960",
+        "android_client_info": {
+          "package_name": "com.lybertineapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "278272557601-j1khjmvhj42rq8kvcr63afl4qbrok37u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lybertineapp",
+            "certificate_hash": "abb9fecab5ab4bc498a1282eec07d604d774a18b"
+          }
+        },
+        {
+          "client_id": "278272557601-ka2qsoo5i5m19taduvvjefrouhma16vl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMtJJwybSIaXTM4yo5UQkEC1A3Mi4sHBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "278272557601-k55mgjthbptv8ar537obde191n0devj7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "278272557601-92ouhgdihq9t2fdv93do1vk22m8miecj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.demo.lybertineApp1"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

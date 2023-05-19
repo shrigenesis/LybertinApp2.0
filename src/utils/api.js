@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 // let BASEURL = 'http://192.168.0.120:8000';
 export const BASEURL = 'https://stage.shrigenesis.com';
 // export const BASEURL = 'https://lybertine.com';
-export const domainUriPrefix = 'https://lybertineapp.page.link';
+export const domainUriPrefix = 'https://lybertinapp.page.link';
 export const twitterSuccessUrl = `${BASEURL}/twitterSuccess`
 export const twitterFailUrl = `${BASEURL}/twitterFail`
 
