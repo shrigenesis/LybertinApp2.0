@@ -614,7 +614,7 @@
 				CODE_SIGN_ENTITLEMENTS = lybertineApp/lybertineApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = QKDSY4QB5V;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = lybertineApp/Info.plist;
@@ -629,7 +629,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.demo.lybertineApp1;
+				PRODUCT_BUNDLE_IDENTIFIER = org.demo.lybertineApp;
 				PRODUCT_NAME = lybertineApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "lybertineApp-Bridging-Header.h";
@@ -648,7 +648,7 @@
 				CODE_SIGN_ENTITLEMENTS = lybertineApp/lybertineAppRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = QKDSY4QB5V;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = lybertineApp/Info.plist;
@@ -664,7 +664,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lybertine.lybertineapp;
+				PRODUCT_BUNDLE_IDENTIFIER = org.demo.lybertineApp;
 				PRODUCT_NAME = lybertineApp;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "lybertineApp-Bridging-Header.h";
