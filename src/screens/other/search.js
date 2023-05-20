@@ -242,7 +242,7 @@ const Search = ({navigation, route}) => {
 
 const style = StyleSheet.create({
   searchView: {
-    marginTop: Platform.OS == 'ios' ? hp(6) : 2,
+    marginTop: Platform.OS == 'ios' ? hp(7) : hp(2),
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: wp(6),
@@ -251,7 +251,7 @@ const style = StyleSheet.create({
   input: {
     opacity: 1,
     backgroundColor: '#F5F6F8',
-    height: hp(4.5),
+    height: hp(5),
     width: wp(80),
     alignSelf: 'center',
     justifyContent: 'center',
