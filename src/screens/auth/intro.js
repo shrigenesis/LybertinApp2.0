@@ -49,7 +49,7 @@ const Intro = ({navigation}) => {
     {
       gestureName == SWIPE_LEFT
         ? (navigation.navigate('Intro2'), new User().setisOld())
-        : navigation.navigate('Intro2');
+        : null;
     }
   };
 
@@ -83,15 +83,16 @@ const Intro = ({navigation}) => {
               loading={isLoading}
               onPress={() => {
                 new User().setisOld();
-                navigation.navigate('Register');
+                navigation.replace('Register');
               }}
               label={'Create an account'}
             />
           </View>
           <TouchableOpacity
             onPress={() => {
+              navigation.popToTop(),
               new User().setisOld();
-              navigation.navigate('Login');
+              navigation.replace('Login');
             }}
             style={{marginTop: hp(2), marginBottom: hp(3)}}>
             <Text style={style.dontText}>

@@ -82,12 +82,12 @@ const Intro3 = ({navigation}) => {
           <View style={{alignItems:"center"}}>
             <Button
               loading={isLoading}
-              onPress={() => navigation.navigate('Register')}
+              onPress={() => navigation.replace('Register')}
               label={'Create an account'}
             />
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
+            onPress={() =>(navigation.popToTop(),navigation.replace('Login'))}
             style={{marginTop: hp(2),marginBottom: hp(3)}}>
             <Text style={style.dontText}>
               Already have an account ?{' '}

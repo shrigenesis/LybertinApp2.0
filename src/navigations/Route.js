@@ -45,7 +45,7 @@ export const AuthStack = () => {
         <Stack.Screen
           name="Intro"
           component={Intro}
-          options={{ header: () => null }}
+          options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS  }}
         />
       )}
       {!getisOld && (
@@ -72,7 +72,7 @@ export const AuthStack = () => {
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{ header: () => null }}
+        options={{ header: () => null, gestureEnabled: false }}
       />
       <Stack.Screen
         name="Terms"

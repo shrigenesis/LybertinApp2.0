@@ -190,7 +190,7 @@ const Login = ({ navigation, route }) => {
         };
         socialLogin(data);
       }
-      setisLoading(false);
+      // setisLoading(false);
     } catch (err) {
       console.log(err);
 
