@@ -15,9 +15,9 @@ export const pickDocument = async cb => {
   if (permission) {
     Document.pickSingle({
       type: [
-        Document.types.doc,
-        Document.types.zip,
-        Document.types.docx,
+        // Document.types.doc,
+        // Document.types.zip,
+        // Document.types.docx,
         Document.types.pdf,
       ],
     })

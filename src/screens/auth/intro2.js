@@ -53,7 +53,7 @@ const Intro2 = ({navigation}) => {
     const { SWIPE_UP, SWIPE_DOWN, SWIPE_LEFT, SWIPE_RIGHT } = swipeDirections;
     console.log(gestureName);
    { gestureName==SWIPE_LEFT? 
-    navigation.navigate("Intro3"):
+     navigation.navigate("Intro3"):
     navigation.navigate("Intro")
 
   }
@@ -78,12 +78,12 @@ const Intro2 = ({navigation}) => {
           <View style={{alignItems:"center"}}>
             <Button
               loading={isLoading}
-              onPress={() => navigation.navigate('Register')}
+              onPress={() => navigation.replace('Register')}
               label={'Create an account'}
             />
           </View>
           <TouchableOpacity
-            onPress={() => navigation.navigate('Login')}
+            onPress={() => (navigation.popToTop(),navigation.replace('Login'))}
             style={{marginTop: hp(2),marginBottom: hp(3)}}>
             <Text style={style.dontText}>
               Already have an account ?{' '}
