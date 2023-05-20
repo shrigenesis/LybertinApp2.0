@@ -68,6 +68,7 @@ class Chat extends React.Component {
   }
 
   componentWillMount(){
+    this.removeSocket();
     Socket = io.connect(socketUrl);
 
   }

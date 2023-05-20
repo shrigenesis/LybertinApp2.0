@@ -153,6 +153,9 @@ class GroupChat extends React.Component {
 
     Socket.on('disconnect', (reason)=>{
       console.log(reason);
+      if (reason) {
+        this.fetchChatList()
+      }
     })
 
     Socket.on('typing', () => {
@@ -163,8 +166,15 @@ class GroupChat extends React.Component {
     });
 
     Socket.on('message recieved', newMessageRecieved => {
+      console.log(newMessageRecieved.id,  this.state.chatList );
       console.log(newMessageRecieved, 'message recieved====');
-      let data = [newMessageRecieved, ...this.state.chatList];
+      // check duplicate message in chatlist 
+      const isExist = this.state.chatList?.filter((item)=> parseInt(item.id) === parseInt(newMessageRecieved.id))
+      console.log(isExist);
+      if(isExist?.length > 0){
+        return;
+      }
+      const  data = [newMessageRecieved, ...this.state.chatList];
       this.setState({ isLoading: false, chatList: data });
     });
   };
