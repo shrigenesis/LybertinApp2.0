@@ -68,6 +68,7 @@ class Chat extends React.Component {
   }
 
   componentWillMount(){
+    this.removeSocket();
     Socket = io.connect(socketUrl);
 
   }
@@ -177,7 +178,7 @@ class Chat extends React.Component {
             Socket.emit('join chat', res.roomId);
           }
           let chatData = this.state.chatList.concat(data);
-          // this.addDateInChatList(chatData)
+          // this.addDateInChatList(chatData) 
           this.setState({
             chatList: chatData,
             roomId: res.roomId,
