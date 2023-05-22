@@ -39,6 +39,7 @@ import {
   BottomSheetUploadFileStyle,
 } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider from '../../context/AudioContext';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
@@ -67,7 +68,7 @@ class Chat extends React.Component {
     this.snapPoints = [1, 300];
   }
 
-  componentWillMount(){
+  componentWillMount() {
     Socket = io.connect(socketUrl);
 
   }
@@ -98,7 +99,7 @@ class Chat extends React.Component {
         Socket.emit('join chat', this.state.roomId);
       }
     });
-    Socket.on('disconnect', (reason)=>{
+    Socket.on('disconnect', (reason) => {
       console.log(reason);
     })
 
@@ -385,6 +386,10 @@ class Chat extends React.Component {
       // <SafeAreaView style={styles.safeArea} >
       <View style={styles.container}>
         <SafeAreaView>
+          <FocusAwareStatusBar
+            barStyle={'dark-content'}
+            backgroundColor={color.white}
+          />
           <Header
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}

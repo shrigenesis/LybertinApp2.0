@@ -97,8 +97,8 @@ const BlockList = ({ navigation, route }) => {
     return (
         <SafeAreaView style={style.safeArea}>
             <View style={{ flex: 1, backgroundColor: color.white }}>
-                <StatusBar barStyle={'dark-content'} backgroundColor={color.lightGray} />
-                <Header title={'Blocklist'} headStyle={{backgroundColor: color.lightGray}} />
+                <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+                <Header title={'Blocklist'} headStyle={{backgroundColor: color.white}} />
 
 
                 {blockList.length > 0 ? (

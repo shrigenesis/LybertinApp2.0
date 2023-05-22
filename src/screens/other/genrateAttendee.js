@@ -47,7 +47,6 @@ export default class GenrateAttendee extends Component {
                 width: '90%',
                 marginLeft: '3%',
               }}
-              keyboardType="email-address"
               inputStyle={styles.inputTextOverlay}
               onChangeText={v => { handleAttendeeChange(v, seat, 'name') }}
               value={seat?.name}
@@ -99,7 +98,6 @@ export default class GenrateAttendee extends Component {
               inputContainerStyle={
                 styles.inputFiedContainerOverlay
               }
-              keyboardType="email-address"
               inputStyle={styles.inputTextOverlay}
               onChangeText={v => {
                 handleAttendeeChange(v, seat, 'address')

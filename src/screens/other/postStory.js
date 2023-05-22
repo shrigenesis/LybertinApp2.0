@@ -260,7 +260,6 @@ const PostStory = ({ navigation, route }) => {
                   <Textinput
                     value={message}
                     style={style.inputStyle}
-                    keyboardType={'email-address'}
                     changeText={value => {
                       setmessage(value);
                     }}

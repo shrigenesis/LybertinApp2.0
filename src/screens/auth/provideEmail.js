@@ -157,7 +157,6 @@ const ProvideEmail = ({ navigation, route }) => {
                 error={emailError}
                 value={email}
                 style={{ backgroundColor: 'white' }}
-                keyboardType={'email-address'}
                 changeText={v => {
                   setEmail(v);
                 }}

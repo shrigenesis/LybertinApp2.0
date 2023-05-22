@@ -34,6 +34,7 @@ import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider, { AudioContext } from '../../context/AudioContext';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 
 
@@ -421,6 +422,10 @@ class GroupChat extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
+        <FocusAwareStatusBar
+            barStyle={'dark-content'}
+            backgroundColor={color.white}
+          />
           <Header
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}

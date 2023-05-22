@@ -373,7 +373,6 @@ const Login = ({ navigation, route }) => {
             <View>
               <Textinput
                 value={email}
-                keyboardType={'email-address'}
                 changeText={value => {
                   setEmail(value);
                 }}

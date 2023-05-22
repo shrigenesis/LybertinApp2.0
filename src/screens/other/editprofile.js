@@ -427,7 +427,6 @@ const EditProfile = ({ navigation, route }) => {
               />
               <Textinput
                 value={email}
-                keyboardType={'email-address'}
                 changeText={setemail}
                 placeholder={'Email Address'}
                 isEmail={true}

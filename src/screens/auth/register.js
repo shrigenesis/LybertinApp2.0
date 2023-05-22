@@ -455,7 +455,6 @@ const Register = ({ navigation }) => {
                 value={email}
                 style={{ backgroundColor: 'white' }}
                 onBlur={checkEmail}
-                keyboardType={'email-address'}
                 changeText={v => {
                   setEmail(v);
                 }}

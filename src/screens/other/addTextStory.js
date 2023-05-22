@@ -107,7 +107,6 @@ export default class addTextStory extends Component {
               style={styles.inputStyle}
               adjustsFontSizeToFit
               value={this.state.email}
-              keyboardType={'email-address'}
               autoFocus={true}
               changeText={value => {
                 this.setState({
