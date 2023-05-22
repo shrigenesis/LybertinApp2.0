@@ -192,7 +192,7 @@ const EditGroup = ({ navigation, route }) => {
           fetchGroupDetail(route?.params?.group_id);
           Toast.show({
             type: 'success',
-            text1: 'Remove Participent successful '
+            text1: 'Remove Participants successfully'
           })
         }
       },
@@ -217,7 +217,7 @@ const EditGroup = ({ navigation, route }) => {
           fetchGroupDetail(route?.params?.group_id);
           Toast.show({
             type: 'success',
-            text1: 'Add Participent successful '
+            text1: 'Add Participants successfully'
           })
         }
       },
@@ -412,6 +412,7 @@ const EditGroup = ({ navigation, route }) => {
                 placeholderTextColor={'#0F2D52A6'}
                 placeholder="Add Group Name"
                 style={style.inputStyle}
+                maxLength={40}
               />
               <TextInput
                 onFocus={() => bottomSheetRef?.current?.close()}
@@ -544,10 +545,10 @@ const EditGroup = ({ navigation, route }) => {
                     style={{
                       alignItems: 'center',
                       flexDirection: 'column',
-                      padding: wp(3),
+                      // padding: wp(3),
                       backgroundColor: '#fff',
                       borderRadius: 10,
-                      elevation: 5,
+                      elevation: 1,
                       marginBottom: hp(2),
                       width: wp(90),
                       alignSelf: 'center',
@@ -673,8 +674,8 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    borderBottomWidth: 0.4,
-    borderColor: color.textGray2,
+    // borderBottomWidth: 0.4,
+    // borderColor: color.textGray2,
   },
   imgview: {
     overflow: 'hidden',

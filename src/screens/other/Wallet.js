@@ -153,7 +153,7 @@ const Wallet = ({ navigation }) => {
                 </View>
               )}
               style={{ marginBottom: 170 }}
-            /> : <NoRecord image={IMAGE.noFriends} title={'No history available'} />}</> :
+            /> : <View style={{height:300}}><NoRecord image={IMAGE.noFriends} title={'No history available'} /></View>}</> :
             <FlatList
               data={[1, 2, 3, 4]}
               renderItem={({ item, index }) => (

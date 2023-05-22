@@ -43,6 +43,7 @@ import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
+const userdata = new User().getuserdata();
 class Chat extends React.Component {
   constructor(props) {
     super(props);
@@ -90,8 +91,6 @@ class Chat extends React.Component {
 
   socketEvents = () => {
     console.log('socketEvents', Socket);
-    let userdata = new User().getuserdata();
-
     Socket.emit('setup', userdata.id);
     Socket.on('connected', () => {
       console.log('join connected');
@@ -110,6 +109,10 @@ class Chat extends React.Component {
     Socket.on('stop typing', () => {
       console.log('stop typing');
       this.setState({ isTyping: false });
+    });
+    Socket.on('user_offline', (id) => {
+      console.log('user_offline', id);
+      this.setState({ isOnline: '0' });
     });
 
     Socket.on('message recieved', newMessageRecieved => {
@@ -133,6 +136,7 @@ class Chat extends React.Component {
   };
 
   removeSocket() {
+    Socket.emit("makeOffline",  userdata.id);
     Socket.disconnect();
     Socket.off('setup');
     Socket.off('connected');
@@ -140,6 +144,7 @@ class Chat extends React.Component {
     Socket.off('stop typing');
     Socket.off('message recieved');
     Socket.off('disconnect');
+    Socket.on("makeOffline");
   }
 
   componentWillUnmount() {
@@ -557,7 +562,7 @@ class Chat extends React.Component {
                   this.setState({ message: v });
                   this.onTyping(v != '');
                 }}
-                inputFocus={() => this.bottomSheetRef?.current?.close()}
+                inputFocus={() => this.setState({ isShowBottomSheet: false })}
                 addPress={() => {
                   console.log('addPress');
                   Keyboard.dismiss();

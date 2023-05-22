@@ -1,4 +1,4 @@
-import React, {useState, useEffect, FC} from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import {
   View,
   Text,
@@ -9,22 +9,23 @@ import {
   TouchableOpacity,
   ScrollView,
   StatusBar,
+  Alert,
   SafeAreaView,
 } from 'react-native';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, Header} from '../../component/';
+import { RippleTouchable, Header } from '../../component/';
 import Loader from '../../component/loader';
-import {useIsFocused} from '@react-navigation/native';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
-import {Overlay} from 'react-native-elements';
-import  Toast  from 'react-native-toast-message';
+import { useIsFocused } from '@react-navigation/native';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
+import { Overlay } from 'react-native-elements';
+import Toast from 'react-native-toast-message';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const UserProfile = ({navigation, route}) => {
+const UserProfile = ({ navigation, route }) => {
   const data = [];
   const [userData, setUserData] = useState({});
   const [userId, setuserId] = useState({});
@@ -230,7 +231,7 @@ const UserProfile = ({navigation, route}) => {
       res => {
         sethighLight(res.highlightsGroup);
       },
-      err => {},
+      err => { },
     );
   };
 
@@ -245,7 +246,7 @@ const UserProfile = ({navigation, route}) => {
         }>
         <View style={style.imgview}>
           <Image
-            source={{uri: `${IMAGEURL}/${item.cover}`}}
+            source={{ uri: `${IMAGEURL}/${item.cover}` }}
             style={style.imgBox}
           />
           <Text style={style.highLightsText}>
@@ -260,7 +261,7 @@ const UserProfile = ({navigation, route}) => {
 
   const _renderRequestList = (item, index) => {
     return (
-      <View style={{marginRight: wp(4)}}>
+      <View style={{ marginRight: wp(4) }}>
         <View style={style.imgview}>
           <Image source={IMAGE.chatgirl} style={style.imgBox} />
         </View>
@@ -270,14 +271,14 @@ const UserProfile = ({navigation, route}) => {
   };
 
   const renderIsFriend = () => (
-    <View style={{marginVertical: 25}}>
+    <View style={{ marginVertical: 25 }}>
       <FlatList
         showsHorizontalScrollIndicator={false}
         keyExtractor={index => index}
         horizontal={true}
         data={hightLight}
-        contentContainerStyle={{paddingLeft: wp(7)}}
-        renderItem={({item, index}) => _renderHighlightes(item, index)}
+        contentContainerStyle={{ paddingLeft: wp(7) }}
+        renderItem={({ item, index }) => _renderHighlightes(item, index)}
       />
       <RippleTouchable
         onPress={() => {
@@ -287,18 +288,18 @@ const UserProfile = ({navigation, route}) => {
           });
         }}
         style={style.cardBlock}>
-        <View style={{flexDirection: 'row'}}>
+        <View style={{ flexDirection: 'row' }}>
           <Image
             source={IMAGE.media}
-            style={[style.icon, {tintColor: color.btnBlue}]}
+            style={[style.icon, { tintColor: color.btnBlue }]}
           />
           <Text style={style.cardText}>Media, Docs</Text>
         </View>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
           <Text style={style.counter}>{userData.media_count}</Text>
           <Image
             source={IMAGE.arrow}
-            style={[style.icon, {height: 15, marginLeft: wp(3), width: 15}]}
+            style={[style.icon, { height: 15, marginLeft: wp(3), width: 15 }]}
           />
         </View>
       </RippleTouchable>
@@ -312,7 +313,7 @@ const UserProfile = ({navigation, route}) => {
           });
         }}
         backgroundColor={color.iconGray}
-        viewStyle={{borderRadius: 20}}
+        viewStyle={{ borderRadius: 20 }}
         style={style.btn}>
         <Text style={style.btnText}>Message</Text>
       </RippleTouchable>
@@ -320,34 +321,76 @@ const UserProfile = ({navigation, route}) => {
         <View>
           <RippleTouchable
             onPress={() => {
-              setvisible(true);
-              // blockUser();
+              Alert.alert(
+                'Block Warning',
+                'Are you sure want to Block this user?',
+                [
+                  {
+                    text: 'NO',
+                    onPress: () => null,
+                    style: 'Cancel',
+                  },
+                  {
+                    text: 'YES',
+                    onPress: () => blockUser(),
+                  },
+                ],
+              );
             }}
             style={[
               style.menuList,
-              {marginTop: hp(3), justifyContent: 'flex-start'},
+              { marginTop: hp(3), justifyContent: 'flex-start' },
             ]}>
             <Image source={IMAGE.block} style={style.icon} />
-            <Text style={[style.cardText, {color: color.red}]}>
+            <Text style={[style.cardText, { color: color.red }]}>
               {userData?.isBlocked ? 'UnBlock' : 'Block'} {userData?.user?.name}
             </Text>
           </RippleTouchable>
           <RippleTouchable
             onPress={() => {
-              setvisible1(true);
-              // unfriendUser();
+              Alert.alert(
+                'Unfriend Warning',
+                'Are you sure want to Unfriend this user?',
+                [
+                  {
+                    text: 'NO',
+                    onPress: () => null,
+                    style: 'Cancel',
+                  },
+                  {
+                    text: 'YES',
+                    onPress: () => unfriendUser(),
+                  },
+                ],
+              );
             }}
-            style={[style.menuList, {justifyContent: 'flex-start'}]}>
+            style={[style.menuList, { justifyContent: 'flex-start' }]}>
             <Image source={IMAGE.unfriend} style={style.icon} />
-            <Text style={[style.cardText, {color: color.red}]}>
+            <Text style={[style.cardText, { color: color.red }]}>
               Unfriend {userData?.user?.name}
             </Text>
           </RippleTouchable>
           <RippleTouchable
-            onPress={() => setreportVisible(true)}
-            style={[style.menuList, {justifyContent: 'flex-start'}]}>
+            onPress={() => {
+              Alert.alert(
+                'Report Warning',
+                'Are you sure want to Report this user?',
+                [
+                  {
+                    text: 'NO',
+                    onPress: () => null,
+                    style: 'Cancel',
+                  },
+                  {
+                    text: 'YES',
+                    onPress: () =>reportUser(),
+                  },
+                ],
+              );
+            }}
+            style={[style.menuList, { justifyContent: 'flex-start' }]}>
             <Image source={IMAGE.report} style={style.icon} />
-            <Text style={[style.cardText, {color: color.red}]}>
+            <Text style={[style.cardText, { color: color.red }]}>
               Report {userData?.user?.name}
             </Text>
           </RippleTouchable>
@@ -362,7 +405,7 @@ const UserProfile = ({navigation, route}) => {
     let config = {
       url: type == 'accept' ? ApiUrl.accpetRequest : ApiUrl.rejectReq,
       method: 'post',
-      body: {user_id: id},
+      body: { user_id: id },
     };
 
     APIRequest(
@@ -388,7 +431,7 @@ const UserProfile = ({navigation, route}) => {
         <RippleTouchable
           onPress={sendRequest}
           backgroundColor={color.iconGray}
-          viewStyle={{borderRadius: 20}}
+          viewStyle={{ borderRadius: 20 }}
           style={style.btn}>
           <Text style={style.btnText}>Send Request</Text>
         </RippleTouchable>
@@ -408,7 +451,7 @@ const UserProfile = ({navigation, route}) => {
             }}
             backgroundColor={color.white}
             borderRadius={5}
-            style={{...style.btn, backgroundColor: '#92969B'}}>
+            style={{ ...style.btn, backgroundColor: '#92969B' }}>
             <Text style={style.btnText}>Reject</Text>
           </RippleTouchable>
           <RippleTouchable
@@ -425,8 +468,8 @@ const UserProfile = ({navigation, route}) => {
         <RippleTouchable
           onPress={rejectRequest}
           backgroundColor={color.iconGray}
-          viewStyle={{borderRadius: 20}}
-          style={{...style.btn, backgroundColor: '#E8505B'}}>
+          viewStyle={{ borderRadius: 20 }}
+          style={{ ...style.btn, backgroundColor: '#E8505B' }}>
           <Text style={style.btnText}>Withdraw Request</Text>
         </RippleTouchable>
       )}
@@ -436,34 +479,34 @@ const UserProfile = ({navigation, route}) => {
   return (
     <SafeAreaView style={style.safeArea}>
       <ScrollView>
-        <View style={{flex: 1, backgroundColor: color.white}}>
+        <View style={{ flex: 1, backgroundColor: color.white }}>
           <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
           <View>
             <Header title={userData?.user?.name} />
             <Loader isLoading={isLoading} type={'dots'} />
             {userData?.user?.cover ? (
               <Image
-                source={{uri: `${IMAGEURL}/${userData?.user?.cover}`}}
-                style={{width: wp(100), height: hp(20)}}
+                source={{ uri: `${IMAGEURL}/${userData?.user?.cover}` }}
+                style={{ width: wp(100), height: hp(20) }}
               />
             ) : (
               <Image
                 source={IMAGE.profile_view}
-                style={{width: wp(100), height: hp(20)}}
+                style={{ width: wp(100), height: hp(20) }}
               />
             )}
 
-            <View style={{alignSelf: 'center', top: -hp(6)}}>
+            <View style={{ alignSelf: 'center', top: -hp(6) }}>
               {userData?.user?.avatar ? (
                 <Image
-                  source={{uri: `${IMAGEURL}/${userData?.user?.avatar}`}}
+                  source={{ uri: `${IMAGEURL}/${userData?.user?.avatar}` }}
                   style={style.profileImg}
                 />
               ) : (
                 <Image source={IMAGE.boy} style={style.profileImg} />
               )}
             </View>
-            <View style={{alignSelf: 'center', top: -hp(5)}}>
+            <View style={{ alignSelf: 'center', top: -hp(5) }}>
               <Text style={style.name}>{userData?.user?.name}</Text>
               {/* <Text style={style.desc}>Think Different</Text> */}
             </View>
@@ -473,8 +516,8 @@ const UserProfile = ({navigation, route}) => {
                 keyExtractor={index => index}
                 horizontal={true}
                 data={data}
-                contentContainerStyle={{paddingLeft: wp(7)}}
-                renderItem={({item, index}) => _renderRequestList(item, index)}
+                contentContainerStyle={{ paddingLeft: wp(7) }}
+                renderItem={({ item, index }) => _renderRequestList(item, index)}
               />
               {renderIsNotFriend()}
               {renderIsFriend()}
@@ -521,7 +564,7 @@ const UserProfile = ({navigation, route}) => {
                   marginVertical: '5%',
                 }}></View>
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TouchableOpacity
                   onPress={() => setvisible(false)}
                   style={{
@@ -600,7 +643,7 @@ const UserProfile = ({navigation, route}) => {
                   marginVertical: '5%',
                 }}></View>
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TouchableOpacity
                   onPress={() => setvisible1(false)}
                   style={{
@@ -679,7 +722,7 @@ const UserProfile = ({navigation, route}) => {
                   marginVertical: '5%',
                 }}></View>
               <View
-                style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                 <TouchableOpacity
                   onPress={() => setreportVisible(false)}
                   style={{

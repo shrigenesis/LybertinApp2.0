@@ -67,7 +67,7 @@ const VideoPlayer = ({ route, navigation }) => {
                             { uri: VideoURL }
                         }
                         style={styles.Videos}
-                        resizeMode={'cover'}
+                        resizeMode={'contain'}
                         controls={true}
                         volume={10}
                         muted={true}

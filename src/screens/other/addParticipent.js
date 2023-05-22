@@ -96,7 +96,7 @@ export default class addParticipent extends Component {
           fetchGroupDetail();
           Toast.show({
             type: 'success',
-            text1: 'Remove Participent successful '
+            text1: 'Remove Participants successfully'
           })
           this.getGroupInfo()
         }
@@ -121,7 +121,7 @@ export default class addParticipent extends Component {
         if (res?.status) {
           Toast.show({
             type: 'success',
-            text1: 'Add Participent successful '
+            text1: 'Add participants successfully'
           })
         }
         this.getGroupInfo();
@@ -169,7 +169,7 @@ export default class addParticipent extends Component {
         if (res?.status) {
           Toast.show({
             type: 'success',
-            text1: 'Add Participent Done'
+            text1: 'Add participant Done'
           })
           this.props?.navigation.goBack();
         }
@@ -210,10 +210,10 @@ export default class addParticipent extends Component {
                     style={{
                       alignItems: 'center',
                       flexDirection: 'column',
-                      padding: wp(3),
+                      // padding: wp(3),
                       backgroundColor: '#fff',
                       borderRadius: 10,
-                      elevation: 5,
+                      elevation: 1,
                       marginVertical: hp(1),
                       width: wp(90),
                       alignSelf: 'center',
@@ -287,8 +287,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     flexDirection: 'row',
-    borderBottomWidth: 0.4,
-    borderColor: color.textGray2,
+    // borderBottomWidth: 0.4,
+    // borderColor: color.textGray2,
   },
   typeText: {
     marginBottom: hp(2),

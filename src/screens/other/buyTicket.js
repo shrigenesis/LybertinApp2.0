@@ -1241,7 +1241,7 @@ export default class buyTicket extends Component {
                                           style={{
                                             marginLeft: 15,
                                             // backgroundColor: '#f2f2f2',
-                                            width: 90,
+                                            width: wp(50),
                                           }}>
                                           <View
                                             style={{
@@ -1256,7 +1256,8 @@ export default class buyTicket extends Component {
                                                 borderRadius: wp(2),
                                                 color: '#fff',
                                                 fontSize: 12,
-                                              }}>
+                                              }}
+                                              numberOfLines={1}>
                                               {this.checkPromocodeIsAppiled(
                                                 item,
                                               )}

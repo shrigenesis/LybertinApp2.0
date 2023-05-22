@@ -158,6 +158,23 @@ const _renderGroupList = React.memo(({ item, navigation, setisLoading, reload, p
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}
                 >
+                  {/* {item.unread_count > 0 && (
+                    <View
+                      style={{
+                        // flexDirection: 'row',
+                        // alignItems: 'center',
+                        marginTop: hp(1),
+                      }}>
+                      <View style={style.badge}>
+                        <Text style={style.badgeText}>
+
+                          {parseInt(item.unread_count) > 99
+                            ? '99+'
+                            : parseInt(item.unread_count)}
+                        </Text>
+                      </View>
+                    </View>
+                  )} */}
                   {parseInt(item?.is_pinned) > 0 && <Image
                     source={IMAGE.grayPin}
                     style={{ height: 16, width: 16, marginTop: hp(1), resizeMode: 'contain' }}
@@ -268,7 +285,7 @@ const GroupList = ({ navigation }) => {
               }}>
               <View style={style.input}>
                 <View style={{ position: 'absolute', left: wp(3) }}>
-                  
+
                   <Image
                     source={IMAGE.search2}
                     style={{ height: 20, width: 20, resizeMode: 'contain' }}
@@ -436,7 +453,7 @@ const style = StyleSheet.create({
     backgroundColor: color.green,
   },
   badge: {
-    paddingHorizontal: 8,
+    paddingHorizontal: 5,
     paddingVertical: 1,
     backgroundColor: color.btnBlue,
     borderRadius: 120,
@@ -445,6 +462,7 @@ const style = StyleSheet.create({
     marginRight: wp(1),
     overflow: 'hidden',
     justifyContent: 'center',
+    alignItems:'center'
   },
   badgeText: {
     fontSize: 10,

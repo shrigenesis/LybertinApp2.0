@@ -63,7 +63,7 @@ const BlockList = ({ navigation, route }) => {
                     Toast.show({
                         type: 'success',
                         text1: res?.alert?.message
-                      })
+                    })
                     fetchBlockList()
                 }
                 setisLoading(false)
@@ -78,17 +78,16 @@ const BlockList = ({ navigation, route }) => {
 
     const _renderBlockList = (item, index) => {
         return (
-            <View>
-                <View style={{ alignItems: 'center', flexDirection: 'row', paddingLeft: wp(8) }}>
-                    <View style={style.imgview}>
-                        <Image source={{ uri: `${IMAGEURL}/${item.avatar}` }} style={style.imgBox} />
-                    </View>
-                    <View style={style.nameView}>
-                        <Text style={style.name}>{item.name}</Text>
-                        <Text onPress={() => {
-                            blockUser(item)
-                        }} style={style.block}>Unblock</Text>
-                    </View>
+            <View style={style.cardBlock}>
+
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                    <Image source={{ uri: `${IMAGEURL}/${item.avatar}` }} style={style.imgBox} />
+                    <Text style={style.name}>{item.name}</Text>
+                </View>
+                <View >
+                    <Text onPress={() => {
+                        blockUser(item)
+                    }} style={style.block}>Unblock</Text>
                 </View>
             </View>
         )
@@ -98,7 +97,7 @@ const BlockList = ({ navigation, route }) => {
         <SafeAreaView style={style.safeArea}>
             <View style={{ flex: 1, backgroundColor: color.white }}>
                 <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
-                <Header title={'Blocklist'} headStyle={{backgroundColor: color.white}} />
+                <Header title={'Blocklist'} headStyle={{ backgroundColor: color.white }} />
 
 
                 {blockList.length > 0 ? (
@@ -157,16 +156,19 @@ const style = StyleSheet.create({
         color: color.red,
     },
     bodySection: {
+        zIndex: -1
     },
-    nameView: {
-        width: wp(70),
+    cardBlock: {
+        marginBottom: 2,
+        backgroundColor: color.white,
+        paddingLeft: wp(6),
+        paddingRight: wp(6),
+        paddingVertical: hp(2),
+        alignItems: 'center',
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: hp(2.2),
-        marginLeft: wp(5),
-        paddingRight: wp(4),
-        borderBottomWidth: 0.4,
-        borderColor: color.textGray2
+        borderBottomColor: color.lightGray,
+        borderBottomWidth: 1,
     },
 })
 export default BlockList;

@@ -221,7 +221,7 @@ const Payment = (props) => {
                     //     // Keep track of going back navigation within component
                     //     console.log('navstate', navState);
                     //     if (navState?.url == twitterSuccessUrl) {
-                    //         SimpleToast.show('Twitter successful')
+                    //         SimpleToast.show('Twitter successfully')
                     //         this.setState({ ...this.state, isPostTwitter: false, openWebview: false, isShowBottomSheet: false });
                     //     }
                     //     if (navState?.url.includes(twitterFailUrl)) {
