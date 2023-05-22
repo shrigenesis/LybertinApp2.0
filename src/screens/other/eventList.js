@@ -37,6 +37,7 @@ import UserProfileImage from '../../component/userProfileImage';
 import { useCallback } from 'react';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Search from './search';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
@@ -66,7 +67,7 @@ const EventList = ({ navigation }) => {
       });
     }
   }, [isFocus])
-
+  
   useEffect(() => {
     getEvents('');
     axios.interceptors.response.use(
@@ -281,7 +282,11 @@ const EventList = ({ navigation }) => {
   return (
     // <KeyboardAwareScrollView bounces={false} keyboardShouldPersistTaps={true}>
       <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
-        <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
+        <FocusAwareStatusBar
+        barStyle={'light-content'} 
+        backgroundColor={color.btnBlue}
+         />
+         
         {/* <View style={style.appBar} />
         <View style={style.content} /> */}
         <View>

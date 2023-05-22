@@ -505,7 +505,6 @@ export const BottomView = memo(props => {
                       />
                     </TouchableOpacity>
                     <TextInput
-                      keyboardType="name-phone-pad"
                       editable={group_type == 1}
                       // multiline={true}
                       value={message}

@@ -17,6 +17,7 @@ import { StatusBar } from 'react-native';
 import TicketVideoScreen from './TicketVideoScreen';
 import TicketMediaScreen from './TicketMediaScreen';
 import { Header } from '../../component';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 export default class TicketScreen extends Component {
   constructor(props) {
@@ -38,6 +39,10 @@ export default class TicketScreen extends Component {
 
     });
   }
+
+  // FocusAwareStatusBar=(props)=> {  
+  //   return isFocus ? <StatusBar {...props} /> : null;
+  // }
 
   // componentWillUnmount() {
   //   this._navListener.remove();
@@ -69,7 +74,7 @@ export default class TicketScreen extends Component {
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
 
-          <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+          <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={color.white} />
 
           <Header headStyle={{backgroundColor: color.white}} title="My Bookings" />
 

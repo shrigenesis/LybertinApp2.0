@@ -35,6 +35,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Rating, AirbnbRating } from 'react-native-ratings';
 import EducationListItem from './educationListItem';
 import HtmlToText from '../../utils/HtmlToText';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 const APPBAR_HEIGHT = Platform.OS === 'ios' ? 44 : 56;
@@ -62,7 +63,6 @@ const EducationList = ({ navigation }) => {
     }
   }, [isFocus])
   
-
   useEffect(() => {
     setSearch('');
     getEvents('');
@@ -135,7 +135,7 @@ const EducationList = ({ navigation }) => {
   return (
     // <KeyboardAwareScrollView bounces={false}  keyboardShouldPersistTaps={true}>
       <SafeAreaView style={style.container}>
-      <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
+      <FocusAwareStatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
         <View>
           <View>
             <View>

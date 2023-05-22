@@ -318,7 +318,7 @@ const Login = ({ navigation, route }) => {
   return (
     <View style={style.loginView}>
       <StatusBar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={color.white}></StatusBar>
       <Video
         source={IMAGE.lybertinVideo}

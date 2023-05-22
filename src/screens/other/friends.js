@@ -29,6 +29,7 @@ import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
 import Icon from 'react-native-vector-icons/Ionicons';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 
 
@@ -309,7 +310,7 @@ const ChatList = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: color.white }}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+      <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={color.white} />
       <View>
         {/* {appReady && <Loader type="dots" isLoading={isLoading} />} */}
         <View

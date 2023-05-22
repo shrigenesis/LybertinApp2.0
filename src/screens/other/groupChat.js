@@ -75,6 +75,8 @@ class GroupChat extends React.Component {
   }
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
+      console.log('componentDidMount');
+
       this.setState({ appReady: true });
       // let group_id = this.props?.route?.params?.group_id;
       // setTimeout(() => {
@@ -480,8 +482,8 @@ class GroupChat extends React.Component {
                       marginLeft: wp(3),
                       marginTop: hp(1),
                     }}>
-                    <Text style={styles.heading}>{name}</Text>
-                    <Text style={styles.onlineText}>{description}</Text>
+                    <Text numberOfLines={1} style={styles.heading}>{name}</Text>
+                    <Text numberOfLines={1} style={styles.onlineText}>{description}</Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
               </View>

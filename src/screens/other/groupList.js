@@ -29,6 +29,7 @@ import { User } from '../../utils/user';
 import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
+import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 
 const getTime = time => {
   if (time) {
@@ -234,7 +235,7 @@ const GroupList = ({ navigation }) => {
 
   return (
     <View style={{ flex: 1, backgroundColor: color.white }}>
-      <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+      <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={color.white} />
 
       {/* {appReady && <Loader type="dots" isLoading={isLoading} />} */}
 
