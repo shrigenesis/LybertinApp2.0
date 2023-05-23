@@ -1,4 +1,4 @@
-import React, {useState, useEffect, FC, Component} from 'react';
+import React, { useState, useEffect, FC, Component } from 'react';
 import {
   View,
   Text,
@@ -14,21 +14,25 @@ import {
   ImageBackground,
   Share,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  SafeAreaView,
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import { IMAGE, color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
+  heightPercentageToDP,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, StoryList} from '../../component/';
+import { Header, RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import {APIRequestWithFile, ApiUrl, IMAGEURL} from './../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
+import { APIRequestWithFile, ApiUrl, IMAGEURL } from './../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
-import {User} from '../../utils/user';
+import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import {Button, Textinput, PressableText} from './../../component/';
+import { Button, Textinput, PressableText } from './../../component/';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class addTextStory extends Component {
   constructor(props) {
@@ -40,7 +44,7 @@ export default class addTextStory extends Component {
   }
 
   postStory = () => {
-    this.setState({isLoding: true});
+    this.setState({ isLoding: true });
     let formdata = new FormData();
     // let type = route.params?.file?.fileType == 'photo' ? 'image' : 'video';
     // formdata.append(type, route.params.file);
@@ -57,17 +61,17 @@ export default class addTextStory extends Component {
       config,
       res => {
         if (res.status) {
-          this.setState({isLoding: false});
+          this.setState({ isLoding: false });
           Toast.show({
             type: 'success',
             text1: res?.alert?.message
           })
           this.props?.navigation.goBack();
         }
-        this.setState({isLoding: false});
+        this.setState({ isLoding: false });
       },
       err => {
-        this.setState({isLoding: false});
+        this.setState({ isLoding: false });
 
         console.log(err);
       },
@@ -76,52 +80,40 @@ export default class addTextStory extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          style={styles.container}>
-          {this.state.isLoding && (
-            <View style={{position: 'absolute', top: hp(40), left: wp(40)}}>
-              <Loader isLoading={this.state.isLoading} />
-            </View>
-          )}
-          <View style={{backgroundColor: '#f5f5f5', height: 50}}>
-            <View style={styles.headerContainer}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+      <SafeAreaView>
+        <KeyboardAvoidingView
+        >
+          <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+          <Header
+            title={'Add Hyperlink'}
+            RightIcon={() => (
+              this.state?.email?.length>0 ?<TouchableOpacity onPress={() => this.postStory()}>
                 <Image
-                  source={IMAGE.back}
-                  style={{
-                    height: 20,
-                    width: 20,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </TouchableOpacity>
+                source={IMAGE.send}
+                style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: color.btnBlue, marginBottom:-10 }}
+              />
+              </TouchableOpacity> : null
+            )}
+          />
 
-              <Text style={styles.headerText}>Add Hyperlink</Text>
-              <Text style={{color: '#f5f5f5'}}>new</Text>
+          <View style={styles.container}>
+
+
+            <View style={{ marginTop: 70 }}>
+              <Textinput
+                style={styles.inputStyle}
+                value={this.state.email}
+                autoFocus={true}
+                changeText={value => {
+                  this.setState({
+                    email: value,
+                  });
+                }}
+                multiline={true}
+                placeholder={'Type a Status'}
+              />
             </View>
-          </View>
-          <View style={{marginTop:"16%"}}>
-            <Textinput
-              style={styles.inputStyle}
-              adjustsFontSizeToFit
-              value={this.state.email}
-              autoFocus={true}
-              changeText={value => {
-                this.setState({
-                  email: value,
-                });
-              }}
-              multiline
-              placeholder={'Type a Status'}
-            />
-          </View>
-        </ScrollView>
-        <View>
-          {this.state.email.length == '0' ? (
-            <View></View>
-          ) : (
+
             <TouchableOpacity
               onPress={() => this.postStory()}
               style={{
@@ -135,15 +127,23 @@ export default class addTextStory extends Component {
                 borderRadius: 40,
                 justifyContent: 'center',
                 alignItems: 'center',
+                position: 'absolute',
+                bottom: 0
               }}>
               <Image
                 source={IMAGE.send}
-                style={{height: 24, width: 24, resizeMode: 'contain'}}
+                style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: color.btnBlue }}
               />
             </TouchableOpacity>
-          )}
-        </View>
-      </View>
+            
+            {this.state.isLoding && (
+              <View style={{ position: 'absolute', top: hp(40), left: wp(40) }}>
+                <Loader isLoading={this.state.isLoading} />
+              </View>
+            )}
+          </View>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
     );
   }
 }
@@ -151,25 +151,14 @@ export default class addTextStory extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    // justifyContent: 'center',
-    // alignItems: 'center',
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: Platform.OS == 'ios' ? hp(7) : 10,
-    marginHorizontal: '5%',
-  },
-  headerText: {
-    fontSize: 15,
-    fontFamily: fontFamily.Bold,
-    color: '#0F0F0F',
+    backgroundColor: '#000',
   },
   inputStyle: {
     borderWidth: 0,
-    fontSize: 30,
-    height: Platform.OS == 'ios' ? '150%' : 300,
+    fontSize: 20,
+    textAlign: 'center',
+    paddingLeft: 0,
+
   },
   placeText: {
     fontSize: 20,

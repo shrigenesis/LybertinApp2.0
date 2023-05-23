@@ -526,7 +526,7 @@ const Register = ({ navigation }) => {
                   <Image source={IMAGE.google} style={style.socialIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={_facebookLogin}
+                  // onPress={_facebookLogin}
                   style={style.socialBtn}>
                   <Image source={IMAGE.facebook} style={style.socialIcon} />
                 </TouchableOpacity>
@@ -549,7 +549,7 @@ const Register = ({ navigation }) => {
                   <Image source={IMAGE.google} style={style.socialIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  onPress={_facebookLogin}
+                  // onPress={_facebookLogin}
                   style={style.socialBtn}>
                   <Image source={IMAGE.facebook} style={style.socialIcon} />
                 </TouchableOpacity>
