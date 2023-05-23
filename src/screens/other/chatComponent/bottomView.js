@@ -527,7 +527,7 @@ export const BottomView = memo(props => {
                       numberOfLines={
                         height> 0 ? height+1> 4 ? 4:(height+1):1
                       }
-                      style={[
+                      style={[ 
                         styles.msgSendBox,
                         {height: height> 0 ? null : hp(5.5)},
                       ]}
