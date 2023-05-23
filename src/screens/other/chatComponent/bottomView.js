@@ -523,7 +523,7 @@ export const BottomView = memo(props => {
                       textAlignVertical={'center'}
                       paddingHorizontal={40}
                       placeholderTextColor={color.textGray2}
-                      multiline={true}
+                      multiline={true} 
                       // numberOfLines={
                       //   height> 0 ? height+1> 4 ? 4:(height+1):1
                       // }
