@@ -524,12 +524,15 @@ export const BottomView = memo(props => {
                       paddingHorizontal={40}
                       placeholderTextColor={color.textGray2}
                       multiline={true}
-                      numberOfLines={
-                        height> 0 ? height+1> 4 ? 4:(height+1):1
-                      }
+                      // numberOfLines={
+                      //   height> 0 ? height+1> 4 ? 4:(height+1):1
+                      // }
                       style={[
                         styles.msgSendBox,
-                        {height: height> 0 ? null : hp(5.5)},
+                        {
+                          height: height> 0 ? null : hp(5.5),
+                          maxHeight: (height+1)>4 ? 100: 200
+                        },
                       ]}
                     />
                     <TouchableOpacity
