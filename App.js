@@ -24,11 +24,13 @@ import Toast from 'react-native-toast-message';
 
 
 
+
 LogBox.ignoreAllLogs();
 
 const App = () => {
   const appState = useRef(AppState.currentState);
   const [isReady, setIsReady] = useState(false);
+
   useEffect(() => {
     SplashScreen.hide();
     init();
@@ -55,25 +57,7 @@ const App = () => {
     }
 
 
-    AppState.addEventListener("change", _handleAppStateChange);
-    return () => {
-      AppState.removeEventListener("change", _handleAppStateChange);
-    };
   }, []);
-
-  const _handleAppStateChange = (nextAppState) => {
-    if (
-      appState.current.match(/inactive|background/) &&
-      nextAppState === "active"
-    ) {
-      console.log('online');
-      // TODO SET USERS ONLINE STATUS TO TRUE
-    } else {
-      console.log('offline');
-      // TODO SET USERS ONLINE STATUS TO FALSE
-    }
-    console.log("AppState", appState.current);
-  };
 
 
   const init = async () => {

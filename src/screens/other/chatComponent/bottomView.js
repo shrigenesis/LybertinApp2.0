@@ -284,6 +284,10 @@ export const BottomView = memo(props => {
     }
   };
 
+  useEffect(()=>{
+    console.log(height);
+  },[height])
+
   return (
     <KeyboardAvoidingView
       keyboardVerticalOffset={'90'}
@@ -506,23 +510,26 @@ export const BottomView = memo(props => {
                     </TouchableOpacity>
                     <TextInput
                       editable={group_type == 1}
-                      // multiline={true}
                       value={message}
                       onFocus={() => {
                         setshowEmojiKeyboard(false);
                         inputFocus();
                       }}
                       onContentSizeChange={event => {
-                        setheight(event.nativeEvent.contentSize.height);
+                        setheight(Math.round((event.nativeEvent.contentSize.height-41)/16));
                       }}
                       onChangeText={textChange}
                       placeholder={'Write a reply....'}
                       textAlignVertical={'center'}
                       paddingHorizontal={40}
                       placeholderTextColor={color.textGray2}
+                      multiline={true}
+                      numberOfLines={
+                        height> 0 ? height+1> 4 ? 4:(height+1):1
+                      }
                       style={[
                         styles.msgSendBox,
-                        {height: Math.max(35, height)},
+                        {height: height> 0 ? null : hp(5.5)},
                       ]}
                     />
                     <TouchableOpacity
@@ -718,8 +725,7 @@ const styles = StyleSheet.create({
     borderLeftColor: color.btnBlue,
   },
   msgSendBox: {
-    height: hp(4.5),
-    maxHeight: 50,
+    // maxHeight: 100,
     paddingLeft: wp(10),
     borderRadius: 20,
     backgroundColor: '#f8fcfc',

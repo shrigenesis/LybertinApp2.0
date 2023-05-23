@@ -119,6 +119,10 @@ export const ApiUrl = {
   educationBuy: `${apiBaseUrl}courses/buy/course`,
   educationPurchased: `${apiBaseUrl}courses/purchased`,
   educationAddInterest: `${apiBaseUrl}user-courses-interest`,
+
+  // User Status (Online, Offline)
+  updateStatus: `${apiBaseUrl}updateStatus`,
+
 };
 
 export const APIRequest = async (config = {}, onSuccess, onError, noAuth = null) => {

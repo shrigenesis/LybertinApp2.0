@@ -1,6 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React from 'react';
+import React, {useRef} from 'react';
+import { AppState } from 'react-native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { LoginContext } from '../context/LoginContext';
 import { OtherStack } from './otherStack';
@@ -27,6 +28,7 @@ import RegisterDeeplink from '../utils/RegisterDeeplink';
 
 
 const Stack = createStackNavigator();
+const userdata = new User().getuserdata();
 
 export const AuthStack = () => {
   let getisOld = new User().getisOld();
@@ -45,7 +47,7 @@ export const AuthStack = () => {
         <Stack.Screen
           name="Intro"
           component={Intro}
-          options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS  }}
+          options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
         />
       )}
       {!getisOld && (
@@ -114,10 +116,32 @@ export const RouterStack = () => {
   let userStore = new User();
   let { isLogin } = React.useContext(LoginContext);
   let { type } = React.useContext(LoginContext);
+  const appState = useRef(AppState.currentState);
+
+  useEffect(() => {  
+    setUserStatus('1')
+    AppState.addEventListener("change", _handleAppStateChange);
+    return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+    };
+
+  }, [])
+
+  const _handleAppStateChange = (nextAppState) => {
+    if (AppState.currentState==='background') {
+      setUserStatus('0')
+    } else {
+      setUserStatus('1') 
+    }
+    console.log("AppState", appState.current, AppState.currentState); 
+  };
+  
 
   useEffect(() => {
     const unsubscribe = dynamicLinks().onLink(handleDynamicLink);
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    }
   }, []);
   useEffect(() => {
     dynamicLinks()
@@ -126,6 +150,26 @@ export const RouterStack = () => {
         handleDynamicLink(link)
       });
   }, []);
+
+  const setUserStatus = (status) => {
+    let config = {
+      url:ApiUrl.updateStatus,
+      method: 'post',
+      body: {
+        user_id: `${userdata?.id}`,
+        is_online: status
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  }
 
   const handleDynamicLink = (link) => {
     setTimeout(() => {
