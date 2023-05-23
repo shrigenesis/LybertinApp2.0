@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {memo, useEffect, useState, useContext} from 'react';
+import React, {memo, useEffect, useState, useContext, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -64,6 +64,8 @@ export const BottomView = memo(props => {
     updateBottomViewHeight= ()=> {}
   } = props;
   const audio = useContext(AudioContext);
+  const searchInput = useRef(null);
+
 
   useEffect(() => {
     return () => {
@@ -468,7 +470,10 @@ export const BottomView = memo(props => {
                 <TouchableOpacity
                   disabled={media_privacy == 2}
                   onPress={() => {
-                    addPress();
+                    searchInput.current.blur();
+                    setTimeout(()=>{
+                      addPress();
+                    },500)
                     audio?.setaudio('');
                   }}>
                   <Image
@@ -496,7 +501,7 @@ export const BottomView = memo(props => {
                         position: 'absolute',
                         zIndex: 99,
                         left: wp(5),
-                        top: Platform.OS === 'ios' ? 9 : hp(1.5),
+                        bottom: Platform.OS === 'ios' ? 10 : 5,
                       }}>
                       <Image
                         source={IMAGE.smile}
@@ -523,15 +528,15 @@ export const BottomView = memo(props => {
                       textAlignVertical={'center'}
                       paddingHorizontal={40}
                       placeholderTextColor={color.textGray2}
-                      multiline={true} 
+                      ref={searchInput}
+                      multiline={true}
                       // numberOfLines={
                       //   height> 0 ? height+1> 4 ? 4:(height+1):1
                       // }
-                      style={[
+                      style={[ 
                         styles.msgSendBox,
-                        {
-                          height: height> 0 ? null : hp(5.5),
-                          maxHeight: (height+1)>4 ? 100: 200
+                        {height: height> 0 ? null : hp(4.5),
+                          maxHeight: (height+1)>0? 100: 200
                         },
                       ]}
                     />
@@ -571,7 +576,7 @@ export const BottomView = memo(props => {
                     pickCamera == 1
                       ? isRecordingStart
                         ? console.log('onStopRecord()')
-                        : onStartRecord()
+                        : (onStartRecord(), textChange)('')
                       : console.log('kkkkkk');
                   }}>
                   <Image
@@ -669,7 +674,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: hp(4),
-    top: Platform.OS === 'ios' ? 2 : hp(1),
+    bottom: Platform.OS === 'ios' ? 2 : 1,
     width: wp(10),
     position: 'absolute',
     zIndex: 99,
@@ -711,7 +716,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: wp(4),
     marginBottom: hp(1),
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'baseline',
     flex: 1,
   },
 
@@ -739,6 +744,8 @@ const styles = StyleSheet.create({
     fontFamily: fontFamily.Regular,
     width: wp(63),
     marginLeft: wp(3),
+    paddingTop:10,
+    paddingBottom:Platform.OS==='ios'? 10:5
   },
   replyBoxImgIcon: {
     resizeMode: 'contain',

@@ -270,7 +270,7 @@ const GroupList = ({ navigation }) => {
           <Text style={style.heading}>Lybertine</Text>
           <UserProfileImage />
         </View>
-        <StoryList storyBackGroundColor={color.white} />
+        <StoryList storyBackGroundColor={color.white}  navigation={navigation}  />
         <View>
           <View
             style={{
