@@ -897,7 +897,7 @@ export default class buyTicket extends Component {
               <ScrollView>
               <KeyboardAvoidingView 
               behavior= {Platform.OS==='ios'? 'padding': ''}
-              keyboardVerticalOffset={-hp(50)}
+              keyboardVerticalOffset={-hp(60)}
               >
 
                 <View style={styles.container}>
