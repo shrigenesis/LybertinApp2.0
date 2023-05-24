@@ -76,12 +76,13 @@ export default class addTextStory extends Component {
 
   render() {
     return (
-      <SafeAreaView>
+      <SafeAreaView style={styles.safeArea}>
         <KeyboardAvoidingView
         >
           <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
           <Header
             title={'Add Hyperlink'}
+            headStyle={{backgroundColor:color.white}}
             RightIcon={() => (
               (this.state?.storyText?.length ) > 0 ? <TouchableOpacity onPress={() => this.postStory()}>
                 <Image
@@ -92,7 +93,9 @@ export default class addTextStory extends Component {
             )}
           />
 
-          <View style={styles.container}>
+          <View 
+          // style={styles.container}
+          >
 
 
             <View style={{ marginTop: 70 }}>
@@ -118,9 +121,9 @@ export default class addTextStory extends Component {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#000',
+    backgroundColor: color.white,
   },
   inputStyle: {
     borderWidth: 0,
