@@ -12,6 +12,7 @@ import {
   Platform,
   Modal,
   StatusBar,
+  KeyboardAvoidingView,
 } from 'react-native';
 import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
@@ -894,6 +895,8 @@ export default class buyTicket extends Component {
         ) : (
           <View style={{ flex: 1, zIndex:-1}}>
               <ScrollView>
+              <KeyboardAvoidingView behavior= {Platform.OS==='ios'? 'padding': ''}>
+
                 <View style={styles.container}>
                   <Loader type="dots" isLoading={this.state.isloading} />
 
@@ -1447,7 +1450,7 @@ export default class buyTicket extends Component {
                     </View>
                   </Modal>
                 </View>
-                
+                </KeyboardAvoidingView>
               </ScrollView>
               {this.state.paymenturl == null && (
                   <View style={{ flexDirection: 'row' }}>

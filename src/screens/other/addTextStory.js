@@ -38,19 +38,17 @@ export default class addTextStory extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: '',
-      isLoding: false,
+      storyText: '',
+      isLoading: false,
     };
   }
 
   postStory = () => {
-    this.setState({ isLoding: true });
     let formdata = new FormData();
-    // let type = route.params?.file?.fileType == 'photo' ? 'image' : 'video';
-    // formdata.append(type, route.params.file);
-    formdata.append('link', this.state.email);
+    formdata.append('link', this.state.storyText);
     formdata.append('story_type', 'HYPERLINK');
 
+    this.setState({ isLoading: true, storyText:'' });
     let config = {
       url: ApiUrl.storyCreate,
       method: 'post',
@@ -61,18 +59,16 @@ export default class addTextStory extends Component {
       config,
       res => {
         if (res.status) {
-          this.setState({ isLoding: false });
+          this.setState({ isLoading: false });
           Toast.show({
             type: 'success',
             text1: res?.alert?.message
           })
           this.props?.navigation.goBack();
         }
-        this.setState({ isLoding: false });
       },
       err => {
-        this.setState({ isLoding: false });
-
+        this.setState({ isLoading: false });
         console.log(err);
       },
     );
@@ -87,11 +83,11 @@ export default class addTextStory extends Component {
           <Header
             title={'Add Hyperlink'}
             RightIcon={() => (
-              this.state?.email?.length>0 ?<TouchableOpacity onPress={() => this.postStory()}>
+              (this.state?.storyText?.length ) > 0 ? <TouchableOpacity onPress={() => this.postStory()}>
                 <Image
-                source={IMAGE.send}
-                style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: color.btnBlue, marginBottom:-10 }}
-              />
+                  source={IMAGE.send}
+                  style={{ height: 20, width: 20, resizeMode: 'contain', tintColor: color.btnBlue, marginBottom: -10 }}
+                />
               </TouchableOpacity> : null
             )}
           />
@@ -102,45 +98,18 @@ export default class addTextStory extends Component {
             <View style={{ marginTop: 70 }}>
               <Textinput
                 style={styles.inputStyle}
-                value={this.state.email}
+                value={this.state.storyText}
                 autoFocus={true}
                 changeText={value => {
                   this.setState({
-                    email: value,
+                    storyText: value,
                   });
                 }}
                 multiline={true}
                 placeholder={'Type a Status'}
               />
             </View>
-
-            <TouchableOpacity
-              onPress={() => this.postStory()}
-              style={{
-                marginBottom: 50,
-                borderWidth: 2,
-                borderColor: color.btnBlue,
-                alignSelf: 'flex-end',
-                marginHorizontal: '5%',
-                height: 60,
-                width: 60,
-                borderRadius: 40,
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'absolute',
-                bottom: 0
-              }}>
-              <Image
-                source={IMAGE.send}
-                style={{ height: 24, width: 24, resizeMode: 'contain', tintColor: color.btnBlue }}
-              />
-            </TouchableOpacity>
-            
-            {this.state.isLoding && (
-              <View style={{ position: 'absolute', top: hp(40), left: wp(40) }}>
-                <Loader isLoading={this.state.isLoading} />
-              </View>
-            )}
+            <Loader isLoading={this.state.isLoading} type='dots' />
           </View>
         </KeyboardAvoidingView>
       </SafeAreaView>
