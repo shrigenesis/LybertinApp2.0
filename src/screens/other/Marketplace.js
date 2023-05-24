@@ -193,6 +193,7 @@ const Marketplace = ({ navigation }) => {
               <>{(status && Event.length > 0) ?
                 <FlatList
                   data={Event}
+                  contentContainerStyle={{paddingBottom:30}}
                   renderItem={({ item }) => <MarketplaceListItem navigationKey={navigationKey} Event={item} />}
                   keyExtractor={item => `marketlist-${item.id}`}
                 /> :
