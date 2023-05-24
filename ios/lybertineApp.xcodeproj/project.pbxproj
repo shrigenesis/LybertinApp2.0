@@ -614,7 +614,7 @@
 				CODE_SIGN_ENTITLEMENTS = lybertineApp/lybertineApp.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = QKDSY4QB5V;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = lybertineApp/Info.plist;
@@ -648,7 +648,7 @@
 				CODE_SIGN_ENTITLEMENTS = lybertineApp/lybertineAppRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = QKDSY4QB5V;
 				ENABLE_TESTABILITY = YES;
 				INFOPLIST_FILE = lybertineApp/Info.plist;
