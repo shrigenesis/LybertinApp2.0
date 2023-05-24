@@ -29,7 +29,6 @@ import moment from 'moment';
 import {User} from '../../utils/user';
 import {Tooltip} from 'react-native-elements';
 import Toast from 'react-native-toast-message';
-import ReadMore from '@fawazahmed/react-native-read-more';
 import HtmlToText from '../../utils/HtmlToText';
 import ConfirmationModal from './Modal/ConfirmationModal';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
@@ -51,6 +50,7 @@ import {
   twitterFailUrl,
   twitterSuccessUrl,
 } from './../../utils/api';
+import ReadMore from '../../utils/ReadMore';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
@@ -524,15 +524,7 @@ const MarketplaceDetails = props => {
                   <View>
                     <View style={styles.descriptionWrapper}>
                       <Text style={styles.desHeading}>Event Description</Text>
-                      <Text numberOfLines={isExtend ? -1 : 2}>
-                        {strippedHtml}
-                      </Text>
-                      <TouchableOpacity onPress={() => setisExtend(d => !d)}>
-                        <Text
-                          style={{color: color.btnBlue, textAlign: 'right'}}>
-                          {isExtend ? 'less' : '...read more'}
-                        </Text>
-                      </TouchableOpacity>
+                      <ReadMore description={strippedHtml} />
                     </View>
                   </View>
                 )}
