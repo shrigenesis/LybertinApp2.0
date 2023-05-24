@@ -23,7 +23,6 @@ import {APIRequest, ApiUrl, BASEURL, domainUriPrefix} from '../../utils/api';
 import Toast from 'react-native-toast-message';
 import {SliderBox} from 'react-native-image-slider-box';
 import RenderHtml from 'react-native-render-html';
-import ReadMore from '@fawazahmed/react-native-read-more';
 import HtmlToText from '../../utils/HtmlToText';
 import SvgUri from 'react-native-svg-uri-updated';
 import EducationVideoListItem from './educationVideoListItem';
@@ -32,6 +31,7 @@ import Video from 'react-native-video';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 import {Button, Loader} from '../../component';
+import ReadMore from '../../utils/ReadMore';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
@@ -329,23 +329,7 @@ export default class educationDetails extends Component {
                         borderBottomWidth: 1,
                       }}>
                       <Text style={styles.desHeading}>Video Description</Text>
-                      <View>
-                        
-                        <Text numberOfLines={this.state.isExtend ? -1 : 2}>
-                        {this.state.strippedHtml}
-                        </Text>
-                        <TouchableOpacity
-                          onPress={() =>
-                            this.setState({
-                              ...this.state,
-                              isExtend: !this.state.isExtend,
-                            })
-                          }>
-                          <Text style={{color: color.btnBlue,  textAlign:'right'}}>
-                            {this.state.isExtend ? 'less' : '...read more'}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
+                      <ReadMore description={this.state.strippedHtml} />
                     </View>
                   </View>
 

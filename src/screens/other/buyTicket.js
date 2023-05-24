@@ -895,10 +895,17 @@ export default class buyTicket extends Component {
         ) : (
           <View style={{ flex: 1, zIndex:-1}}>
               <ScrollView>
+<<<<<<< HEAD
               <KeyboardAvoidingView 
               behavior= {Platform.OS==='ios'? 'padding': ''}
               keyboardVerticalOffset={-hp(60)}
               >
+=======
+              <KeyboardAvoidingView
+               behavior= {Platform.OS==='ios'? 'padding': ''}
+               keyboardVerticalOffset={-hp(50)}
+               >
+>>>>>>> 883c1eccac6fc3858ef3ced8b4f309a8cc93058e
 
                 <View style={styles.container}>
                   <Loader type="dots" isLoading={this.state.isloading} />

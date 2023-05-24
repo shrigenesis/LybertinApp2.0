@@ -37,8 +37,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {SliderBox} from 'react-native-image-slider-box';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 import HtmlToText from '../../utils/HtmlToText';
-import ReadMore from '@fawazahmed/react-native-read-more';
 import RedirectToMap from '../../utils/RedirectToMap';
+import ReadMore from '../../utils/ReadMore';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 let myHTML = '';
@@ -331,23 +331,7 @@ export default class eventDetails extends Component {
                   )}
                   <View style={styles.descriptionWrapper}>
                     <Text style={styles.desHeading}>Event Description</Text>
-                    <View>
-                      <Text numberOfLines={this.state.isExtend ? -1 : 2}>
-                        {this.state.strippedHtml}
-                      </Text>
-                      <TouchableOpacity
-                        onPress={() =>
-                          this.setState({
-                            ...this.state,
-                            isExtend: !this.state.isExtend,
-                          })
-                        }>
-                        <Text
-                          style={{color: color.btnBlue, textAlign: 'right'}}>
-                          {this.state.isExtend ? 'less' : '...read more'}
-                        </Text>
-                      </TouchableOpacity>
-                    </View>
+                    <ReadMore description={this.state.strippedHtml} />
                   </View>
 
                   {this.state.isRepetative === true && (

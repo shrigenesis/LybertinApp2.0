@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     textAlign: 'center',
     paddingLeft: 0,
-
+    height: 300,
   },
   placeText: {
     fontSize: 20,
