@@ -30,7 +30,7 @@ import { APIRequest, ApiUrl } from './../../utils/api';
 import { LoginContext } from './../../context/LoginContext';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import messaging from '@react-native-firebase/messaging';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -138,13 +138,17 @@ const Login = ({ navigation, route }) => {
 
       // Once signed in, get the users AccesToken
       const { accessToken } = await AccessToken.getCurrentAccessToken();
+      setisLoading(true);
 
       // Create a Firebase credential with the AccessToken
       const facebookCredential =
         auth.FacebookAuthProvider.credential(accessToken);
 
       // Sign-in the user with the credential
-      let response = await auth().signInWithCredential(facebookCredential);
+      let response = await auth().signInWithCredential(facebookCredential).catch((err)=>{
+        console.log(err);
+      })
+
       if (response && Object.keys(response.additionalUserInfo).length) {
         let { profile } = response.additionalUserInfo;
         let data = {
@@ -334,42 +338,13 @@ const Login = ({ navigation, route }) => {
       />
       <KeyboardAwareScrollView keyboardShouldPersistTaps={true}>
         <ScrollView keyboardShouldPersistTaps={'always'}>
-          <View>
-            {/* <Image
-              source={IMAGE.shape_bg}
-              style={{
-                height: hp(45),
-                resizeMode: 'contain',
-                top: -hp(14),
-                position: 'absolute',
-                width: wp(100),
-              }}
-            /> */}
-          </View>
           <View style={style.body}>
             <View>
               <Image source={IMAGE.logo1} style={style.loginBanner} />
               <Text style={style.heading}>Welcome Back!</Text>
               {/* <Text style={style.heading2}>Login to your account</Text> */}
             </View>
-            {/* <View
-            style={{
-              marginTop: hp(2),
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <RippleTouchable onPress={_googleLogin} style={style.socialBtn}>
-              <Image source={IMAGE.google} style={style.socialIcon} />
-              <Text style={style.socialBtnText}>Log In via Google</Text>
-            </RippleTouchable>
-            <RippleTouchable onPress={_facebookLogin} style={style.socialBtn}>
-              <Image source={IMAGE.facebook} style={style.socialIcon} />
-              <Text style={style.socialBtnText}>Log In via Facebook</Text>
-            </RippleTouchable>
-          </View> */}
-            {/* <View style={{marginVertical: hp(2.5)}}>
-            <Text style={style.orLogin}>Or Log In Using Email</Text>
-          </View> */}
+            
             <View>
               <Textinput
                 value={email}
@@ -427,7 +402,7 @@ const Login = ({ navigation, route }) => {
                   <Image source={IMAGE.google} style={style.socialIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={_facebookLogin}
+                   onPress={_facebookLogin}
                   style={style.socialBtn}>
                   <Image source={IMAGE.facebook} style={style.socialIcon} />
                 </TouchableOpacity>
@@ -450,7 +425,7 @@ const Login = ({ navigation, route }) => {
                   <Image source={IMAGE.google} style={style.socialIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={_facebookLogin}
+                  onPress={_facebookLogin}
                   style={style.socialBtn}>
                   <Image source={IMAGE.facebook} style={style.socialIcon} />
                 </TouchableOpacity>

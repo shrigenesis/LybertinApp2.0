@@ -26,7 +26,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import messaging from '@react-native-firebase/messaging';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import auth from '@react-native-firebase/auth';
-import { LoginManager, AccessToken } from 'react-native-fbsdk';
+import { LoginManager, AccessToken } from 'react-native-fbsdk-next';
 import Video from 'react-native-video';
 import { CommonActions, useFocusEffect } from '@react-navigation/native';
 import { Platform } from 'react-native';
@@ -299,6 +299,7 @@ const Register = ({ navigation }) => {
 
       // Once signed in, get the users AccesToken
       const { accessToken } = await AccessToken.getCurrentAccessToken();
+      setisLoading(true);
 
       // Create a Firebase credential with the AccessToken
       const facebookCredential =
@@ -526,7 +527,7 @@ const Register = ({ navigation }) => {
                   <Image source={IMAGE.google} style={style.socialIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={_facebookLogin}
+                  onPress={_facebookLogin}
                   style={style.socialBtn}>
                   <Image source={IMAGE.facebook} style={style.socialIcon} />
                 </TouchableOpacity>
@@ -549,7 +550,7 @@ const Register = ({ navigation }) => {
                   <Image source={IMAGE.google} style={style.socialIcon} />
                 </TouchableOpacity>
                 <TouchableOpacity
-                  // onPress={_facebookLogin}
+                  onPress={_facebookLogin}
                   style={style.socialBtn}>
                   <Image source={IMAGE.facebook} style={style.socialIcon} />
                 </TouchableOpacity>
