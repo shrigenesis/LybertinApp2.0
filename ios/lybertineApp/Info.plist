@@ -29,6 +29,16 @@
 			<string>Bundle Id</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>fb5174592332648698</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>Bundle Id</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
 				<string>org.demo.lybertineApp</string>
 			</array>
 		</dict>
@@ -47,6 +57,10 @@
 	<string>5174592332648698</string>
 	<key>FacebookClientToken</key>
 	<string>c2e773abf2886aeb4ace91caea3cd988</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fb5174592332648698</string>
+	</array>
 	<key>FacebookDisplayName</key>
 	<string>Lybertine</string>
 	<key>LSRequiresIPhoneOS</key>
