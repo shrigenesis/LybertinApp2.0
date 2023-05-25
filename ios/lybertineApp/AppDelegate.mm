@@ -8,6 +8,8 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKLoginKit/FBSDKLoginKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
+#import <FBSDKCoreKit/FBSDKCoreKit-swift.h>
+#import <React/RCTLinkingManager.h>
 
 @implementation AppDelegate
 
@@ -19,7 +21,6 @@
   // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 [[FBSDKApplicationDelegate sharedInstance] application:application didFinishLaunchingWithOptions:launchOptions];
- 
   [BTAppContextSwitcher setReturnURLScheme:@"org.demo.lybertineApp.payments"];
 
   UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
