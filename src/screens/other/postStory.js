@@ -56,8 +56,15 @@ const PostStory = ({ navigation, route }) => {
   // }, [isFocus]);
 
   const postStory = () => {
+    if (route.params?.file?.fileSize > 17) {
+      Toast.show({
+        type: 'error',
+        text1: 'Size should be less than 14 MB',
+      });
+      return;
+    }
     console.log('message', message);
-    if (route.params?.file?.duration>30) {
+    if (route.params?.file?.duration > 30) {
       Toast.show({
         type: 'info',
         text1: 'Duration must be less than to 30 sec'
@@ -101,12 +108,12 @@ const PostStory = ({ navigation, route }) => {
       },
       err => {
         if (err.response.status === 422) {
-          let errorMsg =  ''
+          let errorMsg = ''
           if (err?.response?.data?.error?.video) {
             errorMsg = err?.response?.data?.error?.video[0]
           }
           if (err?.response?.data?.error?.image) {
-            errorMsg =  err?.response?.data?.error?.image[0]
+            errorMsg = err?.response?.data?.error?.image[0]
           }
           if (err?.response?.data?.error?.story_type) {
             errorMsg = err?.response?.data?.error?.story_type[0]

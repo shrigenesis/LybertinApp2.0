@@ -23,14 +23,14 @@ export const pickDocument = async cb => {
     })
       .then(res => {
         let data = res;
-
         let file = {
           uri: data.uri,
           type: data.type,
           name: data.name,
           fileType: data?.type == 'application/pdf' ? 'pdf' : 'doc',
+          fileSize: data?.size / (1024 * 1024) 
         };
-        cb(file);
+        cb(file); 
       })
       .catch(err => {
         console.log(err);
@@ -82,7 +82,8 @@ export const pickImage = async (type = 'image', cb, mediaType = 'mixed') => {
           type: image.type == "image/jpg" ? "image/jpeg" : image.type,
           name: image.fileName,
           fileType: mediaType,
-          duration: image?.duration ? image?.duration : 0
+          duration: image?.duration ? image?.duration : 0,
+          fileSize: image?.fileSize / (1024 * 1024) 
         };
         cb(file);
       }

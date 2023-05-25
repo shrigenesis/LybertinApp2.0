@@ -71,7 +71,7 @@ class GroupChat extends React.Component {
   }
 
 
-  componentWillMount(){
+  componentWillMount() {
     Socket = io.connect(socketUrl);
   }
   componentDidMount() {
@@ -154,7 +154,7 @@ class GroupChat extends React.Component {
       }
     });
 
-    Socket.on('disconnect', (reason)=>{
+    Socket.on('disconnect', (reason) => {
       console.log(reason);
       if (reason) {
         this.fetchChatList()
@@ -169,15 +169,15 @@ class GroupChat extends React.Component {
     });
 
     Socket.on('message recieved', newMessageRecieved => {
-      console.log(newMessageRecieved.id,  this.state.chatList );
+      console.log(newMessageRecieved.id, this.state.chatList);
       console.log(newMessageRecieved, 'message recieved====');
       // check duplicate message in chatlist 
-      const isExist = this.state.chatList?.filter((item)=> parseInt(item.id) === parseInt(newMessageRecieved.id))
+      const isExist = this.state.chatList?.filter((item) => parseInt(item.id) === parseInt(newMessageRecieved.id))
       console.log(isExist);
-      if(isExist?.length > 0){
+      if (isExist?.length > 0) {
         return;
       }
-      const  data = [newMessageRecieved, ...this.state.chatList];
+      const data = [newMessageRecieved, ...this.state.chatList];
       this.setState({ isLoading: false, chatList: data });
     });
   };
@@ -225,7 +225,7 @@ class GroupChat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
-    console.log('emit new message', res.conversation.message, this.state.chatList );
+    console.log('emit new message', res.conversation.message, this.state.chatList);
 
     let data = [res.conversation, ...this.state.chatList];
 
@@ -289,6 +289,13 @@ class GroupChat extends React.Component {
   };
 
   sendFile = async () => {
+    if (this.state.file?.fileSize > 17) {
+      Toast.show({
+        type: 'error',
+        text1: 'Size should be less than 14 MB',
+      });
+      return;
+    }
     const d = new Date();
     let ms = d.getMilliseconds();
     let formData = new FormData();
@@ -374,6 +381,10 @@ class GroupChat extends React.Component {
           }
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0]
+            if (err?.response?.data?.uniqueId) {
+              const data = this.state.progressFile?.filter((item, i) => item.uniqueId != err?.response?.data?.uniqueId)
+              this.setState({ progressFile: data })
+            }
           }
           Toast.show({
             type: 'error',
@@ -386,13 +397,6 @@ class GroupChat extends React.Component {
           });
         }
         this.setState({ isLoading: false });
-      },
-      (progress, uniqueId) => {
-        // let { total, loaded } = progress
-        // const data = this.state.progressFile?.filter((item, i) => item.uniqueId !== uniqueId)
-        // if (total === loaded) {
-        //   this.setState({ progressFile: data })
-        // }
       },
     );
 
@@ -422,7 +426,7 @@ class GroupChat extends React.Component {
     return (
       <SafeAreaView style={styles.safeArea}>
         <View style={styles.container}>
-        <FocusAwareStatusBar
+          <FocusAwareStatusBar
             barStyle={'dark-content'}
             backgroundColor={color.white}
           />

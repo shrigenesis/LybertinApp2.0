@@ -136,7 +136,7 @@ class Chat extends React.Component {
   };
 
   removeSocket() {
-    Socket.emit("makeOffline",  userdata.id);
+    Socket.emit("makeOffline", userdata.id);
     Socket.disconnect();
     Socket.off('setup');
     Socket.off('connected');
@@ -264,6 +264,13 @@ class Chat extends React.Component {
 
   sendFile = async () => {
     console.log('sendFile::');
+    if (this.state.file?.fileSize > 17) {
+      Toast.show({
+        type: 'error',
+        text1: 'Size should be less than 14 MB',
+      });
+      return;
+    }
     let formData = new FormData();
     const d = new Date();
     let ms = d.getMilliseconds();
@@ -344,6 +351,10 @@ class Chat extends React.Component {
           }
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0];
+            if (err?.response?.data?.uniqueId) {
+              const data = this.state.progressFile?.filter((item, i) => item.uniqueId != err?.response?.data?.uniqueId)
+              this.setState({ progressFile: data })
+            }
           }
           Toast.show({
             type: 'error',
@@ -357,15 +368,6 @@ class Chat extends React.Component {
         }
         this.setState({ isLoading: false });
         console.log('sendFile err', err);
-      },
-      (progress, uniqueId) => {
-        // let {total, loaded} = progress;
-        // const resData = this.state.progressFile?.filter(
-        //   (item, i) => item.uniqueId != uniqueId,
-        // );
-        // if (total === loaded) {
-        //   this.setState({progressFile: resData});
-        // }
       },
     );
   };
