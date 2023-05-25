@@ -105,9 +105,8 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                     setplayTime(v);
                     if (parseInt(v) >= duration) {
                         setplayTime(duration);
-                        // setTimeout(()=>{
+                        audio?.setaudio('');
                         stopSound();
-                        // })
                     }
                 })
             }, 1);
@@ -161,7 +160,7 @@ const SoundPlayer = ({ recordingFile = '', close = () => { }, forChat = false, S
                     }}>
                     {(!isPlay) ?
                         <TouchableOpacity
-                            disabled={audio?.isdisabled}
+                            // disabled={audio?.isdisabled}
                             style={styles.playpause}
                             onPress={startSound}
                         // onPress={()=>alert('ghn')}

@@ -82,47 +82,52 @@ const _renderMessage = (item, style, videoRef, direction) => {
   const Audio = () => {
     if (`${IMAGEURL}/${item.file_name}` === audio?.audio) {
       return (
-        <SoundPlayer
-          forChat={true}
-          recordingFile={`${IMAGEURL}/${item.file_name}`}
-        />
+        <TouchableOpacity onPress={() => console.log('audio')}>
+          <SoundPlayer
+            forChat={true}
+            recordingFile={`${IMAGEURL}/${item.file_name}`}
+          />
+        </TouchableOpacity>
       )
     } else {
       return (
-        <TouchableOpacity
-          disabled={audio?.isdisabled}
-          activeOpacity={1}
-          onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
-          <View
-            style={{
-              // backgroundColor: color.borderGray,
-              alignItems: 'center',
-              marginTop: hp(2),
-              height: hp(4),
-              flexDirection: 'row',
-              paddingRight: wp(5),
-              marginHorizontal: wp(2),
-              padding: 10,
-            }}>
-            <View style={styles.playpause} >
-              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
-            </View>
+        // <TouchableOpacity
+        //   disabled={audio?.isdisabled}
+        //   activeOpacity={1}
+        //   onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
+        <View
+          style={{
+            // backgroundColor: color.borderGray,
+            alignItems: 'center',
+            marginTop: hp(2),
+            height: hp(4),
+            flexDirection: 'row',
+            paddingRight: wp(5),
+            marginHorizontal: wp(2),
+            padding: 10,
+          }}>
+          <TouchableOpacity
+            onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
+            style={styles.playpause}
+          >
+            <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+          </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Slider
-                style={{ width: wp(28), marginLeft: wp(3) }}
-                trackStyle={styles.track}
-                thumbStyle={styles.thumb}
-                minimumTrackTintColor='#681F84'
-                thumbTouchSize={{ width: 50, height: 40 }}
-                minimumValue={0}
-                value={0}
-                maximumValue={10}
-                disabled={true}
-              />
-            </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Slider
+              style={{ width: wp(28), marginLeft: wp(3) }}
+              trackStyle={styles.track}
+              thumbStyle={styles.thumb}
+              minimumTrackTintColor='#681F84'
+              thumbTouchSize={{ width: 50, height: 40 }}
+              minimumValue={0}
+              value={0}
+              maximumValue={10}
+              disabled={true}
+            />
           </View>
-        </TouchableOpacity>
+        </View>
+        // </TouchableOpacity>
       )
     }
   }
@@ -194,7 +199,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return (
         <View>
           {direction === 'left' && (
-            <Text style={[styles.generalSenderText, {paddingBottom:0}]}>{item.sender.name}</Text>
+            <Text style={[styles.generalSenderText, { paddingBottom: 0 }]}>{item.sender.name}</Text>
           )}
           {Audio()}
 

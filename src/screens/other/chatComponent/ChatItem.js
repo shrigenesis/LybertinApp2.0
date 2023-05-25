@@ -56,17 +56,21 @@ const _renderMessage = (item, style) => {
   const Audio = () => {
     if (`${IMAGEURL}/${item.file_name}` === audio?.audio) {
       return (
+        <TouchableOpacity onPress={()=>console.log('audio')}>
         <SoundPlayer
           forChat={true}
           recordingFile={`${IMAGEURL}/${item.file_name}`}
         />
+        </TouchableOpacity>
       )
     } else {
       return (
-        <TouchableOpacity
-          disabled={audio?.isdisabled}
-          activeOpacity={1}
-          onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
+        // <TouchableOpacity
+        //   // disabled={audio?.isdisabled}
+        //   disabled={true}
+        //   // activeOpacity={1}
+        //   // onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
+        //   >
           <View
             style={{
               // backgroundColor: color.borderGray,
@@ -78,9 +82,12 @@ const _renderMessage = (item, style) => {
               marginHorizontal: wp(2),
               padding: 10,
             }}>
-            <View style={styles.playpause} >
+            <TouchableOpacity 
+            style={styles.playpause}
+            onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
+             >
               <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
-            </View>
+            </TouchableOpacity>
 
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
               <Slider
@@ -96,7 +103,7 @@ const _renderMessage = (item, style) => {
               />
             </View>
           </View>
-        </TouchableOpacity>
+        // </TouchableOpacity>
       )
     }
   }
