@@ -412,7 +412,7 @@ const EditGroup = ({ navigation, route }) => {
                 placeholderTextColor={'#0F2D52A6'}
                 placeholder="Add Group Name"
                 style={style.inputStyle}
-                maxLength={40}
+                maxLength={20}
               />
               <TextInput
                 onFocus={() => bottomSheetRef?.current?.close()}

@@ -158,7 +158,7 @@ const _renderGroupList = React.memo(({ item, navigation, setisLoading, reload, p
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}
                 >
-                  {/* {item.unread_count > 0 && (
+                  {item.unread_count > 0 && (
                     <View
                       style={{
                         // flexDirection: 'row',
@@ -174,7 +174,7 @@ const _renderGroupList = React.memo(({ item, navigation, setisLoading, reload, p
                         </Text>
                       </View>
                     </View>
-                  )} */}
+                  )}
                   {parseInt(item?.is_pinned) > 0 && <Image
                     source={IMAGE.grayPin}
                     style={{ height: 16, width: 16, marginTop: hp(1), resizeMode: 'contain' }}

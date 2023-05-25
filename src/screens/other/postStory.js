@@ -56,7 +56,7 @@ const PostStory = ({ navigation, route }) => {
   // }, [isFocus]);
 
   const postStory = () => {
-    if (route.params?.file?.fileSize > 17) {
+    if (route.params?.file?.fileSize > 14) {
       Toast.show({
         type: 'error',
         text1: 'Size should be less than 14 MB',

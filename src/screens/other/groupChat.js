@@ -179,6 +179,7 @@ class GroupChat extends React.Component {
       }
       const data = [newMessageRecieved, ...this.state.chatList];
       this.setState({ isLoading: false, chatList: data });
+      this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.id);
     });
   };
 
@@ -186,6 +187,26 @@ class GroupChat extends React.Component {
     this.removeSocket();
     this.focusListener();
   }
+  GroupMessageReadMark = (group_id, message_id) => {
+    let config = {
+      url: ApiUrl.groupReadMark,
+      method: 'post',
+      body: {
+        group_id: group_id,
+        message_id: message_id 
+      }
+    };
+    console.log(config);
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  };
 
   removeSocket() {
     Socket.disconnect();
@@ -289,7 +310,7 @@ class GroupChat extends React.Component {
   };
 
   sendFile = async () => {
-    if (this.state.file?.fileSize > 17) {
+    if (this.state.file?.fileSize > 14) {
       Toast.show({
         type: 'error',
         text1: 'Size should be less than 14 MB',

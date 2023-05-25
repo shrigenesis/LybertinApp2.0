@@ -66,6 +66,8 @@ export const ApiUrl = {
   pinUnpinChatList: `${apiBaseUrl}pin-conversations`,
   groupDetail: `${apiBaseUrl}groups/show/`,
   groupUpdate: `${apiBaseUrl}groups/update/`,
+  groupReadMark: `${apiBaseUrl}groups/read-messages`,
+  markReadMessage: `${apiBaseUrl}markReadMessage`,
   storyCreate: `${apiBaseUrl}story/create`,
   viewStory: `${apiBaseUrl}story/view-story`,
   stories: `${apiBaseUrl}story/index`,

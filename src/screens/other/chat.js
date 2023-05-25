@@ -122,7 +122,29 @@ class Chat extends React.Component {
       let data = [newMessageRecieved, ...this.state.chatList];
       this.setState({ isLoading: false, chatList: data });
       // this.chatListRef?.current?.scrollToEnd({animated: true});
+      this.MarkReadMessage(newMessageRecieved.id)
     });
+  };
+
+  MarkReadMessage = (message_id) => {
+
+    let config = {
+      url: ApiUrl.markReadMessage,
+      method: 'post',
+      body: {
+        message_id: message_id 
+      }
+    };
+    console.log(config);
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
   };
 
   onTyping = isTyping => {
@@ -264,7 +286,7 @@ class Chat extends React.Component {
 
   sendFile = async () => {
     console.log('sendFile::');
-    if (this.state.file?.fileSize > 17) {
+    if (this.state.file?.fileSize > 14) {
       Toast.show({
         type: 'error',
         text1: 'Size should be less than 14 MB',
