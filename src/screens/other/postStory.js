@@ -135,7 +135,8 @@ const PostStory = ({ navigation, route }) => {
     let file = route?.params?.file;
 
     if (file.fileType == 'photo') {
-      return <ImageBackground source={{ uri: file?.uri }} style={style.storyImage} ></ImageBackground>;
+      // return <ImageBackground source={{ uri: file?.uri }} style={style.storyImage} ></ImageBackground>;
+      return <Image source={{ uri: file?.uri }} style={style.storyImage} ></Image>;
     } else if (file.fileType == 'video') {
       return (
         <View>
