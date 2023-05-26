@@ -160,7 +160,7 @@ const Search = ({navigation, route}) => {
               />
             </View>
             <TextInput
-              ref={inputRef}
+              // ref={inputRef}
               autoFocus
               onChangeText={text => {
                 setSearch(text);
@@ -168,9 +168,9 @@ const Search = ({navigation, route}) => {
               }}
               value={search}
               style={{padding: 0, paddingLeft: 5, color: color.textGray2}}
-              onSubmitEditing={() => {
-                search && searchfilter(search);
-              }}
+              // onSubmitEditing={() => {
+              //   search && searchfilter(search);
+              // }}
               placeholder={
                 route?.params?.isGroupSearch
                   ? 'Search using group name'

@@ -158,7 +158,7 @@ export default class eventDetails extends Component {
             </View>
             <ScrollView style={{flex: 0.92}}>
               <SliderBox
-                images={this.sliderImageArray(this.state.images)}
+                images={this.state?.images.length>0? this.sliderImageArray(this.state.images) : [`${IMAGEURL}/${this.state.event.thumbnail}`]}
                 sliderBoxHeight={300}
                 onCurrentImagePressed={index =>
                   console.warn(`image ${index} pressed`)
@@ -326,9 +326,7 @@ export default class eventDetails extends Component {
                         </Text>
                       </View>
                     </View>
-                  ) : (
-                    <View></View>
-                  )}
+                  ) :null}
                   <View style={styles.descriptionWrapper}>
                     <Text style={styles.desHeading}>Event Description</Text>
                     <ReadMore description={this.state.strippedHtml} />

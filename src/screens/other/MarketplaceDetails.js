@@ -291,7 +291,7 @@ const MarketplaceDetails = props => {
         ) : (
           <>
             <SliderBox
-              images={event.images && sliderImageArray(event.images)}
+              images={event.images.length>0 ? sliderImageArray(event.images) : [`${IMAGEURL}/${event.thumbnail}`]}
               sliderBoxHeight={300}
               onCurrentImagePressed={index =>
                 console.warn(`image ${index} pressed`)

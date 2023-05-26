@@ -121,33 +121,33 @@ const MyProfile = ({ navigation, route }) => {
     }
   };
 
-  const ShortcutsMenu = {
-    label: 'Shortcuts',
-    subMenu: [
-      { label: 'Edit Profile', navigation: 'EditProfile', icon: IMAGE.edit_profile },
-      { label: 'My Bookings', icon: IMAGE.my_booking, navigation: 'ticketsScreen' },
-      {
-        label: 'My Friends',
-        icon: IMAGE.my_friends,
-        navigation: 'MyFriends',
-      },
-      {
-        label: 'Wallet',
-        icon: IMAGE.wallet_color,
-        navigation: 'wallet',
-      },
-      {
-        label: 'Join Marketplace',
-        icon: IMAGE.join_marketing,
-        navigation: 'marketplace',
-      },
-      {
-        label: 'Blocked User',
-        icon: IMAGE.blocked,
-        navigation: 'Blocklist',
-      },
-    ],
-  }
+  // const ShortcutsMenu = {
+  //   label: 'Shortcuts',
+  //   subMenu: [
+  //     { label: 'Edit Profile', navigation: 'EditProfile', icon: IMAGE.edit_profile },
+  //     { label: 'My Bookings', icon: IMAGE.my_booking, navigation: 'ticketsScreen' },
+  //     {
+  //       label: 'My Friends',
+  //       icon: IMAGE.my_friends,
+  //       navigation: 'MyFriends',
+  //     },
+  //     {
+  //       label: 'Wallet',
+  //       icon: IMAGE.wallet_color,
+  //       navigation: 'wallet',
+  //     },
+  //     {
+  //       label: 'Join Marketplace',
+  //       icon: IMAGE.join_marketing,
+  //       navigation: 'marketplace',
+  //     },
+  //     {
+  //       label: 'Blocked User',
+  //       icon: IMAGE.blocked,
+  //       navigation: 'Blocklist',
+  //     },
+  //   ],
+  // }
   const GeneralMenu = {
     label: 'General',
     subMenu: [
@@ -165,12 +165,16 @@ const MyProfile = ({ navigation, route }) => {
         label: 'Personal',
 
         subMenu: [
-          { label: 'Profile', navigation: 'EditProfile', icon: IMAGE.profile },
-          { label: 'Blocklist', icon: IMAGE.unfriend, navigation: 'Blocklist' },
+          { label: 'Edit Profile', navigation: 'EditProfile', icon: IMAGE.edit_profile },
           {
             label: 'My Friends',
-            icon: IMAGE.myFriend,
+            icon: IMAGE.my_friends,
             navigation: 'MyFriends',
+          },
+          {
+            label: 'Blocked User',
+            icon: IMAGE.blocked,
+            navigation: 'Blocklist',
           },
           {
             label: 'My Earnings',
@@ -180,26 +184,29 @@ const MyProfile = ({ navigation, route }) => {
         ],
       }
       : {
-        label: 'Personal',
-
+        label: 'Shortcuts',
         subMenu: [
-          { label: 'Profile', navigation: 'EditProfile', icon: IMAGE.profile },
-          { label: 'Change Password', navigation: 'ChangePassword', icon: IMAGE.password },
-          { label: 'Blocklist', icon: IMAGE.unfriend, navigation: 'Blocklist' },
+          { label: 'Edit Profile', navigation: 'EditProfile', icon: IMAGE.edit_profile },
+          { label: 'My Bookings', icon: IMAGE.my_booking, navigation: 'ticketsScreen' },
           {
             label: 'My Friends',
-            icon: IMAGE.myFriend,
+            icon: IMAGE.my_friends,
             navigation: 'MyFriends',
           },
           {
+            label: 'Wallet',
+            icon: IMAGE.wallet_color,
+            navigation: 'wallet',
+          },
+          {
             label: 'Join Marketplace',
-            icon: IMAGE.myFriend,
+            icon: IMAGE.join_marketing,
             navigation: 'marketplace',
           },
           {
-            label: 'Wallet',
-            icon: IMAGE.myFriend,
-            navigation: 'wallet',
+            label: 'Blocked User',
+            icon: IMAGE.blocked,
+            navigation: 'Blocklist',
           },
         ],
       },
@@ -328,9 +335,9 @@ const MyProfile = ({ navigation, route }) => {
         <Header title={'My Profile'} />
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         {appReady && (
-          <>  
+          <>
             <ScrollView showsVerticalScrollIndicator={false}>
-              <View> 
+              <View>
                 <Loader isLoading={isLoading} type={'dots'} />
                 {userdata.cover ? (
                   <Image
@@ -368,27 +375,27 @@ const MyProfile = ({ navigation, route }) => {
                       _renderHighlightes(item, index)
                     }
                   />
-                  <View style={{ 
+                  <View style={{
                     // padding: wp(4), 
-                    marginBottom: 30 
-                    }}>
-                    <Text style={{...style.menuText, marginStart:wp(4)}}>{ShortcutsMenu.label}</Text>
+                    marginBottom: 30
+                  }}>
+                    <Text style={{ ...style.menuText, marginStart: wp(4) }}>{menu[0].label}</Text>
                     <FlatList
-                      data={ShortcutsMenu.subMenu}
+                      data={menu[0].subMenu}
                       numColumns={2}
                       renderItem={({ item, index }) => (
-                        <TouchableOpacity 
+                        <TouchableOpacity
                           activeOpacity={0.7}
                           onPress={() => navigation.navigate(item.navigation)}>
-                          <View style={ index % 2 === 0 ?{
-                            paddingRight:wp(2),
-                            paddingHorizontal:wp(4),
-                            paddingVertical:wp(0.2),
-                          }:{
+                          <View style={index % 2 === 0 ? {
+                            paddingRight: wp(2),
+                            paddingHorizontal: wp(4),
+                            paddingVertical: wp(0.2),
+                          } : {
                             paddingLeft: wp(2),
-                            paddingHorizontal:wp(4),
-                            paddingVertical:wp(0.2), 
-                        }}>
+                            paddingHorizontal: wp(4),
+                            paddingVertical: wp(0.2),
+                          }}>
                             <View style={style.cardList}>
                               <Image style={style.cardListImage} source={item.icon} />
                               <Text>
@@ -492,7 +499,7 @@ const style = StyleSheet.create({
     fontSize: Platform.OS === "ios" ? 15 : 14,
     fontFamily: fontFamily.Regular,
     color: color.black,
-    lineHeight:20,
+    lineHeight: 20,
   },
   cardBlock2: {
     marginLeft: wp(10),

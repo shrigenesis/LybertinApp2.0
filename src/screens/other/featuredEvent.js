@@ -20,7 +20,9 @@ import {
 import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
 import NoRecord from './noRecord';
 import EventListSkelton from '../../utils/skeltons/eventListSkelton';
+import { User } from '../../utils/user';
 
+const user = new User().getuserdata()
 export default class featured_events extends Component {
   constructor(props) {
     super(props);
@@ -77,6 +79,7 @@ export default class featured_events extends Component {
   };
 
   render() {
+    console.log(user.role_name, 'user');
     return (
       <View style={styles.container}>
         <StatusBar
@@ -120,7 +123,7 @@ export default class featured_events extends Component {
                   renderItem={({ item: d }) => (
                     <TouchableOpacity
                       onPress={() =>
-                        this.props.navigation.navigate('eventDetails', {
+                        this.props.navigation.navigate(user.role_name === 'organiser' ? 'eventDetailsOrg' : 'eventDetails', {
                           event_id: d.id,
                         })
                       }
@@ -240,7 +243,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginHorizontal: '4%',
-    marginVertical: '6%' ,
+    marginVertical: '6%',
     alignItems: 'center',
     marginTop: Platform.OS == 'ios' ? hp(6) : hp(4),
   },

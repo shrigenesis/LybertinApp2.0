@@ -178,7 +178,7 @@ class GroupChat extends React.Component {
         return;
       }
       const data = [newMessageRecieved, ...this.state.chatList];
-      this.setState({ isLoading: false, chatList: data });
+      this.setState({ isLoading: false, chatList: data, previeosMessageId: newMessageRecieved.id });
       this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.id);
     });
   };
@@ -193,7 +193,7 @@ class GroupChat extends React.Component {
       method: 'post',
       body: {
         group_id: group_id,
-        message_id: message_id 
+        message_id: message_id
       }
     };
     console.log(config);
@@ -241,22 +241,24 @@ class GroupChat extends React.Component {
     );
   };
 
-  setMessages = res => {
+  setMessages = (res, type) => {
     Socket.emit('new message', {
       ...res.conversation,
       roomId: this.state.roomId,
     });
     console.log('emit new message', res.conversation.message, this.state.chatList);
 
-    let data = [res.conversation, ...this.state.chatList];
+    if (type !== 'message') {
+      let data = [res.conversation, ...this.state.chatList];
 
-    this.setState({
-      isLoading: false,
-      file: undefined,
-      audioFile: '',
-      message: '',
-      chatList: data,
-    });
+      this.setState({
+        isLoading: false,
+        file: undefined,
+        audioFile: '',
+        message: '',
+        chatList: data,
+      });
+    }
   };
 
   sendMessage = () => {
@@ -292,14 +294,36 @@ class GroupChat extends React.Component {
         },
       };
 
+
+      let message = {
+        message: this.state.message,
+        id: this.state?.previeosMessageId ? this.state.previeosMessageId : 10000,
+        from_id: userdata.id,
+        to_id: this.props?.route?.params?.user_id,
+        created_at: new Date(),
+        message_type: 0,
+        reply_to: this.state?.replyOn !== undefined ? JSON.stringify(reply_on) : null,
+        is_group: 1,
+      }
+
+      let data = [message, ...this.state.chatList];
+
+      this.setState({
+        isLoading: false,
+        file: undefined,
+        audioFile: '',
+        message: '',
+        chatList: data,
+      });
       APIRequest(
         config,
         res => {
           console.log(res);
           this.setState({
-            replyOn: undefined
+            replyOn: undefined,
+            previeosMessageId: res.conversation.id
           });
-          this.setMessages(res);
+          this.setMessages(res, 'message');
         },
         err => {
           console.log(err);
