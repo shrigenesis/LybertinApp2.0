@@ -10,16 +10,21 @@ import {
   Platform,
   Share,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import { APIRequest, ApiUrl, IMAGEURL, Toast } from './../../utils/api';
 import { SliderBox } from "react-native-image-slider-box";
+import { StatusBar } from 'react-native';
+import { Pressable } from 'react-native';
+import RedirectToMap from '../../utils/RedirectToMap';
+import HtmlToText from '../../utils/HtmlToText';
+import ReadMore from '../../utils/ReadMore';
+import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 
-let myHTML = '';
-let strippedHtml = myHTML.replace(/<[^>]+>/g, '');
+const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default class eventDetailsOrg extends Component {
   constructor(props) {
@@ -37,6 +42,8 @@ export default class eventDetailsOrg extends Component {
       images: [],
       tag_group_new: [],
       ticketinfo: {},
+      strippedHtml: '',
+      isLoading: true,
     };
   }
 
@@ -46,8 +53,7 @@ export default class eventDetailsOrg extends Component {
   };
 
   getEventDetails = () => {
-    // setisLoading(true);
-
+    this.setState({isLoading:true})
     let config = {
       url: ApiUrl.eventDetails,
       method: 'post',
@@ -70,16 +76,13 @@ export default class eventDetailsOrg extends Component {
             dance: res.tag_groups.dance,
             images: res.event.images,
             ticketinfo: res?.ticket_info,
+            strippedHtml: HtmlToText(res.event.description),
           });
-          myHTML = res.event.description;
-          strippedHtml = myHTML.replace(/<[^>]+>/g, '');
-
-          // setrequestCount(res.follow_requests);
         }
-        // setisLoading(false);
+        this.setState({isLoading:false})
       },
       err => {
-        // setisLoading(false);
+        this.setState({isLoading:false})
         console.log(err);
       },
     );
@@ -112,154 +115,122 @@ export default class eventDetailsOrg extends Component {
   };
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
-          <SliderBox
-            images={this.sliderImageArray(this.state.images)}
-            sliderBoxHeight={300}
-            onCurrentImagePressed={index => console.warn(`image ${index} pressed`)}
-            dotColor={color.btnBlue}
-            inactiveDotColor={color.black}
-            dotStyle={{
-              width: 20,
-              height: 5,
-              borderRadius: 5,
-              marginBottom: 50,
-              padding: 0,
-              margin: -5,
-            }}
+      <>
+        {!this.state.isLoading ? (
+        <View style={styles.container}>
+          <StatusBar
+            barStyle={'dark-content'}
+            translucent={true}
+            backgroundColor={color.transparent}
           />
           <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              marginHorizontal: '5%',
-              marginTop: Platform.OS == "ios" ? '-60%' : '-80%',
-            }}>
+            style={[
+              styles.backBtn,
+              { top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15) },
+            ]}>
             <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <Image
-                source={IMAGE.goBack}
-                style={{
-                  height: 24,
-                  width: 24,
-                  resizeMode: 'contain',
-                }}
-              />
+              <Image source={IMAGE.ArrowLeft} style={styles.backBtnImage} />
             </TouchableOpacity>
-
-           
           </View>
-          {/* <ImageBackground
-            source={IMAGE.new}
-            style={{
-              height: 286,
-              width: '100%',
-              resizeMode: 'stretch',
-              alignSelf: 'center',
-              // marginTop: '2%',
-            }}>
+          <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+            <SliderBox
+              // images={this.sliderImageArray(this.state.images)}
+              images={this.state?.images.length > 0 ? this.sliderImageArray(this.state.images) : [`${IMAGEURL}/${this.state.event.thumbnail}`]}
+              sliderBoxHeight={300}
+              onCurrentImagePressed={index => console.warn(`image ${index} pressed`)}
+              dotColor={color.btnBlue}
+              inactiveDotColor={color.black}
+              dotStyle={{
+                width: 20,
+                height: 5,
+                borderRadius: 5,
+                marginBottom: 50,
+                padding: 0,
+                margin: -5,
+              }}
+            />
             <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginHorizontal: '5%',
-                marginTop: '10%',
+                marginTop: Platform.OS == "ios" ? '-60%' : '-80%',
               }}>
-              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-                <Image
-                  source={IMAGE.goBack}
-                  style={{
-                    height: 24,
-                    width: 24,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </TouchableOpacity>
 
-              <Image
-                source={IMAGE.share}
-                style={{
-                  height: 24,
-                  width: 24,
-                  resizeMode: 'contain',
-                }}
-              />
+
             </View>
-          </ImageBackground> */}
 
-          <View
-            style={{
-              marginTop: Platform.OS == "ios" ? '40%' : '50%',
-              height: 30,
-              borderTopLeftRadius: 30,
-              borderTopRightRadius: 40,
-              backgroundColor: '#F9F9FA',
-            }}></View>
-          <View
-            style={{
-              backgroundColor: '#F9F9FA',
-            }}>
-            <View>
-              <View style={styles.shareWrapp}>
-                <Text style={styles.heading}>{this.state.event.title}</Text>
-                <TouchableOpacity onPress={() => this.onShare()}>
-                  <Image
-                    source={IMAGE.ShareIco}
+            <View
+              style={{
+                marginTop: Platform.OS == "ios" ? '40%' : '50%',
+                height: 30,
+                borderTopLeftRadius: 30,
+                borderTopRightRadius: 40,
+                backgroundColor: '#F9F9FA',
+              }}></View>
+            <View
+              style={{
+                backgroundColor: '#F9F9FA',
+              }}>
+              <View>
+                <View style={styles.shareWrapp}>
+                  <Text style={styles.heading}>{this.state.event.title}</Text>
+                  <TouchableOpacity onPress={() => this.onShare()}>
+                    <Image
+                      source={IMAGE.ShareIco}
+                      style={{
+                        height: 25,
+                        width: 25,
+                        resizeMode: 'contain',
+                        marginRight: 20,
+                        tintColor: color.btnBlue,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.ultimateText}>
+                  {this.state.event.excerpt}
+                </Text>
+                {this.state.event.hashtags?.length > 0 ? (
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}
                     style={{
-                      height: 25,
-                      width: 25,
-                      resizeMode: 'contain',
-                      marginRight: 20,
-                      tintColor:color.btnBlue,
-                    }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <Text style={styles.ultimateText}>
-                {this.state.event.excerpt}
-              </Text>
-              <View style={styles.imageContainer}>
-                <Image
-                  source={IMAGE.dateColor}
-                  style={{
-                    height: 22,
-                    width: 22,
-                    resizeMode: 'contain',
-                    marginRight: '4%',
-                    tintColor: color.btnBlue,
-                  }}
-                />
-                <View>
-                  <Text style={styles.dateText}>Date & Time</Text>
-                  <Text style={styles.timeText}>
-                    {this.state.event.event_timing_formatted}
-                  </Text>
-                </View>
-              </View>
-              <View style={styles.imageContainer}>
-                <Image
-                  source={IMAGE.locationColor}
-                  style={{
-                    height: 22,
-                    width: 22,
-                    resizeMode: 'contain',
-                    marginRight: '4%',
-                    tintColor: color.btnBlue,
-                  }}
-                />
+                      flexDirection: 'row',
+                      margin: 5,
+                      flexWrap: 'wrap',
+                      marginHorizontal: 15,
+                    }}>
+                    {this.state.event.hashtags.map(item => (
+                      <Text style={styles.tagText}>#{item.title}</Text>
+                    ))}
+                  </ScrollView>
+                ) : null}
 
-                <View>
-                  <Text style={styles.dateText}>Location</Text>
-                  <Text style={styles.timeText} numberOfLines={2}>
-                    {this.state.event.venue}, {this.state.event.state},{' '}
-                    {this.state.event.city}, {this.state.event.zipcode}
-                  </Text>
-                </View>
-              </View>
-              {this.state.event.repetitive === 1 ? (
+                {this.state.event.category_name ?
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={IMAGE.category}
+                      style={{
+                        height: 22,
+                        width: 22,
+                        resizeMode: 'contain',
+                        marginRight: '4%',
+                        tintColor: color.btnBlue,
+                      }}
+                    />
+                    <View>
+                      <Text style={styles.dateText}>Category</Text>
+                      <Text style={styles.timeText} numberOfLines={1}>
+                        {this.state.event.category_name}
+                      </Text>
+                    </View>
+                  </View>
+                  : null}
+
                 <View style={styles.imageContainer}>
                   <Image
-                    source={IMAGE.eventColor}
+                    source={IMAGE.dateColor}
                     style={{
                       height: 22,
                       width: 22,
@@ -268,108 +239,133 @@ export default class eventDetailsOrg extends Component {
                       tintColor: color.btnBlue,
                     }}
                   />
-
                   <View>
-                    <Text style={styles.dateText}>Event type</Text>
-                    <Text style={styles.timeText} numberOfLines={2}>
-                      Monthly Repetitive Event
+                    <Text style={styles.dateText}>Date & Time</Text>
+                    <Text style={styles.timeText}>
+                      {this.state.event.event_timing_formatted}
                     </Text>
                   </View>
                 </View>
-              ) : (
-                <View></View>
-              )}
-              <View style={styles.descriptionWrapper}>
-                <Text style={styles.desHeading}>Event Description</Text>
-                {this.state.showText == 0 ? (
-                  <View>
-                    <Text style={styles.desText} numberOfLines={2}>
-                      {strippedHtml}
-                    </Text>
-                    <Text
-                      onPress={() =>
-                        this.setState({
-                          showText: 1,
-                        })
-                      }
-                      style={{ color: color.btnBlue, alignSelf: 'flex-end' }}>
-                      ...Read more{' '}
-                    </Text>
-                  </View>
-                ) : (
-                  <View>
-                    <Text style={styles.desText}>{strippedHtml}</Text>
-                    {/* <Text style={{color: '#20BBF6',alignSelf:"flex-end"}}>...Read more </Text> */}
-                  </View>
-                )}
 
-                {/* <Text style={styles.desHeading}>Event Info</Text>
+                <View style={styles.imageContainer}>
+                  <Image
+                    source={IMAGE.locationColor}
+                    style={{
+                      height: 22,
+                      width: 22,
+                      resizeMode: 'contain',
+                      marginRight: '4%',
+                      tintColor: color.btnBlue,
+                    }}
+                  />
+                  <View>
+                    <Pressable
+                      onPress={() =>
+                        RedirectToMap(`${this.state.event?.venue}+${this.state.event?.state}+${this.state.event?.city}+${this.state.event?.zipcode}`)
+                      }>
+                      <Text style={styles.dateText}>Location</Text>
+                      <Text style={styles.timeText} numberOfLines={2}>
+                        {this.state.event.venue && this.state.event.venue}
+                        {this.state.event.state &&
+                          ', ' + this.state.event.state}
+                        {this.state.event.city && ', ' + this.state.event.city}
+                        {this.state.event.zipcode &&
+                          ', ' + this.state.event.zipcode}
+                      </Text>
+                    </Pressable>
+                  </View>
+                </View>
+                {this.state.event.repetitive === 1 ? (
+                  <View style={styles.imageContainer}>
+                    <Image
+                      source={IMAGE.eventColor}
+                      style={{
+                        height: 22,
+                        width: 22,
+                        resizeMode: 'contain',
+                        marginRight: '4%',
+                        tintColor: color.btnBlue,
+                      }}
+                    />
+
+                    <View>
+                      <Text style={styles.dateText}>Event type</Text>
+                      <Text style={styles.timeText} numberOfLines={2}>
+                        {this.state.event.event_type_text}
+                      </Text>
+                    </View>
+                  </View>
+                ) : null}
+                <View style={styles.descriptionWrapper}>
+                  <Text style={styles.desHeading}>Event Description</Text>
+                  <ReadMore description={this.state.strippedHtml} />
+                  {/* <Text style={styles.desHeading}>Event Info</Text>
               <Text style={styles.desText}>
                 It Is Safe To Say Forbidden Nights Faces Have Been Seen Across
                 The World Bringing In Girls From All Sides Of The Globe. You
                 will <Text style={{color: '#20BBF6'}}>...Read more </Text>
               </Text> */}
-              </View>
-              <View
-                style={{
-                  marginTop: 10,
-                  backgroundColor: '#e8dcec',
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  paddingVertical: 20,
-                  paddingHorizontal: 15,
-                  borderRadius: 5,
-                  margin: 14,
-
-                }}>
-                <Text
+                </View>
+                <View
                   style={{
-                    color: color.btnBlue,
-                    fontFamily: fontFamily.Bold,
-                    fontWeight: 'bold',
-                  }}>
-                  Tickets Sold
-                </Text>
-                <Text
-                  style={{
-                    color: color.btnBlue,
-                    fontFamily: fontFamily.Bold,
-                    fontWeight: 'bold',
-                  }}>
-                  {this.state.ticketinfo?.sold_tickets}/
-                  {this.state.ticketinfo?.total_tickets}
-                </Text>
-              </View>
-              {this.state.tag_group_new?.length > 0 &&
-                this.state.tag_group_new?.map((itt, indx) => {
-                  return (
-                    <View style={styles.eventItems} key={indx}>
-                      <Text style={styles.ticketsText}>{itt?.name}</Text>
-                      <FlatList
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        data={itt?.items}
-                        renderItem={({ item, index }) => (
-                          <View
-                            style={styles.eventTagInner}>
-                            <View style={styles.tagIMageWrapper}>
-                              <Image
-                                source={{ uri: `${IMAGEURL}/${item.image}` }}
-                                style={styles.profileImage}
-                              />
-                            </View>
-                            <View style={{ margin: 8 }}>
-                              <Text style={styles.nameText}>{item.title}</Text>
-                              <Text style={styles.proText}>{item.type}</Text>
-                            </View>
-                          </View>
-                        )}
-                      />
-                    </View>
-                  );
-                })}
+                    marginTop: 10,
+                    backgroundColor: '#e8dcec',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    paddingVertical: 20,
+                    paddingHorizontal: 15,
+                    borderRadius: 5,
+                    margin: 14,
 
-              {/* <View style={{marginTop: '8%'}}>
+                  }}>
+                  <Text
+                    style={{
+                      color: color.btnBlue,
+                      fontFamily: fontFamily.Bold,
+                      fontWeight: 'bold',
+                    }}>
+                    Tickets Sold
+                  </Text>
+                  <Text
+                    style={{
+                      color: color.btnBlue,
+                      fontFamily: fontFamily.Bold,
+                      fontWeight: 'bold',
+                    }}>
+                    {this.state.ticketinfo?.sold_tickets}/
+                    {this.state.ticketinfo?.total_tickets}
+                  </Text>
+                </View>
+                {this.state.tag_group_new?.length > 0 &&
+                  this.state.tag_group_new?.map((itt, indx) => {
+                    return (
+                      <View style={styles.eventItems} key={indx}>
+                        <Text style={styles.ticketsText}>{itt?.name}</Text>
+                        <FlatList
+                          horizontal
+                          showsHorizontalScrollIndicator={false}
+                          data={itt?.items}
+                          renderItem={({ item, index }) => (
+                            <View
+                              style={styles.eventTagInner}>
+                              <View style={styles.tagIMageWrapper}>
+                                <Image
+                                  source={{ uri: `${IMAGEURL}/${item.image}` }}
+                                  style={styles.profileImage}
+                                />
+                              </View>
+                              <View style={{ margin: 8 }}>
+                                <Text style={styles.nameText}>{item.title}</Text>
+                                <Text style={styles.proText}>{item.type}</Text>
+                              </View>
+                            </View>
+                          )}
+                        />
+                      </View>
+                    );
+                  })}
+
+                {/* <View style={{marginTop: '8%'}}>
                 <Text style={styles.ticketsText}>Co-sponsors</Text>
                 <FlatList
                   horizontal
@@ -421,7 +417,7 @@ export default class eventDetailsOrg extends Component {
                   )}
                 />
               </View> */}
-              {/* <View style={{marginTop: '8%'}}>
+                {/* <View style={{marginTop: '8%'}}>
                 <Text style={styles.ticketsText}>Event Gallery</Text>
                 <FlatList
                   horizontal
@@ -437,10 +433,13 @@ export default class eventDetailsOrg extends Component {
                   )}
                 />
               </View> */}
+              </View>
             </View>
-          </View>
-        </ScrollView>
-      </View>
+          </ScrollView>
+        </View>):(
+          <DetailsSkelton />
+        )}
+      </>
     );
   }
 }
@@ -502,7 +501,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontFamily: fontFamily.Bold,
     color: '#191926',
-    marginTop: '8%',
+    marginTop: '1%',
   },
   desText: {
     fontSize: Platform.OS == 'ios' ? 15 : 13,
@@ -562,10 +561,10 @@ const styles = StyleSheet.create({
   },
   eventItems: {
     paddingHorizontal: 15,
-    marginTop: 20
+    // marginTop: 20,
+    marginBottom: 15,
   },
-  eventTagInner:
-  {
+  eventTagInner: {
     backgroundColor: color.extralightSlaty,
     borderColor: '#DEDEDE',
     borderWidth: 1,
@@ -584,6 +583,25 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems:"center"
-  }
+    alignItems: "center"
+  },
+  tagText: {
+    fontSize: fontSize.size11,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    backgroundColor: color.liteRed,
+    color: color.liteBlueMagenta,
+    borderRadius: 3,
+    marginRight: 4,
+  },
+  backBtn: {
+    position: 'absolute',
+    left: 15,
+    zIndex: 1,
+  },
+  backBtnImage: {
+    height: 32,
+    width: 32,
+    resizeMode: 'contain',
+  },
 });

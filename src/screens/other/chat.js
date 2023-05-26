@@ -120,7 +120,7 @@ class Chat extends React.Component {
       // let data = [...this.state.chatList];
       // data.push(newMessageRecieved);
       let data = [newMessageRecieved, ...this.state.chatList];
-      this.setState({ isLoading: false, chatList: data });
+      this.setState({ isLoading: false, chatList: data, previeosMessageId: newMessageRecieved.id });
       // this.chatListRef?.current?.scrollToEnd({animated: true});
       this.MarkReadMessage(newMessageRecieved.id)
     });
@@ -132,7 +132,7 @@ class Chat extends React.Component {
       url: ApiUrl.markReadMessage,
       method: 'post',
       body: {
-        message_id: message_id 
+        message_id: message_id
       }
     };
     console.log(config);
@@ -225,21 +225,24 @@ class Chat extends React.Component {
     );
   };
 
-  setMessages = res => {
+  setMessages = (res, type) => {
+    console.log(res);
     Socket.emit('new message', {
       ...res.conversation,
       roomId: this.state.roomId,
     });
 
-    let data = [res.conversation, ...this.state.chatList];
+    if (type !== 'message') {
+      let data = [res.conversation, ...this.state.chatList];
 
-    this.setState({
-      isLoading: false,
-      file: undefined,
-      audioFile: '',
-      message: '',
-      chatList: data,
-    });
+      this.setState({
+        isLoading: false,
+        file: undefined,
+        audioFile: '',
+        message: '',
+        chatList: data,
+      });
+    }
 
     // setTimeout(() => {
     //   this.chatListRef?.current?.scrollToEnd({animated: true});
@@ -266,12 +269,30 @@ class Chat extends React.Component {
         },
       };
 
-      this.setState({ message: '' });
+      let message = {
+        message: this.state.message,
+        id: this.state?.previeosMessageId?this.state.previeosMessageId: 10000,
+        from_id:  userdata.id,
+        to_id: this.props?.route?.params?.user_id,
+        created_at: new Date(),
+        message_type: 0,
+      }
+
+      let data = [message, ...this.state.chatList];
+      this.setState({
+        isLoading: false,
+        file: undefined,
+        audioFile: '',
+        message: '',
+        chatList: data,
+      });
 
       APIRequest(
         config,
         res => {
-          this.setMessages(res);
+          this.setMessages(res, 'message');
+          this.setState({previeosMessageId: res.conversation.id})
+          console.log(res);
         },
         err => {
           this.setState({ isLoading: false });

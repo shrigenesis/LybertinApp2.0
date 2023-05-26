@@ -1,4 +1,4 @@
-import React, {useState, useEffect, FC} from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import {
   View,
   Text,
@@ -11,19 +11,20 @@ import {
   StatusBar,
   ActivityIndicator,
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant';
+import { IMAGE, color, fontFamily } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, StoryList} from '../../component';
+import { RippleTouchable, StoryList } from '../../component';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from '../../component/loader';
-import {APIRequest, ApiUrl, IMAGEURL} from '../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
+import { APIRequest, ApiUrl, IMAGEURL } from '../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
-import {User} from '../../utils/user';
+import { User } from '../../utils/user';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import NoRecord from './noRecord';
 
 const DATA = [
   {
@@ -91,7 +92,7 @@ const getTime = time => {
   }
 };
 
-const _renderChatList = React.memo(({item, userId, navigation}) => {
+const _renderChatList = React.memo(({ item, userId, navigation }) => {
   let receiverId = userId == item.from_id ? item.to_id : item.from_id;
   return (
     <SwipeableView
@@ -109,7 +110,7 @@ const _renderChatList = React.memo(({item, userId, navigation}) => {
               }}>
               <Image
                 source={IMAGE.delete}
-                style={{height: 15, width: 15, resizeMode: 'contain'}}
+                style={{ height: 15, width: 15, resizeMode: 'contain' }}
               />
               <Text
                 style={{
@@ -142,7 +143,7 @@ const _renderChatList = React.memo(({item, userId, navigation}) => {
             <View style={style.imgview}>
               {item?.user?.avatar ? (
                 <Image
-                  source={{uri: `${IMAGEURL}/${item?.user?.avatar}`}}
+                  source={{ uri: `${IMAGEURL}/${item?.user?.avatar}` }}
                   style={style.imgBox}
                 />
               ) : (
@@ -160,10 +161,10 @@ const _renderChatList = React.memo(({item, userId, navigation}) => {
                   <Text style={style.msg}>Send a file</Text>
                 )}
               </View>
-              <View style={{paddingRight: wp(3)}}>
+              <View style={{ paddingRight: wp(3) }}>
                 <Text style={style.time}>{getTime(item?.created_at)}</Text>
                 {item.unread_count > 0 && (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                     <View style={style.badge}>
                       <Text style={style.badgeText}>{item.unread_count}</Text>
                     </View>
@@ -178,13 +179,13 @@ const _renderChatList = React.memo(({item, userId, navigation}) => {
   );
 });
 
-const EventListOrganiser = ({navigation}) => {
+const EventListOrganiser = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [requestCount, setrequestCount] = useState(0);
   const [chatData, setchatData] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [appReady, setappReady] = useState(false);
-  const {avatar, id} = new User().getuserdata();
+  const { avatar, id } = new User().getuserdata();
   const [upcomingEvents, setupcomingEvents] = useState([]);
   const [featuredEvents, setfeaturedEvent] = useState([]);
   const [topSellingEvents, settopSellingEvents] = useState([]);
@@ -282,10 +283,10 @@ const EventListOrganiser = ({navigation}) => {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
-      <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue}/>
+      <StatusBar barStyle={'light-content'} backgroundColor={color.btnBlue} />
       <View>
-        <View style={{backgroundColor: color.btnBlue}}>
-          <View style={{backgroundColor: color.btnBlue}}>
+        <View style={{ backgroundColor: color.btnBlue }}>
+          <View style={{ backgroundColor: color.btnBlue }}>
             {appReady && <Loader type="dots" isLoading={isLoading} />}
             <View
               style={{
@@ -300,7 +301,7 @@ const EventListOrganiser = ({navigation}) => {
                 onPress={() => navigation.navigate('MyProfile')}>
                 {avatar ? (
                   <Image
-                    source={{uri: `${IMAGEURL}/${avatar}`}}
+                    source={{ uri: `${IMAGEURL}/${avatar}` }}
                     style={style.userProfile}
                   />
                 ) : (
@@ -311,7 +312,7 @@ const EventListOrganiser = ({navigation}) => {
           </View>
           <StoryList navigation={navigation} storyBackGroundColor={color.btnBlue} headerFontColor={"themeColor"} />
           <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{backgroundColor: color.btnBlue}}>
+            <View style={{ backgroundColor: color.btnBlue }}>
               <View
                 style={{
                   flexDirection: 'row',
@@ -321,24 +322,24 @@ const EventListOrganiser = ({navigation}) => {
                   marginBottom: hp(2),
                 }}>
                 <View style={style.input}>
-                  <View style={{position: 'absolute', left: wp(3)}}>
+                  <View style={{ position: 'absolute', left: wp(3) }}>
                     <TouchableOpacity onPress={() => getSearchEvents()}>
                       <Image
                         source={IMAGE.search2}
-                        style={{height: 20, width: 20, resizeMode: 'contain'}}
+                        style={{ height: 20, width: 20, resizeMode: 'contain' }}
                       />
                     </TouchableOpacity>
                   </View>
                   <TextInput
                     onSubmitEditing={() => getSearchEvents()}
-                    style={{paddingVertical: 0, color: color.textGray2}}
+                    style={{ paddingVertical: 0, color: color.textGray2 }}
                     onChangeText={setSearch}
                     placeholder="Search"
                     placeholderTextColor={'gray'}
                   />
                 </View>
                 <TouchableOpacity
-                  onPress={() => navigation.navigate('eventListOrganiserFilter')}
+                  onPress={() => navigation.navigate('filterScreen')}
                   style={{
                     height: 50,
                     width: 50,
@@ -385,48 +386,22 @@ const EventListOrganiser = ({navigation}) => {
         }}></View> */}
       </View>
       <ScrollView style={{ backgroundColor: color.white }}>
-        {/* <TouchableOpacity onPress={() => navigation.navigate('eventDetails')}>
-          <Image
-            source={IMAGE.backImage}
-            style={{
-              height: 142,
-              width: '96%',
-              resizeMode: 'stretch',
-              alignSelf: 'center',
-              // marginLeft: '2%',
-              marginTop: '5%',
-            }}
-          />
-          <View style={{marginHorizontal: '5%', marginTop: '-30%'}}>
-            <Text style={style.popularText}>International Contest</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('eventDetails')}
-              style={style.bookButton}>
-              <Text style={style.buttonText}>Book Now</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableOpacity> */}
 
-        <View
+      {upcomingEvents.length > 0 ?<View
           style={{
             paddingHorizontal: 10,
             height: 100,
             flexDirection: 'row',
             justifyContent: 'space-between',
-            // marginHorizontal: '3%',
-            // marginTop: '2%',
-            // marginBottom: '3%',
-
             backgroundColor: color.white,
           }}>
           <View style={style.popularContainer}>
-            <Text style={[style.popularText, {color: color.black}]}>My Events</Text>
+            <Text style={[style.popularText, { color: color.black }]}>My Events</Text>
             {/* <Image
               source={IMAGE.fire}
               style={{height: 27, width: 27, resizeMode: 'contain',marginTop:"2%"}}
             /> */}
           </View>
-
           <TouchableOpacity
             onPress={() =>
               navigation.navigate('seeAllEventOrg', {
@@ -440,7 +415,7 @@ const EventListOrganiser = ({navigation}) => {
             }>
             <Text style={style.seeAllText}>See all</Text>
           </TouchableOpacity>
-        </View>
+        </View>:null}
 
         <View
           style={{
@@ -448,38 +423,37 @@ const EventListOrganiser = ({navigation}) => {
             paddingHorizontal: 10,
             marginTop: -50,
           }}>
-          <FlatList
+          {upcomingEvents.length > 0 ? <FlatList
             data={upcomingEvents}
-            renderItem={({item: d}) => (
+            renderItem={({ item: d }) => (
               <TouchableOpacity
                 onPress={() =>
-                  navigation.navigate('eventDetailsOrg', {event_id: d.id})
+                  navigation.navigate('eventDetailsOrg', { event_id: d.id })
                 }
                 style={style.cardContainer}>
                 <Image
-                  source={{uri: `${IMAGEURL}/${d.thumbnail}`}}
+                  source={{ uri: `${IMAGEURL}/${d.thumbnail}` }}
                   style={{
                     width: '98%',
-                    height:"98%",
-                    alignContent: 'stretch',
-                    resizeMode: 'stretch',
+                    height: "98%",
+                    resizeMode: 'contain',
                     alignSelf: 'center',
                     borderRadius: 10,
-                    
+
                   }}
                 />
-                <View style={{position: 'absolute', left: 10, bottom: 20}}>
+                <View style={{ position: 'absolute', left: 10, bottom: 20 }}>
                   <Text
                     style={[
                       style.headingText,
-                      {color: '#fff', fontWeight: 'bold'},
+                      { color: '#fff', fontWeight: 'bold' },
                     ]}
                     numberOfLines={1}>
                     {d.title}
                   </Text>
                   <TouchableOpacity
                     onPress={() =>
-                      navigation.navigate('eventDetailsOrg', {event_id: d.id})
+                      navigation.navigate('eventDetailsOrg', { event_id: d.id })
                     }
                     style={{
                       marginTop: 10,
@@ -489,18 +463,25 @@ const EventListOrganiser = ({navigation}) => {
                       alignItems: 'center',
                     }}>
                     <Text
-                      style={{color: '#fff', fontSize: 14, paddingVertical: 4}}>
+                      style={{ color: '#fff', fontSize: 14, paddingVertical: 4 }}>
                       Details
                     </Text>
                   </TouchableOpacity>
                 </View>
               </TouchableOpacity>
             )}
-            //Setting the number of column
-          />
+          //Setting the number of column
+          /> :
+            <NoRecord
+              image={IMAGE.noConversation}
+              title="No Event found"
+              description="You will get Upcoming and poular events here."
+              showButton={false}
+            />
+          }
         </View>
       </ScrollView>
-    
+
     </SafeAreaView>
   );
 };
@@ -688,7 +669,7 @@ const style = StyleSheet.create({
     margin: '1.5%',
     backgroundColor: '#fff',
     shadowColor: '#171717',
-    shadowOffset: {width: -2, height: 4},
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
@@ -714,7 +695,7 @@ const style = StyleSheet.create({
     color: color.chatRight,
     marginRight: '4%',
     marginTop: '24%',
-    color:color.btnBlue,
+    color: color.btnBlue,
   },
   buttonText: {
     fontSize: 13,
