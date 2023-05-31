@@ -16,6 +16,9 @@ import {
   heightPercentageToDP as hp,
   widthPercentageToDP,
 } from 'react-native-responsive-screen';
+import {
+  Textinput,
+} from '../../component';
 
 
 export default class GenrateAttendee extends Component {
@@ -87,7 +90,7 @@ export default class GenrateAttendee extends Component {
           </View>
           <View style={styles.inputContainerOverlay}>
             <TextInput
-              placeholder="Address"
+              placeholder=" Email Address"
               textContentType="emailAddress"
               placeholderTextColor={'gray'}
               style={{
@@ -106,7 +109,7 @@ export default class GenrateAttendee extends Component {
             />
             <View style={styles.iconcontainer}>
               <Image
-                source={IMAGE.location}
+                source={IMAGE.email}
                 style={styles.inputIcon}
               />
             </View>

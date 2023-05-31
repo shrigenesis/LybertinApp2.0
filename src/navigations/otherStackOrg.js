@@ -283,7 +283,7 @@ function OtherTabBarOrg() {
       />
       <Tab.Screen
         name={'ScanTickets'}
-        component={Barcode}
+        component={Barcode} 
         options={{
           ...tabstyle,
           tabBarIcon: ({size, focused}) => {
@@ -291,7 +291,7 @@ function OtherTabBarOrg() {
               <ActiveInActiveTab
                 focus={focused}
                 image={IMAGE.scan2x}
-                label={'Scan Ticket'}
+                label={'Scan '}
               />
             );
           },

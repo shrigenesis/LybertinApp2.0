@@ -90,6 +90,7 @@ const IMAGE = {
   share: require('./../assets/images/share.png'),
   Invitefrined: require('./../assets/images/share2.png'),
   Logout: require('./../assets/images/logout2.png'),
+  email: require('./../assets/images/email.png'),
 
   ArrowLeft: require('./../assets/images/arrow_left.png'),
   ArrowForwardSvg: require('./../assets/images/arrow.svg'),
