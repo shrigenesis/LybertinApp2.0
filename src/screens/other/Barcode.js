@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import {
   PermissionsAndroid,
@@ -12,10 +12,10 @@ import {
 } from 'react-native';
 import Loader from './../../component/loader';
 
-// import QRCodeScanner from 'react-native-qrcode-scanner';
-import {fontFamily, IMAGE} from '../../constant';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import { color, fontFamily, fontSize, IMAGE } from '../../constant';
 import Toast from 'react-native-toast-message';
-import {APIRequest, ApiUrl} from '../../utils/api';
+import { APIRequest, ApiUrl } from '../../utils/api';
 
 class Barcode extends Component {
   constructor(props) {
@@ -38,11 +38,11 @@ class Barcode extends Component {
 
   async componentDidMount() {
     this.props.navigation.addListener('focus', () => {
-      this.setState({viewFocused: true});
+      this.setState({ viewFocused: true });
     });
 
     this.props.navigation.addListener('blur', () => {
-      this.setState({viewFocused: false});
+      this.setState({ viewFocused: false });
     });
   }
 
@@ -50,7 +50,7 @@ class Barcode extends Component {
     const data = JSON.parse(e.data);
     console.log(data);
 
-    this.setState({scannerData: data});
+    this.setState({ scannerData: data, isLoading:true });
 
     Toast.show({
       type: 'success',
@@ -70,6 +70,7 @@ class Barcode extends Component {
 
       res => {
         console.log('API response dance =====', res);
+        this.setState({isLoading:false})
 
         if (res.status) {
           // setrequestCount(res.follow_requests);
@@ -86,6 +87,7 @@ class Barcode extends Component {
       },
       err => {
         // setisLoading(false);
+        this.setState({isLoading:false})
         console.log('ssssss', err?.response?.data);
         if (!err?.status) {
           Toast.show({
@@ -100,26 +102,31 @@ class Barcode extends Component {
   render() {
     return (
       <View style={styles.QrCodeContainer}>
-        {/* <QRCodeScanner
+        <QRCodeScanner
           onRead={e => this.onSuccess(e)}
+          // topContent={
+          //   <View style={{position: 'absolute', top: 240, zIndex: 9999999}}>
+          //     <Image
+          //       source={IMAGE.qrscan3x}
+          //       style={{
+          //         height: 250,
+          //         width: 260,
+          //         resizeMode: 'contain',
+          //       }}
+          //     />
+          //   </View>
+          // }
           topContent={
-            <View style={{position: 'absolute', top: 240, zIndex: 9999}}>
-              <Image
-                source={IMAGE.qrscan3x}
-                style={{
-                  height: 250,
-                  width: 260,
-                  resizeMode: 'contain',
-                }}
-              />
-            </View>
+            <Text style={styles.centerText}>
+             Scan Ticket
+            </Text>
           }
           // bottomContent={
           //   <TouchableOpacity style={styles.buttonTouchable}>
           //     <Text style={styles.buttonText}>Scan Now</Text>
           //   </TouchableOpacity>
           // }
-          showMarker={false}
+          showMarker={true}
           fadeIn={false}
           reactivate={true}
           reactivateTimeout={5000}
@@ -129,12 +136,13 @@ class Barcode extends Component {
           ref={node => {
             this.scanner = node;
           }}
-          containerStyle={{width: 100}}
-          cameraStyle={{height: '100%'}}
+          containerStyle={{width: 50}}
+          cameraStyle={{height: 100}}
         />
+
         {this.state.isLoading && (
           <Loader isLoading={this.state.isLoading} type={'dots'} />
-        )} */}
+        )}
       </View>
     );
   }
@@ -149,16 +157,16 @@ const styles = StyleSheet.create({
   },
   centerText: {
     flex: 1,
-    fontSize: 18,
+    fontSize: fontSize.size20,
     padding: 32,
-    color: '#777',
+    color: color.btnBlue,
   },
   textBold: {
     fontWeight: '500',
     color: 'red',
   },
   buttonText: {
-    fontSize: 15,
+    fontSize: fontSize.size12,
     fontFamily: fontFamily.Medium,
     paddingHorizontal: 80,
     paddingVertical: 8,
@@ -172,8 +180,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
-    backgroundColor: '#20BBF6',
+    backgroundColor: color.btnBlue,
     position: 'absolute',
-    bottom: 70,
+    bottom: 20,
   },
 });
