@@ -895,11 +895,6 @@ export default class buyTicket extends Component {
         ) : (
           <View style={{ flex: 1, zIndex:-1}}>
               <ScrollView>
-              <KeyboardAvoidingView 
-              behavior= {Platform.OS==='ios'? 'padding': ''}
-              keyboardVerticalOffset={-hp(60)}
-              >
-
                 <View style={styles.container}>
                   <Loader type="dots" isLoading={this.state.isloading} />
 
@@ -1296,6 +1291,7 @@ export default class buyTicket extends Component {
                           fontSize: 15,
                           fontFamily: fontFamily.Medium,
                           color: color.black,
+                          marginVertical:20,
                         }}>
                         Payment Info
                       </Text>
@@ -1453,7 +1449,6 @@ export default class buyTicket extends Component {
                     </View>
                   </Modal>
                 </View>
-                </KeyboardAvoidingView>
               </ScrollView>
               {this.state.paymenturl == null && (
                   <View style={{ flexDirection: 'row' }}>
@@ -1794,6 +1789,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginVertical: wp(2),
+    marginBottom:30,
   },
   totalTicketText: {
     fontSize: 15,
