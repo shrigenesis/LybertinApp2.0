@@ -21,7 +21,7 @@ import { navigationRef } from './RootNavigation';
 import { MenuProvider } from 'react-native-popup-menu';
 import Toast from 'react-native-toast-message';
 
-
+  
 
 
 LogBox.ignoreAllLogs();
