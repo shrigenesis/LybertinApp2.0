@@ -4,7 +4,7 @@ import moment from 'moment';
 import { PermissionsAndroid, Platform } from 'react-native';
 
 
-export const Download = async (url, ext) => {
+export const Download = async (url, ext, setDownloadProgress) => {
     const granted = Platform.OS !== 'ios' && await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
 
     if (url && granted == 'granted') {
@@ -34,7 +34,7 @@ export const Download = async (url, ext) => {
             config(options)
                 .fetch('GET', url)
                 .then(async (res) => {
-                    console.log(res,'--------');
+                    console.log(res, '--------');
                     resolve(res);
                     if (Platform.OS === "ios") {
                         RNFetchBlob.ios.previewDocument('file://' + res.path());
@@ -77,7 +77,11 @@ export const Download = async (url, ext) => {
             };
             config(options)
                 .fetch('GET', url)
+                .progress((received, total) => {
+                    console.log(received, total);
+                })
                 .then(async (res) => {
+                    setDownloadProgress(false)
                     resolve(res);
                     if (Platform.OS === "ios") {
                         console.log(res, "res");

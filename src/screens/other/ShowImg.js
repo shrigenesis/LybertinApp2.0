@@ -13,6 +13,7 @@ import {
   Dimensions,
   StatusBar,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { color, fontFamily } from '../../constant/';
 import {
@@ -27,6 +28,7 @@ import Video from 'react-native-video';
 import Animated, { ZoomIn, FadeOut, FadeIn } from 'react-native-reanimated';
 import { Download } from './../../utils/download';
 import Pdf from 'react-native-pdf';
+import CircularProgress from 'react-native-circular-progress-indicator';
 
 const ShowImg = ({ navigation, route }) => {
   const [appReady, setAppReady] = useState(false);
@@ -36,6 +38,7 @@ const ShowImg = ({ navigation, route }) => {
   const [paused, setPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const isFocus = useIsFocused();
+  const [DownloadProgress, setDownloadProgress] = useState(false)
 
   useEffect(() => {
     if (isFocus) {
@@ -46,6 +49,8 @@ const ShowImg = ({ navigation, route }) => {
     }
     return;
   }, [isFocus]);
+
+
 
   const videoRef = useRef();
   const renderStoryItem = () => {
@@ -188,7 +193,8 @@ const ShowImg = ({ navigation, route }) => {
     let fileType = route?.params?.fileType;
     let url = `${IMAGEURL}/${file}`;
     let ext = url.split('.').pop();
-    Download(url, ext);
+    setDownloadProgress(true)
+    Download(url, ext, setDownloadProgress);
   };
 
   const _showIcon = () => {
@@ -250,6 +256,8 @@ const ShowImg = ({ navigation, route }) => {
         backgroundColor: fileType == 'pdf' ? '#fff' : color.black,
       }}>
       <StatusBar barStyle={'light-content'} backgroundColor={color.white} />
+      <Loader isLoading={DownloadProgress} type='progress' pageCircleText='Downloading...' />
+      
       {appReady && route?.params?.file && (
         <Animated.View entering={ZoomIn}>
           <View style={style.header}>
@@ -281,6 +289,7 @@ const ShowImg = ({ navigation, route }) => {
                   }}
                 />
               </TouchableOpacity>
+
               <TouchableOpacity onPress={() => Action()}>
                 <Image
                   source={IMAGE.download}
