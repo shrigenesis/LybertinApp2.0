@@ -442,7 +442,7 @@ const showHightlight = ({navigation, route}) => {
                       height: 20,
                       width: 20,
                       resizeMode: 'contain',
-                      marginRight: 10,
+                      marginRight: 10, 
                     }}
                   />
                 </TouchableOpacity>

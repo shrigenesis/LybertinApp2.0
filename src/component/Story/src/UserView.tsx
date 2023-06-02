@@ -55,15 +55,16 @@ export default memo(function UserView(props: Props) {
         </Text> */}
       </View>
       <TouchableOpacity onPress={props.onClosePress}>
-        <Icon name="close" color="white" size={25} style={{ marginRight: 8 }} />
+        <Icon name="close" color="white" size={25} style={{ marginRight: 15 }} />
       </TouchableOpacity>
       {props?.story?.can_make_action && (
         <TouchableOpacity onPress={() => { props.deleteOnPress(props.story.id) }}>
-          <Icon name="delete" color="white" size={25} style={{ marginRight: 8 }} />
+          <Icon name="delete" color="white" size={25} style={{ marginRight: 10 }} />
         </TouchableOpacity>
       )}
       {!props?.story?.can_make_action && (
-        <TouchableOpacity onPress={() => { props.reportOnPress(props.story.id) }}>
+        <TouchableOpacity 
+        onPress={() => { props.reportOnPress(props.story.id) }}>
           {/* <Icon name="report-problem" color="white" size={25} style={{ marginRight: 8 }} /> */}
           <Image
                     source={IMAGE.report}
