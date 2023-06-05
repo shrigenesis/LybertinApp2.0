@@ -391,9 +391,17 @@ PODS:
     - glog
   - react-native-blob-util (0.16.4):
     - React-Core
+  - react-native-camera (4.2.1):
+    - React-Core
+    - react-native-camera/RCT (= 4.2.1)
+    - react-native-camera/RN (= 4.2.1)
+  - react-native-camera/RCT (4.2.1):
+    - React-Core
+  - react-native-camera/RN (4.2.1):
+    - React-Core
   - react-native-date-picker (4.2.13):
     - React-Core
-  - react-native-document-picker (8.2.0):
+  - react-native-document-picker (8.2.1):
     - React-Core
   - react-native-fbsdk-next (11.2.1):
     - React-Core
@@ -418,7 +426,7 @@ PODS:
     - React-Core
   - react-native-render-html (6.3.4):
     - React-Core
-  - react-native-safe-area-context (4.5.2):
+  - react-native-safe-area-context (4.5.3):
     - RCT-Folly
     - RCTRequired
     - RCTTypeSafety
@@ -555,9 +563,9 @@ PODS:
     - RNFBApp
   - RNFS (2.20.0):
     - React-Core
-  - RNGestureHandler (2.10.0):
+  - RNGestureHandler (2.10.1):
     - React-Core
-  - RNGoogleSignin (9.0.2):
+  - RNGoogleSignin (9.1.0):
     - GoogleSignIn (~> 6.2)
     - React-Core
   - RNPermissions (3.8.0):
@@ -634,6 +642,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
+  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
@@ -763,6 +772,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-blob-util:
     :path: "../node_modules/react-native-blob-util"
+  react-native-camera:
+    :path: "../node_modules/react-native-camera"
   react-native-date-picker:
     :path: "../node_modules/react-native-date-picker"
   react-native-document-picker:
@@ -910,14 +921,15 @@ SPEC CHECKSUMS:
   React-jsinspector: 1f51e775819199d3fe9410e69ee8d4c4161c7b06
   React-logger: 0d58569ec51d30d1792c5e86a8e3b78d24b582c6
   react-native-blob-util: 60453b777610c87a22b3524032c0214e8db555db
+  react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
   react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
-  react-native-document-picker: 495c444c0c773c6e83a5d91165890ecb1c0a399a
+  react-native-document-picker: 69ca2094d8780cfc1e7e613894d15290fdc54bba
   react-native-fbsdk-next: 5291a5d67aab4e649d072c50988033ff0d05b915
   react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
   react-native-netinfo: ccbe1085dffd16592791d550189772e13bf479e2
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
   react-native-render-html: 984dfe2294163d04bf5fe25d7c9f122e60e05ebe
-  react-native-safe-area-context: 1d596539b05a78f2b346e954e7c577f6f9be7544
+  react-native-safe-area-context: b8979f5eda6ed5903d4dbc885be3846ea3daa753
   react-native-simple-toast: 8ee5d23f0b92b935ab7434cdb65159ce12dfb4b7
   react-native-splash-screen: 4312f786b13a81b5169ef346d76d33bc0c6dc457
   react-native-video: c26780b224543c62d5e1b2a7244a5cd1b50e8253
@@ -947,8 +959,8 @@ SPEC CHECKSUMS:
   RNFBDynamicLinks: 08789ea798da58784e5792d0dff710518b052179
   RNFBMessaging: 07cd8876c773d3393f021a9eb16e643d84c94c93
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
-  RNGestureHandler: e145476da655f3dbc48ef2f0a08cf7a34338c02b
-  RNGoogleSignin: 22e468a9474dbcb8618d8847205ad4f0b2575d13
+  RNGestureHandler: 42ec7c28dd02d540ed6c9159c57a98ff016492dc
+  RNGoogleSignin: c15bdaa7e8a9e190b6169d9c96a4e8380a740f22
   RNPermissions: 215c54462104b3925b412b0fb3c9c497b21c358b
   RNReanimated: f186e85d9f28c9383d05ca39e11dd194f59093ec
   RNScreens: f7ad633b2e0190b77b6a7aab7f914fad6f198d8d

@@ -385,9 +385,9 @@ const EventListOrganiser = ({ navigation }) => {
           marginBottom: '-14%',
         }}></View> */}
       </View>
-      <ScrollView style={{ backgroundColor: color.white }}>
+      {/* <ScrollView style={{flex:1, backgroundColor: color.btnBlue}}> */}
 
-      {upcomingEvents.length > 0 ?<View
+        {upcomingEvents.length > 0 ?<View
           style={{
             paddingHorizontal: 10,
             height: 100,
@@ -421,9 +421,10 @@ const EventListOrganiser = ({ navigation }) => {
           style={{
             backgroundColor: color.white,
             paddingHorizontal: 10,
-            marginTop: -50,
+            // marginTop: -50,
           }}>
-          {upcomingEvents.length > 0 ? <FlatList
+          {upcomingEvents.length > 0 ? 
+          <FlatList
             data={upcomingEvents}
             renderItem={({ item: d }) => (
               <TouchableOpacity
@@ -471,7 +472,8 @@ const EventListOrganiser = ({ navigation }) => {
               </TouchableOpacity>
             )}
           //Setting the number of column
-          /> :
+          /> 
+          :
             <NoRecord
               image={IMAGE.noConversation}
               title="No Event found"
@@ -480,7 +482,7 @@ const EventListOrganiser = ({ navigation }) => {
             />
           }
         </View>
-      </ScrollView>
+      {/* </ScrollView> */}
 
     </SafeAreaView>
   );
