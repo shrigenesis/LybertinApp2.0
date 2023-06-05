@@ -315,7 +315,7 @@ const EditProfile = ({ navigation, route }) => {
       APIRequestWithFile(
         config,
         res => {
-          console.log(res);
+          console.log(res); 
           setisLoading(state => !state);
           Toast.show({
             type: 'success',

@@ -63,23 +63,6 @@ export const pickImageCrop = async (
       });
     }
 
-    // let imgFunction = type == 'image' ? launchImageLibrary : launchCamera;
-
-    // imgFunction(config, response => {
-    //   if (response.assets && response.assets[0]) {
-    //     let image = response.assets[0];
-    //     console.log(image);
-    //     let file = {
-    //       uri: image.uri,
-    //       type: image.type == 'image/jpg' ? 'image/jpeg' : image.type,
-    //       name: image.fileName,
-    //       fileType: mediaType,
-    //       duration: image?.duration ? image?.duration : 0,
-    //       fileSize: image?.fileSize / (1024 * 1024),
-    //     };
-    //     cb(file);
-    //   }
-    // });
   }
 };
 

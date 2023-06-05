@@ -36,6 +36,8 @@ import Toast from 'react-native-toast-message';
 import { pickImage } from '../../component/';
 import BottomSheet, { BottomSheetBackdrop } from '@gorhom/bottom-sheet';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { pickImageCrop } from '../../component/ImagePickerWithCrop';
+import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
 
 
 export const RenderBottomSheet = memo(
@@ -53,7 +55,7 @@ export const RenderBottomSheet = memo(
         backdropComponent={BottomSheetBackdrop}>
         <TouchableOpacity
           onPress={() =>
-            pickImage('camera', res => {
+            pickImageCrop('camera', res => {
               type == 'profile' ? setProfile(res) : setCover(res);
             })
           }
@@ -63,7 +65,7 @@ export const RenderBottomSheet = memo(
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            pickImage(
+            pickImageCrop(
               'image',
               res => {
                 type == 'profile' ? setProfile(res) : setCover(res);
@@ -110,6 +112,7 @@ const EditGroup = ({ navigation, route }) => {
   const [group_members, setgroup_members] = useState([])
   const [add_more_participent_list, setadd_more_participent_list] = useState([])
   const [welcomeMessage, setWelcomeMessage] = useState(route?.params?.welcome_message ? route?.params?.welcome_message : '');
+  const [isShowBottomSheet, setisShowBottomSheet] = useState(false)
 
 
   const [imgtype, setimgtype] = useState('cover');
@@ -340,7 +343,7 @@ const EditGroup = ({ navigation, route }) => {
             <Loader isLoading={isLoading} type={'dots'} />
             <TouchableOpacity
               onPress={() => {
-                setimgtype('cover'), bottomSheetRef?.current?.expand();
+                setimgtype('cover'),setisShowBottomSheet(true);
               }}
               style={style.coverView}>
               {cover ? (
@@ -365,7 +368,7 @@ const EditGroup = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                setimgtype('profile'), bottomSheetRef?.current?.expand();
+                setimgtype('profile'), setisShowBottomSheet(true);
               }}
               style={{ justifyContent: 'center' }}>
               <View style={style.groupProfileView}>
@@ -406,7 +409,7 @@ const EditGroup = ({ navigation, route }) => {
 
             <View>
               <TextInput
-                onFocus={() => bottomSheetRef?.current?.close()}
+                onFocus={() => setisShowBottomSheet(false)}
                 value={groupName}
                 onChangeText={setgroupName}
                 placeholderTextColor={'#0F2D52A6'}
@@ -415,7 +418,7 @@ const EditGroup = ({ navigation, route }) => {
                 maxLength={20}
               />
               <TextInput
-                onFocus={() => bottomSheetRef?.current?.close()}
+                onFocus={() => setisShowBottomSheet(false)}
                 value={groupDesc}
                 onChangeText={setgroupDesc}
                 placeholderTextColor={'#0F2D52A6'}
@@ -423,7 +426,7 @@ const EditGroup = ({ navigation, route }) => {
                 style={style.inputStyle}
               />
               <TextInput
-                onFocus={() => bottomSheetRef?.current?.close()}
+                onFocus={() =>setisShowBottomSheet(false)}
                 value={welcomeMessage}
                 onChangeText={setWelcomeMessage}
                 placeholderTextColor={'#0F2D52A6'}
@@ -523,7 +526,7 @@ const EditGroup = ({ navigation, route }) => {
                         />
                       </View>
                       <View style={style.chatView}>
-                        <Text style={[style.typeText, { marginBottom: 0, width:wp(30) }]}>
+                        <Text style={[style.typeText, { marginBottom: 0, width: wp(30) }]}>
                           {item.name}
                         </Text>
                         <RippleTouchable
@@ -540,49 +543,49 @@ const EditGroup = ({ navigation, route }) => {
                   </View>
                 ))}
                 {group_members.map((item, index) => (
-                  !item.is_admin?
-                  <View
-                    style={{
-                      alignItems: 'center',
-                      flexDirection: 'column',
-                      // padding: wp(3),
-                      backgroundColor: '#fff',
-                      borderRadius: 10,
-                      elevation: 1,
-                      marginBottom: hp(2),
-                      width: wp(90),
-                      alignSelf: 'center',
-                    }}>
+                  !item.is_admin ?
                     <View
                       style={{
                         alignItems: 'center',
-                        flexDirection: 'row',
-                        paddingVertical: hp(1),
-                        paddingLeft: wp(5),
+                        flexDirection: 'column',
+                        // padding: wp(3),
+                        backgroundColor: '#fff',
+                        borderRadius: 10,
+                        elevation: 1,
+                        marginBottom: hp(2),
+                        width: wp(90),
+                        alignSelf: 'center',
                       }}>
-                      <View style={style.imgview}>
-                        <Image
-                          source={{ uri: `${IMAGEURL}/${item.avatar}` }}
-                          style={style.imgBox}
-                        />
-                      </View>
-                      <View style={style.chatView}>
-                        <Text style={[style.typeText, { marginBottom: 0 ,width:wp(30)}]}>
-                          {item.name}
-                        </Text>
-                        <RippleTouchable
-                          onPress={() => {
-                            RemoveMember(item.id)
-                          }}
-                          backgroundColor={color.white}
-                          borderRadius={5}
-                          style={{ ...style.btn, backgroundColor: '#92969B' }}>
-                          <Text style={style.btnText}>Remove</Text>
-                        </RippleTouchable>
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          flexDirection: 'row',
+                          paddingVertical: hp(1),
+                          paddingLeft: wp(5),
+                        }}>
+                        <View style={style.imgview}>
+                          <Image
+                            source={{ uri: `${IMAGEURL}/${item.avatar}` }}
+                            style={style.imgBox}
+                          />
+                        </View>
+                        <View style={style.chatView}>
+                          <Text style={[style.typeText, { marginBottom: 0, width: wp(30) }]}>
+                            {item.name}
+                          </Text>
+                          <RippleTouchable
+                            onPress={() => {
+                              RemoveMember(item.id)
+                            }}
+                            backgroundColor={color.white}
+                            borderRadius={5}
+                            style={{ ...style.btn, backgroundColor: '#92969B' }}>
+                            <Text style={style.btnText}>Remove</Text>
+                          </RippleTouchable>
+                        </View>
                       </View>
                     </View>
-                  </View>
-                  :null
+                    : null
                 ))}
 
               </> :
@@ -606,7 +609,7 @@ const EditGroup = ({ navigation, route }) => {
                       />
                     </View>
                     <View style={style.chatView}>
-                      <Text style={[style.typeText, { marginBottom: 0,width:wp(30) }]}>
+                      <Text style={[style.typeText, { marginBottom: 0, width: wp(30) }]}>
                         {item.name}
                       </Text>
                       <Radio
@@ -623,7 +626,7 @@ const EditGroup = ({ navigation, route }) => {
           </View>
         </ScrollView>
 
-        <RenderBottomSheet
+        {/* <RenderBottomSheet
           type={imgtype}
           setProfile={file => {
             setprofile(file);
@@ -635,7 +638,79 @@ const EditGroup = ({ navigation, route }) => {
           }}
           snapPoints={snapPoints}
           bottomSheetRef={bottomSheetRef}
-        />
+        /> */}
+        <BottomSheetUploadFile
+          cancelBtn={{
+            color: color.lightGray,
+            title: 'Cancel',
+            textColor: color.btnBlue,
+          }}
+          isShowBottomSheet={isShowBottomSheet}
+          setisShowBottomSheet={setisShowBottomSheet}>
+          <View>
+            <TouchableOpacity
+              onPress={() =>
+                pickImageCrop('camera', res => {
+                  imgtype == 'profile' ?
+                    (
+                      setprofile(res),
+                      setisShowBottomSheet(false)
+                    )
+                    :
+                    (
+                      setcover(res),
+                      setisShowBottomSheet(false)
+                    );
+                },
+                  imgtype == 'profile' ?
+                    {
+                      height: 200,
+                      width: 200
+                    } :
+                    {
+                      height: 200,
+                      width: 400
+                    }
+                )
+              }
+              style={BottomSheetUploadFileStyle.cardBlock}>
+              <Image source={IMAGE.camera} style={BottomSheetUploadFileStyle.icon} />
+              <Text style={BottomSheetUploadFileStyle.cardText}>Camera</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() =>
+                pickImageCrop(
+                  'image',
+                  res => {
+                    imgtype == 'profile' ?
+                      (
+                        setprofile(res),
+                        setisShowBottomSheet(false)
+                      )
+                      :
+                      (
+                        setcover(res),
+                        setisShowBottomSheet(false)
+                      );
+                  },
+                  imgtype == 'profile' ?
+                    {
+                      height: 200,
+                      width: 200
+                    } :
+                    {
+                      height: 200,
+                      width: 400
+                    },
+                  'photo',
+                )
+              }
+              style={BottomSheetUploadFileStyle.cardBlock}>
+              <Image source={IMAGE.media} style={BottomSheetUploadFileStyle.icon} />
+              <Text style={BottomSheetUploadFileStyle.cardText}>Mobile Library</Text>
+            </TouchableOpacity>
+          </View>
+        </BottomSheetUploadFile>
       </View>
     </SafeAreaView>
   );
