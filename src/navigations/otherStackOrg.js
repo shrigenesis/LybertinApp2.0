@@ -1,8 +1,8 @@
 import React from 'react';
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {createDrawerNavigator} from '@react-navigation/drawer';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {Image, Platform, Text, View} from 'react-native';
+import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Image, Platform, Text, View } from 'react-native';
 
 import {
   widthPercentageToDP as wp,
@@ -57,10 +57,11 @@ import addTextStory from '../screens/other/addTextStory';
 // drawer
 // import CustomDrawerContent from './Menu';
 import IMAGE from '../constant/image';
-import {fontFamily} from '../constant/font';
-import {color} from '../constant';
-import {User} from '../utils/user';
-import {LoginContext} from '../context/LoginContext';
+import { fontFamily } from '../constant/font';
+import { color } from '../constant';
+import { User } from '../utils/user';
+import { LoginContext } from '../context/LoginContext';
+import ViewProfileImage from '../screens/other/ViewProfileImage';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -79,7 +80,7 @@ function OtherTabBar() {
     },
   };
 
-  const ActiveInActiveTab = ({focus, label, image}) => {
+  const ActiveInActiveTab = ({ focus, label, image }) => {
     return (
       <View
         style={{
@@ -105,7 +106,7 @@ function OtherTabBar() {
               color: color.iconGray,
               fontSize: 10,
             },
-            focus && {color: color.btnBlue, fontFamily: fontFamily.Bold},
+            focus && { color: color.btnBlue, fontFamily: fontFamily.Bold },
           ]}>
           {label}
         </Text>
@@ -116,13 +117,13 @@ function OtherTabBar() {
   return (
     <Tab.Navigator
       initialRouteName="Events"
-      screenOptions={{tabBarShowLabel: false, headerShown: false}}>
+      screenOptions={{ tabBarShowLabel: false, headerShown: false }}>
       <Tab.Screen
         name={'Friends'}
         component={friends}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -138,7 +139,7 @@ function OtherTabBar() {
         component={GroupList}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -154,7 +155,7 @@ function OtherTabBar() {
         component={EventList}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -170,7 +171,7 @@ function OtherTabBar() {
         component={ticketsScreen}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -197,7 +198,7 @@ function OtherTabBarOrg() {
     },
   };
 
-  const ActiveInActiveTab = ({focus, label, image}) => {
+  const ActiveInActiveTab = ({ focus, label, image }) => {
     return (
       <View
         style={{
@@ -223,7 +224,7 @@ function OtherTabBarOrg() {
               color: color.iconGray,
               fontSize: 10,
             },
-            focus && {color: color.btnBlue, fontFamily: fontFamily.Bold},
+            focus && { color: color.btnBlue, fontFamily: fontFamily.Bold },
           ]}>
           {label}
         </Text>
@@ -232,13 +233,13 @@ function OtherTabBarOrg() {
   };
 
   return (
-    <Tab.Navigator screenOptions={{tabBarShowLabel: false, headerShown: false}}>
+    <Tab.Navigator screenOptions={{ tabBarShowLabel: false, headerShown: false }}>
       <Tab.Screen
         name={'Friends'}
         component={friends}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -254,7 +255,7 @@ function OtherTabBarOrg() {
         component={GroupList}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -270,7 +271,7 @@ function OtherTabBarOrg() {
         component={EventListOrganiser}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -283,10 +284,10 @@ function OtherTabBarOrg() {
       />
       <Tab.Screen
         name={'ScanTickets'}
-        component={Barcode} 
+        component={Barcode}
         options={{
           ...tabstyle,
-          tabBarIcon: ({size, focused}) => {
+          tabBarIcon: ({ size, focused }) => {
             return (
               <ActiveInActiveTab
                 focus={focused}
@@ -306,197 +307,202 @@ export const OtherStackOrg = () => (
     <Stack.Screen
       name="EventList"
       component={OtherTabBarOrg}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="Chat"
       component={Chat}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="GroupChat"
       component={GroupChat}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="ShowStory"
       component={ShowStory}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="Request"
       component={Request}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
 
     <Stack.Screen
       name="Search"
       component={Search}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="UserProfile"
       component={UserProfile}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="AddGroup"
       component={AddGroup}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="EditProfile"
       component={EditProfile}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
+    />
+    <Stack.Screen
+      name="ViewProfileImage"
+      component={ViewProfileImage}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="ShowImg"
       component={ShowImg}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="Blocklist"
       component={Blocklist}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="MyProfile"
       component={MyProfile}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="MyFriends"
       component={MyFriends}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
 
     <Stack.Screen
       name="Media"
       component={Media}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="PostStory"
       component={PostStory}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="eventDetails"
       component={eventDetails}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="eventDetailsOrg"
       component={eventDetailsOrg}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
 
     <Stack.Screen
       name="buyTicket"
       component={buyTicket}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="featuredEvent"
       component={featuredEvent}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="popularEvent"
       component={popularEvent}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="filterScreen"
       component={filterScreen}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="chooseEventDate"
       component={chooseEventDate}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="ticketDetails"
       component={ticketDetails}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="ticketDetailsqrcode"
       component={ticketDetailsqrcode}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
 
     <Stack.Screen
       name="groupInfo"
       component={groupInfo}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="addParticipent"
       component={addParticipent}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="highlights"
       component={highlights}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="Createhightlights"
       component={Createhightlights}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
 
     <Stack.Screen
       name="showHightlight"
       component={showHightlight}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="seeAllEventOrg"
       component={seeAllEventOrg}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="eventListOrganiserFilter"
       component={EventListOrganiserFilter}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="EditGroup"
       component={EditGroup}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="groupMedia"
       component={groupMedia}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="myEarning"
       component={myEarning}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="webPage"
       component={webPage}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen
       name="aboutUs"
       component={aboutUs}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
-        <Stack.Screen
+    <Stack.Screen
       name="textStory"
       component={textStory}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
-       <Stack.Screen
+    <Stack.Screen
       name="addTextStory"
       component={addTextStory}
-      options={{header: () => null, ...TransitionPresets.SlideFromRightIOS}}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
   </Stack.Navigator>
 );

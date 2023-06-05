@@ -352,12 +352,26 @@ const MyProfile = ({ navigation, route }) => {
                 )}
                 <View style={{ alignSelf: 'center', top: -hp(6) }}>
                   {userdata.avatar != 'lybertineApp/default/default.png' ? (
-                    <Image
-                      source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-                      style={style.profileImg}
-                    />
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() => navigation.navigate('ViewProfileImage', {
+                        image: `${IMAGEURL}/${userdata.avatar}`,
+                        name: userdata.name
+                      })}>
+                      <Image
+                        source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
+                        style={style.profileImg}
+                      />
+                    </TouchableOpacity>
                   ) : (
-                    <Image source={IMAGE.defaultAvatar} style={style.profileImg} />
+                    <TouchableOpacity
+                      activeOpacity={0.9}
+                      onPress={() => navigation.navigate('ViewProfileImage', {
+                        image: 'default',
+                        name: userdata?.name
+                      })}>
+                      <Image source={IMAGE.defaultAvatar} style={style.profileImg} />
+                    </TouchableOpacity>
                   )}
                 </View>
                 <View style={{ alignSelf: 'center', top: -hp(5) }}>

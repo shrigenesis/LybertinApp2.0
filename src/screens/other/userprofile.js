@@ -383,7 +383,7 @@ const UserProfile = ({ navigation, route }) => {
                   },
                   {
                     text: 'YES',
-                    onPress: () =>reportUser(),
+                    onPress: () => reportUser(),
                   },
                 ],
               );
@@ -498,12 +498,26 @@ const UserProfile = ({ navigation, route }) => {
 
             <View style={{ alignSelf: 'center', top: -hp(6) }}>
               {userData?.user?.avatar ? (
-                <Image
-                  source={{ uri: `${IMAGEURL}/${userData?.user?.avatar}` }}
-                  style={style.profileImg}
-                />
+                <TouchableOpacity 
+                activeOpacity={0.9}
+                onPress={() => navigation.navigate('ViewProfileImage', {
+                  image: `${IMAGEURL}/${userData?.user?.avatar}`,
+                  name: userData?.user?.name
+                })}>
+                  <Image
+                    source={{ uri: `${IMAGEURL}/${userData?.user?.avatar}` }}
+                    style={style.profileImg}
+                  />
+                </TouchableOpacity>
               ) : (
-                <Image source={IMAGE.boy} style={style.profileImg} />
+                <TouchableOpacity 
+                activeOpacity={0.9}
+                onPress={() => navigation.navigate('ViewProfileImage', {
+                  image: 'default',
+                  name: userData?.user?.name
+                })}>
+                  <Image source={IMAGE.boy} style={style.profileImg} />
+                </TouchableOpacity>
               )}
             </View>
             <View style={{ alignSelf: 'center', top: -hp(5) }}>

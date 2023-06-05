@@ -79,6 +79,7 @@ import filterScreenEducation from '../screens/other/filterScreenEducation';
 import FeaturedCourse from '../screens/other/FeaturedCourse';
 import Payment from '../screens/other/Payment';
 import LiveConference from '../screens/other/LiveConference';
+import ViewProfileImage from '../screens/other/ViewProfileImage';
 
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -108,14 +109,14 @@ function OtherTabBar() {
           // borderBottomWidth: Platform.OS == 'ios' ? 0.5 : 2,
         }}>
         <Image
-            style={{
-              width: 30,
-              height: 30,
-              resizeMode: 'contain',
-            }}
-            source={focus?imageFocus:image}
-          />
-       
+          style={{
+            width: 30,
+            height: 30,
+            resizeMode: 'contain',
+          }}
+          source={focus ? imageFocus : image}
+        />
+
         <Text
           style={[
             {
@@ -417,6 +418,11 @@ export const OtherStack = ({ fromRegister, isLogin }) => (
     <Stack.Screen
       name="EditProfile"
       component={EditProfile}
+      options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
+    />
+    <Stack.Screen
+      name="ViewProfileImage"
+      component={ViewProfileImage}
       options={{ header: () => null, ...TransitionPresets.SlideFromRightIOS }}
     />
     <Stack.Screen

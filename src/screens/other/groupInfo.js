@@ -20,12 +20,12 @@ import {
   Alert,
   SafeAreaView,
 } from 'react-native';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, Header, Radio, Button, Loader} from '../../component/';
+import { RippleTouchable, Header, Radio, Button, Loader } from '../../component/';
 
 import {
   APIRequest,
@@ -69,7 +69,7 @@ export default class groupInfo extends Component {
   }
 
   getGroupInfo = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let config = {
       url: `${ApiUrl.groupDetail}${this.state.groupId}`,
       method: 'get',
@@ -91,13 +91,13 @@ export default class groupInfo extends Component {
         });
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       },
     );
   };
 
   exitGroup = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let config = {
       url: `${apiUrl}/${this.state.groupId}${apiMethod}`,
       method: 'post',
@@ -112,7 +112,7 @@ export default class groupInfo extends Component {
         })
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         console.log(err?.response?.data);
         Toast.show({
           type: 'error',
@@ -123,7 +123,7 @@ export default class groupInfo extends Component {
   };
 
   deleteGroup = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let config = {
       url: `${apiUrl}/${this.state.groupId}${apiMethodNew}`,
       method: 'post',
@@ -138,7 +138,7 @@ export default class groupInfo extends Component {
         })
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         console.log(err?.response?.data);
         Toast.show({
           type: 'error',
@@ -149,7 +149,7 @@ export default class groupInfo extends Component {
   };
 
   reportGroup = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let config = {
       url: `${apiUrl}${reportMethod}`,
       method: 'post',
@@ -164,12 +164,12 @@ export default class groupInfo extends Component {
       res => {
         Toast.show({
           type: 'success',
-          text1:res?.message
+          text1: res?.message
         })
         this.props.navigation.navigate('Groups');
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
         console.log(err?.response?.data);
       },
     );
@@ -178,7 +178,7 @@ export default class groupInfo extends Component {
   render() {
     return (
       <SafeAreaView style={styles.safeArea}>
-        <View style={{flex: 1, backgroundColor: color.background}}>
+        <View style={{ flex: 1, backgroundColor: color.background }}>
           <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
           <Header
             title={this.state.groupName}
@@ -209,21 +209,27 @@ export default class groupInfo extends Component {
           <ScrollView>
             <View style={styles.coverView}>
               <Image
-                source={{uri: `${IMAGEURL}/${this.state.coverImage}`}}
-                style={{height: hp(25), width: wp(100), resizeMode: 'cover'}}
+                source={{ uri: `${IMAGEURL}/${this.state.coverImage}` }}
+                style={{ height: hp(25), width: wp(100), resizeMode: 'cover' }}
               />
             </View>
             <View style={styles.profileContainer}>
-              <Image
-                source={{uri: `${IMAGEURL}/${this.state.image}`}}
-                style={{
-                  height: '94%',
-                  width: '94%',
-                  resizeMode: 'cover',
-                  alignSelf: 'center',
-                  borderRadius: 20,
-                }}
-              />
+              <TouchableOpacity 
+              activeOpacity={0.9} 
+              onPress={() => this.props.navigation.navigate('ViewProfileImage', {
+                image:  `${IMAGEURL}/${this.state.image}`,
+                name: this.state.groupName
+              })}><Image
+                  source={{ uri: `${IMAGEURL}/${this.state.image}` }}
+                  style={{
+                    height: '94%',
+                    width: '94%',
+                    resizeMode: 'cover',
+                    alignSelf: 'center',
+                    borderRadius: 20,
+                  }}
+                />
+              </TouchableOpacity>
             </View>
             <View>
               <Text style={styles.groupName}>{this.state.groupName}</Text>
@@ -239,20 +245,20 @@ export default class groupInfo extends Component {
                 });
               }}
               style={styles.cardBlock}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <Image
                   source={IMAGE.media}
-                  style={[styles.icon, {tintColor: color.btnBlue}]}
+                  style={[styles.icon, { tintColor: color.btnBlue }]}
                 />
                 <Text style={styles.cardText}>Media, Docs</Text>
               </View>
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <Text style={styles.counter}>{this.state.mediaCount}</Text>
                 <Image
                   source={IMAGE.arrow}
                   style={[
                     styles.icon,
-                    {height: 15, marginLeft: wp(3), width: 15},
+                    { height: 15, marginLeft: wp(3), width: 15 },
                   ]}
                 />
               </View>
@@ -263,7 +269,7 @@ export default class groupInfo extends Component {
             {this.state.isExit === false ? (
               <View style={styles.participantList}>
                 {(this.state.privacy == 2 && this.state.isAdmin == true) ||
-                this.state.privacy == 1 ? (
+                  this.state.privacy == 1 ? (
                   <RippleTouchable
                     onPress={() =>
                       this.props.navigation.navigate('addParticipent', {
@@ -272,20 +278,20 @@ export default class groupInfo extends Component {
                       })
                     }
                     style={styles.cardBlock}>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                       <Image
                         source={IMAGE.add}
-                        style={[styles.icon, {tintColor: color.btnBlue}]}
+                        style={[styles.icon, { tintColor: color.btnBlue }]}
                       />
                       <Text style={styles.cardText}>Add Participants</Text>
                     </View>
-                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                       {/* <Text style={styles.counter}>83</Text> */}
                       <Image
                         source={IMAGE.arrow}
                         style={[
                           styles.icon,
-                          {height: 15, marginLeft: wp(3), width: 15},
+                          { height: 15, marginLeft: wp(3), width: 15 },
                         ]}
                       />
                     </View>
@@ -300,7 +306,7 @@ export default class groupInfo extends Component {
 
             <FlatList
               data={this.state.groupMembers}
-              renderItem={({item: d}) => (
+              renderItem={({ item: d }) => (
                 <View>
                   <RippleTouchable>
                     <View style={styles.card}>
@@ -319,7 +325,7 @@ export default class groupInfo extends Component {
                         <View style={styles.imgview}>
                           {/* <View style={styles.onlineDot} /> */}
                           <Image
-                            source={{uri: `${IMAGEURL}/${d.avatar}`}}
+                            source={{ uri: `${IMAGEURL}/${d.avatar}` }}
                             style={styles.imgBox}
                           />
                         </View>
@@ -327,7 +333,7 @@ export default class groupInfo extends Component {
                           <View>
                             <Text style={styles.chatname}>{d.name}</Text>
                           </View>
-                          <View style={{paddingRight: wp(3)}}>
+                          <View style={{ paddingRight: wp(3) }}>
                             {d.is_admin === true ? (
                               <Text style={styles.adminText}>Admin</Text>
                             ) : (
@@ -344,7 +350,7 @@ export default class groupInfo extends Component {
                                   source={IMAGE.arrow}
                                   style={[
                                     styles.icon,
-                                    {height: 15, marginLeft: wp(3), width: 15},
+                                    { height: 15, marginLeft: wp(3), width: 15 },
                                   ]}
                                 />
                               </TouchableOpacity>
@@ -357,7 +363,7 @@ export default class groupInfo extends Component {
                 </View>
               )}
             />
-            <View style={{marginTop: '5%'}}></View>
+            <View style={{ marginTop: '5%' }}></View>
             {this.state.isExit === false ? (
               <RippleTouchable
                 onPress={() => {
@@ -440,7 +446,7 @@ export default class groupInfo extends Component {
               <Image source={IMAGE.report} style={styles.redIcon} />
               <Text style={styles.redText}>Report Group</Text>
             </RippleTouchable>
-            <View style={{marginTop: '5%'}}></View>
+            <View style={{ marginTop: '5%' }}></View>
           </ScrollView>
         </View>
       </SafeAreaView>
