@@ -52,6 +52,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import DatePicker from 'react-native-date-picker';
 import ImagePicker from 'react-native-image-crop-picker';
 import { pickImageCrop } from '../../component/ImagePickerWithCrop';
+import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
 
 
 
@@ -72,7 +73,17 @@ export const RenderBottomSheet = memo(
           onPress={() =>
             pickImageCrop('camera', res => {
               type == 'profile' ? setProfile(res) : setCover(res);
-            })
+            },
+              type == 'profile' ?
+                {
+                  height: 200,
+                  width: 220
+                } :
+                {
+                  height: 200,
+                  width: 400
+                }
+            )
             // pickImage('camera', res => {
             //   type == 'profile' ? setProfile(res) : setCover(res);
             // })
@@ -88,6 +99,15 @@ export const RenderBottomSheet = memo(
               res => {
                 type == 'profile' ? setProfile(res) : setCover(res);
               },
+              type == 'profile' ?
+                {
+                  height: 200,
+                  width: 220
+                } :
+                {
+                  height: 200,
+                  width: 400
+                },
               'photo',
             )
             // pickImage(
@@ -149,6 +169,7 @@ const EditProfile = ({ navigation, route }) => {
   const [validationError, setValidationError] = useState({});
   const [selectdate, setselectDate] = useState(new Date());
   const [open, setOpen] = useState(true);
+  const [isShowBottomSheet, setisShowBottomSheet] = useState(false)
 
   var datalocal;
   useFocusEffect(
@@ -357,7 +378,7 @@ const EditProfile = ({ navigation, route }) => {
           <View>
             <TouchableOpacity
               onPress={() => {
-                setimgtype('cover'), bottomSheetRef?.current?.expand();
+                setimgtype('cover'), setisShowBottomSheet(true);
               }}
               style={style.coverView}>
               {cover ? (
@@ -382,7 +403,7 @@ const EditProfile = ({ navigation, route }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
-                setimgtype('profile'), bottomSheetRef?.current?.expand();
+                setimgtype('profile'), setisShowBottomSheet(true);
               }}
               style={style.groupProfileView}>
               <View>
@@ -689,7 +710,7 @@ const EditProfile = ({ navigation, route }) => {
           </View>
         </KeyboardAwareScrollView>
 
-        <RenderBottomSheet
+        {/* <RenderBottomSheet
           type={imgtype}
           setProfile={file => {
             setprofile(file);
@@ -701,7 +722,83 @@ const EditProfile = ({ navigation, route }) => {
           }}
           snapPoints={snapPoints}
           bottomSheetRef={bottomSheetRef}
-        />
+        /> */}
+
+        <BottomSheetUploadFile
+          cancelBtn={{
+            color: color.lightGray,
+            title: 'Cancel',
+            textColor: color.btnBlue,
+          }}
+          isShowBottomSheet={isShowBottomSheet}
+          setisShowBottomSheet={setisShowBottomSheet}>
+          <View>
+              <TouchableOpacity
+                onPress={() =>
+                  pickImageCrop('camera', res => {
+                    imgtype == 'profile' ?
+                      (
+                        setprofile(res),
+                        setisShowBottomSheet(false)
+                      )
+                      :
+                      (
+                        setcover(res),
+                        setisShowBottomSheet(false)
+                      );
+                  },
+                    imgtype == 'profile' ?
+                      {
+                        height: 200,
+                        width: 220
+                      } :
+                      {
+                        height: 200,
+                        width: 400
+                      }
+                  )
+                }
+                style={BottomSheetUploadFileStyle.cardBlock}>
+                <Image source={IMAGE.camera} style={BottomSheetUploadFileStyle.icon} />
+                <Text style={BottomSheetUploadFileStyle.cardText}>Camera</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() =>
+                  pickImageCrop(
+                    'image',
+                    res => {
+                      imgtype == 'profile' ?
+                        (
+                          setprofile(res),
+                          setisShowBottomSheet(false)
+                        )
+                        :
+                        (
+                          setcover(res),
+                          setisShowBottomSheet(false)
+                        );
+                    },
+                    imgtype == 'profile' ?
+                      {
+                        height: 200,
+                        width: 220
+                      } :
+                      {
+                        height: 200,
+                        width: 400
+                      },
+                    'photo',
+                  )
+                }
+                style={BottomSheetUploadFileStyle.cardBlock}>
+                <Image source={IMAGE.media} style={BottomSheetUploadFileStyle.icon} />
+                <Text style={BottomSheetUploadFileStyle.cardText}>Mobile Library</Text>
+              </TouchableOpacity>
+          </View>
+        </BottomSheetUploadFile>
+
+
+
         <Overlay
           visible={visible}
           transparent={true}
@@ -788,8 +885,8 @@ const EditProfile = ({ navigation, route }) => {
             </TouchableOpacity>
           </View>
         </Overlay>
-      </View>
-    </SafeAreaView>
+      </View >
+    </SafeAreaView >
   );
 };
 
@@ -811,7 +908,7 @@ const style = StyleSheet.create({
     color: color.black,
   },
   cardBlock: {
-    marginLeft: wp(10),
+    marginLeft: wp(5),
     paddingRight: wp(7),
     paddingVertical: hp(2),
     alignItems: 'center',
