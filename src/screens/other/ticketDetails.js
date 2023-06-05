@@ -35,7 +35,7 @@ export default class TicketDetails extends Component {
       isLoading: false,
       isVisible: false,
       qrCode: '',
-      settext:'',
+      settext: '',
       userdata: new User().getuserdata()
     };
     this.reportBottomSheetRef = React.createRef();
@@ -106,7 +106,7 @@ export default class TicketDetails extends Component {
       url: ApiUrl.eventReport,
       method: 'post',
       body: {
-        booking_id:this.state.ticket?.id, 
+        booking_id: this.state.ticket?.id,
         reason: text,
       },
     };
@@ -119,7 +119,7 @@ export default class TicketDetails extends Component {
             type: 'success',
             text1: res?.message
           })
-          this.props.navigation.goBack(); 
+          this.props.navigation.goBack();
         }
       },
       err => {
@@ -196,22 +196,22 @@ export default class TicketDetails extends Component {
         <Loader type="dots" isLoading={this.state.isLoading} />
         <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
         <Header title={'Ticket Details'}
-          // RightIcon={() => (
-          //   <TouchableOpacity
-          //     onPress={() => {
-          //       this.reportBottomSheetRef?.current?.present();
-          //     }}>
-          //     <Image
-          //       source={IMAGE.report}
-          //       style={{
-          //         height: 20,
-          //         width: 20,
-          //         resizeMode: 'contain',
-          //         marginRight: 10,
-          //       }}
-          //     />
-          //   </TouchableOpacity>
-          // )}
+        // RightIcon={() => (
+        //   <TouchableOpacity
+        //     onPress={() => {
+        //       this.reportBottomSheetRef?.current?.present();
+        //     }}>
+        //     <Image
+        //       source={IMAGE.report}
+        //       style={{
+        //         height: 20,
+        //         width: 20,
+        //         resizeMode: 'contain',
+        //         marginRight: 10,
+        //       }}
+        //     />
+        //   </TouchableOpacity>
+        // )}
         />
 
         <ScrollView style={styles.container}>
@@ -355,6 +355,7 @@ export default class TicketDetails extends Component {
           </View>
         </ScrollView>
 
+        {/* <Loader isLoading={true} type='progress' pageCircleText='Downloading...' /> */}
 
         <BottomSheetModal
           ref={this.reportBottomSheetRef}
@@ -404,7 +405,7 @@ export default class TicketDetails extends Component {
           <TouchableOpacity
             onPress={() => {
               [
-                this._reportStory( "Hate speech or symbols"),
+                this._reportStory("Hate speech or symbols"),
                 this.reportBottomSheetRef?.current?.close(),
                 this.props.navigation.goBack(),
               ];

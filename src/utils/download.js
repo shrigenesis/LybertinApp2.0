@@ -81,7 +81,7 @@ export const Download = async (url, ext, setDownloadProgress) => {
                     console.log(received, total);
                 })
                 .then(async (res) => {
-                    setDownloadProgress(false)
+                    setDownloadProgress && setDownloadProgress(false)
                     resolve(res);
                     if (Platform.OS === "ios") {
                         console.log(res, "res");

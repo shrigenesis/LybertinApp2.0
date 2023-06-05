@@ -43,7 +43,7 @@ const Loader = ({ isLoading, type = 'circle', pageCircleText = 'Please Wait' }) 
               inActiveStrokeOpacity={0.2}
               valueSuffix={'%'}
               progressValueColor={'#ecf0f1'}
-              activeStrokeColor={'#f39c12'}
+              activeStrokeColor={color.btnBlue}
               inActiveStrokeColor={'#9b59b6'}
             />
           </View>

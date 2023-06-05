@@ -28,7 +28,6 @@ import Video from 'react-native-video';
 import Animated, { ZoomIn, FadeOut, FadeIn } from 'react-native-reanimated';
 import { Download } from './../../utils/download';
 import Pdf from 'react-native-pdf';
-import CircularProgress from 'react-native-circular-progress-indicator';
 
 const ShowImg = ({ navigation, route }) => {
   const [appReady, setAppReady] = useState(false);
