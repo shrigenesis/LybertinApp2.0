@@ -51,6 +51,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DatePicker from 'react-native-date-picker';
 import ImagePicker from 'react-native-image-crop-picker';
+import { pickImageCrop } from '../../component/ImagePickerWithCrop';
 
 
 
@@ -69,9 +70,12 @@ export const RenderBottomSheet = memo(
         backdropComponent={BottomSheetBackdrop}>
         <TouchableOpacity
           onPress={() =>
-            pickImage('camera', res => {
+            pickImageCrop('camera', res => {
               type == 'profile' ? setProfile(res) : setCover(res);
             })
+            // pickImage('camera', res => {
+            //   type == 'profile' ? setProfile(res) : setCover(res);
+            // })
           }
           style={style.cardBlock}>
           <Image source={IMAGE.camera} style={style.icon} />
@@ -79,13 +83,20 @@ export const RenderBottomSheet = memo(
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() =>
-            pickImage(
+            pickImageCrop(
               'image',
               res => {
                 type == 'profile' ? setProfile(res) : setCover(res);
               },
               'photo',
             )
+            // pickImage(
+            //   'image',
+            //   res => {
+            //     type == 'profile' ? setProfile(res) : setCover(res);
+            //   },
+            //   'photo',
+            // )
           }
           style={style.cardBlock}>
           <Image source={IMAGE.media} style={style.icon} />
@@ -194,16 +205,6 @@ const EditProfile = ({ navigation, route }) => {
       },
     );
   };
-
-  const imagePickerMY = () => {
-    ImagePicker.openPicker({
-      width: 300,
-      height: 400,
-      cropping: true
-    }).then(image => {
-      console.log(image);
-    });
-  }
 
   const hasError = key => {
     if (validationError[key] !== undefined) {
@@ -683,10 +684,6 @@ const EditProfile = ({ navigation, route }) => {
                   btnStyle={{ height: hp(5.5) }}
                   label={'Save'}
                 />
-              </TouchableOpacity>
-
-              <TouchableOpacity onPress={()=> imagePickerMY()}>
-                <Text>Crop image</Text>
               </TouchableOpacity>
             </View>
           </View>
