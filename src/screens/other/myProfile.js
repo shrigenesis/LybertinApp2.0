@@ -339,7 +339,7 @@ const MyProfile = ({ navigation, route }) => {
             <ScrollView showsVerticalScrollIndicator={false}>
               <View>
                 <Loader isLoading={isLoading} type={'dots'} />
-                {userdata.cover ? (
+                {userdata?.cover ? (
                   <Image
                     source={{ uri: `${IMAGEURL}/${userdata.cover}` }}
                     style={{ width: wp(100), height: hp(20) }}
