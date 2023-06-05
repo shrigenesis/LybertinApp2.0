@@ -77,7 +77,7 @@ export const RenderBottomSheet = memo(
               type == 'profile' ?
                 {
                   height: 200,
-                  width: 220
+                  width: 20
                 } :
                 {
                   height: 200,
@@ -102,7 +102,7 @@ export const RenderBottomSheet = memo(
               type == 'profile' ?
                 {
                   height: 200,
-                  width: 220
+                  width: 200
                 } :
                 {
                   height: 200,
@@ -411,8 +411,8 @@ const EditProfile = ({ navigation, route }) => {
                   <Image
                     source={{ uri: profile?.uri }}
                     style={{
-                      height: hp(14),
-                      width: wp(35),
+                      height: 110,
+                      width: 110,
                       resizeMode: 'cover',
                       borderRadius: 20,
                       overflow: 'hidden',
@@ -422,8 +422,8 @@ const EditProfile = ({ navigation, route }) => {
                   <Image
                     source={{ uri: `${IMAGEURL}/${oldProfile}` }}
                     style={{
-                      height: hp(14),
-                      width: wp(35),
+                      height: 110,
+                      width: 110,
                       resizeMode: 'cover',
                       borderRadius: 20,
                       overflow: 'hidden',
@@ -750,7 +750,7 @@ const EditProfile = ({ navigation, route }) => {
                     imgtype == 'profile' ?
                       {
                         height: 200,
-                        width: 220
+                        width: 200
                       } :
                       {
                         height: 200,
@@ -781,7 +781,7 @@ const EditProfile = ({ navigation, route }) => {
                     imgtype == 'profile' ?
                       {
                         height: 200,
-                        width: 220
+                        width: 200
                       } :
                       {
                         height: 200,
@@ -960,10 +960,10 @@ const style = StyleSheet.create({
   groupProfileView: {
     alignSelf: 'center',
     top: -hp(6),
-    height: hp(14),
+    height: 110,
     alignItems: 'center',
     justifyContent: 'center',
-    width: wp(35),
+    width: 110,
     borderRadius: 20,
     borderWidth: 2,
     borderColor: '#fff',
