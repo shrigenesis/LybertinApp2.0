@@ -50,6 +50,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DatePicker from 'react-native-date-picker';
+import ImagePicker from 'react-native-image-crop-picker';
+
 
 
 export const RenderBottomSheet = memo(
@@ -99,7 +101,7 @@ export const RenderBottomSheet = memo(
               width: wp(90),
               height: hp(6),
             }}
-            labelStyle={{color: color.btnBlue}}
+            labelStyle={{ color: color.btnBlue }}
             label={'Cancel'}
           />
         </View>
@@ -193,10 +195,20 @@ const EditProfile = ({ navigation, route }) => {
     );
   };
 
+  const imagePickerMY = () => {
+    ImagePicker.openPicker({
+      width: 300,
+      height: 400,
+      cropping: true
+    }).then(image => {
+      console.log(image);
+    });
+  }
+
   const hasError = key => {
     if (validationError[key] !== undefined) {
       return (
-        <Text style={[style.validationError,{ fontSize: fontSize.size10, textAlign:'center'}]}>{validationError[key][0]}</Text>
+        <Text style={[style.validationError, { fontSize: fontSize.size10, textAlign: 'center' }]}>{validationError[key][0]}</Text>
       );
     }
   };
@@ -479,7 +491,7 @@ const EditProfile = ({ navigation, route }) => {
                   </View>
                 </View>
               </View>
-              <View style={{marginTop:-20, marginBottom:15}}>
+              <View style={{ marginTop: -20, marginBottom: 15 }}>
                 {hasError('phone')}
               </View>
               <DatePicker
@@ -671,6 +683,10 @@ const EditProfile = ({ navigation, route }) => {
                   btnStyle={{ height: hp(5.5) }}
                   label={'Save'}
                 />
+              </TouchableOpacity>
+
+              <TouchableOpacity onPress={()=> imagePickerMY()}>
+                <Text>Crop image</Text>
               </TouchableOpacity>
             </View>
           </View>

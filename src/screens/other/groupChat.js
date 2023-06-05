@@ -173,7 +173,6 @@ class GroupChat extends React.Component {
       console.log(newMessageRecieved, 'message recieved====');
       // check duplicate message in chatlist 
       const isExist = this.state.chatList?.filter((item) => parseInt(item.id) === parseInt(newMessageRecieved.id))
-      console.log(isExist);
       if (isExist?.length > 0) {
         return;
       }
