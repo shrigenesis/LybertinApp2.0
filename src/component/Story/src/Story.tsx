@@ -95,9 +95,9 @@ const Story = (props: Props) => {
                   <View style={{alignSelf: 'center'}}>
                     {(linkPreview.favicon.includes('.svg') || !linkPreview.favicon) ? (
                      <SvgUri
-                     width="200"
-                     height="200"
-                     source={{uri:'http://thenewcode.com/assets/images/thumbnails/homer-simpson.svg'}}
+                     width={wp(25)}
+                     height={wp(25)}
+                     source={{uri:linkPreview.favicon}}
                    />
                     ) : (
                       <Image
@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     height: '100%',
-    width: '100%',
+    width: wp(100),
     backgroundColor: '#681f84',
     position: 'relative',
     alignItems: 'center',

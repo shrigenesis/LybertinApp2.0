@@ -29,19 +29,20 @@ export const Download = async (url, ext, setDownloadProgress) => {
                 notification: true,
                 mediaScannable: true,
                 title: `${name}.${ext} Download`,
-                path: `${dirToSave}/${name}.${ext}`,
+                path: `${dirToSave}/${name}.${ext}`, 
             };
             config(options)
                 .fetch('GET', url)
                 .then(async (res) => {
                     console.log(res, '--------');
+                    setDownloadProgress && setDownloadProgress(false)
                     resolve(res);
                     if (Platform.OS === "ios") {
                         RNFetchBlob.ios.previewDocument('file://' + res.path());
                     }
                     Toast.show({
                         type: 'info',
-                        text1: 'File Downloaded!'
+                        text1: 'File Downloaded!pppp'
                     })
                 }).catch((err) => {
                     console.log(err)
@@ -65,9 +66,6 @@ export const Download = async (url, ext, setDownloadProgress) => {
                         `${name}.${ext}`,
                     description: `${name}.${ext} Download`,
                 },
-
-
-
                 appendExt: 'pdf',
                 useDownloadManager: true,
                 notification: true,
