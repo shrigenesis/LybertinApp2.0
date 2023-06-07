@@ -12,6 +12,7 @@ import ReactNative, {
   Pressable,
   Platform,
   ActivityIndicator,
+  Alert
 } from 'react-native';
 import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
@@ -110,6 +111,51 @@ class GroupChat extends React.Component {
   handleOnReplyOn = (item) => {
     this.setState({ replyOn: item });
   };
+  handleOnReportOn = (item) => {
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to report this message?',
+      [
+        {
+          text: 'NO',
+          onPress: () => null,
+          style: 'Cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => [this.reportMessage(item)],
+        },
+      ],
+    );
+  };
+
+  reportMessage = (item) => {
+    console.log('reportMessage', item);
+    let config = {
+      url: ApiUrl.reportMessage,
+      method: 'post',
+      body: {
+        reported_to: item.id
+      }
+    };
+
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+          Toast.show({
+            type: 'success',
+            text1: res.alert.message
+          })
+      },
+      err => {
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong'
+        })
+      },
+    );
+  }
 
   fetchChatList = group_id => {
     let userdata = new User().getuserdata();
@@ -579,6 +625,7 @@ class GroupChat extends React.Component {
                       index={index}
                       menu={this.state.menu}
                       replyOn={(replyMSG) => this.handleOnReplyOn(replyMSG)}
+                      reportOn={(replyMSG) => this.handleOnReportOn(replyMSG)}
                     />
                   </View>
                 )}

@@ -88,9 +88,6 @@ export const RenderBottomSheet = memo(
                       width: 400,
                     },
               )
-            // pickImage('camera', res => {
-            //   type == 'profile' ? setProfile(res) : setCover(res);
-            // })
           }
           style={style.cardBlock}>
           <Image source={IMAGE.camera} style={style.icon} />
@@ -115,13 +112,6 @@ export const RenderBottomSheet = memo(
                     },
                 'photo',
               )
-            // pickImage(
-            //   'image',
-            //   res => {
-            //     type == 'profile' ? setProfile(res) : setCover(res);
-            //   },
-            //   'photo',
-            // )
           }
           style={style.cardBlock}>
           <Image source={IMAGE.media} style={style.icon} />

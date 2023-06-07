@@ -31,8 +31,9 @@ import LinearGradient from 'react-native-linear-gradient';
 import { Toast } from 'react-native-toast-message/lib/src/Toast';
 import BottomSheetWebview from './BottomSheetWebview';
 import Stories from './Story';
-import {BottomSheetUploadFile} from './BottomSheetUploadFile';
+import { BottomSheetUploadFile } from './BottomSheetUploadFile';
 import { log } from 'react-native-reanimated';
+import { pickImageCrop } from './ImagePickerWithCrop';
 
 const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
   const [text, settext] = useState([]);
@@ -146,7 +147,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
     }
   }, [isFocus]);
 
-  const closeStory = ()=>{
+  const closeStory = () => {
     console.log('closeStory---')
     doDeleteAction()
   }
@@ -171,7 +172,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
 
   };
 
-  
+
 
   const doDeleteAction = (storyId) => {
 
@@ -271,7 +272,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
 
 
   // Post Story
-  const PostStory=(file)=>{
+  const PostStory = (file) => {
     setisShowBottomSheet1(false)
     navigation.navigate('PostStory', { file: file });
   }
@@ -328,135 +329,12 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         {stories.length > 0 ? <Stories
           deleteOnPress={(id) => { _deleteStory(id) }}
           reportOnPress={(id) => { setReportId(id); setisShowBottomSheet(true); }}
-          closeStory = {()=> closeStory()}
+          closeStory={() => closeStory()}
           data={stories} titleStyle={
             !headerFontColor ? style.storyText : style.storyTextTheme
           } /> : null}
 
       </View>
-      {/* {stories?.length > 0 && (
-        // <FlatList
-        //   data={stories}
-        //   keyExtractor={item => String(item.id)}
-        //   showsHorizontalScrollIndicator={false}
-        //   contentContainerStyle={{ alignItems: 'center', paddingLeft: wp(7) }}
-        //   horizontal={true}
-        //   renderItem={({ item, index }) => {
-        //     if (index == 0) {
-        //       return (
-        //         <>
-        //           <TouchableOpacity
-        //             activeOpacity={0.5}
-        //             onPress={() => {
-        //               item?.user_id == userdata?.id
-        //                 ? navigation.navigate('ShowStory', {
-        //                   list: item.view_stories,
-        //                 })
-        //                 : bottomSheetRef?.current?.present();
-        //             }}
-        //             style={style.imgview}>
-
-        //             <View>
-        //               {checkuseradd() != -1 ? (
-        //                 <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-        //                   {userdata.avatar != 'lybertineApp/default/default.png' ? (
-        //                     <Image
-        //                       source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-        //                       style={style.imgBox}
-        //                     />
-        //                   ) : (
-        //                     <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
-        //                   )}
-        //                 </LinearGradient>
-        //               ) : (
-        //                 <LinearGradient colors={defaultGradientColor} style={style.storyWrapper}>
-        //                   {userdata.avatar != 'lybertineApp/default/default.png' ? (
-        //                     <Image
-        //                       source={{ uri: `${IMAGEURL}/${userdata.avatar}` }}
-        //                       style={style.imgBox}
-        //                     />
-        //                   ) : (
-        //                     <Image source={IMAGE?.defaultAvatar} style={style.imgBox} />
-        //                   )}
-        //                 </LinearGradient>
-
-        //               )}
-
-        //               {checkuseradd() == -1 && (
-        //                 <View style={style.blueDot}>
-        //                   <Icon
-        //                     name={'plus'}
-        //                     style={{ fontSize: 7, color: '#fff' }}
-        //                   />
-        //                 </View>
-        //               )}
-        //             </View>
-
-        //             <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
-        //               {checkuseradd() != -1 ? 'Your Story' : 'Add Story'}
-        //             </Text>
-        //           </TouchableOpacity>
-        //           {morestory && item?.user_id != userdata?.id && (
-        //             <TouchableOpacity
-        //               onPress={() => {
-        //                 navigation.navigate('ShowStory', {
-        //                   list: item.view_stories,
-        //                 });
-        //               }}
-        //               style={style.imgview}>
-        //               <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-        //                 <Image
-        //                   source={{
-        //                     uri: `${IMAGEURL}/${getUserDetail(
-        //                       item.view_stories,
-        //                       'avatar',
-        //                     )}`,
-        //                   }}
-        //                   style={[
-        //                     style.imgBox
-        //                   ]}
-        //                 />
-        //               </LinearGradient>
-
-        //               <Text style={!headerFontColor ? style.storyText : style.storyTextTheme} numberOfLines={1}>
-        //                 {(getUserDetail(item.view_stories, 'name').length > 7) ?
-        //                   (((getUserDetail(item.view_stories, 'name')).substring(0, 7)) + '...') : getUserDetail(item.view_stories, 'name')}
-        //               </Text>
-        //             </TouchableOpacity>
-        //           )}
-        //         </>
-        //       );
-        //     } else {
-        //       return (
-        //         <TouchableOpacity
-        //           onPress={() => {
-        //             navigation.navigate('ShowStory', { list: item.view_stories });
-        //           }}
-        //           style={style.imgview}>
-        //           <LinearGradient colors={gradientColor} style={style.storyWrapper}>
-        //             <Image
-        //               source={{
-        //                 uri: `${IMAGEURL}/${getUserDetail(
-        //                   item.view_stories,
-        //                   'avatar',
-        //                 )}`,
-        //               }}
-        //               style={[
-        //                 style.imgBox,
-        //                 // { borderWidth: 2, borderColor: color.btnBlue },
-        //               ]}
-        //             />
-        //           </LinearGradient>
-        //           <Text style={!headerFontColor ? style.storyText : style.storyTextTheme}>
-        //             {(getUserDetail(item.view_stories, 'name').length > 7) ?
-        //               (((getUserDetail(item.view_stories, 'name')).substring(0, 7)) + '...') : getUserDetail(item.view_stories, 'name')}
-        //           </Text>
-        //         </TouchableOpacity>
-        //       );
-        //     }
-        //   }}
-        // />
-      )} */}
       <BottomSheetUploadFile
         cancelBtn={{
           color: color.lightGray,
@@ -474,12 +352,17 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
           <View>
             <TouchableOpacity
               onPress={() =>
+                // pickImageCrop(
                 pickImage(
                   'camera',
                   res => {
-                    // file(res);
+                    console.log(res);
                     PostStory(res)
                   },
+                  // {
+                  //   height: 16,
+                  //   width: 9,
+                  // },
                   'photo',
                 )
               }
@@ -489,11 +372,16 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() =>
+                // pickImageCrop(
                 pickImage(
                   'image',
                   res => {
                     PostStory(res)
                   },
+                  // {
+                  //   height: 16,
+                  //   width: 9,
+                  // },
                   'photo',
                 )
               }
@@ -542,7 +430,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
 
         </View>
 
-      </BottomSheetUploadFile>
+      </BottomSheetUploadFile >
 
 
       <BottomSheetWebview
@@ -630,7 +518,7 @@ const StoryList = ({ navigation, headerFontColor, storyBackGroundColor }) => {
         bottomSheetRef={bottomSheetRef}
       />
 
-    </View>
+    </View >
   );
 };
 

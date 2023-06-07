@@ -40,6 +40,7 @@ export const pickImageCrop = async (
           type: image.mime,
           duration: image?.duration ? image?.duration : 0,
           fileSize: image?.size / (1024 * 1024),
+          fileType: 'photo'
         };
         cb(file);
       });
@@ -48,13 +49,15 @@ export const pickImageCrop = async (
         ...CropDimension,
         cropping: true,
       }).then(image => {
+        console.log(image);
         let file = {
           // ...image,
           uri: image.path,
           name: Platform.OS==='ios' ?  image.filename : 'image.png',
           type: image.mime,
-          duration: image?.duration ? image?.duration : 0,
+          duration: image?.duration ? image?.duration : 0, 
           fileSize: image?.size / (1024 * 1024),
+          fileType: 'photo'
         };
         cb(file);
       });

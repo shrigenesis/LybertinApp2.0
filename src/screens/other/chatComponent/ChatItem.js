@@ -20,6 +20,12 @@ import { Download } from './../../../utils/download';
 import Video from 'react-native-video';
 import Slider from 'react-native-slider'
 import AudioContextProvider, { AudioContext } from "../../../context/AudioContext";
+import {
+  Menu,
+  MenuOptions,
+  MenuOption,
+  MenuTrigger,
+} from 'react-native-popup-menu'; // 
 const getTime = time => {
   if (time) {
     return moment(time).format('DD, MMM HH:mm');
@@ -56,11 +62,11 @@ const _renderMessage = (item, style) => {
   const Audio = () => {
     if (`${IMAGEURL}/${item.file_name}` === audio?.audio) {
       return (
-        <TouchableOpacity onPress={()=>console.log('audio')}>
-        <SoundPlayer
-          forChat={true}
-          recordingFile={`${IMAGEURL}/${item.file_name}`}
-        />
+        <TouchableOpacity onPress={() => console.log('audio')}>
+          <SoundPlayer
+            forChat={true}
+            recordingFile={`${IMAGEURL}/${item.file_name}`}
+          />
         </TouchableOpacity>
       )
     } else {
@@ -71,38 +77,38 @@ const _renderMessage = (item, style) => {
         //   // activeOpacity={1}
         //   // onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
         //   >
-          <View
-            style={{
-              // backgroundColor: color.borderGray,
-              alignItems: 'center',
-              marginTop: hp(2),
-              height: hp(4),
-              flexDirection: 'row',
-              paddingRight: wp(5),
-              marginHorizontal: wp(2),
-              padding: 10,
-            }}>
-            <TouchableOpacity 
+        <View
+          style={{
+            // backgroundColor: color.borderGray,
+            alignItems: 'center',
+            marginTop: hp(2),
+            height: hp(4),
+            flexDirection: 'row',
+            paddingRight: wp(5),
+            marginHorizontal: wp(2),
+            padding: 10,
+          }}>
+          <TouchableOpacity
             style={styles.playpause}
             onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
-             >
-              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
-            </TouchableOpacity>
+          >
+            <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+          </TouchableOpacity>
 
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Slider
-                style={{ width: wp(28), marginLeft: wp(3) }}
-                trackStyle={styles.track}
-                thumbStyle={styles.thumb}
-                minimumTrackTintColor='#681F84'
-                thumbTouchSize={{ width: 50, height: 40 }}
-                minimumValue={0}
-                value={0}
-                maximumValue={10}
-                disabled={true}
-              />
-            </View>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            <Slider
+              style={{ width: wp(28), marginLeft: wp(3) }}
+              trackStyle={styles.track}
+              thumbStyle={styles.thumb}
+              minimumTrackTintColor='#681F84'
+              thumbTouchSize={{ width: 50, height: 40 }}
+              minimumValue={0}
+              value={0}
+              maximumValue={10}
+              disabled={true}
+            />
           </View>
+        </View>
         // </TouchableOpacity>
       )
     }
@@ -252,7 +258,7 @@ const _renderMessage = (item, style) => {
 };
 
 export const ChatItem = React.memo(
-  ({ item, user_id, avatar, index, onImagePress }) => {
+  ({ item, user_id, avatar, index, onImagePress,menu, reportOn }) => {
     const audio = useContext(AudioContext);
     const Action = item => {
       audio?.setaudio('');
@@ -265,51 +271,30 @@ export const ChatItem = React.memo(
         onImagePress({ file: item.file_name, fileType: 'video' });
       }
     };
-
-    // if (item.type === 'agoDate') {
-    //   return (
-    //     <View style={{display:'flex', alignItems:'center'}}>
-    //       <Text style={{
-    //         textAlign: 'center',
-    //         backgroundColor: color.lightSlaty,
-    //         borderRadius: 20, width: wp(30),
-    //         padding: 2,
-    //         color: color.black,
-    //         justifyContent: 'center',
-    //         marginVertical:20
-    //       }}>
-    //         {item.created_time_ago}
-    //       </Text>
-    //     </View>
-    //   )
-    // } else {
+    const openMenu = () => {
+      menu.open();
+    };
     if (item.from_id == user_id) {
       return (
         <View
           key={String(index)}
           style={styles.listInner}>
-          {/* <Text>{item.name}</Text> */}
-          {/* {item?.message_type !== 9 && (
-            <View>
-              {avatar ? (
-                <Image
-                  source={{uri: `${IMAGEURL}/${avatar}`}}
-                  style={{
-                    height: 40,
-                    borderRadius: 120,
-                    overflow: 'hidden',
-                    width: 40,
-                  }}
-                />
-              ) : (
-                <Image
-                  source={IMAGE.chatgirl}
-                  style={{height: 40, width: 40}}
-                />
-              )}
-            </View>
-          )} */}
+          <Menu ref={c => (menu = c)}>
+            <MenuOptions>
+              <MenuOption onSelect={() => reportOn(item)} >
+                <View style={{ flex: 1, flexDirection: 'row', minHeight: hp(4), alignItems: 'center' }}>
+                  <Image
+                    source={IMAGE.report}
+                    style={styles.replyBtn}
+                  />
+                  <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Report</Text>
+                </View>
+              </MenuOption>
+            </MenuOptions>
+            <MenuTrigger text="" />
+          </Menu>
           <TouchableOpacity
+            onLongPress={openMenu}
             activeOpacity={1}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'left')]}>
@@ -326,12 +311,7 @@ export const ChatItem = React.memo(
             marginRight: item?.message_type == 9 ? '25%' : '4%',
           }}>
 
-          {/* <TouchableOpacity
-            activeOpacity={1}
-            onPress={() => Action(item)}
-            style={[_getStyleSelector(item)]}>
-            {_renderMessage(item, styles.leftChatText, videoRef)}
-          </TouchableOpacity> */}
+        
           <TouchableOpacity
             activeOpacity={1}
             onPress={() => Action(item)}
@@ -578,7 +558,13 @@ const styles = StyleSheet.create({
     color: color.blackRussian,
     fontFamily: fontFamily.Medium,
     maxWidth: wp(60)
-  }
+  },
+  replyBtn: {
+    height: 20,
+    width: 20,
+    marginHorizontal: wp(2),
+    resizeMode: 'contain',
+  },
 
   // replyWrapper:{
   //   width:wp(70),

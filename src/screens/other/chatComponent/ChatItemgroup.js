@@ -264,7 +264,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
 
 
 export const ChatItemgroup = React.memo(
-  ({ item, user_id, avatar, index, onImagePress, menu, replyOn }) => {
+  ({ item, user_id, avatar, index, onImagePress, menu, replyOn, reportOn }) => {
     const audio = useContext(AudioContext);
     const videoRef = useRef();
     const Action = item => {
@@ -367,6 +367,15 @@ export const ChatItemgroup = React.memo(
                   <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Reply</Text>
                 </View>
               </MenuOption>
+              <MenuOption onSelect={() => reportOn(item)} >
+                <View style={{ flex: 1, flexDirection: 'row', minHeight: hp(4), alignItems: 'center' }}>
+                  <Image
+                    source={IMAGE.report}
+                    style={styles.replyBtn}
+                  />
+                  <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Report</Text>
+                </View>
+              </MenuOption>
             </MenuOptions>
             <MenuTrigger text="" />
           </Menu>
@@ -416,6 +425,7 @@ export const ChatItemgroup = React.memo(
                   <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Reply</Text>
                 </View>
               </MenuOption>
+              
             </MenuOptions>
             <MenuTrigger text="" />
           </Menu>

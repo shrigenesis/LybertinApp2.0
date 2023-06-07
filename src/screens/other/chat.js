@@ -132,7 +132,7 @@ class Chat extends React.Component {
       url: ApiUrl.markReadMessage,
       method: 'post',
       body: {
-        message_id: message_id 
+        message_id: message_id
       }
     };
     console.log(config);
@@ -410,6 +410,51 @@ class Chat extends React.Component {
     }
   }
 
+  handleOnReportOn = (item) => {
+    Alert.alert(
+      'Alert',
+      'Are you sure you want to report this message?',
+      [
+        {
+          text: 'NO',
+          onPress: () => null,
+          style: 'Cancel',
+        },
+        {
+          text: 'YES',
+          onPress: () => [this.reportMessage(item)],
+        },
+      ],
+    );
+  };
+
+  reportMessage = (item) => {
+    console.log('reportMessage', item);
+    let config = {
+      url: ApiUrl.reportMessage,
+      method: 'post',
+      body: {
+        reported_to: item.id
+      }
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+        Toast.show({
+          type: 'success',
+          text1: res.alert.message
+        })
+      },
+      err => {
+        Toast.show({
+          type: 'error',
+          text1: 'Something went wrong'
+        })
+      },
+    );
+  }
+
   render() {
     return (
       // <SafeAreaView style={styles.safeArea} >
@@ -544,6 +589,8 @@ class Chat extends React.Component {
                   avatar={this.props?.route?.params?.avatar}
                   item={item}
                   index={index}
+                  menu={this.state.menu}
+                  reportOn={(replyMSG) => this.handleOnReportOn(replyMSG)}
                 />
               )}
             />

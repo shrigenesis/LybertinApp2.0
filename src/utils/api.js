@@ -106,6 +106,7 @@ export const ApiUrl = {
   highlightIndex: `${apiBaseUrl}highlight/index`,
   checkinCheckout: `${apiBaseUrl}events/checkin-checkout`,
   reportUser: `${apiBaseUrl}report-user`,
+  reportMessage: `${apiBaseUrl}reported-conversation/report`,
 
   // Marketing
   getDeeplink: `${apiMarketingBaseUrl}generate-promotional-event-deeplink`,
