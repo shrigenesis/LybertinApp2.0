@@ -1,14 +1,28 @@
 /* eslint-disable prettier/prettier */
 /* eslint-disable react/no-unused-prop-types */
-import React, { useState } from 'react';
-import { Dimensions, Image, StyleSheet, View, Platform , StatusBar,TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {
+  Dimensions,
+  Image,
+  StyleSheet,
+  View,
+  Platform,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
 import Video from 'react-native-video';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 // import Image from 'react-native-scalable-image';
 import PropTypes from 'prop-types';
-import { StoryType } from '.';
-import { Text } from 'react-native-elements';
-import { heightPercentageToDP } from 'react-native-responsive-screen';
-import { Linking } from 'react-native';
+import {StoryType} from '.';
+import {Text} from 'react-native-elements';
+import {heightPercentageToDP} from 'react-native-responsive-screen';
+import {Linking} from 'react-native';
+import {IMAGE, color, fontFamily, fontSize} from '../../../constant';
+import SvgUri from 'react-native-svg-uri';
 
 const ScreenWidth = Dimensions.get('window').width;
 
@@ -21,12 +35,22 @@ type Props = {
   isNewStory?: boolean;
 };
 const Story = (props: Props) => {
-  const { story } = props;
-  const { url, type, caption, url_readmore, isReadMore } = story || {};
+  const {story} = props;
+  const {
+    url,
+    type,
+    caption,
+    url_readmore,
+    isReadMore,
+    linkPreview,
+    showPreview,
+  } = story || {};
   const [isPortation, setIsPortation] = useState(false);
   const [heightScaled, setHeightScaled] = useState(231);
-  const loadInBrowser = (link) => {
-    Linking.openURL(link).catch(err => console.error("Couldn't load page", err));
+  const loadInBrowser = link => {
+    Linking.openURL(link).catch(err =>
+      console.error("Couldn't load page", err),
+    );
   };
   return (
     <View style={styles.container}>
@@ -37,62 +61,79 @@ const Story = (props: Props) => {
       </View>
       )} */}
       {type === 'image' ? (
-        <View 
-        style={{
-          height: '100%',
-          width: '100%',
-          
-      }} >
-         
-          <Image
-            source={{ uri: url }}
-            onLoadEnd={props.onImageLoaded}
-            style={styles.content}
-            resizeMode="contain"
-          // width={ScreenWidth}
-          />
-           {isReadMore && (
-            <View 
-              style={{
-                height: '100%',
-                width: '100%',
-                backgroundColor:'#681f84',
-                
-                position: 'relative',
-            }} onPress={() =>{ alert('sadasd');loadInBrowser(url_readmore);}}>
-              
-              <View style={{
-                 alignContent: 'center',
-                 position: 'absolute',
-                 top: '50%',
-                 paddingLeft: 10,
-                 zIndex: 999,
-                 alignSelf:'center'
-              }}>
-              {/* <Button 
-              color={Platform.OS === 'ios'? '#fff' : '#681f84'} 
-              style={{
-                backgroundColor: '#681f84',
-              }} 
-               title={url_readmore} onPress={()=>{loadInBrowser(url_readmore)}} /> */}
-               <TouchableOpacity onPress={()=>{loadInBrowser(url_readmore)}}>
-                <Text style={{color:'#fff', fontSize:20}}>{url_readmore}</Text>
-               </TouchableOpacity>
-             </View>
-             </View>
+        <View
+          style={{
+            height: '100%',
+            width: '100%',
+          }}>
+          {!isReadMore && (
+            <Image
+              source={{uri: url}}
+              onLoadEnd={props.onImageLoaded}
+              style={styles.content}
+              resizeMode="contain"
+              // width={ScreenWidth}
+            />
+          )}
+          {isReadMore && (
+            <View style={styles.linkWrapper}>
+              {!showPreview ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    loadInBrowser(url_readmore);
+                  }}>
+                  <Text style={{color: '#fff', fontSize: 20}}>
+                    {url_readmore}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity 
+                onPress={() => {
+                  loadInBrowser(url_readmore);
+                }}
+                style={styles.storywrapperbox}>
+                  <View style={{alignSelf: 'center'}}>
+                    {(linkPreview.favicon.includes('.svg') || !linkPreview.favicon) ? (
+                     <SvgUri
+                     width="200"
+                     height="200"
+                     source={{uri:'http://thenewcode.com/assets/images/thumbnails/homer-simpson.svg'}}
+                   />
+                    ) : (
+                      <Image
+                        style={{height: wp(25), width: wp(25)}}
+                        source={{uri: linkPreview.favicon}}
+                      />
+                    )}
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: 'column',
+                      padding: 10,
+                      gap: 5,
+                      width: wp(60),
+                    }}>
+                    <Text style={styles.TextTitle}>{linkPreview.title}</Text>
+                    <Text style={styles.TextDesc}>
+                      {linkPreview.description}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+            </View>
           )}
         </View>
       ) : (
         <Video
-          source={{ uri: url }}
+          source={{uri: url}}
           paused={props.pause || props.isNewStory}
           onLoad={item => {
-            const { width, height } = item.naturalSize;            
+            const {width, height} = item.naturalSize;
             const heightScaled = height * (ScreenWidth / width);
             let isPortrait = height > width;
             setIsPortation(height > width);
             setHeightScaled(heightScaled);
-            props.onVideoLoaded(item); 
+            props.onVideoLoaded(item);
 
             console.warn(width, height, heightScaled);
             console.warn('É PAISAGEM?', isPortrait);
@@ -103,26 +144,41 @@ const Story = (props: Props) => {
           //     : [styles.contentVideo, { height: heightScaled }]
           // }
           style={
-            Platform.OS==='ios'?
-            [styles.contentVideo, { height:isPortation?heightScaled:heightPercentageToDP(100)}]:
-            isPortation
-              ? [styles.contentVideoPortation, { height: heightScaled }]
-              : [styles.contentVideo, { height: heightScaled }]
+            Platform.OS === 'ios'
+              ? [
+                  styles.contentVideo,
+                  {
+                    height: isPortation
+                      ? heightScaled
+                      : heightPercentageToDP(100),
+                  },
+                ]
+              : isPortation
+              ? [styles.contentVideoPortation, {height: heightScaled}]
+              : [styles.contentVideo, {height: heightScaled}]
           }
-          resizeMode={Platform.OS==='ios'? 'center':'stretch'}
+          resizeMode={Platform.OS === 'ios' ? 'center' : 'stretch'}
         />
       )}
       {!isReadMore && (
-        <View style={{
-          position: 'absolute',
-          width: "100%",
-          bottom: 0,
-          backgroundColor: '#000',
-          paddingVertical: heightPercentageToDP(1),
-
-
-        }}>
-          <Text style={{ color: '#fff', paddingHorizontal: heightPercentageToDP(1), fontSize: 18, textAlign: 'center', paddingBottom: 10 }}>{caption} </Text>
+        <View
+          style={{
+            position: 'absolute',
+            width: '100%',
+            bottom: 0,
+            backgroundColor: '#000',
+            paddingVertical: heightPercentageToDP(1),
+          }}>
+          <Text
+            style={{
+              color: '#fff',
+              paddingHorizontal: heightPercentageToDP(1),
+              fontSize: 18,
+              textAlign: 'center',
+              paddingBottom: 10,
+            }}>
+            {caption}{' '}
+          </Text>
         </View>
       )}
     </View>
@@ -144,7 +200,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  content: { width: '100%', height: '100%', flex: 1, resizeMode: 'contain' },
+  content: {width: '100%', height: '100%', flex: 1, resizeMode: 'contain'},
+  linkWrapper: {
+    flex: 1,
+    flexDirection: 'column',
+    height: '100%',
+    width: '100%',
+    backgroundColor: '#681f84',
+    position: 'relative',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
   contentVideo: {
     width: ScreenWidth + 20,
     //aspectRatio: 1,
@@ -170,6 +237,23 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  TextTitle: {
+    fontSize: fontSize.size14,
+    fontFamily: fontFamily.Semibold,
+    color: color.white,
+  },
+  TextDesc: {
+    fontSize: fontSize.size10,
+    fontFamily: fontFamily.Light,
+    color: color.white,
+  },
+  storywrapperbox: {
+    flexDirection: 'row',
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    padding: 10,
+    maxWidth: wp(90),
+    borderRadius: 7,
   },
 });
 
