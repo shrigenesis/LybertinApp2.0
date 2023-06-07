@@ -33,7 +33,6 @@ export const pickImageCrop = async (
         ...CropDimension,
         cropping: true,
       }).then(image => {
-        console.log(image);
         let file = {
           // ...image,
           uri: image.path,
@@ -42,7 +41,6 @@ export const pickImageCrop = async (
           duration: image?.duration ? image?.duration : 0,
           fileSize: image?.size / (1024 * 1024),
         };
-        console.log(file);
         cb(file);
       });
     } else {
@@ -50,7 +48,6 @@ export const pickImageCrop = async (
         ...CropDimension,
         cropping: true,
       }).then(image => {
-        console.log(image);
         let file = {
           // ...image,
           uri: image.path,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { StatusBar, View, Image } from 'react-native'
+import { StatusBar, View, Image, SafeAreaView } from 'react-native'
 import { Header } from '../../component'
 import { IMAGE, color } from '../../constant'
 import {
@@ -10,6 +10,7 @@ import {
 const ViewProfileImage = ({route}) => {
   const { image, name } = route?.params
   return (
+    <SafeAreaView style={{flex:1, backgroundColor:color.white}}>
     <View>
       <StatusBar barStyle={'dark-content'} backgroundColor={color.white} />
       <Header
@@ -21,6 +22,7 @@ const ViewProfileImage = ({route}) => {
         <Image style={{ height: hp(100), width: wp(100), resizeMode: 'contain' }} source={{ uri: image }} />}
       </View>
     </View>
+    </SafeAreaView>
   )
 }
 

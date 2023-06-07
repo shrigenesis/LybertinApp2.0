@@ -31,7 +31,7 @@ import { AudioContext } from '../../../context/AudioContext';
 
 const getTime = time => {
   if (time) {
-    return moment(time).format('DD, MMM hh:mm A');
+    return moment(time).format('DD, MMM HH:mm');
   }
 };
 

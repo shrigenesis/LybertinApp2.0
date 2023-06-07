@@ -57,6 +57,7 @@ export const ApiUrl = {
   my_contacts: `${apiBaseUrl}groups/my-contacts`,
   myprofile: `${apiBaseUrl}profile/auth`,
   updateprofile: `${apiBaseUrl}profile/update`,
+  updateProfileAvatarOrCover: `${apiBaseUrl}profile/update`,
   updateInterests: `${apiBaseUrl}profile/update`,
   changePassword: `${apiBaseUrl}profile/change-password`,
   groups: `${apiBaseUrl}groups`,
@@ -219,7 +220,7 @@ export const APIRequestWithFile1 = async (config = {}, onSuccess, onError, uploa
       url: config.url,
       data: config.body,
       headers: {
-
+ 
         'Content-Type': 'multipart/form-data',
         Authorization: `Bearer ${token}`,
       },
