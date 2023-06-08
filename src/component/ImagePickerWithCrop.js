@@ -1,5 +1,6 @@
-import {PermissionsAndroid} from 'react-native';
+import { PermissionsAndroid } from 'react-native';
 import Toast from 'react-native-toast-message';
+import DeviceInfo from "react-native-device-info";
 import {
   check,
   request,
@@ -36,7 +37,7 @@ export const pickImageCrop = async (
         let file = {
           // ...image,
           uri: image.path,
-          name: Platform.OS==='ios' ?  image.filename : 'image.png',
+          name: Platform.OS === 'ios' ? image.filename : 'image.png',
           type: image.mime,
           duration: image?.duration ? image?.duration : 0,
           fileSize: image?.size / (1024 * 1024),
@@ -53,9 +54,9 @@ export const pickImageCrop = async (
         let file = {
           // ...image,
           uri: image.path,
-          name: Platform.OS==='ios' ?  image.filename : 'image.png',
+          name: Platform.OS === 'ios' ? image.filename : 'image.png',
           type: image.mime,
-          duration: image?.duration ? image?.duration : 0, 
+          duration: image?.duration ? image?.duration : 0,
           fileSize: image?.size / (1024 * 1024),
           fileType: 'photo'
         };
@@ -70,11 +71,15 @@ export const requestPermission = async permissionFor => {
   try {
     let permission = '';
     if (permissionFor == 'storage') {
-      permission = await request(
-        Platform.OS == 'ios'
-          ? PERMISSIONS.IOS.PHOTO_LIBRARY
-          : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      );
+      if (Platform.OS == 'ios') {
+        permission = await request(PERMISSIONS.IOS.PHOTO_LIBRARY);
+      } else {
+        if (DeviceInfo.getSystemVersion() >= 13) {
+          permission = await request(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
+        } else {
+          permission = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+        }
+      }
     } else if (permissionFor == 'audio') {
       permission = await request(
         Platform.OS == 'ios'

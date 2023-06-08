@@ -96,11 +96,6 @@ export const requestPermission = async permissionFor => {
   try {
     let permission = '';
     if (permissionFor == 'storage') {
-      permission = await request(
-        Platform.OS == 'ios'
-          ? PERMISSIONS.IOS.PHOTO_LIBRARY
-          : PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
-      ); 
       if (Platform.OS == 'ios') {
         permission = await request(PERMISSIONS.IOS.PHOTO_LIBRARY); 
       } else {
@@ -108,14 +103,8 @@ export const requestPermission = async permissionFor => {
           permission = await request(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
         } else {
           permission = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
-        }
-      }
-      console.log(DeviceInfo.getSystemVersion());    
-      // permission = await request(
-      //   Platform.OS == 'ios'
-      //     ? PERMISSIONS.IOS.PHOTO_LIBRARY
-      //     : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      // );
+        }  
+      } 
     } else if (permissionFor == 'audio') {
       permission = await request(
         Platform.OS == 'ios'
