@@ -56,6 +56,13 @@ export class User {
   getAudio() {
     return SyncStorage.get('audio');
   }
+
+  setOfflineMessage(data) {
+    return SyncStorage.get('message', data);
+  }
+  getOfflineMessage() {
+    return SyncStorage.get('message');
+  }
   clearAllUserData() {
     SyncStorage.set('userdata', null);
     SyncStorage.set('token', null);

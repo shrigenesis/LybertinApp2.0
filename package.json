@@ -16,7 +16,7 @@
     "@invertase/react-native-apple-authentication": "^2.2.2",
     "@react-native-async-storage/async-storage": "^1.17.11",
     "@react-native-community/datetimepicker": "^6.7.5",
-    "@react-native-community/netinfo": "^9.3.8",
+    "@react-native-community/netinfo": "^9.3.10",
     "@react-native-community/push-notification-ios": "^1.10.1",
     "@react-native-community/toolbar-android": "react-native-community/toolbar-android",
     "@react-native-firebase/app": "^17.4.2",
@@ -88,7 +88,8 @@
     "react-native-video": "^5.2.1",
     "react-native-webview": "^11.26.1",
     "socket.io-client": "^4.6.1",
-    "sync-storage": "^0.4.2"
+    "sync-storage": "^0.4.2",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.21.0",

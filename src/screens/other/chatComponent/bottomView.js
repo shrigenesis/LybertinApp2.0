@@ -180,9 +180,9 @@ export const BottomView = memo(props => {
 
   const StopMultiplePress = () => {
     setdisable(true);
-    setTimeout(() => {
+    // setTimeout(() => {
       setdisable(false);
-    }, 2000);
+    // }, 500);
   };
 
   useEffect(() => {

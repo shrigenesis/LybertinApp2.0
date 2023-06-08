@@ -27,16 +27,6 @@ import NoRecord from './noRecord';
 import { useIsFocused } from '@react-navigation/native';
 
 
-// const { state, navigate } = this.props.navigation;    
-
-// return (
-//     <View>
-//         <Button title="Go to Page" onPress={ () => {
-//             /* pass key down to *EditPage* */
-//             navigate('EditPage', { go_back_key: state.key });
-//         }} />
-//     </View>
-
 const Marketplace = ({ navigation }) => {
   const [selectedIndex, setselectedIndex] = useState(0);
   const [Interests, setInterests] = useState([])
@@ -97,6 +87,7 @@ const Marketplace = ({ navigation }) => {
       },
     );
     getMarketingEventList()
+    
   }, []);
 
   useEffect(() => {

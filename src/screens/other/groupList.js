@@ -30,7 +30,8 @@ import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
-
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const getTime = time => {
   if (time) {
     return moment(time).fromNow();
@@ -240,14 +241,65 @@ const GroupList = ({ navigation }) => {
   };
 
   useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+      if (state.isConnected) {
+        sendOfflineMessage()
+      }
+    });
     return () => {
       setGroupList([]);
       setSearch('');
       setisLoading(false);
       setappReady(false);
       setPinnedChatCount(0);
+      unsubscribe()
+
     }
   }, [])
+
+
+  const sendOfflineMessage = async () => {
+    try {
+      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+      if (myArray !== null) {
+        console.log(JSON.parse(myArray));
+        const offlinemessagedata = JSON.parse(myArray);
+        offlinemessagedata.forEach((item, i) => {
+          sendMessageOffline(item)
+        })
+        await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify([]));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const sendMessageOffline = (item) => {
+    let config = {
+      url: ApiUrl.sendMessage,
+      method: 'post',
+      body: {
+        uuid: item.uuid,
+        created_at: item.date,
+        is_archive_chat: 0,
+        to_id: `${item.to_id}`,
+        message: item.message,
+        is_group: item.is_group,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  }
+
 
 
   return (
@@ -270,7 +322,7 @@ const GroupList = ({ navigation }) => {
           <Text style={style.heading}>Lybertine</Text>
           <UserProfileImage />
         </View>
-        <StoryList storyBackGroundColor={color.white}  navigation={navigation}  />
+        <StoryList storyBackGroundColor={color.white} navigation={navigation} />
         <View>
           <View
             style={{
@@ -462,7 +514,7 @@ const style = StyleSheet.create({
     marginRight: wp(1),
     overflow: 'hidden',
     justifyContent: 'center',
-    alignItems:'center'
+    alignItems: 'center'
   },
   badgeText: {
     fontSize: 10,

@@ -14,6 +14,8 @@ import ReactNative, {
   ActivityIndicator,
   Alert
 } from 'react-native';
+import { v4 as uuidv4 } from 'uuid';
+
 import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
   widthPercentageToDP as wp,
@@ -36,6 +38,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider, { AudioContext } from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -65,6 +69,7 @@ class GroupChat extends React.Component {
       isShowBottomSheet: false,
       progressFile: [],
       bottomViewHeight: 0,
+      offlinemessagesend:[]
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -95,6 +100,59 @@ class GroupChat extends React.Component {
 
       this.socketEvents();
     });
+    this.unsubscribe = NetInfo.addEventListener(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+      if (state.isConnected) {
+        this.setState({ isConnected: true })
+        this.sendOfflineMessage()
+      } else {
+        this.setState({ isConnected: false })
+      }
+    });
+  }
+
+  sendOfflineMessage = async () => {
+    try {
+      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+      if (myArray !== null) {
+        console.log(JSON.parse(myArray));
+        const offlinemessagedata = JSON.parse(myArray);
+        offlinemessagedata.forEach((item, i) => {
+          this.sendMessageOffline(item)
+        })
+        await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify([]));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  sendMessageOffline = (item) => {
+    let uuid = uuidv4();
+    let date = new Date()
+    let config = {
+      url: ApiUrl.sendMessage,
+      method: 'post',
+      body: {
+        uuid: uuid,
+        created_at: date,
+        is_archive_chat: 0,
+        to_id: `${this.props?.route?.params?.group_id}`,
+        message: item.message,
+        is_group: 1,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+        this.setState({ offlinemessagesend: [this.state.offlinemessagesend, item.uuid] })
+      },
+      err => {
+        console.log(err);
+      },
+    );
   }
 
   onScrollHandler = () => {
@@ -143,10 +201,10 @@ class GroupChat extends React.Component {
       config,
       res => {
         console.log(res);
-          Toast.show({
-            type: 'success',
-            text1: res.alert.message
-          })
+        Toast.show({
+          type: 'success',
+          text1: res.alert.message
+        })
       },
       err => {
         Toast.show({
@@ -217,8 +275,11 @@ class GroupChat extends React.Component {
     Socket.on('message recieved', newMessageRecieved => {
       console.log(newMessageRecieved.id, this.state.chatList);
       console.log(newMessageRecieved, 'message recieved====');
+      const userdata = new User().getuserdata();
+
       // check duplicate message in chatlist 
-      const isExist = this.state.chatList?.filter((item) => parseInt(item.id) === parseInt(newMessageRecieved.id))
+
+      const isExist = this.state.chatList?.filter((item) => item.uuid === newMessageRecieved.uuid && parseInt(newMessageRecieved.from_id) === userdata.id)
       if (isExist?.length > 0) {
         return;
       }
@@ -231,6 +292,7 @@ class GroupChat extends React.Component {
   componentWillUnmount() {
     this.removeSocket();
     this.focusListener();
+    this.unsubscribe();
   }
   GroupMessageReadMark = (group_id, message_id) => {
     let config = {
@@ -287,26 +349,24 @@ class GroupChat extends React.Component {
   };
 
   setMessages = (res, type) => {
-    Socket.emit('new message', {
-      ...res.conversation,
-      roomId: this.state.roomId,
-    });
+    // Socket.emit('new message', {
+    //   ...res.conversation,
+    //   roomId: this.state.roomId,
+    // });
     console.log('emit new message', res.conversation.message, this.state.chatList);
 
-    if (type !== 'message') {
-      let data = [res.conversation, ...this.state.chatList];
+    let data = [res.conversation, ...this.state.chatList];
+    this.setState({
+      isLoading: false,
+      file: undefined,
+      audioFile: '',
+      message: '',
+      chatList: data,
+    });
 
-      this.setState({
-        isLoading: false,
-        file: undefined,
-        audioFile: '',
-        message: '',
-        chatList: data,
-      });
-    }
   };
 
-  sendMessage = () => {
+  sendMessage = async() => {
     let userdata = new User().getuserdata();
 
     if (this.state.message == '') {
@@ -326,11 +386,61 @@ class GroupChat extends React.Component {
         }
       }
 
-      this.setState({ message: '' })
+      let uuid = uuidv4();
+      let date = new Date()
+      let message = {
+        uuid: uuid,
+        from_id: userdata.id,
+        to_id: `${this.props?.route?.params?.group_id}`,
+        created_at: date,
+        roomId: this.state.roomId,
+        message: this.state.message,
+        is_archive_chat: 0,
+        message_type: 0,
+        reply_to: null,
+        is_group: 1,
+        sender: {
+          id: userdata.id,
+        }
+      }
+
+      let data = [message, ...this.state.chatList];
+
+
+      if (!this.state.isConnected) {
+        try {
+          let OfflineMessage = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+          if (OfflineMessage === null) {
+            OfflineMessage = []
+          } else {
+            OfflineMessage = JSON.parse(OfflineMessage)
+          }
+          OfflineMessage.push(message);
+          await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(OfflineMessage));
+        } catch (error) {
+          console.log(error);
+        }
+
+        this.setState({
+          isLoading: false,
+          file: undefined,
+          audioFile: '',
+          message: '',
+          chatList: data,
+        });
+
+        return;
+      }
+
+
+
+      Socket.emit('new message', message);
+
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
         body: {
+          uuid: uuid,
           is_archive_chat: 0,
           to_id: `${this.props?.route?.params?.group_id}`,
           message: this.state.message,
@@ -339,20 +449,6 @@ class GroupChat extends React.Component {
         },
       };
 
-
-      let message = {
-        message: this.state.message,
-        id: this.state?.previeosMessageId ? this.state.previeosMessageId : 10000,
-        from_id: userdata.id,
-        to_id: this.props?.route?.params?.user_id,
-        created_at: new Date(),
-        message_type: 0,
-        reply_to: this.state?.replyOn !== undefined ? JSON.stringify(reply_on) : null,
-        is_group: 1,
-      }
-
-      let data = [message, ...this.state.chatList];
-
       this.setState({
         isLoading: false,
         file: undefined,
@@ -360,6 +456,7 @@ class GroupChat extends React.Component {
         message: '',
         chatList: data,
       });
+
       APIRequest(
         config,
         res => {
@@ -368,7 +465,7 @@ class GroupChat extends React.Component {
             replyOn: undefined,
             previeosMessageId: res.conversation.id
           });
-          this.setMessages(res, 'message');
+          // this.setMessages(res, 'message');
         },
         err => {
           console.log(err);

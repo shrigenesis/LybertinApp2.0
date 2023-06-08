@@ -34,6 +34,10 @@ import io from 'socket.io-client';
 import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
 import { Divider } from 'react-native-elements';
+import { v4 as uuidv4 } from 'uuid';
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
   BottomSheetUploadFile,
   BottomSheetUploadFileStyle,
@@ -63,6 +67,8 @@ class Chat extends React.Component {
       isShowBottomSheet: false,
       progressFile: [],
       bottomViewHeight: 0,
+      isConnected: true,
+      offlinemessagesend:[]
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -76,17 +82,68 @@ class Chat extends React.Component {
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       this.setState({ appReady: true });
-
-      // setTimeout(() => {
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
         this.setState({ chatList: [] });
         this.fetchChatList(user_id);
       }
-      // }, 300);
-
       this.socketEvents();
     });
+    this.unsubscribe = NetInfo.addEventListener(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+      if (state.isConnected) {
+        this.setState({ isConnected: true })
+        this.sendOfflineMessage()
+      } else {
+        this.setState({ isConnected: false })
+      }
+    });
+
+  }
+
+  sendOfflineMessage = async () => {
+    try {
+      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+      if (myArray !== null) {
+        console.log(JSON.parse(myArray));
+        const offlinemessagedata = JSON.parse(myArray);
+        offlinemessagedata.forEach((item, i) => {
+            this.sendMessageOffline(item)
+        })
+        await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify([]));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  sendMessageOffline = (item) => {
+    let uuid = uuidv4();
+    let date = new Date()
+    let config = {
+      url: ApiUrl.sendMessage,
+      method: 'post',
+      body: {
+        uuid: uuid,
+        created_at: date,
+        is_archive_chat: 0,
+        to_id: `${this.props?.route?.params?.user_id}`,
+        message: item.message,
+        is_group: 0,
+        message_type: 0,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+        this.setState({offlinemessagesend:[this.state.offlinemessagesend, item.uuid]})
+      },
+      err => {
+        console.log(err);
+      },
+    );
   }
 
   socketEvents = () => {
@@ -116,7 +173,7 @@ class Chat extends React.Component {
     });
 
     Socket.on('message recieved', newMessageRecieved => {
-      console.log('message recieved');
+      console.log('message recieved', newMessageRecieved);
       // let data = [...this.state.chatList];
       // data.push(newMessageRecieved);
       let data = [newMessageRecieved, ...this.state.chatList];
@@ -172,6 +229,7 @@ class Chat extends React.Component {
   componentWillUnmount() {
     this.removeSocket();
     this.focusListener();
+    this.unsubscribe();
   }
 
   onScrollHandler = () => {
@@ -230,9 +288,7 @@ class Chat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
-
     let data = [res.conversation, ...this.state.chatList];
-
     this.setState({
       isLoading: false,
       file: undefined,
@@ -246,7 +302,7 @@ class Chat extends React.Component {
     // }, 1000);
   };
 
-  sendMessage = () => {
+  sendMessage = async () => {
     if (this.state.message == '') {
       Toast.show({
         type: 'info',
@@ -255,23 +311,80 @@ class Chat extends React.Component {
     } else {
       this.onTyping(false);
       this.setState({ isLoading: true });
+
+      let uuid = uuidv4();
+      let date = new Date()
+      let message = {
+        id: uuid,
+        from_id: userdata.id,
+        to_id: this.props?.route?.params?.user_id,
+        created_at: date,
+        reply_to: null,
+        roomId: this.state.roomId,
+        message: this.state.message,
+        is_archive_chat: 0,
+        is_group: 0,
+        message_type: 0,
+        sender: {
+          id: userdata.id,
+        }
+      }
+      let data = [message, ...this.state.chatList];
+
+
+      if (!this.state.isConnected) {
+        try {
+          let OfflineMessage = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+          if (OfflineMessage === null) {
+            OfflineMessage = []
+          } else {
+            OfflineMessage = JSON.parse(OfflineMessage)
+          }
+          OfflineMessage.push(message);
+          await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(OfflineMessage));
+        } catch (error) {
+          console.log(error);
+        }
+
+        this.setState({
+          isLoading: false,
+          file: undefined,
+          audioFile: '',
+          message: '',
+          chatList: data,
+        });
+
+        return;
+      }
+
+      Socket.emit('new message', message);
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
         body: {
+          uuid: uuid,
+          created_at: date,
           is_archive_chat: 0,
           to_id: `${this.props?.route?.params?.user_id}`,
           message: this.state.message,
           is_group: 0,
+          message_type: 0,
         },
       };
 
-      this.setState({ message: '' });
+      this.setState({
+        isLoading: false,
+        file: undefined,
+        audioFile: '',
+        message: '',
+        chatList: data,
+      });
 
       APIRequest(
         config,
         res => {
-          this.setMessages(res);
+          // this.setMessages(res);
+          console.log(res);
         },
         err => {
           this.setState({ isLoading: false });

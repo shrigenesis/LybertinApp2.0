@@ -30,7 +30,8 @@ import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
-
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const _renderChatList = React.memo(({ item, userId, navigation, reload, setisLoading, pinnedChatCount }) => {
@@ -266,6 +267,14 @@ const ChatList = ({ navigation }) => {
   }, [isFocus]);
 
   useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected?", state.isConnected);
+      if (state.isConnected) {
+        sendOfflineMessage()
+      }
+    });
+
     return () => {
       setSearch('');
       setrequestCount(0);
@@ -273,9 +282,51 @@ const ChatList = ({ navigation }) => {
       setisLoading(false);
       setPinnedChatCount(0);
       setappReady(false);
+      unsubscribe()
     }
   }, [])
 
+
+  const sendOfflineMessage = async () => {
+    try {
+      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+      if (myArray !== null) {
+        console.log(JSON.parse(myArray));
+        const offlinemessagedata = JSON.parse(myArray);
+        offlinemessagedata.forEach((item, i) => {
+            sendMessageOffline(item)
+        })
+        await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify([]));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const sendMessageOffline = (item) => {
+    let config = {
+      url: ApiUrl.sendMessage,
+      method: 'post',
+      body: {
+        uuid: item.uuid,
+        created_at: item.date,
+        is_archive_chat: 0,
+        to_id: `${item.to_id}`,
+        message: item.message,
+        is_group: item.is_group,
+        message_type: 0,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log(res);
+      },
+      err => {
+        console.log(err);
+      },
+    );
+  }
 
 
 
@@ -327,7 +378,7 @@ const ChatList = ({ navigation }) => {
           <Text style={style.heading}>Lybertine</Text>
           <UserProfileImage />
         </View>
-        <StoryList storyBackGroundColor={color.white} navigation={navigation} /> 
+        <StoryList storyBackGroundColor={color.white} navigation={navigation} />
         <View
           style={{
             borderBottomWidth: 0.5,
