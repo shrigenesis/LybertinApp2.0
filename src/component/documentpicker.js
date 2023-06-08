@@ -1,6 +1,7 @@
 import { PermissionsAndroid } from 'react-native';
 import Document from 'react-native-document-picker';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import DeviceInfo from "react-native-device-info";
 import Toast from 'react-native-toast-message';
 import {
   check,
@@ -98,8 +99,23 @@ export const requestPermission = async permissionFor => {
       permission = await request(
         Platform.OS == 'ios'
           ? PERMISSIONS.IOS.PHOTO_LIBRARY
-          : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
-      );
+          : PERMISSIONS.ANDROID.READ_MEDIA_IMAGES,
+      ); 
+      if (Platform.OS == 'ios') {
+        permission = await request(PERMISSIONS.IOS.PHOTO_LIBRARY); 
+      } else {
+        if (DeviceInfo.getSystemVersion() >= 13) {
+          permission = await request(PERMISSIONS.ANDROID.READ_MEDIA_IMAGES);
+        } else {
+          permission = await request(PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE);
+        }
+      }
+      console.log(DeviceInfo.getSystemVersion());    
+      // permission = await request(
+      //   Platform.OS == 'ios'
+      //     ? PERMISSIONS.IOS.PHOTO_LIBRARY
+      //     : PERMISSIONS.ANDROID.READ_EXTERNAL_STORAGE,
+      // );
     } else if (permissionFor == 'audio') {
       permission = await request(
         Platform.OS == 'ios'
