@@ -631,8 +631,7 @@ export const BottomView = memo(props => {
                   <TouchableOpacity
                     onPress={() => {
                       audio?.setaudio('');
-                      textChange('')
-                      Keyboard.dismiss();
+                      searchInput.current.blur(); 
                       pickCamera == 1
                         ? pickImage(
                             'camera',
