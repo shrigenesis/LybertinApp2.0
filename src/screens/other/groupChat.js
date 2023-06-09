@@ -360,7 +360,7 @@ class GroupChat extends React.Component {
         sender: {
           id: userdata.id,
         }
-      }
+      } 
 
       let data = [message, ...this.state.chatList];
 

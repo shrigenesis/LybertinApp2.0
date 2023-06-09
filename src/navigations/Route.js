@@ -162,7 +162,7 @@ export const RouterStack = () => {
       method: 'post',
       body: {
         uuid: item.uuid,
-        created_at: item.date,
+        created_at: item.created_at,
         time_zone: item.time_zone,
         is_archive_chat: item.is_archive_chat,
         to_id: item.to_id,

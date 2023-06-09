@@ -267,6 +267,7 @@ class Chat extends React.Component {
 
       let uuid = uuidv4();
       let date = new Date();
+      console.log(date);
       let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       let message = {
         uuid: uuid,
