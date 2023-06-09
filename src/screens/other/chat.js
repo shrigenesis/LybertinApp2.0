@@ -37,7 +37,6 @@ import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import DeviceInfo from 'react-native-device-info';
 
 import {
   BottomSheetUploadFile,
@@ -93,7 +92,6 @@ class Chat extends React.Component {
     this.unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
         this.setState({ isConnected: true })
-        Socket = io.connect(socketUrl);
       } else {
         this.setState({ isConnected: false })
       }

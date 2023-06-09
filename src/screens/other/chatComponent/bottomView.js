@@ -773,7 +773,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fcfc',
     borderWidth: 1,
     borderColor: color.borderGray,
-    fontSize: fontSize.size14,
+    fontSize: fontSize.size12,
     color: color.black,
     fontFamily: fontFamily.Regular,
     width: wp(63),

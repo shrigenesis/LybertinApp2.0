@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import { AppState } from 'react-native';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import { LoginContext } from '../context/LoginContext';
@@ -25,7 +25,8 @@ import SyncStorage from 'sync-storage';
 import { APIRequest, ApiUrl } from '../utils/api';
 import getPathFromUrl from '../utils/getPathFromUrl';
 import RegisterDeeplink from '../utils/RegisterDeeplink';
-
+import NetInfo from "@react-native-community/netinfo";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 const userdata = new User().getuserdata();
@@ -117,15 +118,72 @@ export const RouterStack = () => {
   let { isLogin } = React.useContext(LoginContext);
   let { type } = React.useContext(LoginContext);
   const appState = useRef(AppState.currentState);
+  const [storedMessageUnsend, setstoredMessageUnsend] = useState([])
+  const [storedMessage, setstoredMessage] = useState([])
 
   useEffect(() => {  
     setUserStatus('1')
     AppState.addEventListener("change", _handleAppStateChange);
+    const unsubscribe = NetInfo.addEventListener(state => {
+      if (state.isConnected) {
+        sendOfflineMessage()
+        // setIsConnected(true)
+      } else {
+        // setIsConnected(false)
+      }
+    });
+
     return () => {
       AppState.removeEventListener("change", _handleAppStateChange);
+      unsubscribe()
     };
 
   }, [])
+
+  const sendOfflineMessage = async () => {
+    try {
+      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+      if (myArray !== null) {
+        const offlinemessagedata = JSON.parse(myArray);
+        setstoredMessage(offlinemessagedata)
+        for (let index = 0; index < offlinemessagedata.length; index++) {
+          const item = offlinemessagedata[index]
+          await sendMessageOffline(item)
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const sendMessageOffline = async (item) => {
+    let config = {
+      url: ApiUrl.sendMessage,
+      method: 'post',
+      body: {
+        uuid: item.uuid,
+        created_at: item.date,
+        time_zone: item.time_zone,
+        is_archive_chat: item.is_archive_chat,
+        to_id: item.to_id,
+        message: item.message,
+        is_group: item.is_group,
+        message_type: 0,
+      },
+    };
+    APIRequest(
+      config,
+      res => {
+        console.log('res?.conversation.uuid',res?.conversation.uuid);
+        const remainingItems = storedMessageUnsend.filter((item) => item.uuid !== res?.conversation.uuid)
+        setstoredMessageUnsend(remainingItems)
+        console.log('remainingItems',remainingItems);
+        AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(remainingItems));
+      },
+      err => {
+      },
+    );
+  }
 
   const _handleAppStateChange = (nextAppState) => {
     if (AppState.currentState==='background') {

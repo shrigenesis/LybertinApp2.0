@@ -256,7 +256,6 @@ const ChatList = ({ navigation }) => {
   const [appReady, setappReady] = useState(false);
   const { avatar, id } = new User().getuserdata();
   const [storedMessage, setstoredMessage] = useState([])
-  const [storedMessageUnsend, setstoredMessageUnsend] = useState([])
 
   const isFocus = useIsFocused();
   useEffect(() => {
@@ -269,15 +268,6 @@ const ChatList = ({ navigation }) => {
   }, [isFocus]);
 
   useEffect(() => {
-    sendOfflineMessage()
-    const unsubscribe = NetInfo.addEventListener(state => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
-      if (state.isConnected) {
-        sendOfflineMessage()
-      }
-    });
-
     return () => {
       setSearch('');
       setrequestCount(0);
@@ -285,65 +275,10 @@ const ChatList = ({ navigation }) => {
       setisLoading(false);
       setPinnedChatCount(0);
       setappReady(false);
-      unsubscribe()
     }
   }, [])
 
 
-  const sendOfflineMessage = async () => {
-    try {
-      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
-      if (myArray !== null) {
-        console.log(JSON.parse(myArray));
-        const offlinemessagedata = JSON.parse(myArray);
-        setstoredMessage(offlinemessagedata)
-        for (let index = 0; index < offlinemessagedata.length; index++) {
-          const item = offlinemessagedata[index]
-          await sendMessageOffline(item)
-        }
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  const sendMessageOffline = async (item) => {
-    let config = {
-      url: ApiUrl.sendMessage,
-      method: 'post',
-      body: {
-        uuid: item.uuid,
-        created_at: item.date,
-        time_zone: item.time_zone,
-        is_archive_chat: 0,
-        // to_id: `${item.to_id}`,
-        to_id: item.to_id,
-        message: item.message,
-        is_group: item.is_group,
-        message_type: 0,
-      },
-    };
-    APIRequest(
-      config,
-      res => {
-        console.log('res?.conversation.uuid',res?.conversation.uuid);
-        const remainingItems = storedMessageUnsend.filter((item) => item.uuid !== res?.conversation.uuid)
-        setstoredMessageUnsend(remainingItems)
-        console.log('remainingItems',remainingItems);
-        AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(remainingItems));
-      },
-      err => {
-        // console.log(err);
-        // const checkIsexist =storedMessageUnsend.filter((element)=> element.uuid === item.uuid)
-        // if (!checkIsexist.length>0) {
-        //   setstoredMessageUnsend([...storedMessageUnsend, item])
-        // }
-        // if (storedMessage.length == (i + 1)) {
-        //   AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(storedMessageUnsend));
-        // }
-      },
-    );
-  }
 
 
 

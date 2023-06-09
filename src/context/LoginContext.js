@@ -7,6 +7,7 @@ class LoginContextProvider extends Component {
   state = {
     isLogin: new User().isLogin(),
     type: new User().usertype(),
+    // isConnected: true
   };
 
   setLogin = isLogin => {
@@ -14,12 +15,14 @@ class LoginContextProvider extends Component {
     this.setState({isLogin: isLogin});
   };
 
-  
-
   setType = type => {
     new User().setType(type);
     this.setState({type: type});
   };
+
+  // setIsConnected = type => {
+  //   this.setState({isConnected: type});
+  // }
 
   render() {
     return (
@@ -28,6 +31,7 @@ class LoginContextProvider extends Component {
           ...this.state,
           setLogin: this.setLogin,
           setType: this.setType,
+          // setIsConnected: this.setIsConnected
         }}>
         {this.props.children}
       </LoginContext.Provider>

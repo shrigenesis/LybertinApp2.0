@@ -102,58 +102,14 @@ class GroupChat extends React.Component {
       this.socketEvents();
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
       if (state.isConnected) {
         this.setState({ isConnected: true })
-        this.sendOfflineMessage()
       } else {
         this.setState({ isConnected: false })
       }
     });
   }
 
-  sendOfflineMessage = async () => {
-    try {
-      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
-      if (myArray !== null) {
-        console.log(JSON.parse(myArray));
-        const offlinemessagedata = JSON.parse(myArray);
-        offlinemessagedata.forEach((item, i) => {
-          this.sendMessageOffline(item)
-        })
-        await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify([]));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  sendMessageOffline = (item) => {
-    let config = {
-      url: ApiUrl.sendMessage,
-      method: 'post',
-      body: {
-        uuid: item.uuid,
-        created_at: item.created_at,
-        is_archive_chat: item.is_archive_chat,
-        to_id: `${item.to_id}`,
-        message: item.message,
-        is_group: item.is_group,
-        message_type: item.message_type,
-      },
-    };
-    APIRequest(
-      config,
-      res => {
-        console.log(res);
-        this.setState({ offlinemessagesend: [this.state.offlinemessagesend, item.uuid] })
-      },
-      err => {
-        console.log(err);
-      },
-    );
-  }
 
   onScrollHandler = () => {
     this.setState(
@@ -388,11 +344,13 @@ class GroupChat extends React.Component {
 
       let uuid = uuidv4();
       let date = new Date()
+      let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       let message = {
         uuid: uuid,
         from_id: userdata.id,
         to_id: `${this.props?.route?.params?.group_id}`,
         created_at: date,
+        time_zone: timeZone,
         roomId: this.state.roomId,
         message: this.state.message,
         is_archive_chat: 0,
