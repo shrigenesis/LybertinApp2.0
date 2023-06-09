@@ -33,10 +33,11 @@ import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
 import io from 'socket.io-client';
 import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import { Divider } from 'react-native-elements';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DeviceInfo from 'react-native-device-info';
 
 import {
   BottomSheetUploadFile,
@@ -68,7 +69,7 @@ class Chat extends React.Component {
       progressFile: [],
       bottomViewHeight: 0,
       isConnected: true,
-      offlinemessagesend:[]
+      offlinemessagesend: []
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -90,62 +91,16 @@ class Chat extends React.Component {
       this.socketEvents();
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
-      console.log("Connection type", state.type);
-      console.log("Is connected?", state.isConnected);
       if (state.isConnected) {
         this.setState({ isConnected: true })
-        this.sendOfflineMessage()
+        Socket = io.connect(socketUrl);
       } else {
         this.setState({ isConnected: false })
       }
     });
 
   }
-
-  sendOfflineMessage = async () => {
-    try {
-      const myArray = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
-      if (myArray !== null) {
-        console.log(JSON.parse(myArray));
-        const offlinemessagedata = JSON.parse(myArray);
-        offlinemessagedata.forEach((item, i) => {
-            this.sendMessageOffline(item)
-        })
-        await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify([]));
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  sendMessageOffline = (item) => {
-    let uuid = uuidv4();
-    let date = new Date()
-    let config = {
-      url: ApiUrl.sendMessage,
-      method: 'post',
-      body: {
-        uuid: uuid,
-        created_at: date,
-        is_archive_chat: 0,
-        to_id: `${this.props?.route?.params?.user_id}`,
-        message: item.message,
-        is_group: 0,
-        message_type: 0,
-      },
-    };
-    APIRequest(
-      config,
-      res => {
-        console.log(res);
-        this.setState({offlinemessagesend:[this.state.offlinemessagesend, item.uuid]})
-      },
-      err => {
-        console.log(err);
-      },
-    );
-  }
-
+  
   socketEvents = () => {
     console.log('socketEvents', Socket);
     Socket.emit('setup', userdata.id);
@@ -313,12 +268,14 @@ class Chat extends React.Component {
       this.setState({ isLoading: true });
 
       let uuid = uuidv4();
-      let date = new Date()
+      let date = new Date();
+      let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       let message = {
-        id: uuid,
+        uuid: uuid,
         from_id: userdata.id,
-        to_id: this.props?.route?.params?.user_id,
+        to_id: `${this.props?.route?.params?.user_id}`,
         created_at: date,
+        time_zone: timeZone,
         reply_to: null,
         roomId: this.state.roomId,
         message: this.state.message,
@@ -330,8 +287,7 @@ class Chat extends React.Component {
         }
       }
       let data = [message, ...this.state.chatList];
-
-
+      
       if (!this.state.isConnected) {
         try {
           let OfflineMessage = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
@@ -358,12 +314,11 @@ class Chat extends React.Component {
       }
 
       Socket.emit('new message', message);
+      
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
         body: {
-          uuid: uuid,
-          created_at: date,
           is_archive_chat: 0,
           to_id: `${this.props?.route?.params?.user_id}`,
           message: this.state.message,
@@ -388,6 +343,7 @@ class Chat extends React.Component {
         },
         err => {
           this.setState({ isLoading: false });
+          console.log(err);
           Toast.show({
             type: 'error',
             text1: err?.response?.data.message,
@@ -759,6 +715,7 @@ class Chat extends React.Component {
                 setFile={file => {
                   this.setState({ file: file });
                 }}
+                isConnected={this.state.isConnected}
                 updateBottomViewHeight={this.updateBottomViewHeight.bind(this)}
               />
             )}

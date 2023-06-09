@@ -14,6 +14,7 @@ import ReactNative, {
   ActivityIndicator,
   Alert
 } from 'react-native';
+import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Header, Loader, pickDocument, pickImage } from './../../component/';
@@ -69,7 +70,7 @@ class GroupChat extends React.Component {
       isShowBottomSheet: false,
       progressFile: [],
       bottomViewHeight: 0,
-      offlinemessagesend:[]
+      offlinemessagesend: []
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -129,18 +130,17 @@ class GroupChat extends React.Component {
   }
 
   sendMessageOffline = (item) => {
-    let uuid = uuidv4();
-    let date = new Date()
     let config = {
       url: ApiUrl.sendMessage,
       method: 'post',
       body: {
-        uuid: uuid,
-        created_at: date,
-        is_archive_chat: 0,
-        to_id: `${this.props?.route?.params?.group_id}`,
+        uuid: item.uuid,
+        created_at: item.created_at,
+        is_archive_chat: item.is_archive_chat,
+        to_id: `${item.to_id}`,
         message: item.message,
-        is_group: 1,
+        is_group: item.is_group,
+        message_type: item.message_type,
       },
     };
     APIRequest(
@@ -366,7 +366,7 @@ class GroupChat extends React.Component {
 
   };
 
-  sendMessage = async() => {
+  sendMessage = async () => {
     let userdata = new User().getuserdata();
 
     if (this.state.message == '') {
@@ -806,6 +806,7 @@ class GroupChat extends React.Component {
                       emojiSelect={v => {
                         this.setState({ message: `${this.state.message}${v}` });
                       }}
+                      isConnected={this.state.isConnected}
                       setFile={file => {
                         this.setState({ file: file });
                       }}
