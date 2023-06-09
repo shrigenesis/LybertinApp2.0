@@ -283,6 +283,8 @@ class Chat extends React.Component {
         message_type: 0,
         sender: {
           id: userdata.id,
+          name: userdata.name,
+          avatar: userdata.avatar,
         }
       }
       let data = [message, ...this.state.chatList];

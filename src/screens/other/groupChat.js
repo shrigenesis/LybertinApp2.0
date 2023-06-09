@@ -359,6 +359,8 @@ class GroupChat extends React.Component {
         is_group: 1,
         sender: {
           id: userdata.id,
+          name: userdata.name,
+          avatar: userdata.avatar,
         }
       } 
 
