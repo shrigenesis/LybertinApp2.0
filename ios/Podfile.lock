@@ -418,6 +418,8 @@ PODS:
     - FBSDKGamingServicesKit (~> 15.0.0)
     - FBSDKShareKit (~> 15.0.0)
     - React-Core
+  - react-native-get-random-values (1.9.0):
+    - React-Core
   - react-native-image-picker (4.10.3):
     - React-Core
   - react-native-netinfo (9.3.10):
@@ -544,6 +546,8 @@ PODS:
     - React-Core
   - RNDateTimePicker (6.7.5):
     - React-Core
+  - RNDeviceInfo (10.6.0):
+    - React-Core
   - RNFBApp (17.5.0):
     - Firebase/CoreOnly (= 10.7.0)
     - React-Core
@@ -656,6 +660,7 @@ DEPENDENCIES:
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-fbsdk-next (from `../node_modules/react-native-fbsdk-next`)
+  - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pdf (from `../node_modules/react-native-pdf`)
@@ -685,6 +690,7 @@ DEPENDENCIES:
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
   - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - "RNDateTimePicker (from `../node_modules/@react-native-community/datetimepicker`)"
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
   - "RNFBAuth (from `../node_modules/@react-native-firebase/auth`)"
   - "RNFBDynamicLinks (from `../node_modules/@react-native-firebase/dynamic-links`)"
@@ -792,6 +798,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-document-picker"
   react-native-fbsdk-next:
     :path: "../node_modules/react-native-fbsdk-next"
+  react-native-get-random-values:
+    :path: "../node_modules/react-native-get-random-values"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-netinfo:
@@ -850,6 +858,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDateTimePicker:
     :path: "../node_modules/@react-native-community/datetimepicker"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFBApp:
     :path: "../node_modules/@react-native-firebase/app"
   RNFBAuth:
@@ -939,6 +949,7 @@ SPEC CHECKSUMS:
   react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
   react-native-document-picker: 69ca2094d8780cfc1e7e613894d15290fdc54bba
   react-native-fbsdk-next: 5291a5d67aab4e649d072c50988033ff0d05b915
+  react-native-get-random-values: dee677497c6a740b71e5612e8dbd83e7539ed5bb
   react-native-image-picker: 60f4246eb5bb7187fc15638a8c1f13abd3820695
   react-native-netinfo: ccbe1085dffd16592791d550189772e13bf479e2
   react-native-pdf: 33c622cbdf776a649929e8b9d1ce2d313347c4fa
@@ -968,6 +979,7 @@ SPEC CHECKSUMS:
   RNCPicker: 0bc2f0a29abcca7b7ed44a2d036aac9ab6d25700
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
   RNDateTimePicker: 65e1d202799460b286ff5e741d8baf54695e8abd
+  RNDeviceInfo: 475a4c447168d0ad4c807e48ef5e0963a0f4eb1b
   RNFBApp: d59efa0872fff4e27de03cca3c528c203a436ae5
   RNFBAuth: 54e598bb1358a0cf6c0a187f43161cd1bde90455
   RNFBDynamicLinks: 08789ea798da58784e5792d0dff710518b052179

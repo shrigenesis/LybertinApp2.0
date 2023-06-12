@@ -229,19 +229,14 @@ class GroupChat extends React.Component {
     });
 
     Socket.on('message recieved', newMessageRecieved => {
-      console.log(newMessageRecieved.id, this.state.chatList);
-      console.log(newMessageRecieved, 'message recieved====');
-      const userdata = new User().getuserdata();
 
-      // check duplicate message in chatlist 
-
-      const isExist = this.state.chatList?.filter((item) => item.uuid === newMessageRecieved.uuid && parseInt(newMessageRecieved.from_id) === userdata.id)
-      if (isExist?.length > 0) {
+      const isExist = this.state.chatList?.findIndex((item) => item.uuid === newMessageRecieved.uuid)
+      if (isExist === -1) {
+        const data = [newMessageRecieved, ...this.state.chatList];
+        this.setState({ isLoading: false, chatList: data, previeosMessageId: newMessageRecieved.id });
+        this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.id);
         return;
       }
-      const data = [newMessageRecieved, ...this.state.chatList];
-      this.setState({ isLoading: false, chatList: data, previeosMessageId: newMessageRecieved.id });
-      this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.id);
     });
   };
 

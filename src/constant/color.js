@@ -8,6 +8,7 @@ export let color = {
   lightSlaty: '#2673D114',
   extralightSlaty: '#2673D108',
   btnBlue: '#681f84',
+  btnBluergb: '104,31,132',
   chatReplyLeftBg: '#dfdfdf',
   chatReplyBg: '#EECDF9',
   // btnBlue: '#20BBF6',

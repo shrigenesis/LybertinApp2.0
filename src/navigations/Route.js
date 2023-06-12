@@ -125,6 +125,8 @@ export const RouterStack = () => {
     setUserStatus('1')
     AppState.addEventListener("change", _handleAppStateChange);
     const unsubscribe = NetInfo.addEventListener(state => {
+
+      console.log('state========>',state);
       if (state.isConnected) {
         sendOfflineMessage()
         // setIsConnected(true)
@@ -146,6 +148,7 @@ export const RouterStack = () => {
       if (myArray !== null) {
         const offlinemessagedata = JSON.parse(myArray);
         setstoredMessage(offlinemessagedata)
+        console.log('offlinemessagedata',offlinemessagedata);
         for (let index = 0; index < offlinemessagedata.length; index++) {
           const item = offlinemessagedata[index]
           await sendMessageOffline(item)

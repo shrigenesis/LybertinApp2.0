@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, memo, useEffect } from 'react';
+import React, {useState, useMemo, useRef, memo, useEffect} from 'react';
 import {
   View,
   Text,
@@ -13,12 +13,12 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { Header, Loader, pickDocument, pickImage } from './../../component/';
+import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import {IMAGE, color, fontFamily} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -28,14 +28,14 @@ import {
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
-import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
+import {useIsFocused} from '@react-navigation/native';
+import {BottomView, RenderBottomSheet, ChatItem} from './chatComponent/';
 import io from 'socket.io-client';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
-import NetInfo from "@react-native-community/netinfo";
+import {v4 as uuidv4} from 'uuid';
+import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
@@ -68,7 +68,7 @@ class Chat extends React.Component {
       progressFile: [],
       bottomViewHeight: 0,
       isConnected: true,
-      offlinemessagesend: []
+      offlinemessagesend: [],
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
@@ -77,28 +77,26 @@ class Chat extends React.Component {
 
   componentWillMount() {
     Socket = io.connect(socketUrl);
-
   }
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
-      this.setState({ appReady: true });
+      this.setState({appReady: true});
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
-        this.setState({ chatList: [] });
+        this.setState({chatList: []});
         this.fetchChatList(user_id);
       }
       this.socketEvents();
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
-        this.setState({ isConnected: true })
+        this.setState({isConnected: true});
       } else {
-        this.setState({ isConnected: false })
+        this.setState({isConnected: false});
       }
     });
-
   }
-  
+
   socketEvents = () => {
     console.log('socketEvents', Socket);
     Socket.emit('setup', userdata.id);
@@ -108,42 +106,43 @@ class Chat extends React.Component {
         Socket.emit('join chat', this.state.roomId);
       }
     });
-    Socket.on('disconnect', (reason) => {
+    Socket.on('disconnect', reason => {
       console.log(reason);
-    })
+    });
 
     Socket.on('typing', () => {
       console.log('typing');
-      this.setState({ isTyping: true });
+      this.setState({isTyping: true});
     });
     Socket.on('stop typing', () => {
       console.log('stop typing');
-      this.setState({ isTyping: false });
+      this.setState({isTyping: false});
     });
-    Socket.on('user_offline', (id) => {
+    Socket.on('user_offline', id => {
       console.log('user_offline', id);
-      this.setState({ isOnline: '0' });
-    });
+      this.setState({isOnline: '0'});
+    });                
 
     Socket.on('message recieved', newMessageRecieved => {
       console.log('message recieved', newMessageRecieved);
-      // let data = [...this.state.chatList];
-      // data.push(newMessageRecieved);
-      let data = [newMessageRecieved, ...this.state.chatList];
-      this.setState({ isLoading: false, chatList: data });
-      // this.chatListRef?.current?.scrollToEnd({animated: true});
-      this.MarkReadMessage(newMessageRecieved.id)
+      
+      const isExist = this.state.chatList?.findIndex((item) => item.uuid !== newMessageRecieved.uuid)
+      if (isExist === -1) {
+        let data = [newMessageRecieved, ...this.state.chatList];
+        this.setState({isLoading: false, chatList: data});
+        this.MarkReadMessage(newMessageRecieved.id);
+      }
+
     });
   };
 
-  MarkReadMessage = (message_id) => {
-
+  MarkReadMessage = message_id => {
     let config = {
       url: ApiUrl.markReadMessage,
       method: 'post',
       body: {
-        message_id: message_id
-      }
+        message_id: message_id,
+      },
     };
     console.log(config);
     APIRequest(
@@ -168,7 +167,7 @@ class Chat extends React.Component {
   };
 
   removeSocket() {
-    Socket.emit("makeOffline", userdata.id);
+    Socket.emit('makeOffline', userdata.id);
     Socket.disconnect();
     Socket.off('setup');
     Socket.off('connected');
@@ -176,7 +175,7 @@ class Chat extends React.Component {
     Socket.off('stop typing');
     Socket.off('message recieved');
     Socket.off('disconnect');
-    Socket.on("makeOffline");
+    Socket.on('makeOffline');
   }
 
   componentWillUnmount() {
@@ -199,9 +198,8 @@ class Chat extends React.Component {
     }
   };
 
-
   fetchChatList = user_id => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.conversations}/${user_id}?page=${this.state.page}`,
       method: 'get',
@@ -216,7 +214,7 @@ class Chat extends React.Component {
             Socket.emit('join chat', res.roomId);
           }
           let chatData = this.state.chatList.concat(data);
-          // this.addDateInChatList(chatData) 
+          // this.addDateInChatList(chatData)
           this.setState({
             chatList: chatData,
             roomId: res.roomId,
@@ -228,10 +226,10 @@ class Chat extends React.Component {
           //   this.chatListRef?.current?.scrollToEnd({animated: true});
           // }, 2000);
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
@@ -263,7 +261,7 @@ class Chat extends React.Component {
       });
     } else {
       this.onTyping(false);
-      this.setState({ isLoading: true });
+      this.setState({isLoading: true});
 
       let uuid = uuidv4();
       let date = new Date();
@@ -285,20 +283,25 @@ class Chat extends React.Component {
           id: userdata.id,
           name: userdata.name,
           avatar: userdata.avatar,
-        }
-      }
+        },
+      };
       let data = [message, ...this.state.chatList];
-      
+
       if (!this.state.isConnected) {
         try {
-          let OfflineMessage = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+          let OfflineMessage = await AsyncStorage.getItem(
+            'SINGLE_CHAT_MESSAGE',
+          );
           if (OfflineMessage === null) {
-            OfflineMessage = []
+            OfflineMessage = [];
           } else {
-            OfflineMessage = JSON.parse(OfflineMessage)
+            OfflineMessage = JSON.parse(OfflineMessage);
           }
           OfflineMessage.push(message);
-          await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(OfflineMessage));
+          await AsyncStorage.setItem(
+            'SINGLE_CHAT_MESSAGE',
+            JSON.stringify(OfflineMessage),
+          );
         } catch (error) {
           console.log(error);
         }
@@ -315,7 +318,7 @@ class Chat extends React.Component {
       }
 
       Socket.emit('new message', message);
-      
+
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
@@ -343,7 +346,7 @@ class Chat extends React.Component {
           console.log(res);
         },
         err => {
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
           console.log(err);
           Toast.show({
             type: 'error',
@@ -355,7 +358,6 @@ class Chat extends React.Component {
   };
 
   sendFile = async () => {
-    console.log('sendFile::');
     if (this.state.file?.fileSize > 14) {
       Toast.show({
         type: 'error',
@@ -363,9 +365,8 @@ class Chat extends React.Component {
       });
       return;
     }
-    let formData = new FormData();
-    const d = new Date();
-    let ms = d.getMilliseconds();
+    
+    let ms = uuidv4();
     if (this.state.audioFile != '') {
       formData.append('file', {
         uri: this.state.audioFile,
@@ -392,7 +393,7 @@ class Chat extends React.Component {
       console.log('sendFile  File', this.state.file);
     }
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     formData.append('to_id', `${this.props?.route?.params?.user_id}`);
     formData.append('uniqueId', ms);
 
@@ -409,7 +410,7 @@ class Chat extends React.Component {
         audioFile: '',
         progressFile: [
           ...this.state.progressFile,
-          { type: 'audio', uniqueId: ms },
+          {type: 'audio', uniqueId: ms},
         ],
       });
     } else {
@@ -418,19 +419,20 @@ class Chat extends React.Component {
         audioFile: '',
         progressFile: [
           ...this.state.progressFile,
-          { type: this.state.file.fileType, uniqueId: ms },
+          {type: this.state.file.fileType, uniqueId: ms},
         ],
       });
     }
 
-    console.log('after config', config, formData);
     APIRequestWithFile1(
       config,
       res => {
         if (res.status) {
           if (res?.conversation?.uniqueId) {
-            const data = this.state.progressFile?.filter((item, i) => item.uniqueId != res?.conversation?.uniqueId)
-            this.setState({ progressFile: data })
+            const data = this.state.progressFile?.filter(
+              (item, i) => item.uniqueId != res?.conversation?.uniqueId,
+            );
+            this.setState({progressFile: data});
           }
           this.setMessages(res);
         }
@@ -444,8 +446,10 @@ class Chat extends React.Component {
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0];
             if (err?.response?.data?.uniqueId) {
-              const data = this.state.progressFile?.filter((item, i) => item.uniqueId != err?.response?.data?.uniqueId)
-              this.setState({ progressFile: data })
+              const data = this.state.progressFile?.filter(
+                (item, i) => item.uniqueId != err?.response?.data?.uniqueId,
+              );
+              this.setState({progressFile: data});
             }
           }
           Toast.show({
@@ -458,7 +462,7 @@ class Chat extends React.Component {
             text1: err?.message,
           });
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
         console.log('sendFile err', err);
       },
     );
@@ -466,46 +470,42 @@ class Chat extends React.Component {
 
   // hide Bottom sheet
   setisShowBottomSheet = () => {
-    this.setState({ isShowBottomSheet: false });
+    this.setState({isShowBottomSheet: false});
   };
   // Update file from bottom sheet
   UpdateFile = file => {
-    this.setState({ file: file, isShowBottomSheet: false });
+    this.setState({file: file, isShowBottomSheet: false});
   };
 
   updateBottomViewHeight(event) {
-    let { height } = event.nativeEvent.layout;
+    let {height} = event.nativeEvent.layout;
     if (this.state.bottomViewHeight !== height) {
-      this.setState({ bottomViewHeight: height });
+      this.setState({bottomViewHeight: height});
     }
   }
 
-  handleOnReportOn = (item) => {
-    Alert.alert(
-      'Alert',
-      'Are you sure you want to report this message?',
-      [
-        {
-          text: 'NO',
-          onPress: () => null,
-          style: 'Cancel',
-        },
-        {
-          text: 'YES',
-          onPress: () => [this.reportMessage(item)],
-        },
-      ],
-    );
+  handleOnReportOn = item => {
+    Alert.alert('Alert', 'Are you sure you want to report this message?', [
+      {
+        text: 'NO',
+        onPress: () => null,
+        style: 'Cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => [this.reportMessage(item)],
+      },
+    ]);
   };
 
-  reportMessage = (item) => {
+  reportMessage = item => {
     console.log('reportMessage', item);
     let config = {
       url: ApiUrl.reportMessage,
       method: 'post',
       body: {
-        reported_to: item.id
-      }
+        reported_to: item.id,
+      },
     };
     APIRequest(
       config,
@@ -513,17 +513,17 @@ class Chat extends React.Component {
         console.log(res);
         Toast.show({
           type: 'success',
-          text1: res.alert.message
-        })
+          text1: res.alert.message,
+        });
       },
       err => {
         Toast.show({
           type: 'error',
-          text1: 'Something went wrong'
-        })
+          text1: 'Something went wrong',
+        });
       },
     );
-  }
+  };
 
   render() {
     return (
@@ -538,7 +538,7 @@ class Chat extends React.Component {
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}
             LeftIcon={() => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
@@ -617,8 +617,8 @@ class Chat extends React.Component {
                       {this.state.isTyping
                         ? 'Typing...'
                         : this.state.isOnline == '1'
-                          ? 'Online'
-                          : 'Offline'}
+                        ? 'Online'
+                        : 'Offline'}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -647,7 +647,7 @@ class Chat extends React.Component {
               inverted={true}
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
-              renderItem={({ item, index }) => (
+              renderItem={({item, index}) => (
                 <ChatItem
                   onImagePress={files =>
                     this.props.navigation.navigate('ShowImg', {
@@ -660,7 +660,7 @@ class Chat extends React.Component {
                   item={item}
                   index={index}
                   menu={this.state.menu}
-                  reportOn={(replyMSG) => this.handleOnReportOn(replyMSG)}
+                  reportOn={replyMSG => this.handleOnReportOn(replyMSG)}
                 />
               )}
             />
@@ -668,8 +668,8 @@ class Chat extends React.Component {
             {this.state.progressFile.map(item => (
               <View
                 style={[
-                  { paddingHorizontal: 15, paddingVertical: 10 },
-                  this.state.bottomViewHeight > 500 && { display: 'none' },
+                  {paddingHorizontal: 15, paddingVertical: 10},
+                  this.state.bottomViewHeight > 500 && {display: 'none'},
                 ]}>
                 <View
                   style={{
@@ -682,7 +682,7 @@ class Chat extends React.Component {
                     columnGap: 10,
                   }}>
                   <ActivityIndicator size="small" color="#0000ff" />
-                  <Text style={{ fontStyle: 'italic' }}>Uploading...</Text>
+                  <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
                 </View>
               </View>
             ))}
@@ -692,29 +692,29 @@ class Chat extends React.Component {
               <BottomView
                 message={this.state.message}
                 file={this.state.file}
-                audioFile={file => this.setState({ audioFile: file })}
-                deleteFile={() => this.setState({ file: undefined })}
+                audioFile={file => this.setState({audioFile: file})}
+                deleteFile={() => this.setState({file: undefined})}
                 sendMessage={
                   this.state.file || this.state.audioFile != ''
                     ? this.sendFile
                     : this.sendMessage
                 }
                 textChange={v => {
-                  this.setState({ message: v });
+                  this.setState({message: v});
                   this.onTyping(v != '');
                 }}
-                inputFocus={() => this.setState({ isShowBottomSheet: false })}
+                inputFocus={() => this.setState({isShowBottomSheet: false})}
                 addPress={() => {
                   console.log('addPress');
                   Keyboard.dismiss();
                   // this.bottomSheetRef?.current?.expand();
-                  this.setState({ isShowBottomSheet: true });
+                  this.setState({isShowBottomSheet: true});
                 }}
                 emojiSelect={v => {
-                  this.setState({ message: `${this.state.message}${v}` });
+                  this.setState({message: `${this.state.message}${v}`});
                 }}
                 setFile={file => {
-                  this.setState({ file: file });
+                  this.setState({file: file});
                 }}
                 isConnected={this.state.isConnected}
                 updateBottomViewHeight={this.updateBottomViewHeight.bind(this)}
