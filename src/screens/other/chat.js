@@ -365,7 +365,7 @@ class Chat extends React.Component {
       });
       return;
     }
-    
+    let formData = new FormData();
     let ms = uuidv4();
     if (this.state.audioFile != '') {
       formData.append('file', {
@@ -392,7 +392,7 @@ class Chat extends React.Component {
       });
       console.log('sendFile  File', this.state.file);
     }
-
+    
     this.setState({isLoading: true});
     formData.append('to_id', `${this.props?.route?.params?.user_id}`);
     formData.append('uniqueId', ms);
