@@ -246,6 +246,9 @@ class Chat extends React.Component {
       message: '',
       chatList: data,
     });
+    console.log('data',res.data);
+    console.log('conversation',res.conversation);
+    console.log('chatList',this.state.chatList);
 
     // setTimeout(() => {
     //   this.chatListRef?.current?.scrollToEnd({animated: true});
