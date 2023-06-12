@@ -23,6 +23,7 @@ const Textinput = props => {
   let {
     error = '',
     value = '',
+    autoCapitalize = 'sentences',
     changeText = () => { },
     keyboardType = 'default',
     secureTextEntry = false,

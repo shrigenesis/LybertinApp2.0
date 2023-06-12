@@ -11,7 +11,6 @@ import {
   BackHandler,
   Alert,
   Platform,
-  ActivityIndicator,
 } from 'react-native';
 import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
@@ -44,6 +43,7 @@ import {
 } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
+import {BottomViewNew} from './chatComponent/bottomViewNew';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
@@ -65,7 +65,6 @@ class Chat extends React.Component {
       per_page_count: 0,
       per_page: 0,
       isShowBottomSheet: false,
-      progressFile: [],
       bottomViewHeight: 0,
       isConnected: true,
       offlinemessagesend: [],
@@ -121,17 +120,17 @@ class Chat extends React.Component {
     Socket.on('user_offline', id => {
       console.log('user_offline', id);
       this.setState({isOnline: '0'});
-    });                
+    });
 
     Socket.on('message recieved', newMessageRecieved => {
-      
-      const isExist = this.state.chatList?.findIndex((item) => item.uuid === newMessageRecieved.uuid)
+      const isExist = this.state.chatList?.findIndex(
+        item => item.uuid === newMessageRecieved.uuid,
+      );
       if (isExist === -1) {
         let data = [newMessageRecieved, ...this.state.chatList];
         this.setState({isLoading: false, chatList: data});
         this.MarkReadMessage(newMessageRecieved.uuid);
       }
-
     });
   };
 
@@ -238,22 +237,47 @@ class Chat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
-    console.log('chatList',this.state.chatList);
-    let data = [res.conversation, ...this.state.chatList];
+
+    // let data = [res.conversation, ...this.state.chatList];
+    const data = this.state.chatList?.filter(
+      item => item.uuid !== res.conversation.uuid,
+      );
+      console.log(res.conversation.uuid,data);
     this.setState({
       isLoading: false,
       file: undefined,
       audioFile: '',
       message: '',
-      chatList: data,
+      chatList: [res.conversation, ...data],
     });
-    console.log('data',data);
-    console.log('conversation',res.conversation);
-    console.log('chatList',this.state.chatList);
 
     // setTimeout(() => {
     //   this.chatListRef?.current?.scrollToEnd({animated: true});
     // }, 1000);
+  };
+
+  prepareSocketMessageObject = (uuid, message_type) => {
+    let date = new Date();
+    // let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let message = {
+      uuid: uuid,
+      from_id: userdata.id,
+      to_id: `${this.props?.route?.params?.user_id}`,
+      created_at: date,
+      // time_zone: timeZone,
+      reply_to: null,
+      roomId: this.state.roomId,
+      message: this.state.message,
+      is_archive_chat: 0,
+      is_group: 0,
+      message_type: message_type,
+      sender: {
+        id: userdata.id,
+        name: userdata.name,
+        avatar: userdata.avatar,
+      },
+    };
+    return message;
   };
 
   sendMessage = async () => {
@@ -267,27 +291,8 @@ class Chat extends React.Component {
       this.setState({isLoading: true});
 
       let uuid = uuidv4();
-      let date = new Date();
-      console.log(date);
-      let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      let message = {
-        uuid: uuid,
-        from_id: userdata.id,
-        to_id: `${this.props?.route?.params?.user_id}`,
-        created_at: date,
-        time_zone: timeZone,
-        reply_to: null,
-        roomId: this.state.roomId,
-        message: this.state.message,
-        is_archive_chat: 0,
-        is_group: 0,
-        message_type: 0,
-        sender: {
-          id: userdata.id,
-          name: userdata.name,
-          avatar: userdata.avatar,
-        },
-      };
+
+      let message = this.prepareSocketMessageObject(uuid,0);
       let data = [message, ...this.state.chatList];
 
       if (!this.state.isConnected) {
@@ -370,7 +375,7 @@ class Chat extends React.Component {
       return;
     }
     let formData = new FormData();
-    let ms = uuidv4();
+    let uuid = uuidv4();
     if (this.state.audioFile != '') {
       formData.append('file', {
         uri: this.state.audioFile,
@@ -385,59 +390,39 @@ class Chat extends React.Component {
           },
         }),
       });
-      console.log('sendFile  this.state.audioFile', this.state.audioFile);
     } else if (this.state.file.fileType === 'pdf') {
       formData.append('file', this.state.file);
     } else {
       let type = this.state.file.type.split('/');
       formData.append('file', {
         ...this.state.file,
-        name: `videos${ms}.${type[1]}`,
+        name: `videos${uuid}.${type[1]}`,
       });
-      console.log('sendFile  File', this.state.file);
     }
-    
-    this.setState({isLoading: true});
+
     formData.append('to_id', `${this.props?.route?.params?.user_id}`);
-    formData.append('uniqueId', ms);
+    formData.append('uuid', uuid);
+    this.setState({isLoading: true});
 
     let config = {
       url: ApiUrl.sendFile,
       method: 'post',
       body: formData,
-      uniqueId: ms,
     };
 
-    if (this.state.audioFile != '') {
-      this.setState({
-        file: undefined,
-        audioFile: '',
-        progressFile: [
-          ...this.state.progressFile,
-          {type: 'audio', uniqueId: ms},
-        ],
-      });
-    } else {
-      this.setState({
-        file: undefined,
-        audioFile: '',
-        progressFile: [
-          ...this.state.progressFile,
-          {type: this.state.file.fileType, uniqueId: ms},
-        ],
-      });
-    }
+    let message = this.prepareSocketMessageObject(uuid,12);
+    let data = [message, ...this.state.chatList];
+
+    this.setState({
+      file: undefined,
+      audioFile: '',
+      chatList: data,
+    });
 
     APIRequestWithFile1(
       config,
       res => {
         if (res.status) {
-          if (res?.conversation?.uniqueId) {
-            const data = this.state.progressFile?.filter(
-              (item, i) => item.uniqueId != res?.conversation?.uniqueId,
-            );
-            this.setState({progressFile: data});
-          }
           this.setMessages(res);
         }
       },
@@ -449,12 +434,12 @@ class Chat extends React.Component {
           }
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0];
-            if (err?.response?.data?.uniqueId) {
-              const data = this.state.progressFile?.filter(
-                (item, i) => item.uniqueId != err?.response?.data?.uniqueId,
-              );
-              this.setState({progressFile: data});
-            }
+            // if (err?.response?.data?.uniqueId) {
+            //   const data = this.state.chatList?.filter(
+            //     (item, i) => item.uniqueId !== err?.response?.data?.uniqueId,
+            //   );
+            //   this.setState({progressFile: data});
+            // }
           }
           Toast.show({
             type: 'error',
@@ -480,13 +465,6 @@ class Chat extends React.Component {
   UpdateFile = file => {
     this.setState({file: file, isShowBottomSheet: false});
   };
-
-  updateBottomViewHeight(event) {
-    let {height} = event.nativeEvent.layout;
-    if (this.state.bottomViewHeight !== height) {
-      this.setState({bottomViewHeight: height});
-    }
-  }
 
   handleOnReportOn = item => {
     Alert.alert('Alert', 'Are you sure you want to report this message?', [
@@ -633,13 +611,18 @@ class Chat extends React.Component {
         </SafeAreaView>
 
         <View
+          // style={{
+          //   // flex: 1,
+          //   // gap: 10
+          // }}
           style={{
+            gap: 10,
             ...Platform.select({
               ios: {
                 height: hp(91),
               },
               android: {
-                flex: 1,
+                
               },
             }),
           }}>
@@ -651,6 +634,9 @@ class Chat extends React.Component {
               inverted={true}
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
+              style={{
+                flex: 1
+              }}
               renderItem={({item, index}) => (
                 <ChatItem
                   onImagePress={files =>
@@ -669,31 +655,8 @@ class Chat extends React.Component {
               )}
             />
 
-            {this.state.progressFile.map(item => (
-              <View
-                style={[
-                  {paddingHorizontal: 15, paddingVertical: 10},
-                  this.state.bottomViewHeight > 500 && {display: 'none'},
-                ]}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'flex-end',
-                    alignSelf: 'flex-end',
-                    backgroundColor: color.chatRight,
-                    padding: 10,
-                    borderRadius: 10,
-                    columnGap: 10,
-                  }}>
-                  <ActivityIndicator size="small" color="#0000ff" />
-                  <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
-                </View>
-              </View>
-            ))}
-
-            {/* <View onLayout={event => this.updateBottomViewHeight(event)}> */}
             {this.state.appReady && (
-              <BottomView
+              <BottomViewNew
                 message={this.state.message}
                 file={this.state.file}
                 audioFile={file => this.setState({audioFile: file})}
@@ -721,7 +684,6 @@ class Chat extends React.Component {
                   this.setState({file: file});
                 }}
                 isConnected={this.state.isConnected}
-                updateBottomViewHeight={this.updateBottomViewHeight.bind(this)}
               />
             )}
             {/* </View> */}
