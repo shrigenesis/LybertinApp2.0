@@ -125,8 +125,6 @@ export const RouterStack = () => {
     setUserStatus('1')
     AppState.addEventListener("change", _handleAppStateChange);
     const unsubscribe = NetInfo.addEventListener(state => {
-
-      console.log('state========>',state);
       if (state.isConnected) {
         sendOfflineMessage()
         // setIsConnected(true)
