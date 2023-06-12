@@ -63,3 +63,4 @@ yarn-error.log
 #App name 
 .app.json
 app.json
+src/navigations/Route.js
