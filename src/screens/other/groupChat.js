@@ -149,7 +149,7 @@ class GroupChat extends React.Component {
       url: ApiUrl.reportMessage,
       method: 'post',
       body: {
-        reported_to: item.id
+        reported_to: item.uuid
       }
     };
 
@@ -234,7 +234,7 @@ class GroupChat extends React.Component {
       if (isExist === -1) {
         const data = [newMessageRecieved, ...this.state.chatList];
         this.setState({ isLoading: false, chatList: data, previeosMessageId: newMessageRecieved.id });
-        this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.id);
+        this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.uuid);
         return;
       }
     });
@@ -361,7 +361,6 @@ class GroupChat extends React.Component {
 
       let data = [message, ...this.state.chatList];
 
-
       if (!this.state.isConnected) {
         try {
           let OfflineMessage = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
@@ -415,7 +414,6 @@ class GroupChat extends React.Component {
       APIRequest(
         config,
         res => {
-          console.log(res);
           this.setState({
             replyOn: undefined,
             previeosMessageId: res.conversation.id
@@ -657,7 +655,7 @@ class GroupChat extends React.Component {
                 inverted={true}
                 // onContentSizeChange={() => chatListRef.current.scrollToEnd({ animated: true })}
                 data={this.state.chatList}
-                // keyExtractor={item => String(item.id)}
+                keyExtractor={item => item.uuid}
                 onEndReached={this.onScrollHandler}
                 onEndThreshold={1}
                 renderItem={({ item, index }) => (

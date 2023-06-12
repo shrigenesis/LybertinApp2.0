@@ -129,7 +129,7 @@ class Chat extends React.Component {
       if (isExist === -1) {
         let data = [newMessageRecieved, ...this.state.chatList];
         this.setState({isLoading: false, chatList: data});
-        this.MarkReadMessage(newMessageRecieved.id);
+        this.MarkReadMessage(newMessageRecieved.uuid);
       }
 
     });
@@ -238,6 +238,7 @@ class Chat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
+    console.log('chatList',this.state.chatList);
     let data = [res.conversation, ...this.state.chatList];
     this.setState({
       isLoading: false,
@@ -246,7 +247,7 @@ class Chat extends React.Component {
       message: '',
       chatList: data,
     });
-    console.log('data',res.data);
+    console.log('data',data);
     console.log('conversation',res.conversation);
     console.log('chatList',this.state.chatList);
 
@@ -507,7 +508,7 @@ class Chat extends React.Component {
       url: ApiUrl.reportMessage,
       method: 'post',
       body: {
-        reported_to: item.id,
+        reported_to: item.uuid,
       },
     };
     APIRequest(
@@ -646,7 +647,7 @@ class Chat extends React.Component {
             <FlatList
               ref={this.chatListRef}
               data={this.state.chatList}
-              keyExtractor={item => String(item.id)}
+              keyExtractor={item => item.uuid}
               inverted={true}
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
