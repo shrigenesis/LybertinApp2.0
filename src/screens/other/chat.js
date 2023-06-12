@@ -124,9 +124,8 @@ class Chat extends React.Component {
     });                
 
     Socket.on('message recieved', newMessageRecieved => {
-      console.log('message recieved', newMessageRecieved);
       
-      const isExist = this.state.chatList?.findIndex((item) => item.uuid !== newMessageRecieved.uuid)
+      const isExist = this.state.chatList?.findIndex((item) => item.uuid === newMessageRecieved.uuid)
       if (isExist === -1) {
         let data = [newMessageRecieved, ...this.state.chatList];
         this.setState({isLoading: false, chatList: data});
@@ -323,6 +322,7 @@ class Chat extends React.Component {
         url: ApiUrl.sendMessage,
         method: 'post',
         body: {
+          uuid: uuid,
           is_archive_chat: 0,
           to_id: `${this.props?.route?.params?.user_id}`,
           message: this.state.message,
