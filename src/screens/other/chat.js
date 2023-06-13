@@ -606,7 +606,7 @@ class Chat extends React.Component {
 
         <View
           style={{
-            gap: 10,
+            // gap: 10,
             ...Platform.select({
               ios: {
                 height: hp(91),
@@ -626,6 +626,7 @@ class Chat extends React.Component {
               onEndThreshold={1}
               style={{
                 flex: 1,
+                marginBottom: Platform.OS === 'ios' ? 15 : 15
               }}
               renderItem={({item, index}) => (
                 <ChatItem
@@ -662,7 +663,6 @@ class Chat extends React.Component {
                 }}
                 inputFocus={() => this.setState({isShowBottomSheet: false})}
                 addPress={() => {
-                  console.log('addPress');
                   Keyboard.dismiss();
                   // this.bottomSheetRef?.current?.expand();
                   this.setState({isShowBottomSheet: true});

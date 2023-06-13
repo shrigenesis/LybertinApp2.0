@@ -232,7 +232,7 @@ const SoundPlayer = ({
           <View style={styles.row}>
             {!isPlay ? (
               <TouchableOpacity
-                style={styles.playpause}
+                // style={styles.playpause}
                 onPress={() => startSound()}>
                 <Image
                   source={IMAGE.playFill}
@@ -240,7 +240,9 @@ const SoundPlayer = ({
                 />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity style={styles.playpause} onPress={pauseSound}>
+              <TouchableOpacity 
+              // style={styles.playpause}
+               onPress={pauseSound}>
                 <Image
                   source={IMAGE.pauseFill}
                   style={{width: 40, height: 40}}
@@ -365,21 +367,20 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
   },
-  container: {
-    position: 'relative',
-    bottom: 0,
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: color.lightGray,
-    height: 80,
-    paddingVertical: 15,
-    width: wp(100),
-    paddingBottom: 25,
-    zIndex: 1,
-  },
+  // container: {
+  //   position: 'relative',
+  //   bottom: 0,
+  //   flex: 1,
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  //   backgroundColor: color.lightGray,
+  //   height: 80,
+  //   paddingVertical: 15,
+  //   width: wp(100),
+  //   paddingBottom: 25,
+  //   zIndex: 1,
+  // },
   row: {
-    paddingVertical: 15,
     width: wp(100),
     flex: 1,
     flexDirection: 'row',

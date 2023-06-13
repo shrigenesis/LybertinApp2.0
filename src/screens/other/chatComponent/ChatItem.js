@@ -1,4 +1,4 @@
-import React, {memo, useContext, useEffect, useRef, useState} from 'react';
+import React, { memo, useContext, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -13,11 +13,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {IMAGE, color, fontFamily, fontSize} from '../../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../../constant/';
 import moment from 'moment';
 import SoundPlayer from './../../../component/soundPlayer';
-import {IMAGEURL} from '../../../utils/api';
-import {Download} from './../../../utils/download';
+import { IMAGEURL } from '../../../utils/api';
+import { Download } from './../../../utils/download';
 import Video from 'react-native-video';
 import Slider from 'react-native-slider';
 import AudioContextProvider, {
@@ -119,16 +119,16 @@ const _renderMessage = (item, style) => {
           <TouchableOpacity
             style={styles.playpause}
             onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}>
-            <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
+            <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
           </TouchableOpacity>
 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Slider
-              style={{width: wp(28), marginLeft: wp(3)}}
+              style={{ width: wp(28), marginLeft: wp(3) }}
               trackStyle={styles.track}
               thumbStyle={styles.thumb}
               minimumTrackTintColor="#681F84"
-              thumbTouchSize={{width: 50, height: 40}}
+              thumbTouchSize={{ width: 50, height: 40 }}
               minimumValue={0}
               value={0}
               maximumValue={10}
@@ -184,7 +184,7 @@ const _renderMessage = (item, style) => {
             <Text style={styles.PdfName}>{item.file_original_name}</Text>
           </View>
           <Text
-            style={[styles.leftChatTime, {marginRight: 5, marginBottom: 5}]}>
+            style={[styles.leftChatTime, { marginRight: 5, marginBottom: 5 }]}>
             {getTime(item.created_at)}
           </Text>
         </>
@@ -202,7 +202,7 @@ const _renderMessage = (item, style) => {
     case 4:
       return (
         <>
-          <View style={{marginBottom: hp(2)}}>{Audio()}</View>
+          <View style={{ marginBottom: hp(2) }}>{Audio()}</View>
           <Text style={styles.leftChatTime}>{getTime(item.created_at)}</Text>
         </>
       ); //VOICE
@@ -220,7 +220,7 @@ const _renderMessage = (item, style) => {
                 });
               }}
               paused={true}
-              source={{uri: `${IMAGEURL}/${item?.file_name}`}}
+              source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
               resizeMode={'cover'}
               style={styles.video}
             />
@@ -287,28 +287,28 @@ const _renderMessage = (item, style) => {
             columnGap: 10,
           }}>
           <ActivityIndicator size="small" color={color.btnBlue} />
-          <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
+          <Text style={{ fontStyle: 'italic' }}>Uploading...</Text>
         </View>
       ); //uploading
   }
 };
 
 export const ChatItem = React.memo(
-  ({item, user_id, avatar, index, onImagePress, menu, reportOn}) => {
+  ({ item, user_id, avatar, index, onImagePress, menu, reportOn }) => {
     const audio = useContext(AudioContext);
     const Action = item => {
       audio?.setaudio('');
       // let url = `${IMAGEURL}${item.message}`;
       if (item.message_type == 2) {
-        onImagePress({file: item.file_name, fileType: 'pdf'});
+        onImagePress({ file: item.file_name, fileType: 'pdf' });
       } else if (item.message_type == 1) {
-        onImagePress({file: item.file_name, fileType: 'photo'});
+        onImagePress({ file: item.file_name, fileType: 'photo' });
       } else if (item.message_type == 5) {
-        onImagePress({file: item.file_name, fileType: 'video'});
+        onImagePress({ file: item.file_name, fileType: 'video' });
       }
     };
     const openMenu = item => {
-      if (!item.message_type == 12) {
+      if (item.message_type !== 12) {
         menu.open();
       }
     };
@@ -404,7 +404,7 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   getMessage: {
-    fontSize: Platform.OS == 'ios' ? 16 : 15,
+    fontSize: fontSize.size15,
     lineHeight: 20,
     color: color.black,
   },
@@ -584,7 +584,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
   },

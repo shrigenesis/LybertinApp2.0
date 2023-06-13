@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {memo, useContext, useEffect, useRef, useState} from 'react';
+import React, { memo, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,26 +10,30 @@ import {
   TextInput,
   Text,
   Dimensions,
+  Keyboard,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {IMAGE, color, fontFamily, fontSize} from '../../../constant';
+import { IMAGE, color, fontFamily, fontSize } from '../../../constant';
 import Animated, {
   FadeIn,
   FadeInDown,
   FadeInUp,
   FadeOut,
   FadeOutDown,
+  ZoomIn,
+  ZoomOut,
 } from 'react-native-reanimated';
-import {EmojiKeyboard} from './../../../component/';
-import {SlideInDown} from 'react-native-reanimated';
-import {SlideInUp} from 'react-native-reanimated';
+import { EmojiKeyboard } from './../../../component/';
+import { SlideInDown } from 'react-native-reanimated';
+import { SlideInUp } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
-import {AudioContext} from '../../../context/AudioContext';
-import {IMAGEURL} from '../../../utils/api';
-import {requestPermission} from '../../../component/documentpicker';
+import { AudioContext } from '../../../context/AudioContext';
+import { IMAGEURL } from '../../../utils/api';
+import { requestPermission } from '../../../component/documentpicker';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import moment from 'moment';
 import Slider from 'react-native-slider';
@@ -49,32 +53,51 @@ export const BottomViewNew = memo(props => {
   const [replyBoxheight, setReplyBoxheight] = useState('');
   const [height, setheight] = useState(0);
   const [disable, setdisable] = useState(false);
+  const [numOfLines, setNumOfLines] = useState(1);
 
   const {
-    audioFile = () => {},
-    addPress = () => {},
+    audioFile = () => { },
+    addPress = () => { },
     file,
     pickCamera = 1,
     message,
     deleteFile,
-    inputFocus = () => {},
-    sendMessage = () => {},
-    textChange = () => {},
+    inputFocus = () => { },
+    sendMessage = () => { },
+    textChange = () => { },
     media_privacy = 1,
     group_type = 1,
     isConnected = 1,
     emojiSelect,
     replyOn,
-    removeReplyBox = () => {},
+    removeReplyBox = () => { },
   } = props;
   const audio = useContext(AudioContext);
   const searchInput = useRef(null);
+
+  const keyboardDidHideCallback = () => {
+    searchInput.current.blur?.();
+  }
+
+  useEffect(() => {
+    const keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', keyboardDidHideCallback);
+    return () => {
+      keyboardDidHideSubscription?.remove();
+    };
+  }, []);
+
   useEffect(() => {
     return () => {
       setRecordingFile('');
       onStopRecord();
     };
   }, []);
+
+  const onTextLayout = useCallback(e => {
+    console.log(searchInput.current);
+    // if (numOfLines == 1 && numOfLines <= 4)
+    //   setNumOfLines(e?.nativeEvent.lines.length);
+  });
 
   const onStartRecord = async () => {
     setPlayImmediate(false);
@@ -149,7 +172,7 @@ export const BottomViewNew = memo(props => {
     }
   };
   const onLayout = event => {
-    const {height} = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setReplyBoxheight(parseInt(height) + hp(3));
   };
 
@@ -231,7 +254,7 @@ export const BottomViewNew = memo(props => {
         <View style={styles.row}>
           <TouchableOpacity activeOpacity={1} onPress={() => playAudio(true)}>
             <View style={styles.playpause}>
-              <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
+              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
             </View>
           </TouchableOpacity>
           <Slider
@@ -288,6 +311,7 @@ export const BottomViewNew = memo(props => {
   useEffect(() => {
     console.log(height);
   }, [height]);
+
   return (
     <>
       {file && (
@@ -310,7 +334,7 @@ export const BottomViewNew = memo(props => {
               {file?.fileType == 'photo' || file?.fileType == 'image' ? (
                 console.log(file.uri),
                 <Image
-                  source={{uri: file.uri}}
+                  source={{ uri: file.uri }}
                   style={{
                     resizeMode: 'contain',
                     width: wp(100),
@@ -320,7 +344,7 @@ export const BottomViewNew = memo(props => {
               ) : null}
               {file?.fileType == 'video' || file?.fileType === 'video/mp4' ? (
                 <Video
-                  source={{uri: file?.uri}}
+                  source={{ uri: file?.uri }}
                   muted={true}
                   paused={true}
                   controls={true}
@@ -366,9 +390,9 @@ export const BottomViewNew = memo(props => {
         <View style={styles.container}>
           {isRecordingStart && (
             <Animated.View
-              entering={SlideInUp}
+              entering={SlideInDown}
               exiting={SlideInDown}
-              // style={styles.recordingTimer}
+            // style={styles.recordingTimer}
             >
               <View style={styles.row}>
                 <View style={[styles.recordingContainer]}>
@@ -384,7 +408,7 @@ export const BottomViewNew = memo(props => {
                   /> */}
                     <LottieView
                       speed={1}
-                      style={{height: 50}}
+                      style={{ height: 50 }}
                       source={require('./../../../animation/SoundBarWhite.json')}
                       autoPlay
                       loop={true}
@@ -426,7 +450,7 @@ export const BottomViewNew = memo(props => {
           {replyOn && (
             <View style={styles.replyBoxContainer}>
               <View style={styles.replyBoxRow}>
-                <View onLayout={onLayout} style={{flex: 0.9}}>
+                <View onLayout={onLayout} style={{ flex: 0.9 }}>
                   <Text style={styles.remplySenderName}>
                     {replyOn?.sender?.name}
                   </Text>
@@ -437,7 +461,7 @@ export const BottomViewNew = memo(props => {
                 <View style={styles.replyBoxRemoveIcon}>
                   {replyOn?.message_type == '1' && (
                     <Image
-                      source={{uri: `${IMAGEURL}/${replyOn?.file_name}`}}
+                      source={{ uri: `${IMAGEURL}/${replyOn?.file_name}` }}
                       style={styles.replyBoxImage}
                     />
                   )}
@@ -487,6 +511,7 @@ export const BottomViewNew = memo(props => {
                   activeOpacity={1}
                   onPress={() => {
                     setshowEmojiKeyboard(!showEmojiKeyboard);
+                    Keyboard.dismiss();
                   }}>
                   <View style={styles.col_small}>
                     <Image
@@ -501,7 +526,6 @@ export const BottomViewNew = memo(props => {
                   </View>
                 </TouchableOpacity>
                 <TextInput
-                  selectionColor={color.btnBlue}
                   placeholder={'Message...'}
                   placeholderTextColor={color.lightBlack}
                   multiline={true}
@@ -509,20 +533,28 @@ export const BottomViewNew = memo(props => {
                   value={message}
                   onChangeText={textChange}
                   textAlignVertical={'center'}
-                  ref={searchInput}
-                  style={styles.messageBox}
+                  ref={(ref) => {
+                    searchInput && (searchInput.current = ref);
+                  }}
                   onFocus={() => {
                     setshowEmojiKeyboard(false);
                     inputFocus();
                   }}
+                  style={[
+                    styles.messageBox,
+                    {
+                      maxHeight: (height + 1) > 0 ? 100 : 200
+                    },
+                  ]}
                   onContentSizeChange={event => {
-                    setheight(
-                      Math.round(
-                        (event.nativeEvent.contentSize.height - 41) / 16,
-                      ),
-                    );
+                    setheight(Math.round((event.nativeEvent.contentSize.height - 20)));
                   }}
+                // onLayout={(e) => { onTextLayout(e) }}
+                // numberOfLines={numOfLines}
                 />
+                {
+                  console.log('numOfLines', numOfLines)
+                }
                 {/* <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
@@ -551,39 +583,44 @@ export const BottomViewNew = memo(props => {
                       setRecordingFile(''),
                       audio?.setaudio(''))
                     : isConnected
-                    ? pickCamera == 1
-                      ? isRecordingStart
-                        ? console.log('onStopRecord()')
-                        : (onStartRecord(), textChange)('')
-                      : console.log('kkkkkk')
-                    : showDisconectedToast('RECORD');
+                      ? pickCamera == 1
+                        ? isRecordingStart
+                          ? console.log('onStopRecord()')
+                          : (onStartRecord(), textChange(''), removeReplyBox())
+                        : console.log('kkkkkk')
+                      : showDisconectedToast('RECORD');
                 }}>
                 <View style={[styles.col_small, styles.sendIconBox]}>
-                  <Animated.View entering={FadeIn} exiting={FadeOut}>
-                    <Image
-                      source={message ? IMAGE.send : IMAGE.mic}
-                      style={{
-                        resizeMode: 'contain',
-                        height: 20,
-                        width: 20,
-                        tintColor: color.white,
-                      }}
-                    />
-                  </Animated.View>
+                  {message && (
+                    <Animated.View entering={ZoomIn} exiting={ZoomOut}>
+                      <Image
+                        source={IMAGE.send}
+                        style={styles.sendIconStyle}
+                      />
+                    </Animated.View>
+                  )}
+                  {!message && (
+                    <Animated.View entering={ZoomIn} exiting={ZoomOut}>
+                      <Image
+                        source={IMAGE.mic}
+                        style={styles.sendIconStyle}
+                      />
+                    </Animated.View>
+                  )}
                 </View>
               </TouchableOpacity>
             </View>
           )}
           {showEmojiKeyboard && (
             <Animated.View
-              entering={SlideInUp}
-              exiting={SlideInDown}
-              style={{height: hp(35)}}>
+              entering={FadeIn}
+              exiting={FadeOut}
+              style={{ height: hp(35) }}>
               <EmojiKeyboard onSelectEmoji={emojiSelect} />
             </Animated.View>
           )}
         </View>
-      </KeyboardAvoidingView>
+      </KeyboardAvoidingView >
     </>
   );
 });
@@ -596,10 +633,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
-    height: 80,
+    minHeight: Platform.OS === 'ios' ? 80 : 50,
     paddingVertical: 5,
     width: wp(100),
-    paddingBottom: 20,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+    zIndex: 1,
   },
   recordedAudioContainer: {
     position: 'absolute',
@@ -608,15 +646,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
-    height: 80,
+    minHeight: Platform.OS === 'ios' ? 80 : 50,
     paddingVertical: 5,
     width: wp(100),
-    paddingBottom: 25,
+    paddingBottom: Platform.OS === 'ios' ? 20 : 0,
     zIndex: 2,
   },
   row: {
-    position: 'relative',
-    flex: 1,
+    // position: 'relative',
+    // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',
@@ -626,7 +664,7 @@ const styles = StyleSheet.create({
   },
   col_small: {
     // backgroundColor: color.green,
-    height: 50,
+    height: 40,
     width: 40,
     minWidth: 40,
     justifyContent: 'center',
@@ -634,17 +672,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // flex: 1
   },
+  sendIconStyle: {
+    resizeMode: 'contain',
+    height: 20,
+    width: 20,
+    tintColor: color.white,
+  },
   col: {
     backgroundColor: color.green,
     minWidth: 40,
-    height: 45,
+    MinHeight: 45,
     width: 40,
     flex: 1,
     gap: 5,
     backgroundColor: color.white,
     borderColor: color.textGray2,
     borderWidth: 1,
-    borderRadius: 50,
+    borderRadius: 25,
     flexDirection: 'row',
     justifyContent: 'flex-start',
     // alignContent: 'center',
@@ -653,10 +697,11 @@ const styles = StyleSheet.create({
   messageBox: {
     flex: 1,
     fontFamily: fontFamily.Medium,
-    fontSize: fontSize.size13,
+    fontSize: fontSize.size15,
     color: color.lightBlack,
     textAlign: 'left',
     paddingRight: 10,
+    textAlignVertical: 'center'
   },
   sendIconBox: {
     height: 40,
@@ -793,7 +838,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
   },
@@ -814,7 +859,7 @@ const styles = StyleSheet.create({
     right: 20,
     top: 20,
     shadowColor: color.iconGray,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowRadius: 10,
     shadowOpacity: 1,
   },
