@@ -21,16 +21,17 @@ import ReactNative, {
   ActivityIndicator,
   Alert,
   Dimensions,
+  SafeAreaView,
 } from 'react-native';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
-import { Header, Loader, pickDocument, pickImage } from './../../component/';
+import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -39,23 +40,23 @@ import {
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import { BottomView, RenderBottomSheet, ChatItemgroup } from './chatComponent/';
+import {BottomView, RenderBottomSheet, ChatItemgroup} from './chatComponent/';
 import io from 'socket.io-client';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   BottomSheetUploadFile,
   BottomSheetUploadFileStyle,
 } from '../../component/BottomSheetUploadFile';
-import AudioContextProvider, { AudioContext } from '../../context/AudioContext';
+import AudioContextProvider, {AudioContext} from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BottomViewNew } from './chatComponent/bottomViewNew';
+import {BottomViewNew} from './chatComponent/bottomViewNew';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
+const userdata = new User().getuserdata();
 class GroupChat extends React.Component {
   constructor(props) {
     super(props);
@@ -92,7 +93,7 @@ class GroupChat extends React.Component {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       console.log('componentDidMount');
 
-      this.setState({ appReady: true });
+      this.setState({appReady: true});
       // let group_id = this.props?.route?.params?.group_id;
       // setTimeout(() => {
       let group_id = this.props?.route?.params?.group_id;
@@ -110,9 +111,9 @@ class GroupChat extends React.Component {
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
-        this.setState({ isConnected: true });
+        this.setState({isConnected: true});
       } else {
-        this.setState({ isConnected: false });
+        this.setState({isConnected: false});
       }
     });
   }
@@ -129,7 +130,7 @@ class GroupChat extends React.Component {
     );
   };
   handleOnReplyOn = item => {
-    this.setState({ replyOn: item });
+    this.setState({replyOn: item});
   };
   handleOnReportOn = item => {
     Alert.alert('Alert', 'Are you sure you want to report this message?', [
@@ -175,7 +176,7 @@ class GroupChat extends React.Component {
 
   fetchChatList = group_id => {
     let userdata = new User().getuserdata();
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.groups}/${group_id}/getConversation?page=${this.state.page}`,
       method: 'post',
@@ -199,10 +200,10 @@ class GroupChat extends React.Component {
             Socket.emit('join chat', res.roomId);
           }
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
@@ -224,10 +225,10 @@ class GroupChat extends React.Component {
     });
 
     Socket.on('typing', () => {
-      this.setState({ isTyping: true });
+      this.setState({isTyping: true});
     });
     Socket.on('stop typing', () => {
-      this.setState({ isTyping: false });
+      this.setState({isTyping: false});
     });
 
     Socket.on('message recieved', newMessageRecieved => {
@@ -287,7 +288,7 @@ class GroupChat extends React.Component {
   }
 
   fetchGroupDetail = group_id => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.groupDetail}${group_id}`,
       method: 'get',
@@ -299,12 +300,12 @@ class GroupChat extends React.Component {
         if (res.status) {
           let data = res?.conversation?.data;
 
-          this.setState({ groupDetail: res?.data });
+          this.setState({groupDetail: res?.data});
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
@@ -442,7 +443,7 @@ class GroupChat extends React.Component {
         },
         err => {
           console.log(err);
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
         },
       );
     }
@@ -494,7 +495,7 @@ class GroupChat extends React.Component {
       // formData.append('file', this.state.file);
     }
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     formData.append('to_id', `${this.props?.route?.params?.group_id}`);
     formData.append('is_group', 1);
     formData.append('uuid', String(uuid));
@@ -544,34 +545,34 @@ class GroupChat extends React.Component {
             text1: err?.message,
           });
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
 
   // hide Bottom sheet
   setisShowBottomSheet = () => {
-    this.setState({ isShowBottomSheet: false });
+    this.setState({isShowBottomSheet: false});
   };
   // Update file from bottom sheet
   UpdateFile = file => {
-    this.setState({ file: file, isShowBottomSheet: false });
+    this.setState({file: file, isShowBottomSheet: false});
   };
 
   updateBottomViewHeight(event) {
-    let { height } = event.nativeEvent.layout;
+    let {height} = event.nativeEvent.layout;
     if (this.state.bottomViewHeight !== height) {
-      this.setState({ bottomViewHeight: height });
+      this.setState({bottomViewHeight: height});
     }
   }
 
   render() {
-    const { group_type, privacy, media_privacy, name, description } =
+    const {group_type, privacy, media_privacy, name, description} =
       this.state?.groupDetail;
 
     return (
-      <SafeAreaView style={styles.safeArea}>
-        <View style={styles.container}>
+      <View style={styles.container}>
+        <SafeAreaView>
           <FocusAwareStatusBar
             barStyle={'dark-content'}
             backgroundColor={color.white}
@@ -580,7 +581,7 @@ class GroupChat extends React.Component {
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}
             LeftIcon={() => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
@@ -649,242 +650,244 @@ class GroupChat extends React.Component {
             )}
             title={null}
           />
-          <View
-            style={{
-              // gap: 10,
-              ...Platform.select({
-                ios: {
-                  height: hp(91),
-                },
-                android: {
-                  flex: 1,
-                },
-              }),
-            }}>
-            <AudioContextProvider>
-              <FlatList
-                ref={this.chatListRef}
-                inverted={true}
-                // onContentSizeChange={() => chatListRef.current.scrollToEnd({ animated: true })}
-                data={this.state.chatList}
-                keyExtractor={item => item.uuid}
-                onEndReached={this.onScrollHandler}
-                onEndThreshold={1}
-                style={{
-                  flex: 1,
-                  marginBottom: Platform.OS === 'ios' ? 15 : 15
-                }}
-                renderItem={({ item, index }) => (
-                  <ChatItemgroup
-                    onImagePress={files =>
-                      this.props.navigation.navigate('ShowImg', {
-                        file: files?.file,
-                        fileType: files?.fileType,
-                      })
-                    }
-                    user_id={this.props?.route?.params?.user_id}
-                    // avatar={this.props?.route?.params?.avatar}
-                    avatar={item?.sender?.avatar}
-                    item={item}
-                    index={index}
-                    menu={this.state.menu}
-                    replyOn={replyMSG => this.handleOnReplyOn(replyMSG)}
-                    reportOn={replyMSG => this.handleOnReportOn(replyMSG)}
-                  />
-                )}
-              />
+        </SafeAreaView>
+        <View
+          style={{
+            // gap: 10,
+            ...Platform.select({
+              ios: {
+                flex: 1,
+                minHeight: (this.state.replyOn != undefined || this.state.replyOn != null) ? Dimensions.get('window').height - 80 : Dimensions.get('window').height - 60,
+              },
+              android: {
+                flex: 1,
+              },
+            }),
+          }}>
+          <AudioContextProvider>
+            <FlatList
+              ref={this.chatListRef}
+              inverted={true}
+              // onContentSizeChange={() => chatListRef.current.scrollToEnd({ animated: true })}
+              data={this.state.chatList}
+              keyExtractor={item => item.uuid}
+              onEndReached={this.onScrollHandler}
+              onEndThreshold={1}
+              style={{
+                flex: 1,
+                marginBottom: Platform.OS === 'ios' ? 15 : 15,
+              }}
+              renderItem={({item, index}) => (
+                <ChatItemgroup
+                  onImagePress={files =>
+                    this.props.navigation.navigate('ShowImg', {
+                      file: files?.file,
+                      fileType: files?.fileType,
+                    })
+                  }
+                  user_id={this.props?.route?.params?.user_id}
+                  // avatar={this.props?.route?.params?.avatar}
+                  avatar={item?.sender?.avatar}
+                  item={item}
+                  index={index}
+                  menu={this.state.menu}
+                  replyOn={replyMSG => this.handleOnReplyOn(replyMSG)}
+                  reportOn={replyMSG => this.handleOnReportOn(replyMSG)}
+                />
+              )}
+            />
 
-              {this.state.is_exit === false ? (
-                <>
-                  {(this.state.groupType == 2 && this.state.isAdmin == true) ||
-                    this.state.groupType == 1 ? (
-                    <BottomViewNew
-                      // group_type={group_type}
-                      pickCamera={
-                        (this.state.mediaPrivacy == 2 &&
-                          this.state.isAdmin == true) ||
-                        this.state.mediaPrivacy == 1
-                      }
-                      media_privacy={media_privacy}
-                      message={this.state.message}
-                      replyOn={
-                        this.state.replyOn !== undefined
-                          ? this.state.replyOn
-                          : null
-                      }
-                      removeReplyBox={() => this.setState({ replyOn: null })}
-                      file={this.state.file}
-                      audioFile={file => this.setState({ audioFile: file })}
-                      deleteFile={() => this.setState({ file: undefined })}
-                      sendMessage={
-                        this.state.file || this.state.audioFile != ''
-                          ? this.sendFile
-                          : this.sendMessage
-                      }
-                      textChange={v => this.setState({ message: v })}
-                      inputFocus={() => this.bottomSheetRef?.current?.close()}
-                      addPress={() => {
-                        (this.state.groupType == 2 &&
-                          this.state.isAdmin == true) ||
-                          (this.state.groupType == 1 &&
-                            this.state.mediaPrivacy == 2 &&
-                            this.state.isAdmin == true) ||
-                          (this.state.groupType == 1 &&
-                            this.state.mediaPrivacy == 1)
-                          ? this.setState({ isShowBottomSheet: true })
-                          : alert(
+            {this.state.is_exit === false ? (
+              <>
+                {(this.state.groupType == 2 && this.state.isAdmin == true) ||
+                this.state.groupType == 1 ? (
+                  <BottomViewNew
+                    // group_type={group_type}
+                    pickCamera={
+                      (this.state.mediaPrivacy == 2 &&
+                        this.state.isAdmin == true) ||
+                      this.state.mediaPrivacy == 1
+                    }
+                    media_privacy={media_privacy}
+                    message={this.state.message}
+                    replyOn={
+                      this.state.replyOn !== undefined
+                        ? this.state.replyOn
+                        : null
+                    }
+                    removeReplyBox={() => this.setState({replyOn: null})}
+                    file={this.state.file}
+                    audioFile={file => this.setState({audioFile: file})}
+                    deleteFile={() => this.setState({file: undefined})}
+                    sendMessage={
+                      this.state.file || this.state.audioFile != ''
+                        ? this.sendFile
+                        : this.sendMessage
+                    }
+                    textChange={v => this.setState({message: v})}
+                    inputFocus={() => this.bottomSheetRef?.current?.close()}
+                    addPress={() => {
+                      (this.state.groupType == 2 &&
+                        this.state.isAdmin == true) ||
+                      (this.state.groupType == 1 &&
+                        this.state.mediaPrivacy == 2 &&
+                        this.state.isAdmin == true) ||
+                      (this.state.groupType == 1 &&
+                        this.state.mediaPrivacy == 1)
+                        ? this.setState({isShowBottomSheet: true})
+                        : alert(
                             'You do not have access to send media in this group.',
                           );
-                        Keyboard.dismiss();
-                      }}
-                      emojiSelect={v => {
-                        this.setState({ message: `${this.state.message}${v}` });
-                      }}
-                      isConnected={this.state.isConnected}
-                      setFile={file => {
-                        this.setState({ file: file });
-                      }}
-                      updateBottomViewHeight={this.updateBottomViewHeight.bind(
-                        this,
-                      )}
-                    />
-                  ) : (
-                    <View style={styles.noLongerMemeberBox}>
-                      <Image
-                        source={IMAGE.camera}
-                        style={styles.noLongerMemeberIcon}
-                      />
-                      <Text style={styles.noLongerMemeberText}>
-                        You can't send messages to this group.
-                      </Text>
-                    </View>
-                  )}
-                </>
-              ) : (
-                <View style={styles.noLongerMemeberBox}>
-                  <Image
-                    source={IMAGE.camera}
-                    style={styles.noLongerMemeberIcon}
+                      Keyboard.dismiss();
+                    }}
+                    emojiSelect={v => {
+                      this.setState({message: `${this.state.message}${v}`});
+                    }}
+                    isConnected={this.state.isConnected}
+                    setFile={file => {
+                      this.setState({file: file});
+                    }}
+                    updateBottomViewHeight={this.updateBottomViewHeight.bind(
+                      this,
+                    )}
                   />
-                  <Text style={styles.noLongerMemeberText}>
-                    You can't send messages to this group because you're no
-                    longer a participant.
-                  </Text>
-                </View>
-              )}
-            </AudioContextProvider>
+                ) : (
+                  <View style={styles.noLongerMemeberBox}>
+                    <Image
+                      source={IMAGE.camera}
+                      style={styles.noLongerMemeberIcon}
+                    />
+                    <Text style={styles.noLongerMemeberText}>
+                      You can't send messages to this group.
+                    </Text>
+                  </View>
+                )}
+              </>
+            ) : (
+              <View style={styles.noLongerMemeberBox}>
+                <Image
+                  source={IMAGE.camera}
+                  style={styles.noLongerMemeberIcon}
+                />
+                <Text style={styles.noLongerMemeberText}>
+                  You can't send messages to this group because you're no longer
+                  a participant.
+                </Text>
+              </View>
+            )}
+          </AudioContextProvider>
 
-            <BottomSheetUploadFile
-              cancelBtn={{
-                color: color.lightGray,
-                title: 'Cancel',
-                textColor: color.btnBlue,
-              }}
-              isShowBottomSheet={this.state.isShowBottomSheet}
-              setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}>
-              <View>
-                {/* <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
+          <BottomSheetUploadFile
+            cancelBtn={{
+              color: color.lightGray,
+              title: 'Cancel',
+              textColor: color.btnBlue,
+            }}
+            isShowBottomSheet={this.state.isShowBottomSheet}
+            setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}>
+            <View>
+              {/* <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
                   <Text style={BottomSheetUploadFileStyle.roportHeading}>Add Story</Text>
                   <Text style={BottomSheetUploadFileStyle.subHeading}>Post Photo Video To Your Story</Text>
                 </View> */}
-                <View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'camera',
-                        res => {
-                          // file(res);
-                          this.UpdateFile(res);
-                        },
-                        'photo',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.camera}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Take Photo
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'image',
-                        res => {
-                          this.UpdateFile(res);
-                        },
-                        'photo',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.camera}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Select Photo
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'camera',
-                        res => {
-                          this.UpdateFile(res);
-                        },
-                        'video',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.video}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Take Video
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickImage(
-                        'image',
-                        res => {
-                          this.UpdateFile(res);
-                        },
-                        'video',
-                      )
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.video_add}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Select Video
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() =>
-                      pickDocument(res => {
+              <View>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'camera',
+                      res => {
+                        // file(res);
                         this.UpdateFile(res);
-                      })
-                    }
-                    style={BottomSheetUploadFileStyle.cardBlock}>
-                    <Image
-                      source={IMAGE.note}
-                      style={BottomSheetUploadFileStyle.icon}
-                    />
-                    <Text style={BottomSheetUploadFileStyle.cardText}>
-                      Document
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                      },
+                      'photo',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.camera}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Take Photo
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'image',
+                      res => {
+                        this.UpdateFile(res);
+                      },
+                      'photo',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.camera}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Select Photo
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'camera',
+                      res => {
+                        this.UpdateFile(res);
+                      },
+                      'video',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.video}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Take Video
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickImage(
+                      'image',
+                      res => {
+                        this.UpdateFile(res);
+                      },
+                      'video',
+                    )
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.video_add}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Select Video
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    pickDocument(res => {
+                      this.UpdateFile(res);
+                    })
+                  }
+                  style={BottomSheetUploadFileStyle.cardBlock}>
+                  <Image
+                    source={IMAGE.note}
+                    style={BottomSheetUploadFileStyle.icon}
+                  />
+                  <Text style={BottomSheetUploadFileStyle.cardText}>
+                    Document
+                  </Text>
+                </TouchableOpacity>
               </View>
-            </BottomSheetUploadFile>
+            </View>
+          </BottomSheetUploadFile>
 
-            {/* <RenderBottomSheet
+          {/* <RenderBottomSheet
               file={file => {
                 console.log(file, "file")
                 this.setState({ file: file });
@@ -894,9 +897,8 @@ class GroupChat extends React.Component {
               snapPoints={this.snapPoints}
               bottomSheetRef={this.bottomSheetRef}
             /> */}
-          </View>
         </View>
-      </SafeAreaView>
+      </View>
     );
   }
 }
@@ -913,7 +915,7 @@ const styles = StyleSheet.create({
   },
 
   onlineText: {
-    fontSize: 10,
+    fontSize: fontSize.size12,
     color: color.textGray2,
     fontFamily: fontFamily.Regular,
   },

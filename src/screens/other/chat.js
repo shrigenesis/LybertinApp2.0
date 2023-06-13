@@ -11,13 +11,14 @@ import {
   BackHandler,
   Alert,
   Platform,
+  Dimensions,
 } from 'react-native';
 import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -241,7 +242,7 @@ class Chat extends React.Component {
     const data = this.state.chatList?.filter(
       item => item.uuid !== res.conversation.uuid,
     );
-    
+
     this.setState({
       isLoading: false,
       file: undefined,
@@ -609,7 +610,8 @@ class Chat extends React.Component {
             // gap: 10,
             ...Platform.select({
               ios: {
-                height: hp(91),
+                flex: 1,
+                minHeight: Dimensions.get('window').height - 60
               },
               android: {
                 flex: 1,
@@ -811,7 +813,7 @@ const styles = StyleSheet.create({
   },
 
   onlineText: {
-    fontSize: 12,
+    fontSize: fontSize.size12,
     color: color.textGray2,
     fontFamily: fontFamily.Regular,
   },

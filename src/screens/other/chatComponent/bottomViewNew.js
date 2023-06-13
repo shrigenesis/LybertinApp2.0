@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { memo, useContext, useEffect, useRef, useState, useCallback } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import {
   View,
   StyleSheet,
@@ -17,7 +24,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily, fontSize } from '../../../constant';
+import {IMAGE, color, fontFamily, fontSize} from '../../../constant';
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -27,13 +34,13 @@ import Animated, {
   ZoomIn,
   ZoomOut,
 } from 'react-native-reanimated';
-import { EmojiKeyboard } from './../../../component/';
-import { SlideInDown } from 'react-native-reanimated';
-import { SlideInUp } from 'react-native-reanimated';
+import {EmojiKeyboard} from './../../../component/';
+import {SlideInDown} from 'react-native-reanimated';
+import {SlideInUp} from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
-import { AudioContext } from '../../../context/AudioContext';
-import { IMAGEURL } from '../../../utils/api';
-import { requestPermission } from '../../../component/documentpicker';
+import {AudioContext} from '../../../context/AudioContext';
+import {IMAGEURL} from '../../../utils/api';
+import {requestPermission} from '../../../component/documentpicker';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import moment from 'moment';
 import Slider from 'react-native-slider';
@@ -56,31 +63,34 @@ export const BottomViewNew = memo(props => {
   const [numOfLines, setNumOfLines] = useState(1);
 
   const {
-    audioFile = () => { },
-    addPress = () => { },
+    audioFile = () => {},
+    addPress = () => {},
     file,
     pickCamera = 1,
     message,
     deleteFile,
-    inputFocus = () => { },
-    sendMessage = () => { },
-    textChange = () => { },
+    inputFocus = () => {},
+    sendMessage = () => {},
+    textChange = () => {},
     media_privacy = 1,
     group_type = 1,
     isConnected = 1,
     emojiSelect,
     replyOn,
-    removeReplyBox = () => { },
+    removeReplyBox = () => {},
   } = props;
   const audio = useContext(AudioContext);
   const searchInput = useRef(null);
 
   const keyboardDidHideCallback = () => {
     searchInput.current.blur?.();
-  }
+  };
 
   useEffect(() => {
-    const keyboardDidHideSubscription = Keyboard.addListener('keyboardDidHide', keyboardDidHideCallback);
+    const keyboardDidHideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      keyboardDidHideCallback,
+    );
     return () => {
       keyboardDidHideSubscription?.remove();
     };
@@ -172,7 +182,7 @@ export const BottomViewNew = memo(props => {
     }
   };
   const onLayout = event => {
-    const { height } = event.nativeEvent.layout;
+    const {height} = event.nativeEvent.layout;
     setReplyBoxheight(parseInt(height) + hp(3));
   };
 
@@ -254,7 +264,7 @@ export const BottomViewNew = memo(props => {
         <View style={styles.row}>
           <TouchableOpacity activeOpacity={1} onPress={() => playAudio(true)}>
             <View style={styles.playpause}>
-              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+              <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
             </View>
           </TouchableOpacity>
           <Slider
@@ -331,20 +341,22 @@ export const BottomViewNew = memo(props => {
                   }}
                 />
               ) : null}
-              {file?.fileType == 'photo' || file?.fileType == 'image' ? (
-                console.log(file.uri),
-                <Image
-                  source={{ uri: file.uri }}
-                  style={{
-                    resizeMode: 'contain',
-                    width: wp(100),
-                    height: hp(80),
-                  }}
-                />
-              ) : null}
+              {file?.fileType == 'photo' || file?.fileType == 'image'
+                ? (console.log(file.uri),
+                  (
+                    <Image
+                      source={{uri: file.uri}}
+                      style={{
+                        resizeMode: 'contain',
+                        width: wp(100),
+                        height: hp(80),
+                      }}
+                    />
+                  ))
+                : null}
               {file?.fileType == 'video' || file?.fileType === 'video/mp4' ? (
                 <Video
-                  source={{ uri: file?.uri }}
+                  source={{uri: file?.uri}}
                   muted={true}
                   paused={true}
                   controls={true}
@@ -382,7 +394,10 @@ export const BottomViewNew = memo(props => {
           </Animated.View>
         </View>
       )}
-      <KeyboardAvoidingView>
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={'90'}
+        contentInsetAdjustmentBehavior="automatic"
+        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
         {!isRecordingStart && recordingFile && (
           <View style={styles.recordedAudioContainer}>{Audio()}</View>
         )}
@@ -392,7 +407,7 @@ export const BottomViewNew = memo(props => {
             <Animated.View
               entering={SlideInDown}
               exiting={SlideInDown}
-            // style={styles.recordingTimer}
+              // style={styles.recordingTimer}
             >
               <View style={styles.row}>
                 <View style={[styles.recordingContainer]}>
@@ -408,7 +423,7 @@ export const BottomViewNew = memo(props => {
                   /> */}
                     <LottieView
                       speed={1}
-                      style={{ height: 50 }}
+                      style={{height: 50}}
                       source={require('./../../../animation/SoundBarWhite.json')}
                       autoPlay
                       loop={true}
@@ -450,7 +465,7 @@ export const BottomViewNew = memo(props => {
           {replyOn && (
             <View style={styles.replyBoxContainer}>
               <View style={styles.replyBoxRow}>
-                <View onLayout={onLayout} style={{ flex: 0.9 }}>
+                <View onLayout={onLayout} style={{flex: 0.9}}>
                   <Text style={styles.remplySenderName}>
                     {replyOn?.sender?.name}
                   </Text>
@@ -461,7 +476,7 @@ export const BottomViewNew = memo(props => {
                 <View style={styles.replyBoxRemoveIcon}>
                   {replyOn?.message_type == '1' && (
                     <Image
-                      source={{ uri: `${IMAGEURL}/${replyOn?.file_name}` }}
+                      source={{uri: `${IMAGEURL}/${replyOn?.file_name}`}}
                       style={styles.replyBoxImage}
                     />
                   )}
@@ -533,7 +548,7 @@ export const BottomViewNew = memo(props => {
                   value={message}
                   onChangeText={textChange}
                   textAlignVertical={'center'}
-                  ref={(ref) => {
+                  ref={ref => {
                     searchInput && (searchInput.current = ref);
                   }}
                   onFocus={() => {
@@ -543,18 +558,18 @@ export const BottomViewNew = memo(props => {
                   style={[
                     styles.messageBox,
                     {
-                      maxHeight: (height + 1) > 0 ? 100 : 200
+                      maxHeight: height + 1 > 0 ? 100 : 200,
                     },
                   ]}
                   onContentSizeChange={event => {
-                    setheight(Math.round((event.nativeEvent.contentSize.height - 20)));
+                    setheight(
+                      Math.round(event.nativeEvent.contentSize.height - 20),
+                    );
                   }}
-                // onLayout={(e) => { onTextLayout(e) }}
-                // numberOfLines={numOfLines}
+                  // onLayout={(e) => { onTextLayout(e) }}
+                  // numberOfLines={numOfLines}
                 />
-                {
-                  console.log('numOfLines', numOfLines)
-                }
+                {console.log('numOfLines', numOfLines)}
                 {/* <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
@@ -583,28 +598,22 @@ export const BottomViewNew = memo(props => {
                       setRecordingFile(''),
                       audio?.setaudio(''))
                     : isConnected
-                      ? pickCamera == 1
-                        ? isRecordingStart
-                          ? console.log('onStopRecord()')
-                          : (onStartRecord(), textChange(''), removeReplyBox())
-                        : console.log('kkkkkk')
-                      : showDisconectedToast('RECORD');
+                    ? pickCamera == 1
+                      ? isRecordingStart
+                        ? console.log('onStopRecord()')
+                        : (onStartRecord(), textChange(''), removeReplyBox())
+                      : console.log('kkkkkk')
+                    : showDisconectedToast('RECORD');
                 }}>
                 <View style={[styles.col_small, styles.sendIconBox]}>
                   {message && (
                     <Animated.View entering={ZoomIn} exiting={ZoomOut}>
-                      <Image
-                        source={IMAGE.send}
-                        style={styles.sendIconStyle}
-                      />
+                      <Image source={IMAGE.send} style={styles.sendIconStyle} />
                     </Animated.View>
                   )}
                   {!message && (
                     <Animated.View entering={ZoomIn} exiting={ZoomOut}>
-                      <Image
-                        source={IMAGE.mic}
-                        style={styles.sendIconStyle}
-                      />
+                      <Image source={IMAGE.mic} style={styles.sendIconStyle} />
                     </Animated.View>
                   )}
                 </View>
@@ -615,12 +624,12 @@ export const BottomViewNew = memo(props => {
             <Animated.View
               entering={FadeIn}
               exiting={FadeOut}
-              style={{ height: hp(35) }}>
+              style={{height: hp(35)}}>
               <EmojiKeyboard onSelectEmoji={emojiSelect} />
             </Animated.View>
           )}
         </View>
-      </KeyboardAvoidingView >
+      </KeyboardAvoidingView>
     </>
   );
 });
@@ -633,23 +642,24 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
-    minHeight: Platform.OS === 'ios' ? 80 : 50,
+    minHeight: Platform.OS === 'ios' ? 90 : 50,
     paddingVertical: 5,
     width: wp(100),
-    paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+    paddingTop: Platform.OS === 'ios' ? 10 : 0,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 0,
     zIndex: 1,
   },
   recordedAudioContainer: {
     position: 'absolute',
-    bottom: 0,
+    bottom: Platform.OS === 'ios' ? 20 : 0,
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
-    minHeight: Platform.OS === 'ios' ? 80 : 50,
+    minHeight: Platform.OS === 'ios' ? 50 : 50,
     paddingVertical: 5,
     width: wp(100),
-    paddingBottom: Platform.OS === 'ios' ? 20 : 0,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 0,
     zIndex: 2,
   },
   row: {
@@ -701,7 +711,7 @@ const styles = StyleSheet.create({
     color: color.lightBlack,
     textAlign: 'left',
     paddingRight: 10,
-    textAlignVertical: 'center'
+    textAlignVertical: 'center',
   },
   sendIconBox: {
     height: 40,
@@ -746,6 +756,7 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // flex: 1,
     alignItems: 'center',
+    marginBottom: 5
   },
   replyBoxRow: {
     flexDirection: 'row',
@@ -761,7 +772,7 @@ const styles = StyleSheet.create({
   },
   remplySenderName: {
     fontFamily: fontFamily.Medium,
-    fontSize: fontSize.size15,
+    fontSize: fontSize.size12,
     color: color.btnBlue,
     marginBottom: 5,
   },
@@ -774,8 +785,8 @@ const styles = StyleSheet.create({
   },
   replyBoxImage: {
     resizeMode: 'cover',
-    height: 50,
-    width: 50,
+    height: 40,
+    width: 40,
     borderRadius: 5,
   },
   replyBoxleftIcons: {
@@ -838,7 +849,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
     shadowOpacity: 1,
   },
@@ -859,7 +870,7 @@ const styles = StyleSheet.create({
     right: 20,
     top: 20,
     shadowColor: color.iconGray,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowRadius: 10,
     shadowOpacity: 1,
   },

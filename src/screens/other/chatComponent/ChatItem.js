@@ -478,7 +478,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(0.7),
   },
   leftChatTime: {
-    lineHeight: hp(1.5),
+    lineHeight: hp(1.6),
     alignSelf: 'flex-end',
     fontSize: 11,
     color: color.black,
