@@ -325,7 +325,8 @@ export const BottomViewNew = memo(props => {
                   paused={true}
                   controls={true}
                   style={{
-                    height: Dimensions.get('window').width / (16 / 9),
+                    // height: Dimensions.get('window').width / (16 / 9),
+                    height: hp(80),
                     width: wp(100),
                   }}
                 />
@@ -501,7 +502,7 @@ export const BottomViewNew = memo(props => {
                 </TouchableOpacity>
                 <TextInput
                   selectionColor={color.btnBlue}
-                  placeholder={'Write a reply....'}
+                  placeholder={'Message...'}
                   placeholderTextColor={color.lightBlack}
                   multiline={true}
                   editable={group_type == 1}

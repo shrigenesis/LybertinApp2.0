@@ -1,6 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useState, useMemo, useRef, memo, useEffect, useContext } from 'react';
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  memo,
+  useEffect,
+  useContext,
+} from 'react';
 import ReactNative, {
   View,
   Text,
@@ -12,17 +19,18 @@ import ReactNative, {
   Pressable,
   Platform,
   ActivityIndicator,
-  Alert
+  Alert,
+  Dimensions,
 } from 'react-native';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
-import { Header, Loader, pickDocument, pickImage } from './../../component/';
+import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -31,19 +39,20 @@ import {
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import { BottomView, RenderBottomSheet, ChatItemgroup } from './chatComponent/';
+import {BottomView, RenderBottomSheet, ChatItemgroup} from './chatComponent/';
 import io from 'socket.io-client';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { BottomSheetUploadFile, BottomSheetUploadFileStyle } from '../../component/BottomSheetUploadFile';
-import AudioContextProvider, { AudioContext } from '../../context/AudioContext';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {
+  BottomSheetUploadFile,
+  BottomSheetUploadFileStyle,
+} from '../../component/BottomSheetUploadFile';
+import AudioContextProvider, {AudioContext} from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-
-
+import {BottomViewNew} from './chatComponent/bottomViewNew';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
@@ -68,15 +77,13 @@ class GroupChat extends React.Component {
       roomId: '',
       menu: [],
       isShowBottomSheet: false,
-      progressFile: [],
       bottomViewHeight: 0,
-      offlinemessagesend: []
+      offlinemessagesend: [],
     };
     this.bottomSheetRef = React.createRef();
     this.chatListRef = React.createRef();
     this.snapPoints = [1, 300];
   }
-
 
   componentWillMount() {
     Socket = io.connect(socketUrl);
@@ -85,7 +92,7 @@ class GroupChat extends React.Component {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
       console.log('componentDidMount');
 
-      this.setState({ appReady: true });
+      this.setState({appReady: true});
       // let group_id = this.props?.route?.params?.group_id;
       // setTimeout(() => {
       let group_id = this.props?.route?.params?.group_id;
@@ -103,13 +110,12 @@ class GroupChat extends React.Component {
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
-        this.setState({ isConnected: true })
+        this.setState({isConnected: true});
       } else {
-        this.setState({ isConnected: false })
+        this.setState({isConnected: false});
       }
     });
   }
-
 
   onScrollHandler = () => {
     this.setState(
@@ -122,35 +128,31 @@ class GroupChat extends React.Component {
       },
     );
   };
-  handleOnReplyOn = (item) => {
-    this.setState({ replyOn: item });
+  handleOnReplyOn = item => {
+    this.setState({replyOn: item});
   };
-  handleOnReportOn = (item) => {
-    Alert.alert(
-      'Alert',
-      'Are you sure you want to report this message?',
-      [
-        {
-          text: 'NO',
-          onPress: () => null,
-          style: 'Cancel',
-        },
-        {
-          text: 'YES',
-          onPress: () => [this.reportMessage(item)],
-        },
-      ],
-    );
+  handleOnReportOn = item => {
+    Alert.alert('Alert', 'Are you sure you want to report this message?', [
+      {
+        text: 'NO',
+        onPress: () => null,
+        style: 'Cancel',
+      },
+      {
+        text: 'YES',
+        onPress: () => [this.reportMessage(item)],
+      },
+    ]);
   };
 
-  reportMessage = (item) => {
+  reportMessage = item => {
     console.log('reportMessage', item);
     let config = {
       url: ApiUrl.reportMessage,
       method: 'post',
       body: {
-        reported_to: item.uuid
-      }
+        reported_to: item.uuid,
+      },
     };
 
     APIRequest(
@@ -159,21 +161,21 @@ class GroupChat extends React.Component {
         console.log(res);
         Toast.show({
           type: 'success',
-          text1: res.alert.message
-        })
+          text1: res.alert.message,
+        });
       },
       err => {
         Toast.show({
           type: 'error',
-          text1: 'Something went wrong'
-        })
+          text1: 'Something went wrong',
+        });
       },
     );
-  }
+  };
 
   fetchChatList = group_id => {
     let userdata = new User().getuserdata();
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.groups}/${group_id}/getConversation?page=${this.state.page}`,
       method: 'post',
@@ -197,10 +199,10 @@ class GroupChat extends React.Component {
             Socket.emit('join chat', res.roomId);
           }
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
@@ -214,27 +216,35 @@ class GroupChat extends React.Component {
       }
     });
 
-    Socket.on('disconnect', (reason) => {
+    Socket.on('disconnect', reason => {
       console.log(reason);
       if (reason) {
-        this.fetchChatList()
+        this.fetchChatList();
       }
-    })
+    });
 
     Socket.on('typing', () => {
-      this.setState({ isTyping: true });
+      this.setState({isTyping: true});
     });
     Socket.on('stop typing', () => {
-      this.setState({ isTyping: false });
+      this.setState({isTyping: false});
     });
 
     Socket.on('message recieved', newMessageRecieved => {
-
-      const isExist = this.state.chatList?.findIndex((item) => item.uuid === newMessageRecieved.uuid)
+      const isExist = this.state.chatList?.findIndex(
+        item => item.uuid === newMessageRecieved.uuid,
+      );
       if (isExist === -1) {
         const data = [newMessageRecieved, ...this.state.chatList];
-        this.setState({ isLoading: false, chatList: data, previeosMessageId: newMessageRecieved.id });
-        this.GroupMessageReadMark(this.props?.route?.params?.group_id, newMessageRecieved.uuid);
+        this.setState({
+          isLoading: false,
+          chatList: data,
+          previeosMessageId: newMessageRecieved.id,
+        });
+        this.GroupMessageReadMark(
+          this.props?.route?.params?.group_id,
+          newMessageRecieved.uuid,
+        );
         return;
       }
     });
@@ -251,8 +261,8 @@ class GroupChat extends React.Component {
       method: 'post',
       body: {
         group_id: group_id,
-        message_id: message_id
-      }
+        message_id: message_id,
+      },
     };
     console.log(config);
     APIRequest(
@@ -277,7 +287,7 @@ class GroupChat extends React.Component {
   }
 
   fetchGroupDetail = group_id => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.groupDetail}${group_id}`,
       method: 'get',
@@ -289,32 +299,56 @@ class GroupChat extends React.Component {
         if (res.status) {
           let data = res?.conversation?.data;
 
-          this.setState({ groupDetail: res?.data });
+          this.setState({groupDetail: res?.data});
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
 
   setMessages = (res, type) => {
-    // Socket.emit('new message', {
-    //   ...res.conversation,
-    //   roomId: this.state.roomId,
-    // });
-    console.log('emit new message', res.conversation.message, this.state.chatList);
+    Socket.emit('new message', {
+      ...res.conversation,
+      roomId: this.state.roomId,
+    });
 
-    let data = [res.conversation, ...this.state.chatList];
+    const data = this.state.chatList?.filter(
+      item => item.uuid !== res.conversation.uuid,
+    );
+
     this.setState({
       isLoading: false,
       file: undefined,
       audioFile: '',
       message: '',
-      chatList: data,
+      chatList: [res.conversation, ...data],
     });
+  };
 
+  prepareSocketMessageObject = (uuid, message_type) => {
+    let date = new Date();
+    // let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let message = {
+      uuid: uuid,
+      from_id: userdata.id,
+      to_id: `${this.props?.route?.params?.group_id}`,
+      created_at: date,
+      roomId: this.state.roomId,
+      message: this.state.message,
+      is_archive_chat: 0,
+      message_type: message_type,
+      reply_to: null,
+      is_group: 1,
+      sender: {
+        id: userdata.id,
+        name: userdata.name,
+        avatar: userdata.avatar,
+      },
+    };
+    return message;
   };
 
   sendMessage = async () => {
@@ -323,8 +357,8 @@ class GroupChat extends React.Component {
     if (this.state.message == '') {
       Toast.show({
         type: 'info',
-        text1: 'Message Required'
-      })
+        text1: 'Message Required',
+      });
     } else {
       // this.setState({ isLoading: true });
       let reply_on = null;
@@ -334,43 +368,30 @@ class GroupChat extends React.Component {
           message_type: this.state?.replyOn?.message_type,
           message: this.state?.replyOn?.message,
           file_name: this.state?.replyOn?.file_name,
-        }
+        };
       }
 
       let uuid = uuidv4();
-      let date = new Date()
-      let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      let message = {
-        uuid: uuid,
-        from_id: userdata.id,
-        to_id: `${this.props?.route?.params?.group_id}`,
-        created_at: date,
-        time_zone: timeZone,
-        roomId: this.state.roomId,
-        message: this.state.message,
-        is_archive_chat: 0,
-        message_type: 0,
-        reply_to: null,
-        is_group: 1,
-        sender: {
-          id: userdata.id,
-          name: userdata.name,
-          avatar: userdata.avatar,
-        }
-      } 
+
+      let message = this.prepareSocketMessageObject(uuid, 0);
 
       let data = [message, ...this.state.chatList];
 
       if (!this.state.isConnected) {
         try {
-          let OfflineMessage = await AsyncStorage.getItem('SINGLE_CHAT_MESSAGE');
+          let OfflineMessage = await AsyncStorage.getItem(
+            'SINGLE_CHAT_MESSAGE',
+          );
           if (OfflineMessage === null) {
-            OfflineMessage = []
+            OfflineMessage = [];
           } else {
-            OfflineMessage = JSON.parse(OfflineMessage)
+            OfflineMessage = JSON.parse(OfflineMessage);
           }
           OfflineMessage.push(message);
-          await AsyncStorage.setItem('SINGLE_CHAT_MESSAGE', JSON.stringify(OfflineMessage));
+          await AsyncStorage.setItem(
+            'SINGLE_CHAT_MESSAGE',
+            JSON.stringify(OfflineMessage),
+          );
         } catch (error) {
           console.log(error);
         }
@@ -386,8 +407,6 @@ class GroupChat extends React.Component {
         return;
       }
 
-
-
       Socket.emit('new message', message);
 
       let config = {
@@ -398,7 +417,8 @@ class GroupChat extends React.Component {
           is_archive_chat: 0,
           to_id: `${this.props?.route?.params?.group_id}`,
           message: this.state.message,
-          reply_to: this.state?.replyOn !== undefined ? JSON.stringify(reply_on) : null,
+          reply_to:
+            this.state?.replyOn !== undefined ? JSON.stringify(reply_on) : null,
           is_group: 1,
         },
       };
@@ -416,13 +436,13 @@ class GroupChat extends React.Component {
         res => {
           this.setState({
             replyOn: undefined,
-            previeosMessageId: res.conversation.id
+            previeosMessageId: res.conversation.id,
           });
           // this.setMessages(res, 'message');
         },
         err => {
           console.log(err);
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
         },
       );
     }
@@ -436,8 +456,8 @@ class GroupChat extends React.Component {
       });
       return;
     }
-    const d = new Date();
-    let ms = d.getMilliseconds();
+
+    let uuid = uuidv4();
     let formData = new FormData();
     if (this.state.audioFile != '') {
       formData.append('file', {
@@ -450,117 +470,103 @@ class GroupChat extends React.Component {
           android: {
             name: 'test.mp3',
             type: 'audio/mp3',
-          }
-        })
+          },
+        }),
       });
     } else if (this.state.file.fileType === 'pdf') {
       formData.append('file', this.state.file);
     } else {
-      let type = this.state.file.type.split("/")
+      let type = this.state.file.type.split('/');
       if (this.state.file != '') {
         formData.append('file', {
           uri: this.state.file.uri,
-          name: `images${ms}.${type[1]}`,
-          type: this.state.file.type
-        })
-      }
-      else {
+          name: `images${uuid}.${type[1]}`,
+          type: this.state.file.type,
+        });
+      } else {
         Toast.show({
           type: 'info',
-          text1: 'Media Required'
-        })
+          text1: 'Media Required',
+        });
         return;
       }
 
       // formData.append('file', this.state.file);
     }
 
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     formData.append('to_id', `${this.props?.route?.params?.group_id}`);
     formData.append('is_group', 1);
-    formData.append('uniqueId', ms);
-
-    console.log(formData, "formData")
+    formData.append('uuid', String(uuid));
 
     let config = {
       url: ApiUrl.sendFile,
       method: 'post',
       body: formData,
-      uniqueId: ms
     };
 
-    if (this.state.audioFile != '') {
-      this.setState({
-        file: undefined, audioFile: '',
-        progressFile: [...this.state.progressFile, { type: 'audio', uniqueId: ms }]
-      })
-    } else {
-      this.setState({
-        file: undefined, audioFile: '',
-        progressFile: [...this.state.progressFile, { type: this.state.file.fileType, uniqueId: ms }]
-      })
-    }
-    console.log(config);
-    // this.setState({ file: undefined , audioFile: ''});
+    let message = this.prepareSocketMessageObject(uuid, 12);
+    let data = [message, ...this.state.chatList];
+
+    this.setState({
+      file: undefined,
+      audioFile: '',
+      chatList: data,
+    });
+
     APIRequestWithFile(
       config,
       res => {
         if (res.status) {
-          if (res?.conversation?.uniqueId) {
-            const data = this.state.progressFile?.filter((item, i) => item.uniqueId != res?.conversation?.uniqueId)
-            this.setState({ progressFile: data })
-          }
           this.setMessages(res);
         }
       },
       err => {
         if (err.response.status === 422) {
-          let errorMsg = ''
+          let errorMsg = '';
           if (err?.response?.data?.error?.to_id) {
-            errorMsg = err?.response?.data?.error?.to_id[0]
+            errorMsg = err?.response?.data?.error?.to_id[0];
           }
           if (err?.response?.data?.error?.file) {
-            errorMsg = err?.response?.data?.error?.file[0]
-            if (err?.response?.data?.uniqueId) {
-              const data = this.state.progressFile?.filter((item, i) => item.uniqueId != err?.response?.data?.uniqueId)
-              this.setState({ progressFile: data })
-            }
+            errorMsg = err?.response?.data?.error?.file[0];
+            // if (err?.response?.data?.uniqueId) {
+            //   const data = this.state.progressFile?.filter((item, i) => item.uniqueId != err?.response?.data?.uniqueId)
+            //   this.setState({ progressFile: data })
+            // }
           }
           Toast.show({
             type: 'error',
-            text1: errorMsg
+            text1: errorMsg,
           });
         } else {
           Toast.show({
             type: 'error',
-            text1: err?.message
+            text1: err?.message,
           });
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
-
   };
 
   // hide Bottom sheet
   setisShowBottomSheet = () => {
-    this.setState({ isShowBottomSheet: false });
+    this.setState({isShowBottomSheet: false});
   };
   // Update file from bottom sheet
   UpdateFile = file => {
-    this.setState({ file: file, isShowBottomSheet: false });
+    this.setState({file: file, isShowBottomSheet: false});
   };
 
   updateBottomViewHeight(event) {
-    let { height } = event.nativeEvent.layout;
+    let {height} = event.nativeEvent.layout;
     if (this.state.bottomViewHeight !== height) {
-      this.setState({ bottomViewHeight: height })
+      this.setState({bottomViewHeight: height});
     }
   }
 
-
   render() {
-    const { group_type, privacy, media_privacy, name, description } =
+    const {group_type, privacy, media_privacy, name, description} =
       this.state?.groupDetail;
 
     return (
@@ -574,7 +580,7 @@ class GroupChat extends React.Component {
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}
             LeftIcon={() => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
@@ -623,7 +629,7 @@ class GroupChat extends React.Component {
                       this.props.navigation.navigate('groupInfo', {
                         groupId: this.state.groupId,
                         privacy: this.props.route.params.privacy,
-                        isAdmin: this.state.isAdmin
+                        isAdmin: this.state.isAdmin,
                       });
                     }}
                     style={{
@@ -631,24 +637,31 @@ class GroupChat extends React.Component {
                       marginLeft: wp(3),
                       marginTop: hp(1),
                     }}>
-                    <Text numberOfLines={1} style={styles.heading}>{name}</Text>
-                    <Text numberOfLines={1} style={styles.onlineText}>{description}</Text>
+                    <Text numberOfLines={1} style={styles.heading}>
+                      {name}
+                    </Text>
+                    <Text numberOfLines={1} style={styles.onlineText}>
+                      {description}
+                    </Text>
                   </TouchableOpacity>
                 </TouchableOpacity>
               </View>
             )}
             title={null}
           />
-          <View style={{
-            ...Platform.select({
-              ios: {
-                height: hp(87)
-              },
-              android: {
-                flex: 1
-              }
-            })
-          }}>
+          <View
+            style={{
+              height: Dimensions.get('window').height - 65,
+              gap: 10,
+              // ...Platform.select({
+              //   ios: {
+              //     height: hp(91),
+              //   },
+              //   android: {
+              //     flex: 1,
+              //   },
+              // }),
+            }}>
             <AudioContextProvider>
               <FlatList
                 ref={this.chatListRef}
@@ -658,139 +671,104 @@ class GroupChat extends React.Component {
                 keyExtractor={item => item.uuid}
                 onEndReached={this.onScrollHandler}
                 onEndThreshold={1}
-                renderItem={({ item, index }) => (
-                  <View>
-                    {/* <Text>{item.sender.id}</Text> */}
-                    <ChatItemgroup
-                      onImagePress={files =>
-                        this.props.navigation.navigate('ShowImg', {
-                          file: files?.file,
-                          fileType: files?.fileType,
-                        })
-                      }
-                      user_id={this.props?.route?.params?.user_id}
-                      // avatar={this.props?.route?.params?.avatar}
-                      avatar={item?.sender?.avatar}
-                      item={item}
-                      index={index}
-                      menu={this.state.menu}
-                      replyOn={(replyMSG) => this.handleOnReplyOn(replyMSG)}
-                      reportOn={(replyMSG) => this.handleOnReportOn(replyMSG)}
-                    />
-                  </View>
+                style={{
+                  flex: 1,
+                }}
+                renderItem={({item, index}) => (
+                  <ChatItemgroup
+                    onImagePress={files =>
+                      this.props.navigation.navigate('ShowImg', {
+                        file: files?.file,
+                        fileType: files?.fileType,
+                      })
+                    }
+                    user_id={this.props?.route?.params?.user_id}
+                    // avatar={this.props?.route?.params?.avatar}
+                    avatar={item?.sender?.avatar}
+                    item={item}
+                    index={index}
+                    menu={this.state.menu}
+                    replyOn={replyMSG => this.handleOnReplyOn(replyMSG)}
+                    reportOn={replyMSG => this.handleOnReportOn(replyMSG)}
+                  />
                 )}
               />
-
-              {/* progress of file upload */}
-              {this.state.progressFile.map((item) => (
-                <View style={[{ paddingHorizontal: 15, paddingVertical: 10 }, this.state.bottomViewHeight > 500 && { display: 'none' }]}>
-                  <View style={{
-                    flexDirection: 'row',
-                    alignItems: 'flex-end',
-                    alignSelf: 'flex-end',
-                    backgroundColor: color.chatRight,
-                    padding: 10,
-                    borderRadius: 10,
-                    columnGap: 10,
-                  }}>
-                    < ActivityIndicator size="small" color="#0000ff" />
-                    <Text style={{ fontStyle: 'italic' }}>Uploading...</Text>
-                  </View>
-                </View>
-              ))}
-              {/* <View style={[{paddingHorizontal:15, paddingVertical:10}, this.state.bottomViewHeight>500 && { display:'none'}]}>
-                <View style={{
-                  flexDirection: 'row',
-                  alignItems: 'flex-end',
-                  alignSelf: 'flex-end',
-                  backgroundColor: color.lightSlaty,
-                  padding:10,
-                  borderRadius:10,
-                  columnGap:10,
-                }}>
-                  < ActivityIndicator size="small" color="#0000ff" />
-                  <Text>Uploading...</Text>
-                </View>
-              </View> */}
 
               {this.state.is_exit === false ? (
                 <>
                   {(this.state.groupType == 2 && this.state.isAdmin == true) ||
-                    this.state.groupType == 1 ? (
-
-                    <BottomView
+                  this.state.groupType == 1 ? (
+                    <BottomViewNew
                       // group_type={group_type}
                       pickCamera={
                         (this.state.mediaPrivacy == 2 &&
                           this.state.isAdmin == true) ||
                         this.state.mediaPrivacy == 1
                       }
-                      // media_privacy={media_privacy}
+                      media_privacy={media_privacy}
                       message={this.state.message}
-                      replyOn={this.state.replyOn !== undefined ? this.state.replyOn : null}
-                      removeReplyBox={() => this.setState({ replyOn: null })}
+                      replyOn={
+                        this.state.replyOn !== undefined
+                          ? this.state.replyOn
+                          : null
+                      }
+                      removeReplyBox={() => this.setState({replyOn: null})}
                       file={this.state.file}
-                      audioFile={file => this.setState({ audioFile: file })}
-                      deleteFile={() => this.setState({ file: undefined })}
+                      audioFile={file => this.setState({audioFile: file})}
+                      deleteFile={() => this.setState({file: undefined})}
                       sendMessage={
                         this.state.file || this.state.audioFile != ''
                           ? this.sendFile
                           : this.sendMessage
                       }
-                      textChange={v => this.setState({ message: v })}
+                      textChange={v => this.setState({message: v})}
                       inputFocus={() => this.bottomSheetRef?.current?.close()}
                       addPress={() => {
                         (this.state.groupType == 2 &&
                           this.state.isAdmin == true) ||
-                          (this.state.groupType == 1 &&
-                            this.state.mediaPrivacy == 2 &&
-                            this.state.isAdmin == true) ||
-                          (this.state.groupType == 1 &&
-                            this.state.mediaPrivacy == 1)
-                          ? (
-                            this.setState({ isShowBottomSheet: true })
-
-                          )
+                        (this.state.groupType == 1 &&
+                          this.state.mediaPrivacy == 2 &&
+                          this.state.isAdmin == true) ||
+                        (this.state.groupType == 1 &&
+                          this.state.mediaPrivacy == 1)
+                          ? this.setState({isShowBottomSheet: true})
                           : alert(
-                            'You do not have access to send media in this group.',
-                          );
+                              'You do not have access to send media in this group.',
+                            );
                         Keyboard.dismiss();
                       }}
                       emojiSelect={v => {
-                        this.setState({ message: `${this.state.message}${v}` });
+                        this.setState({message: `${this.state.message}${v}`});
                       }}
                       isConnected={this.state.isConnected}
                       setFile={file => {
-                        this.setState({ file: file });
+                        this.setState({file: file});
                       }}
-                      updateBottomViewHeight={this.updateBottomViewHeight.bind(this)}
-
+                      updateBottomViewHeight={this.updateBottomViewHeight.bind(
+                        this,
+                      )}
                     />
                   ) : (
-                    <View style={{ height: 60 }}>
-                      <Text
-                        style={{
-                          fontSize: 16,
-                          textAlign: 'center',
-                          marginLeft: 1,
-                          marginTop: 3,
-                        }}>
+                    <View style={styles.noLongerMemeberBox}>
+                      <Image
+                        source={IMAGE.camera}
+                        style={styles.noLongerMemeberIcon}
+                      />
+                      <Text style={styles.noLongerMemeberText}>
                         You can't send messages to this group.
                       </Text>
                     </View>
                   )}
                 </>
               ) : (
-                <View style={{ height: 60 }}>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      textAlign: 'center',
-                      marginLeft: 1,
-                      marginTop: 1,
-                    }}>
-                    You can't send messages to this group because you're no longer
-                    a participant.
+                <View style={styles.noLongerMemeberBox}>
+                  <Image
+                    source={IMAGE.camera}
+                    style={styles.noLongerMemeberIcon}
+                  />
+                  <Text style={styles.noLongerMemeberText}>
+                    You can't send messages to this group because you're no
+                    longer a participant.
                   </Text>
                 </View>
               )}
@@ -917,8 +895,8 @@ class GroupChat extends React.Component {
               bottomSheetRef={this.bottomSheetRef}
             /> */}
           </View>
-        </View >
-      </SafeAreaView >
+        </View>
+      </SafeAreaView>
     );
   }
 }
@@ -946,5 +924,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  noLongerMemeberBox: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 30,
+    paddingHorizontal: 30,
+    paddingVertical: 20,
+    backgroundColor: color.red,
+    gap: 20,
+  },
+  noLongerMemeberIcon: {
+    resizeMode: 'contain',
+    height: 35,
+    width: 35,
+    tintColor: color.white,
+  },
+  noLongerMemeberText: {
+    fontSize: fontSize.size13,
+    fontFamily: fontFamily.Medium,
+    color: color.white,
   },
 });

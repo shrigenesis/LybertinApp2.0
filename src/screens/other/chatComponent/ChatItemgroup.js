@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useRef, useContext, useEffect } from 'react';
+import React, {useRef, useContext, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,21 +13,20 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily, fontSize } from '../../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../../constant/';
 import moment from 'moment';
 import SoundPlayer from './../../../component/soundPlayer';
-import { IMAGEURL } from '../../../utils/api';
+import {IMAGEURL} from '../../../utils/api';
 import Video from 'react-native-video';
-import Slider from 'react-native-slider'
+import Slider from 'react-native-slider';
 import {
   Menu,
   MenuOptions,
   MenuOption,
   MenuTrigger,
-} from 'react-native-popup-menu'; // 
-import { AudioContext } from '../../../context/AudioContext';
-
-
+} from 'react-native-popup-menu'; //
+import {AudioContext} from '../../../context/AudioContext';
+import { ActivityIndicator } from 'react-native';
 
 const getTime = time => {
   if (time) {
@@ -73,6 +72,8 @@ const _getStyleSelector = (item, direction) => {
       return direction === 'left' ? styles.zipWrapper : styles.zipWrapperRight; //
     case 11:
       return direction === 'left' ? styles.rarWrapper : styles.rarWrapperRight; //
+    case 12:
+      return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
   }
 };
 
@@ -88,7 +89,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
             recordingFile={`${IMAGEURL}/${item.file_name}`}
           />
         </TouchableOpacity>
-      )
+      );
     } else {
       return (
         // <TouchableOpacity
@@ -108,18 +109,17 @@ const _renderMessage = (item, style, videoRef, direction) => {
           }}>
           <TouchableOpacity
             onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
-            style={styles.playpause}
-          >
-            <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+            style={styles.playpause}>
+            <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
           </TouchableOpacity>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Slider
-              style={{ width: wp(28), marginLeft: wp(3) }}
+              style={{width: wp(28), marginLeft: wp(3)}}
               trackStyle={styles.track}
               thumbStyle={styles.thumb}
-              minimumTrackTintColor='#681F84'
-              thumbTouchSize={{ width: 50, height: 40 }}
+              minimumTrackTintColor="#681F84"
+              thumbTouchSize={{width: 50, height: 40}}
               minimumValue={0}
               value={0}
               maximumValue={10}
@@ -128,9 +128,9 @@ const _renderMessage = (item, style, videoRef, direction) => {
           </View>
         </View>
         // </TouchableOpacity>
-      )
+      );
     }
-  }
+  };
 
   switch (item.message_type) {
     case 0:
@@ -155,7 +155,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
             <View style={styles.imageOverlay}></View>
 
             <Image
-              source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
+              source={{uri: `${IMAGEURL}/${item?.file_name}`}}
               style={styles.image}
             />
             <Text style={[styles.rightChatTime, styles.imageTime]}>
@@ -172,10 +172,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
           )}
 
           <View style={styles.flexboxImage}>
-            <Image
-              source={IMAGE.pdf}
-              style={styles.Pdf}
-            />
+            <Image source={IMAGE.pdf} style={styles.Pdf} />
             <Text style={styles.PdfName}>{item.file_original_name}</Text>
           </View>
           {/* <Image source={IMAGE.pdf} style={styles.pdf} /> */}
@@ -186,7 +183,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return (
         <>
           {direction === 'left' && (
-            <Text style={{ color: color.btnBlue }}>{item.sender.name}</Text>
+            <Text style={{color: color.btnBlue}}>{item.sender.name}</Text>
           )}
           <View>
             <Image source={IMAGE.file} style={styles.file} />
@@ -199,7 +196,9 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return (
         <View>
           {direction === 'left' && (
-            <Text style={[styles.generalSenderText, { paddingBottom: 0 }]}>{item.sender.name}</Text>
+            <Text style={[styles.generalSenderText, {paddingBottom: 0}]}>
+              {item.sender.name}
+            </Text>
           )}
           {Audio()}
 
@@ -229,7 +228,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
                 });
               }}
               paused={true}
-              source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
+              source={{uri: `${IMAGEURL}/${item?.file_name}`}}
               resizeMode={'cover'}
               style={styles.video}
             />
@@ -259,121 +258,156 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return <Image source={IMAGE.zip_file} style={styles.file} />; //ZIP
     case 11:
       return <Image source={IMAGE.zip_file} style={styles.file} />; //RAR
+    case 12:
+      return (
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            alignSelf: 'flex-end',
+            backgroundColor: color.chatRight,
+            padding: 10,
+            borderRadius: 10,
+            columnGap: 10,
+          }}>
+          <ActivityIndicator size="small" color={color.btnBlue} />
+          <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
+        </View>
+      ); //uploading
   }
 };
 
-
 export const ChatItemgroup = React.memo(
-  ({ item, user_id, avatar, index, onImagePress, menu, replyOn, reportOn }) => {
+  ({item, user_id, avatar, index, onImagePress, menu, replyOn, reportOn}) => {
     const audio = useContext(AudioContext);
     const videoRef = useRef();
     const Action = item => {
       audio?.setaudio('');
       // let url = `${IMAGEURL}${item.message}`;
       if (item.message_type == 2) {
-        onImagePress({ file: item.file_name, fileType: 'pdf' });
+        onImagePress({file: item.file_name, fileType: 'pdf'});
       } else if (item.message_type == 1) {
-        onImagePress({ file: item.file_name, fileType: 'photo' });
+        onImagePress({file: item.file_name, fileType: 'photo'});
       } else if (item.message_type == 5) {
-        onImagePress({ file: item.file_name, fileType: 'video' });
+        onImagePress({file: item.file_name, fileType: 'video'});
       }
     };
     const openMenu = () => {
       menu.open();
     };
-    const getIconAndMessageOnReplyBox = (replyMSG) => {
+    const getIconAndMessageOnReplyBox = replyMSG => {
       const item = JSON.parse(replyMSG?.reply_to);
       if (item?.message_type == '0') {
         return (
           <>
-            <Text style={{ fontFamily: fontFamily.Regular, fontSize: fontSize.size15 }} > {item?.message} </Text>
+            <Text
+              style={{
+                fontFamily: fontFamily.Regular,
+                fontSize: fontSize.size15,
+              }}>
+              {' '}
+              {item?.message}{' '}
+            </Text>
           </>
-        )
+        );
       }
       if (item?.message_type == '1') {
         return (
           <>
-            <Image
-              source={IMAGE.camera}
-              style={styles.replyBoxImgIcon}
-            />
-            <Text style={styles.replyBoxImgText} > Image </Text>
+            <Image source={IMAGE.camera} style={styles.replyBoxImgIcon} />
+            <Text style={styles.replyBoxImgText}> Image </Text>
           </>
-        )
+        );
       }
       if (item?.message_type == '4') {
         return (
           <>
             <Image
               source={IMAGE.micIconPurple}
-              style={{ resizeMode: 'contain', height: 14, width: 14 }}
+              style={{resizeMode: 'contain', height: 14, width: 14}}
             />
-            <Text style={styles.replyBoxImgText} > Voice Message  </Text>
+            <Text style={styles.replyBoxImgText}> Voice Message </Text>
           </>
-        )
+        );
       }
       if (item?.message_type == '5') {
         return (
           <>
             <Image
               source={IMAGE.videoIconPurple}
-              style={{ resizeMode: 'contain', height: 14, width: 14 }}
+              style={{resizeMode: 'contain', height: 14, width: 14}}
             />
-            <Text style={styles.replyBoxImgText} > Video </Text>
+            <Text style={styles.replyBoxImgText}> Video </Text>
           </>
-        )
-      }
-
-      else {
+        );
+      } else {
         return (
           <>
             <Image
               source={IMAGE.documentIconPurple}
-              style={{ resizeMode: 'contain', height: 14, width: 14 }}
+              style={{resizeMode: 'contain', height: 14, width: 14}}
             />
-            <Text style={styles.replyBoxImgText} > Document </Text>
+            <Text style={styles.replyBoxImgText}> Document </Text>
           </>
-        )
+        );
       }
-
-    }
+    };
     if (item.from_id != user_id) {
       return (
-        <View key={String(index)} style={styles.listInner} >
-
+        <View key={String(index)} style={styles.listInner}>
           {item?.message_type !== 9 && (
             <View>
               {avatar ? (
                 <Image
-                  source={{ uri: `${IMAGEURL}/${avatar}` }}
+                  source={{uri: `${IMAGEURL}/${avatar}`}}
                   style={styles.imgBox}
                 />
               ) : (
                 <Image
                   source={IMAGE.chatgirl}
-                  style={{ height: 40, width: 40 }}
+                  style={{height: 40, width: 40}}
                 />
               )}
             </View>
           )}
           <Menu ref={c => (menu = c)}>
             <MenuOptions>
-              <MenuOption onSelect={() => replyOn(item)} >
-                <View style={{ flex: 1, flexDirection: 'row', minHeight: hp(4), alignItems: 'center' }}>
-                  <Image
-                    source={IMAGE.reply}
-                    style={styles.replyBtn}
-                  />
-                  <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Reply</Text>
+              <MenuOption onSelect={() => replyOn(item)}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    minHeight: hp(4),
+                    alignItems: 'center',
+                  }}>
+                  <Image source={IMAGE.reply} style={styles.replyBtn} />
+                  <Text
+                    style={{
+                      color: color.black,
+                      fontFamily: fontFamily.Semibold,
+                      fontSize: fontSize.size16,
+                    }}>
+                    Reply
+                  </Text>
                 </View>
               </MenuOption>
-              <MenuOption onSelect={() => reportOn(item)} >
-                <View style={{ flex: 1, flexDirection: 'row', minHeight: hp(4), alignItems: 'center' }}>
-                  <Image
-                    source={IMAGE.report}
-                    style={styles.replyBtn}
-                  />
-                  <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Report</Text>
+              <MenuOption onSelect={() => reportOn(item)}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    minHeight: hp(4),
+                    alignItems: 'center',
+                  }}>
+                  <Image source={IMAGE.report} style={styles.replyBtn} />
+                  <Text
+                    style={{
+                      color: color.black,
+                      fontFamily: fontFamily.Semibold,
+                      fontSize: fontSize.size16,
+                    }}>
+                    Report
+                  </Text>
                 </View>
               </MenuOption>
             </MenuOptions>
@@ -384,22 +418,34 @@ export const ChatItemgroup = React.memo(
             onLongPress={openMenu}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'left')]}>
-            <View style={{ ...styles.chatBoxWarrper }} >
+            <View style={{...styles.chatBoxWarrper}}>
               {item?.reply_to !== null && (
                 <View style={[styles.replyBox, styles.replyBoxLeft]}>
-                  <View >
-                    <Text style={{ color: color.btnBlue }} >{(JSON.parse(item?.reply_to).name)}</Text>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                  <View>
+                    <Text style={{color: color.btnBlue}}>
+                      {JSON.parse(item?.reply_to).name}
+                    </Text>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
                       {getIconAndMessageOnReplyBox(item)}
                     </View>
                   </View>
-                  {(JSON.parse(item?.reply_to).message_type) == '1' && (
+                  {JSON.parse(item?.reply_to).message_type == '1' && (
                     <Image
-                      source={{ uri: `${IMAGEURL}/${JSON.parse(item?.reply_to).file_name}` }}
-                      style={{ resizeMode: 'contain', height: 30, width: 30 }}
+                      source={{
+                        uri: `${IMAGEURL}/${
+                          JSON.parse(item?.reply_to).file_name
+                        }`,
+                      }}
+                      style={{resizeMode: 'contain', height: 30, width: 30}}
                     />
                   )}
-                </View>)}
+                </View>
+              )}
               <View>
                 {_renderMessage(item, styles.leftChatText, videoRef, 'left')}
               </View>
@@ -416,16 +462,25 @@ export const ChatItemgroup = React.memo(
           }}>
           <Menu ref={c => (menu = c)}>
             <MenuOptions>
-              <MenuOption onSelect={() => replyOn(item)} >
-                <View style={{ flex: 1, flexDirection: 'row', minHeight: hp(4), alignItems: 'center' }}>
-                  <Image
-                    source={IMAGE.reply}
-                    style={styles.replyBtn}
-                  />
-                  <Text style={{ color: color.black, fontFamily: fontFamily.Semibold, fontSize: fontSize.size16 }}>Reply</Text>
+              <MenuOption onSelect={() => replyOn(item)}>
+                <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    minHeight: hp(4),
+                    alignItems: 'center',
+                  }}>
+                  <Image source={IMAGE.reply} style={styles.replyBtn} />
+                  <Text
+                    style={{
+                      color: color.black,
+                      fontFamily: fontFamily.Semibold,
+                      fontSize: fontSize.size16,
+                    }}>
+                    Reply
+                  </Text>
                 </View>
               </MenuOption>
-              
             </MenuOptions>
             <MenuTrigger text="" />
           </Menu>
@@ -434,22 +489,34 @@ export const ChatItemgroup = React.memo(
             onLongPress={openMenu}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'right')]}>
-            <View style={{ ...styles.chatBoxWarrper }} >
+            <View style={{...styles.chatBoxWarrper}}>
               {item?.reply_to !== null && (
                 <View style={styles.replyBox}>
-                  <View >
-                    <Text style={{ color: color.btnBlue }} >{(JSON.parse(item?.reply_to).name)}</Text>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                  <View>
+                    <Text style={{color: color.btnBlue}}>
+                      {JSON.parse(item?.reply_to).name}
+                    </Text>
+                    <View
+                      style={{
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
                       {getIconAndMessageOnReplyBox(item)}
                     </View>
                   </View>
-                  {(JSON.parse(item?.reply_to).message_type) == '1' && (
+                  {JSON.parse(item?.reply_to).message_type == '1' && (
                     <Image
-                      source={{ uri: `${IMAGEURL}/${JSON.parse(item?.reply_to).file_name}` }}
-                      style={{ resizeMode: 'contain', height: 30, width: 30 }}
+                      source={{
+                        uri: `${IMAGEURL}/${
+                          JSON.parse(item?.reply_to).file_name
+                        }`,
+                      }}
+                      style={{resizeMode: 'contain', height: 30, width: 30}}
                     />
                   )}
-                </View>)}
+                </View>
+              )}
               <View>
                 {_renderMessage(item, styles.rightChatText, videoRef, 'right')}
               </View>
@@ -525,6 +592,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderBottomRightRadius: 0,
     // width:"60%",
+    minWidth: '25%',
+    maxWidth: '85%',
+    alignSelf: 'flex-end',
+  },
+  
+  activityLoaderWrapper: {
+    marginTop: 10,
     minWidth: '25%',
     maxWidth: '85%',
     alignSelf: 'flex-end',
@@ -730,7 +804,6 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
 
-
   replyBox: {
     minWidth: '60%',
     marginBottom: 5,
@@ -740,10 +813,10 @@ const styles = StyleSheet.create({
     // flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: "flex-start",
+    alignItems: 'flex-start',
     borderLeftWidth: 4,
     borderLeftColor: color.btnBlue,
-    borderRadius: 5
+    borderRadius: 5,
   },
   replyBoxLeft: {
     marginTop: 10,
@@ -754,19 +827,19 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     height: 12,
     width: 12,
-    tintColor: color.btnBlue
+    tintColor: color.btnBlue,
   },
   replyBoxImgText: {
     marginTop: 2,
     fontFamily: fontFamily.Regular,
     fontSize: fontSize.size12,
-    color: color.btnBlue
+    color: color.btnBlue,
   },
   playpause: {
     alignItems: 'center',
     justifyContent: 'center',
     width: wp(10),
-    height: hp(4)
+    height: hp(4),
   },
   track: {
     height: 3,
@@ -778,7 +851,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
     shadowOpacity: 1,
   },
@@ -786,7 +859,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
-    columnGap: 5
+    columnGap: 5,
   },
   Pdf: {
     height: 40,
@@ -798,6 +871,6 @@ const styles = StyleSheet.create({
     fontSize: fontSize.size12,
     color: color.blackRussian,
     fontFamily: fontFamily.Medium,
-    maxWidth: wp(60)
-  }
+    maxWidth: wp(60),
+  },
 });

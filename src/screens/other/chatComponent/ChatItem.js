@@ -29,6 +29,7 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu'; //
+import FastImage from 'react-native-fast-image';
 const getTime = time => {
   if (time) {
     return moment(time).format('DD, MMM HH:mm');
@@ -73,7 +74,7 @@ const _getStyleSelector = (item, direction) => {
     case 11:
       return direction === 'left' ? styles.rarWrapper : styles.rarWrapperRight; //
     case 12:
-      return direction === 'left' ? "" : styles.activityLoaderWrapper; //
+      return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
   }
 };
 const _renderMessage = (item, style) => {
@@ -162,9 +163,12 @@ const _renderMessage = (item, style) => {
         <>
           <View style={styles.imageOverlayWrapperImage}>
             <View style={styles.imageOverlay}></View>
-            <Image
-              source={{uri: `${IMAGEURL}/${item?.file_name}`}}
+            <FastImage
               style={styles.image}
+              source={{
+                uri: `${IMAGEURL}/${item?.file_name}`,
+                priority: FastImage.priority.normal,
+              }}
             />
             <Text style={[styles.leftChatTime, styles.imageTime]}>
               {getTime(item.created_at)}
@@ -285,7 +289,7 @@ const _renderMessage = (item, style) => {
           <ActivityIndicator size="small" color={color.btnBlue} />
           <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
         </View>
-      ); //uploadin
+      ); //uploading
   }
 };
 

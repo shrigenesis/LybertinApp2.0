@@ -237,12 +237,11 @@ class Chat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
-
-    // let data = [res.conversation, ...this.state.chatList];
+    
     const data = this.state.chatList?.filter(
       item => item.uuid !== res.conversation.uuid,
-      );
-      console.log(res.conversation.uuid,data);
+    );
+    
     this.setState({
       isLoading: false,
       file: undefined,
@@ -250,10 +249,6 @@ class Chat extends React.Component {
       message: '',
       chatList: [res.conversation, ...data],
     });
-
-    // setTimeout(() => {
-    //   this.chatListRef?.current?.scrollToEnd({animated: true});
-    // }, 1000);
   };
 
   prepareSocketMessageObject = (uuid, message_type) => {
@@ -292,7 +287,7 @@ class Chat extends React.Component {
 
       let uuid = uuidv4();
 
-      let message = this.prepareSocketMessageObject(uuid,0);
+      let message = this.prepareSocketMessageObject(uuid, 0);
       let data = [message, ...this.state.chatList];
 
       if (!this.state.isConnected) {
@@ -401,7 +396,7 @@ class Chat extends React.Component {
     }
 
     formData.append('to_id', `${this.props?.route?.params?.user_id}`);
-    formData.append('uuid', uuid);
+    formData.append('uuid', String(uuid));
     this.setState({isLoading: true});
 
     let config = {
@@ -410,7 +405,7 @@ class Chat extends React.Component {
       body: formData,
     };
 
-    let message = this.prepareSocketMessageObject(uuid,12);
+    let message = this.prepareSocketMessageObject(uuid, 12);
     let data = [message, ...this.state.chatList];
 
     this.setState({
@@ -435,7 +430,7 @@ class Chat extends React.Component {
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0];
             // if (err?.response?.data?.uniqueId) {
-            //   const data = this.state.chatList?.filter(
+            //   const data = this.state.progressFile?.filter(
             //     (item, i) => item.uniqueId !== err?.response?.data?.uniqueId,
             //   );
             //   this.setState({progressFile: data});
@@ -452,7 +447,6 @@ class Chat extends React.Component {
           });
         }
         this.setState({isLoading: false});
-        console.log('sendFile err', err);
       },
     );
   };
@@ -611,10 +605,6 @@ class Chat extends React.Component {
         </SafeAreaView>
 
         <View
-          // style={{
-          //   // flex: 1,
-          //   // gap: 10
-          // }}
           style={{
             gap: 10,
             ...Platform.select({
@@ -622,7 +612,7 @@ class Chat extends React.Component {
                 height: hp(91),
               },
               android: {
-                
+                flex: 1,
               },
             }),
           }}>
@@ -635,7 +625,7 @@ class Chat extends React.Component {
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
               style={{
-                flex: 1
+                flex: 1,
               }}
               renderItem={({item, index}) => (
                 <ChatItem
