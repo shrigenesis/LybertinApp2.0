@@ -611,7 +611,7 @@ class Chat extends React.Component {
             ...Platform.select({
               ios: {
                 flex: 1,
-                minHeight: Dimensions.get('window').height - 60
+                // minHeight: Dimensions.get('window').height - 60
               },
               android: {
                 flex: 1,

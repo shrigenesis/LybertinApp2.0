@@ -329,7 +329,7 @@ class GroupChat extends React.Component {
     });
   };
 
-  prepareSocketMessageObject = (uuid, message_type) => {
+  prepareSocketMessageObject = (uuid, message_type, reply_on = null) => {
     let date = new Date();
     // let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let message = {
@@ -348,13 +348,12 @@ class GroupChat extends React.Component {
         name: userdata.name,
         avatar: userdata.avatar,
       },
+      reply_to : reply_on ? JSON.stringify(reply_on) : null
     };
     return message;
   };
 
   sendMessage = async () => {
-    let userdata = new User().getuserdata();
-
     if (this.state.message == '') {
       Toast.show({
         type: 'info',
@@ -374,7 +373,7 @@ class GroupChat extends React.Component {
 
       let uuid = uuidv4();
 
-      let message = this.prepareSocketMessageObject(uuid, 0);
+      let message = this.prepareSocketMessageObject(uuid, 0, reply_on);
 
       let data = [message, ...this.state.chatList];
 
@@ -427,6 +426,7 @@ class GroupChat extends React.Component {
       this.setState({
         isLoading: false,
         file: undefined,
+        replyOn: undefined,
         audioFile: '',
         message: '',
         chatList: data,
@@ -436,7 +436,6 @@ class GroupChat extends React.Component {
         config,
         res => {
           this.setState({
-            replyOn: undefined,
             previeosMessageId: res.conversation.id,
           });
           // this.setMessages(res, 'message');
@@ -657,7 +656,10 @@ class GroupChat extends React.Component {
             ...Platform.select({
               ios: {
                 flex: 1,
-                minHeight: (this.state.replyOn != undefined || this.state.replyOn != null) ? Dimensions.get('window').height - 80 : Dimensions.get('window').height - 60,
+                minHeight:
+                  this.state.replyOn != undefined || this.state.replyOn != null
+                    ? Dimensions.get('window').height - 80
+                    : Dimensions.get('window').height - 60,
               },
               android: {
                 flex: 1,

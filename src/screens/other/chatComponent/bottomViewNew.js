@@ -60,7 +60,6 @@ export const BottomViewNew = memo(props => {
   const [replyBoxheight, setReplyBoxheight] = useState('');
   const [height, setheight] = useState(0);
   const [disable, setdisable] = useState(false);
-  const [numOfLines, setNumOfLines] = useState(1);
 
   const {
     audioFile = () => {},
@@ -83,7 +82,7 @@ export const BottomViewNew = memo(props => {
   const searchInput = useRef(null);
 
   const keyboardDidHideCallback = () => {
-    searchInput.current.blur?.();
+    searchInput?.current?.blur?.();
   };
 
   useEffect(() => {
@@ -102,12 +101,6 @@ export const BottomViewNew = memo(props => {
       onStopRecord();
     };
   }, []);
-
-  const onTextLayout = useCallback(e => {
-    console.log(searchInput.current);
-    // if (numOfLines == 1 && numOfLines <= 4)
-    //   setNumOfLines(e?.nativeEvent.lines.length);
-  });
 
   const onStartRecord = async () => {
     setPlayImmediate(false);
@@ -502,7 +495,7 @@ export const BottomViewNew = memo(props => {
                 disabled={media_privacy == 2}
                 onPress={() => {
                   isConnected
-                    ? (searchInput.current.blur(),
+                    ? (searchInput?.current?.blur(),
                       addPress(),
                       audio?.setaudio(''))
                     : showDisconectedToast('FILE');
@@ -566,10 +559,7 @@ export const BottomViewNew = memo(props => {
                       Math.round(event.nativeEvent.contentSize.height - 20),
                     );
                   }}
-                  // onLayout={(e) => { onTextLayout(e) }}
-                  // numberOfLines={numOfLines}
                 />
-                {console.log('numOfLines', numOfLines)}
                 {/* <TouchableOpacity
               activeOpacity={1}
               onPress={() => {
@@ -656,7 +646,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
-    minHeight: Platform.OS === 'ios' ? 50 : 50,
+    minHeight: Platform.OS === 'ios' ? 90 : 50,
     paddingVertical: 5,
     width: wp(100),
     paddingBottom: Platform.OS === 'ios' ? 0 : 0,
