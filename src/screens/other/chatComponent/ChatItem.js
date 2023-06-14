@@ -274,7 +274,7 @@ const _renderMessage = (item, style) => {
           <Text style={styles.leftChatTime}>{getTime(item.created_at)}</Text>
         </View>
       ); //RAR
-    case 12:
+    case 20:
       return (
         <View
           style={{
@@ -340,7 +340,8 @@ export const ChatItem = React.memo(
             <MenuTrigger text="" />
           </Menu>
           <TouchableOpacity
-            onLongPress={openMenu}
+            // onLongPress={openMenu}
+            delayLongPress={500}
             activeOpacity={1}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'left')]}>

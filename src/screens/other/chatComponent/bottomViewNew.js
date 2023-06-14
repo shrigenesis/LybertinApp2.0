@@ -411,7 +411,7 @@ export const BottomViewNew = memo(props => {
                   minHeight: replyOn ? 140 : 90,
                 },
                 android: {
-                  flex: 1,
+                  minHeight: 50,
                 },
               }),
             },
@@ -570,7 +570,7 @@ export const BottomViewNew = memo(props => {
                   style={[
                     styles.messageBox,
                     {
-                      maxHeight: height + 1 > 0 ? 80 : 200,
+                      maxHeight: height + 1 > 0 ? 100 : 200,
                     },
                   ]}
                   onContentSizeChange={event => {
@@ -641,6 +641,7 @@ export const BottomViewNew = memo(props => {
     </>
   );
 });
+
 const styles = StyleSheet.create({
   container: {
     // position: 'absolute',
@@ -659,7 +660,7 @@ const styles = StyleSheet.create({
   recordedAudioContainer: {
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 20 : 0,
-    // flex: 1,
+    flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
@@ -673,8 +674,8 @@ const styles = StyleSheet.create({
     // position: 'relative',
     // flex: 1,
     flexDirection: 'row',
-    alignItems: 'flex-end',
-    alignContent: 'flex-end',
+    alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'space-between',
     gap: 5,
     paddingHorizontal: 10,
@@ -763,7 +764,7 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // flex: 1,
     alignItems: 'center',
-    marginBottom: 5,
+    marginBottom: 5
   },
   replyBoxRow: {
     flexDirection: 'row',
@@ -773,7 +774,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 10,
     backgroundColor: `rgba(${color.btnBluergb},0.1)`,
-    borderRadius: 8,
+    borderRadius: 10,
     borderColor: color.btnBlue,
     borderLeftWidth: 5,
   },

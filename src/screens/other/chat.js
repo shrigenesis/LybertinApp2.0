@@ -621,7 +621,7 @@ class Chat extends React.Component {
                 minHeight: Dimensions.get('window').height - 60
               },
               android: {
-                flex: 1,
+                flex: 1
               },
             }),
           }}>

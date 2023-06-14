@@ -74,8 +74,6 @@ const _getStyleSelector = (item, direction) => {
       return direction === 'left' ? styles.rarWrapper : styles.rarWrapperRight; //
     case 20:
       return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
-    case 21:
-      return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
   }
 };
 

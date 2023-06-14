@@ -417,7 +417,7 @@ class GroupChat extends React.Component {
           to_id: `${this.props?.route?.params?.group_id}`,
           message: this.state.message,
           reply_to:
-            this.state?.replyOn !== undefined ? JSON.stringify(reply_on) : null,
+            reply_on != null ? JSON.stringify(reply_on) : null,
           is_group: 1,
         },
       };
@@ -732,7 +732,7 @@ class GroupChat extends React.Component {
                         ? this.state.replyOn
                         : null
                     }
-                    removeReplyBox={() => this.setState({ replyOn: null })}
+                    removeReplyBox={() => this.setState({ replyOn: undefined })}
                     file={this.state.file}
                     audioFile={file => this.setState({ audioFile: file })}
                     deleteFile={() => this.setState({ file: undefined })}
