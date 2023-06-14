@@ -358,9 +358,6 @@ const EditProfile = ({navigation, route}) => {
     }
   }, [profile])
   
-
-
-
   const uploadCoverOrAvatar = type => {
     setisLoading(true);
     let formData = new FormData();
@@ -378,7 +375,6 @@ const EditProfile = ({navigation, route}) => {
     APIRequestWithFile(
       config,
       res => {
-        console.log(res);
         setisLoading(false);
         Toast.show({
           type: 'success',
@@ -388,7 +384,6 @@ const EditProfile = ({navigation, route}) => {
         new User().setuserdata(res?.auth);
       },
       err => {
-        console.log(err);
         setisLoading(false);
         Toast.show({
           type: 'error',

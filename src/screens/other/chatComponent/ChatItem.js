@@ -73,7 +73,7 @@ const _getStyleSelector = (item, direction) => {
       return direction === 'left' ? styles.zipWrapper : styles.zipWrapperRight; //
     case 11:
       return direction === 'left' ? styles.rarWrapper : styles.rarWrapperRight; //
-    case 12:
+    case 20:
       return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
   }
 };
@@ -308,7 +308,7 @@ export const ChatItem = React.memo(
       }
     };
     const openMenu = item => {
-      if (item.message_type !== 12) {
+      if (item.message_type !== 20) {
         menu.open();
       }
     };

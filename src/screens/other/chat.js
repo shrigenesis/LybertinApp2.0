@@ -12,6 +12,7 @@ import {
   Alert,
   Platform,
   Dimensions,
+  ActivityIndicator,
 } from 'react-native';
 import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
@@ -53,6 +54,7 @@ class Chat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loadMore: '',
       page: 1,
       isLoading: false,
       message: '',
@@ -83,7 +85,7 @@ class Chat extends React.Component {
       this.setState({appReady: true});
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
-        this.setState({chatList: []});
+        this.setState({page: 1, chatList: []});
         this.fetchChatList(user_id);
       }
       this.socketEvents();
@@ -98,7 +100,6 @@ class Chat extends React.Component {
   }
 
   socketEvents = () => {
-    console.log('socketEvents', Socket);
     Socket.emit('setup', userdata.id);
     Socket.on('connected', () => {
       console.log('join connected');
@@ -191,6 +192,10 @@ class Chat extends React.Component {
         },
         () => {
           let user_id = this.props?.route?.params?.user_id;
+
+          this.setState({
+            loadMore: true,
+          });
           this.fetchChatList(user_id);
         },
       );
@@ -208,11 +213,12 @@ class Chat extends React.Component {
       res => {
         if (res.status) {
           let data = res?.conversation?.data;
-          console.log(res.roomId, '-----------------------');
-          if (res.roomId) {
-            Socket.emit('join chat', res.roomId);
-          }
-          let chatData = this.state.chatList.concat(data);
+
+          // if (res.roomId) {
+          //   Socket.emit('join chat', res.roomId);
+          // }
+
+          const chatData = this.state.chatList.concat(data);
           // this.addDateInChatList(chatData)
           this.setState({
             chatList: chatData,
@@ -238,7 +244,7 @@ class Chat extends React.Component {
       ...res.conversation,
       roomId: this.state.roomId,
     });
-    
+
     const data = this.state.chatList?.filter(
       item => item.uuid !== res.conversation.uuid,
     );
@@ -284,7 +290,7 @@ class Chat extends React.Component {
       });
     } else {
       this.onTyping(false);
-      this.setState({isLoading: true});
+      // this.setState({isLoading: true});
 
       let uuid = uuidv4();
 
@@ -398,7 +404,7 @@ class Chat extends React.Component {
 
     formData.append('to_id', `${this.props?.route?.params?.user_id}`);
     formData.append('uuid', String(uuid));
-    this.setState({isLoading: true});
+    // this.setState({isLoading: true});
 
     let config = {
       url: ApiUrl.sendFile,
@@ -406,7 +412,7 @@ class Chat extends React.Component {
       body: formData,
     };
 
-    let message = this.prepareSocketMessageObject(uuid, 12);
+    let message = this.prepareSocketMessageObject(uuid, 20);
     let data = [message, ...this.state.chatList];
 
     this.setState({
@@ -447,7 +453,7 @@ class Chat extends React.Component {
             text1: err?.message,
           });
         }
-        this.setState({isLoading: false});
+        // this.setState({isLoading: false});
       },
     );
   };
@@ -537,6 +543,7 @@ class Chat extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
+                    this.setState({page: 1});
                     this.props.navigation.navigate('UserProfile', {
                       data: {
                         ...this.props?.route?.params,
@@ -611,13 +618,31 @@ class Chat extends React.Component {
             ...Platform.select({
               ios: {
                 flex: 1,
-                // minHeight: Dimensions.get('window').height - 60
+                minHeight: Dimensions.get('window').height - 60
               },
               android: {
                 flex: 1,
               },
             }),
           }}>
+          {this.state.isLoading && this.state.page > 1 && (
+            <View
+              style={{
+                position: 'absolute',
+                flexDirection: 'row',
+                alignItems: 'center',
+                alignSelf: 'center',
+                backgroundColor: color.chatRight,
+                padding: 10,
+                borderRadius: 10,
+                columnGap: 10,
+                top: 0,
+                zIndex: 1,
+              }}>
+              <ActivityIndicator size="small" color={color.btnBlue} />
+              <Text style={{fontStyle: 'italic'}}>Please wait...</Text>
+            </View>
+          )}
           <AudioContextProvider>
             <FlatList
               ref={this.chatListRef}
@@ -628,7 +653,7 @@ class Chat extends React.Component {
               onEndThreshold={1}
               style={{
                 flex: 1,
-                marginBottom: Platform.OS === 'ios' ? 15 : 15
+                marginBottom: Platform.OS === 'ios' ? 15 : 15,
               }}
               renderItem={({item, index}) => (
                 <ChatItem
@@ -819,6 +844,6 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: color.white,
   },
 });
