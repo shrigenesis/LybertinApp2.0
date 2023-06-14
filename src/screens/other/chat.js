@@ -215,7 +215,7 @@ class Chat extends React.Component {
         if (res.status) {
           let data = res?.conversation?.data;
 
-          if (res.roomId) {
+          if (res.roomId && this.state.page === 1) {
             Socket.emit('join chat', res.roomId);
           }
 
