@@ -259,7 +259,7 @@ const EditGroup = ({ navigation, route }) => {
       body.append('media_privacy', MediaPrivacy);
       body.append('users', selectUserList.join(','));
       body.append('welcome_message', welcomeMessage);
-
+      
       if (profile) {
         body.append('photo', profile);
       }

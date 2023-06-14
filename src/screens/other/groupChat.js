@@ -347,7 +347,7 @@ class GroupChat extends React.Component {
         name: userdata.name,
         avatar: userdata.avatar,
       },
-      reply_to: reply_on ? JSON.stringify(reply_on) : null
+      reply_to: reply_on ? JSON.stringify(reply_on) : null,
     };
     return message;
   };
@@ -490,7 +490,7 @@ class GroupChat extends React.Component {
       // formData.append('file', this.state.file);
     }
 
-    this.setState({ isLoading: true });
+    // this.setState({isLoading: true});
     formData.append('to_id', `${this.props?.route?.params?.group_id}`);
     formData.append('is_group', 1);
     formData.append('uuid', String(uuid));
@@ -501,7 +501,7 @@ class GroupChat extends React.Component {
       body: formData,
     };
 
-    let message = this.prepareSocketMessageObject(uuid, 12);
+    let message = this.prepareSocketMessageObject(uuid, 20);
     let data = [message, ...this.state.chatList];
 
     this.setState({
@@ -540,7 +540,7 @@ class GroupChat extends React.Component {
             text1: err?.message,
           });
         }
-        this.setState({ isLoading: false });
+        // this.setState({isLoading: false});
       },
     );
   };
@@ -598,6 +598,7 @@ class GroupChat extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
+                    this.setState({page: 1});
                     this.props.navigation.navigate('groupInfo', {
                       groupId: this.state.groupId,
                       privacy: this.props.route.params.privacy,
@@ -662,6 +663,24 @@ class GroupChat extends React.Component {
               },
             }),
           }}>
+          {this.state.isLoading && this.state.page > 1 && (
+            <View
+              style={{
+                position: 'absolute',
+                flexDirection: 'row',
+                alignItems: 'center',
+                alignSelf: 'center',
+                backgroundColor: color.chatRight,
+                padding: 10,
+                borderRadius: 10,
+                columnGap: 10,
+                top: 0,
+                zIndex: 1,
+              }}>
+              <ActivityIndicator size="small" color={color.btnBlue} />
+              <Text style={{fontStyle: 'italic'}}>Please wait...</Text>
+            </View>
+          )}
           <AudioContextProvider>
             <FlatList
               ref={this.chatListRef}

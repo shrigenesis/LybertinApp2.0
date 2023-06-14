@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useRef, useContext, useEffect } from 'react';
+import React, {useRef, useContext, useEffect} from 'react';
 import {
   View,
   StyleSheet,
@@ -13,10 +13,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily, fontSize } from '../../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../../constant/';
 import moment from 'moment';
 import SoundPlayer from './../../../component/soundPlayer';
-import { IMAGEURL } from '../../../utils/api';
+import {IMAGEURL} from '../../../utils/api';
 import Video from 'react-native-video';
 import Slider from 'react-native-slider';
 import {
@@ -25,8 +25,8 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu'; //
-import { AudioContext } from '../../../context/AudioContext';
-import { ActivityIndicator } from 'react-native';
+import {AudioContext} from '../../../context/AudioContext';
+import {ActivityIndicator} from 'react-native';
 
 const getTime = time => {
   if (time) {
@@ -72,7 +72,9 @@ const _getStyleSelector = (item, direction) => {
       return direction === 'left' ? styles.zipWrapper : styles.zipWrapperRight; //
     case 11:
       return direction === 'left' ? styles.rarWrapper : styles.rarWrapperRight; //
-    case 12:
+    case 20:
+      return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
+    case 21:
       return direction === 'left' ? '' : styles.activityLoaderWrapper; //uploading
   }
 };
@@ -110,16 +112,16 @@ const _renderMessage = (item, style, videoRef, direction) => {
           <TouchableOpacity
             onPress={() => audio?.setaudio(`${IMAGEURL}/${item.file_name}`)}
             style={styles.playpause}>
-            <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
+            <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
           </TouchableOpacity>
 
-          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
             <Slider
-              style={{ width: wp(28), marginLeft: wp(3) }}
+              style={{width: wp(28), marginLeft: wp(3)}}
               trackStyle={styles.track}
               thumbStyle={styles.thumb}
               minimumTrackTintColor="#681F84"
-              thumbTouchSize={{ width: 50, height: 40 }}
+              thumbTouchSize={{width: 50, height: 40}}
               minimumValue={0}
               value={0}
               maximumValue={10}
@@ -155,7 +157,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
             <View style={styles.imageOverlay}></View>
 
             <Image
-              source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
+              source={{uri: `${IMAGEURL}/${item?.file_name}`}}
               style={styles.image}
             />
             <Text style={[styles.rightChatTime, styles.imageTime]}>
@@ -183,7 +185,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return (
         <>
           {direction === 'left' && (
-            <Text style={{ color: color.btnBlue }}>{item.sender.name}</Text>
+            <Text style={{color: color.btnBlue}}>{item.sender.name}</Text>
           )}
           <View>
             <Image source={IMAGE.file} style={styles.file} />
@@ -196,7 +198,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return (
         <View>
           {direction === 'left' && (
-            <Text style={[styles.generalSenderText, { paddingBottom: 0 }]}>
+            <Text style={[styles.generalSenderText, {paddingBottom: 0}]}>
               {item.sender.name}
             </Text>
           )}
@@ -228,7 +230,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
                 });
               }}
               paused={true}
-              source={{ uri: `${IMAGEURL}/${item?.file_name}` }}
+              source={{uri: `${IMAGEURL}/${item?.file_name}`}}
               resizeMode={'cover'}
               style={styles.video}
             />
@@ -258,7 +260,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
       return <Image source={IMAGE.zip_file} style={styles.file} />; //ZIP
     case 11:
       return <Image source={IMAGE.zip_file} style={styles.file} />; //RAR
-    case 12:
+    case 20:
       return (
         <View
           style={{
@@ -271,30 +273,30 @@ const _renderMessage = (item, style, videoRef, direction) => {
             columnGap: 10,
           }}>
           <ActivityIndicator size="small" color={color.btnBlue} />
-          <Text style={{ fontStyle: 'italic' }}>Uploading...</Text>
+          <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
         </View>
       ); //uploading
   }
 };
 
 export const ChatItemgroup = React.memo(
-  ({ item, user_id, avatar, index, onImagePress, menu, replyOn, reportOn }) => {
+  ({item, user_id, avatar, index, onImagePress, menu, replyOn, reportOn}) => {
     const audio = useContext(AudioContext);
     const videoRef = useRef();
     const Action = item => {
       audio?.setaudio('');
       // let url = `${IMAGEURL}${item.message}`;
       if (item.message_type == 2) {
-        onImagePress({ file: item.file_name, fileType: 'pdf' });
+        onImagePress({file: item.file_name, fileType: 'pdf'});
       } else if (item.message_type == 1) {
-        onImagePress({ file: item.file_name, fileType: 'photo' });
+        onImagePress({file: item.file_name, fileType: 'photo'});
       } else if (item.message_type == 5) {
-        onImagePress({ file: item.file_name, fileType: 'video' });
+        onImagePress({file: item.file_name, fileType: 'video'});
       }
     };
     const openMenu = () => {
       console.log(item.message_type);
-      if (item.message_type !== 12) {
+      if (item.message_type !== 20) {
         menu.open();
       }
     };
@@ -308,8 +310,9 @@ export const ChatItemgroup = React.memo(
                 fontFamily: fontFamily.Regular,
                 fontSize: fontSize.size15,
               }}>
-              {' '}
-              {item?.message}{' '}
+              {item?.message.length < 40
+                ? `${item?.message}`
+                : `${item?.message.substring(0, 40)}...`}
             </Text>
           </>
         );
@@ -327,7 +330,7 @@ export const ChatItemgroup = React.memo(
           <>
             <Image
               source={IMAGE.micIconPurple}
-              style={{ resizeMode: 'contain', height: 14, width: 14 }}
+              style={{resizeMode: 'contain', height: 14, width: 14}}
             />
             <Text style={styles.replyBoxImgText}> Voice Message </Text>
           </>
@@ -338,7 +341,7 @@ export const ChatItemgroup = React.memo(
           <>
             <Image
               source={IMAGE.videoIconPurple}
-              style={{ resizeMode: 'contain', height: 14, width: 14 }}
+              style={{resizeMode: 'contain', height: 14, width: 14}}
             />
             <Text style={styles.replyBoxImgText}> Video </Text>
           </>
@@ -348,7 +351,7 @@ export const ChatItemgroup = React.memo(
           <>
             <Image
               source={IMAGE.documentIconPurple}
-              style={{ resizeMode: 'contain', height: 14, width: 14 }}
+              style={{resizeMode: 'contain', height: 14, width: 14}}
             />
             <Text style={styles.replyBoxImgText}> Document </Text>
           </>
@@ -362,13 +365,13 @@ export const ChatItemgroup = React.memo(
             <View>
               {avatar ? (
                 <Image
-                  source={{ uri: `${IMAGEURL}/${avatar}` }}
+                  source={{uri: `${IMAGEURL}/${avatar}`}}
                   style={styles.imgBox}
                 />
               ) : (
                 <Image
                   source={IMAGE.chatgirl}
-                  style={{ height: 40, width: 40 }}
+                  style={{height: 40, width: 40}}
                 />
               )}
             </View>
@@ -421,11 +424,11 @@ export const ChatItemgroup = React.memo(
             onLongPress={openMenu}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'left')]}>
-            <View style={{ ...styles.chatBoxWarrper }}>
+            <View style={{...styles.chatBoxWarrper}}>
               {item?.reply_to !== null && (
                 <View style={[styles.replyBox, styles.replyBoxLeft]}>
                   <View>
-                    <Text style={{ color: color.btnBlue }}>
+                    <Text style={{color: color.btnBlue}}>
                       {JSON.parse(item?.reply_to).name}
                     </Text>
                     <View
@@ -440,10 +443,11 @@ export const ChatItemgroup = React.memo(
                   {JSON.parse(item?.reply_to).message_type == '1' && (
                     <Image
                       source={{
-                        uri: `${IMAGEURL}/${JSON.parse(item?.reply_to).file_name
-                          }`,
+                        uri: `${IMAGEURL}/${
+                          JSON.parse(item?.reply_to).file_name
+                        }`,
                       }}
-                      style={{ resizeMode: 'contain', height: 30, width: 30 }}
+                      style={{resizeMode: 'contain', height: 30, width: 30}}
                     />
                   )}
                 </View>
@@ -491,11 +495,11 @@ export const ChatItemgroup = React.memo(
             onLongPress={openMenu}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'right')]}>
-            <View style={{ ...styles.chatBoxWarrper }}>
+            <View style={{...styles.chatBoxWarrper}}>
               {item?.reply_to !== null && (
                 <View style={styles.replyBox}>
                   <View>
-                    <Text style={{ color: color.btnBlue }}>
+                    <Text style={{color: color.btnBlue}}>
                       {JSON.parse(item?.reply_to).name}
                     </Text>
                     <View
@@ -510,10 +514,11 @@ export const ChatItemgroup = React.memo(
                   {JSON.parse(item?.reply_to).message_type == '1' && (
                     <Image
                       source={{
-                        uri: `${IMAGEURL}/${JSON.parse(item?.reply_to).file_name
-                          }`,
+                        uri: `${IMAGEURL}/${
+                          JSON.parse(item?.reply_to).file_name
+                        }`,
                       }}
-                      style={{ resizeMode: 'contain', height: 30, width: 30 }}
+                      style={{resizeMode: 'contain', height: 30, width: 30}}
                     />
                   )}
                 </View>
@@ -817,7 +822,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     borderLeftWidth: 4,
     borderLeftColor: color.btnBlue,
-    borderRadius: 5,
+    borderRadius: 8,
   },
   replyBoxLeft: {
     marginTop: 10,
@@ -852,7 +857,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: { width: 0, height: 0 },
+    shadowOffset: {width: 0, height: 0},
     shadowRadius: 2,
     shadowOpacity: 1,
   },

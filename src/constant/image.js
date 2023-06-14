@@ -39,6 +39,7 @@ const IMAGE = {
   download: require('./../assets/images/download.png'),
   plus: require('./../assets/images/plus.png'),
   camera: require('./../assets/images/camera.png'),
+  exclamation: require('./../assets/images/exclamation.png'),
   mic: require('./../assets/images/mic.png'),
   send: require('./../assets/images/send.png'),
   svgsend: require('./../assets/images/send.svg'),

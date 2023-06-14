@@ -132,7 +132,11 @@ export const BottomViewNew = memo(props => {
     if (item?.message_type == '0') {
       return (
         <>
-          <Text style={styles.messageTypeText}>{item?.message}</Text>
+          <Text numberOfLines={1} style={styles.messageTypeText}>
+            {item?.message.length < 30
+              ? `${item?.message}`
+              : `${item?.message.substring(0, 30)}...`}
+          </Text>
         </>
       );
     }
@@ -398,7 +402,20 @@ export const BottomViewNew = memo(props => {
           <View style={styles.recordedAudioContainer}>{Audio()}</View>
         )}
 
-        <View style={styles.container}>
+        <View
+          style={[
+            styles.container,
+            {
+              ...Platform.select({
+                ios: {
+                  minHeight: replyOn ? 140 : 90,
+                },
+                android: {
+                  flex: 1,
+                },
+              }),
+            },
+          ]}>
           {isRecordingStart && (
             <Animated.View
               entering={SlideInDown}
@@ -553,7 +570,7 @@ export const BottomViewNew = memo(props => {
                   style={[
                     styles.messageBox,
                     {
-                      maxHeight: height + 1 > 0 ? 100 : 200,
+                      maxHeight: height + 1 > 0 ? 80 : 200,
                     },
                   ]}
                   onContentSizeChange={event => {
@@ -624,7 +641,6 @@ export const BottomViewNew = memo(props => {
     </>
   );
 });
-
 const styles = StyleSheet.create({
   container: {
     // position: 'absolute',
@@ -643,7 +659,7 @@ const styles = StyleSheet.create({
   recordedAudioContainer: {
     position: 'absolute',
     bottom: Platform.OS === 'ios' ? 20 : 0,
-    flex: 1,
+    // flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
     backgroundColor: color.lightGray,
@@ -657,8 +673,8 @@ const styles = StyleSheet.create({
     // position: 'relative',
     // flex: 1,
     flexDirection: 'row',
-    alignItems: 'center',
-    alignContent: 'center',
+    alignItems: 'flex-end',
+    alignContent: 'flex-end',
     justifyContent: 'space-between',
     gap: 5,
     paddingHorizontal: 10,
@@ -747,7 +763,7 @@ const styles = StyleSheet.create({
     // flexDirection: 'row',
     // flex: 1,
     alignItems: 'center',
-    marginBottom: 5
+    marginBottom: 5,
   },
   replyBoxRow: {
     flexDirection: 'row',
@@ -757,7 +773,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 10,
     backgroundColor: `rgba(${color.btnBluergb},0.1)`,
-    borderRadius: 10,
+    borderRadius: 8,
     borderColor: color.btnBlue,
     borderLeftWidth: 5,
   },
