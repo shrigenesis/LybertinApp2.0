@@ -78,6 +78,7 @@ class Chat extends React.Component {
   }
 
   componentWillMount() {
+    alert('here');
     Socket = io.connect(socketUrl);
   }
   componentDidMount() {
@@ -214,9 +215,9 @@ class Chat extends React.Component {
         if (res.status) {
           let data = res?.conversation?.data;
 
-          // if (res.roomId) {
-          //   Socket.emit('join chat', res.roomId);
-          // }
+          if (res.roomId) {
+            Socket.emit('join chat', res.roomId);
+          }
 
           const chatData = this.state.chatList.concat(data);
           // this.addDateInChatList(chatData)
