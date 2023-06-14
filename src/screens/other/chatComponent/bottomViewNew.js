@@ -24,7 +24,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {IMAGE, color, fontFamily, fontSize} from '../../../constant';
+import { IMAGE, color, fontFamily, fontSize } from '../../../constant';
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -34,13 +34,13 @@ import Animated, {
   ZoomIn,
   ZoomOut,
 } from 'react-native-reanimated';
-import {EmojiKeyboard} from './../../../component/';
-import {SlideInDown} from 'react-native-reanimated';
-import {SlideInUp} from 'react-native-reanimated';
+import { EmojiKeyboard } from './../../../component/';
+import { SlideInDown } from 'react-native-reanimated';
+import { SlideInUp } from 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
-import {AudioContext} from '../../../context/AudioContext';
-import {IMAGEURL} from '../../../utils/api';
-import {requestPermission} from '../../../component/documentpicker';
+import { AudioContext } from '../../../context/AudioContext';
+import { IMAGEURL } from '../../../utils/api';
+import { requestPermission } from '../../../component/documentpicker';
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 import moment from 'moment';
 import Slider from 'react-native-slider';
@@ -62,21 +62,21 @@ export const BottomViewNew = memo(props => {
   const [disable, setdisable] = useState(false);
 
   const {
-    audioFile = () => {},
-    addPress = () => {},
+    audioFile = () => { },
+    addPress = () => { },
     file,
     pickCamera = 1,
     message,
     deleteFile,
-    inputFocus = () => {},
-    sendMessage = () => {},
-    textChange = () => {},
+    inputFocus = () => { },
+    sendMessage = () => { },
+    textChange = () => { },
     media_privacy = 1,
     group_type = 1,
     isConnected = 1,
     emojiSelect,
     replyOn,
-    removeReplyBox = () => {},
+    removeReplyBox = () => { },
   } = props;
   const audio = useContext(AudioContext);
   const searchInput = useRef(null);
@@ -175,7 +175,7 @@ export const BottomViewNew = memo(props => {
     }
   };
   const onLayout = event => {
-    const {height} = event.nativeEvent.layout;
+    const { height } = event.nativeEvent.layout;
     setReplyBoxheight(parseInt(height) + hp(3));
   };
 
@@ -201,6 +201,9 @@ export const BottomViewNew = memo(props => {
         break;
       case 'RECORD':
         text = 'Please connect to internet to record audio.';
+        break;
+      case 'NO_PERMISSION':
+        text = 'You do not have access to send media in this group.';
         break;
 
       default:
@@ -257,7 +260,7 @@ export const BottomViewNew = memo(props => {
         <View style={styles.row}>
           <TouchableOpacity activeOpacity={1} onPress={() => playAudio(true)}>
             <View style={styles.playpause}>
-              <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
+              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
             </View>
           </TouchableOpacity>
           <Slider
@@ -338,7 +341,7 @@ export const BottomViewNew = memo(props => {
                 ? (console.log(file.uri),
                   (
                     <Image
-                      source={{uri: file.uri}}
+                      source={{ uri: file.uri }}
                       style={{
                         resizeMode: 'contain',
                         width: wp(100),
@@ -349,7 +352,7 @@ export const BottomViewNew = memo(props => {
                 : null}
               {file?.fileType == 'video' || file?.fileType === 'video/mp4' ? (
                 <Video
-                  source={{uri: file?.uri}}
+                  source={{ uri: file?.uri }}
                   muted={true}
                   paused={true}
                   controls={true}
@@ -400,7 +403,7 @@ export const BottomViewNew = memo(props => {
             <Animated.View
               entering={SlideInDown}
               exiting={SlideInDown}
-              // style={styles.recordingTimer}
+            // style={styles.recordingTimer}
             >
               <View style={styles.row}>
                 <View style={[styles.recordingContainer]}>
@@ -416,7 +419,7 @@ export const BottomViewNew = memo(props => {
                   /> */}
                     <LottieView
                       speed={1}
-                      style={{height: 50}}
+                      style={{ height: 50 }}
                       source={require('./../../../animation/SoundBarWhite.json')}
                       autoPlay
                       loop={true}
@@ -458,7 +461,7 @@ export const BottomViewNew = memo(props => {
           {replyOn && (
             <View style={styles.replyBoxContainer}>
               <View style={styles.replyBoxRow}>
-                <View onLayout={onLayout} style={{flex: 0.9}}>
+                <View onLayout={onLayout} style={{ flex: 0.9 }}>
                   <Text style={styles.remplySenderName}>
                     {replyOn?.sender?.name}
                   </Text>
@@ -469,7 +472,7 @@ export const BottomViewNew = memo(props => {
                 <View style={styles.replyBoxRemoveIcon}>
                   {replyOn?.message_type == '1' && (
                     <Image
-                      source={{uri: `${IMAGEURL}/${replyOn?.file_name}`}}
+                      source={{ uri: `${IMAGEURL}/${replyOn?.file_name}` }}
                       style={styles.replyBoxImage}
                     />
                   )}
@@ -492,7 +495,6 @@ export const BottomViewNew = memo(props => {
             <View style={styles.row}>
               <TouchableOpacity
                 activeOpacity={1}
-                disabled={media_privacy == 2}
                 onPress={() => {
                   isConnected
                     ? (searchInput?.current?.blur(),
@@ -580,7 +582,6 @@ export const BottomViewNew = memo(props => {
               </View>
               <TouchableOpacity
                 activeOpacity={1}
-                disabled={disable}
                 onPress={() => {
                   message
                     ? (StopMultiplePress(),
@@ -588,12 +589,12 @@ export const BottomViewNew = memo(props => {
                       setRecordingFile(''),
                       audio?.setaudio(''))
                     : isConnected
-                    ? pickCamera == 1
-                      ? isRecordingStart
-                        ? console.log('onStopRecord()')
-                        : (onStartRecord(), textChange(''), removeReplyBox())
-                      : console.log('kkkkkk')
-                    : showDisconectedToast('RECORD');
+                      ? pickCamera == 1
+                        ? isRecordingStart
+                          ? console.log('onStopRecord()')
+                          : (onStartRecord(), textChange(''), removeReplyBox())
+                        : showDisconectedToast('NO_PERMISSION')
+                      : showDisconectedToast('RECORD');
                 }}>
                 <View style={[styles.col_small, styles.sendIconBox]}>
                   {message && (
@@ -614,7 +615,7 @@ export const BottomViewNew = memo(props => {
             <Animated.View
               entering={FadeIn}
               exiting={FadeOut}
-              style={{height: hp(35)}}>
+              style={{ height: hp(35) }}>
               <EmojiKeyboard onSelectEmoji={emojiSelect} />
             </Animated.View>
           )}
@@ -839,7 +840,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
   },
@@ -860,7 +861,7 @@ const styles = StyleSheet.create({
     right: 20,
     top: 20,
     shadowColor: color.iconGray,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowRadius: 10,
     shadowOpacity: 1,
   },
