@@ -898,6 +898,6 @@ const styles = StyleSheet.create({
   sendFile: {
     position: 'absolute',
     right: 20,
-    bottom: Platform.OS === 'ios' ? 50 : 80,
+    bottom: Platform.OS === 'ios' ? 100 : 80,
   },
 });
