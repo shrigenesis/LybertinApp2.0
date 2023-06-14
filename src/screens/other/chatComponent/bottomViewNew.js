@@ -58,6 +58,8 @@ export const BottomViewNew = memo(props => {
   const [recordingFile, setRecordingFile] = useState('');
   const [playImmediate, setPlayImmediate] = useState(false);
   const [replyBoxheight, setReplyBoxheight] = useState('');
+  const [videoHeight, setVideoHeight] = useState(1);
+  const [videoWidth, setVideoWidth] = useState(1);
   const [height, setheight] = useState(0);
   const [disable, setdisable] = useState(false);
 
@@ -181,6 +183,13 @@ export const BottomViewNew = memo(props => {
   const onLayout = event => {
     const { height } = event.nativeEvent.layout;
     setReplyBoxheight(parseInt(height) + hp(3));
+  };
+  
+  const onVideoWrapperLayout = event => {
+    const { height,width } = event.nativeEvent.layout;
+    console.log(height,width);
+    setVideoHeight(parseInt(height))
+    setVideoWidth(parseInt(width))
   };
 
   const StopMultiplePress = () => {
@@ -326,8 +335,7 @@ export const BottomViewNew = memo(props => {
     <>
       {file && (
         <View style={styles.fileView}>
-          <Animated.View entering={SlideInUp} exiting={SlideInDown}>
-            <View style={styles.filePreviewWrapper}>
+            <View onLayout={onVideoWrapperLayout} style={styles.filePreviewWrapper}>
               {file?.fileType == 'pdf' ? (
                 <Pdf
                   trustAllCerts={false}
@@ -349,7 +357,7 @@ export const BottomViewNew = memo(props => {
                       style={{
                         resizeMode: 'contain',
                         width: wp(100),
-                        height: hp(80),
+                        height: hp(100),
                       }}
                     />
                   ))
@@ -360,10 +368,11 @@ export const BottomViewNew = memo(props => {
                   muted={true}
                   paused={true}
                   controls={true}
+                  resizeMode="cover"
                   style={{
                     // height: Dimensions.get('window').width / (16 / 9),
-                    height: hp(80),
-                    width: wp(100),
+                    height: videoHeight - 50,
+                    width: videoWidth,
                   }}
                 />
               ) : null}
@@ -391,7 +400,6 @@ export const BottomViewNew = memo(props => {
                 />
               </View>
             </TouchableOpacity>
-          </Animated.View>
         </View>
       )}
       <KeyboardAvoidingView
@@ -864,13 +872,12 @@ const styles = StyleSheet.create({
   fileView: {
     position: 'absolute',
     width: wp(100),
-    height: hp(100),
+    height: Dimensions.get('window').height - 50,
     zIndex: 2,
     backgroundColor: color.black,
   },
   filePreviewWrapper: {
-    width: wp(100),
-    height: hp(80),
+    flex: 1,
     justifyContent: 'center',
   },
   removeFile: {
@@ -891,6 +898,6 @@ const styles = StyleSheet.create({
   sendFile: {
     position: 'absolute',
     right: 20,
-    bottom: 50,
+    bottom: Platform.OS === 'ios' ? 50 : 80,
   },
 });
