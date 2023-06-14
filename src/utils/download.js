@@ -42,7 +42,7 @@ export const Download = async (url, ext, setDownloadProgress) => {
                     }
                     Toast.show({
                         type: 'info',
-                        text1: 'File Downloaded!pppp'
+                        text1: 'File Downloaded!'
                     })
                 }).catch((err) => {
                     console.log(err)
@@ -79,10 +79,10 @@ export const Download = async (url, ext, setDownloadProgress) => {
                     console.log(received, total);
                 })
                 .then(async (res) => {
+                    console.log(res, "res");
                     setDownloadProgress && setDownloadProgress(false)
                     resolve(res);
                     if (Platform.OS === "ios") {
-                        console.log(res, "res");
                         // RNFetchBlob.fs.writeFile(`${dirToSave}/${name}.${ext}`, res.data, 'base64');
                         // RNFetchBlob.ios.previewDocument(`${dirToSave}/${name}.${ext}`);
                         RNFetchBlob.ios.previewDocument('file://' + res.path());

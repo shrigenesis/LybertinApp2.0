@@ -340,8 +340,7 @@ export const ChatItem = React.memo(
             <MenuTrigger text="" />
           </Menu>
           <TouchableOpacity
-            // onLongPress={openMenu}
-            delayLongPress={500}
+            onLongPress={openMenu}
             activeOpacity={1}
             onPress={() => Action(item)}
             style={[_getStyleSelector(item, 'left')]}>

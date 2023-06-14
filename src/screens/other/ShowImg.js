@@ -188,7 +188,6 @@ const ShowImg = ({ navigation, route }) => {
 
   const Action = () => {
     let file = route?.params?.file;
-    console.log(file, "file")
     let fileType = route?.params?.fileType;
     let url = `${IMAGEURL}/${file}`;
     let ext = url.split('.').pop();

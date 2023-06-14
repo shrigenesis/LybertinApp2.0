@@ -271,7 +271,7 @@ const _renderMessage = (item, style, videoRef, direction) => {
             columnGap: 10,
           }}>
           <ActivityIndicator size="small" color={color.btnBlue} />
-          <Text style={{fontStyle: 'italic'}}>Uploading...</Text>
+          <Text style={{fontStyle: 'italic', color: color.black}}>Uploading...</Text>
         </View>
       ); //uploading
   }
