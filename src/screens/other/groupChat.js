@@ -598,7 +598,7 @@ class GroupChat extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({page: 1});
+                    this.setState({ page: 1 });
                     this.props.navigation.navigate('groupInfo', {
                       groupId: this.state.groupId,
                       privacy: this.props.route.params.privacy,
@@ -623,6 +623,7 @@ class GroupChat extends React.Component {
                   />
                   <TouchableOpacity
                     onPress={() => {
+                      this.setState({ page: 1 });
                       this.props.navigation.navigate('groupInfo', {
                         groupId: this.state.groupId,
                         privacy: this.props.route.params.privacy,
@@ -678,7 +679,7 @@ class GroupChat extends React.Component {
                 zIndex: 1,
               }}>
               <ActivityIndicator size="small" color={color.btnBlue} />
-              <Text style={{fontStyle: 'italic'}}>Please wait...</Text>
+              <Text style={{ fontStyle: 'italic' }}>Please wait...</Text>
             </View>
           )}
           <AudioContextProvider>
@@ -696,11 +697,13 @@ class GroupChat extends React.Component {
               }}
               renderItem={({ item, index }) => (
                 <ChatItemgroup
-                  onImagePress={files =>
+                  onImagePress={files => {
+                    this.setState({ page: 1 });
                     this.props.navigation.navigate('ShowImg', {
                       file: files?.file,
                       fileType: files?.fileType,
                     })
+                  }
                   }
                   user_id={this.props?.route?.params?.user_id}
                   // avatar={this.props?.route?.params?.avatar}
