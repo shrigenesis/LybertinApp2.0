@@ -391,9 +391,9 @@ const styles = StyleSheet.create({
     borderColor: color.borderGray,
   },
   file: {
-    height: 80,
-    width: 80,
-    color: color.btnBlue,
+    height: 60,
+    width: 60,
+    tintColor: color.btnBlue,
     resizeMode: 'contain',
     marginBottom: hp(1),
   },
@@ -405,7 +405,8 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   getMessage: {
-    fontSize: fontSize.size15,
+    fontSize: fontSize.size14,
+    fontFamily: fontFamily.Regular,
     lineHeight: 20,
     color: color.black,
   },
@@ -479,7 +480,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp(0.7),
   },
   leftChatTime: {
-    lineHeight: hp(1.6),
+    lineHeight: hp(1.7),
     alignSelf: 'flex-end',
     fontSize: 11,
     color: color.black,
@@ -596,15 +597,15 @@ const styles = StyleSheet.create({
     columnGap: 5,
   },
   Pdf: {
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 30,
     resizeMode: 'contain',
-    // tintColor: color.btnBlue
+    tintColor: color.btnBlue
   },
   PdfName: {
-    fontSize: fontSize.size12,
+    fontSize: fontSize.size14,
     color: color.blackRussian,
-    fontFamily: fontFamily.Medium,
+    fontFamily: fontFamily.Regular,
     maxWidth: wp(60),
   },
   replyBtn: {

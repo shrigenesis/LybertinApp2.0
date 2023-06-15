@@ -556,7 +556,7 @@ const styles = StyleSheet.create({
   file: {
     height: 80,
     width: 80,
-    color: color.btnBlue,
+    tintColor: color.btnBlue,
     resizeMode: 'contain',
     marginBottom: hp(1),
   },
@@ -574,7 +574,8 @@ const styles = StyleSheet.create({
     paddingBottom: wp(1),
   },
   getMessage: {
-    fontSize: Platform.OS == 'ios' ? 16 : 15,
+    fontSize: fontSize.size14,
+    fontFamily: fontFamily.Regular,
     lineHeight: 20,
     color: color.black,
   },
@@ -867,15 +868,15 @@ const styles = StyleSheet.create({
     columnGap: 5,
   },
   Pdf: {
-    height: 40,
-    width: 40,
+    height: 30,
+    width: 30,
     resizeMode: 'contain',
-    // tintColor: color.btnBlue
+    tintColor: color.btnBlue
   },
   PdfName: {
-    fontSize: fontSize.size12,
+    fontSize: fontSize.size14,
+    fontFamily: fontFamily.Regular,
     color: color.blackRussian,
-    fontFamily: fontFamily.Medium,
     maxWidth: wp(60),
   },
 });
