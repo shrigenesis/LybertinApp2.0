@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
 import messaging from '@react-native-firebase/messaging';
-import { Platform } from 'react-native';
+import {Platform} from 'react-native';
 import * as RootNavigation from './RootNavigation.js';
 
 class FCMService {
@@ -101,7 +101,10 @@ class FCMService {
         if (remoteMessage) {
           const notification = remoteMessage.notification;
 
-          if (remoteMessage?.data?.notification_type == 'FRIEND_REQUEST_NOTIFICATION') {
+          if (
+            remoteMessage?.data?.notification_type ==
+            'FRIEND_REQUEST_NOTIFICATION'
+          ) {
             setTimeout(() => {
               RootNavigation.navigate('Request');
             }, 1000);
@@ -117,7 +120,9 @@ class FCMService {
             }, 1000);
           }
           if (
-            remoteMessage?.data?.notification_type == 'GROUP_MESSAGE_NOTIFICATION') {
+            remoteMessage?.data?.notification_type ==
+            'GROUP_MESSAGE_NOTIFICATION'
+          ) {
             setTimeout(() => {
               RootNavigation.navigate('GroupChat', {
                 group_id: remoteMessage?.data?.group_id,
@@ -130,27 +135,33 @@ class FCMService {
             }, 1000);
           }
           if (
-            remoteMessage?.data?.notification_type == 'STORY_UPDATE_NOTIFICATION') {
+            remoteMessage?.data?.notification_type ==
+            'STORY_UPDATE_NOTIFICATION'
+          ) {
             setTimeout(() => {
               RootNavigation.navigate('ShowStory', {
                 list: JSON.parse(remoteMessage?.data?.view_stories),
-              })
+              });
             }, 1000);
           }
           if (
-            remoteMessage?.data?.notification_type == 'EVENT_BOOKED_NOTIFICATION') {
+            remoteMessage?.data?.notification_type ==
+            'EVENT_BOOKED_NOTIFICATION'
+          ) {
             setTimeout(() => {
               RootNavigation.navigate('eventDetails', {
                 event_id: remoteMessage?.data?.event_id,
-              })
+              });
             }, 1000);
           }
           if (
-            remoteMessage?.data?.notification_type == 'MARKETING_EVENT_NOTIFICATION') {
+            remoteMessage?.data?.notification_type ==
+            'MARKETING_EVENT_NOTIFICATION'
+          ) {
             setTimeout(() => {
               RootNavigation.navigate('marketplaceDetails', {
                 event_id: remoteMessage?.data?.marketing_event_id,
-              })
+              });
             }, 1000);
           }
           onOpenNotification(notification);
@@ -159,7 +170,6 @@ class FCMService {
 
     //forgrounnd state messages
     this.messageListener = messaging().onMessage(async remoteMessage => {
-      console.log('[FCMService] A new FCm message arrived', remoteMessage);
       if (remoteMessage) {
         let notification = null;
         if (Platform.OS === 'ios') {
@@ -169,7 +179,6 @@ class FCMService {
         }
         onNotification(notification);
       }
-
     });
 
     //Triggerd When have new token

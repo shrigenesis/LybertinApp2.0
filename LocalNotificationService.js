@@ -2,7 +2,7 @@
 /* eslint-disable prettier/prettier */
 import PushNotification from 'react-native-push-notification';
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
-import { Platform, AppState } from 'react-native';
+import {Platform, AppState} from 'react-native';
 import * as RootNavigation from './RootNavigation.js';
 
 class LocalNotificationService {
@@ -53,14 +53,26 @@ class LocalNotificationService {
         //   // action:true,
         //   invokeApp: false,
         // };
-        if (notification?.data?.item?.notification_type == 'FRIEND_REQUEST_NOTIFICATION') {
+        if (
+          notification?.data?.item?.notification_type ==
+          'FRIEND_REQUEST_NOTIFICATION'
+        ) {
           setTimeout(() => {
             RootNavigation.navigate('Request');
           }, 1000);
         }
-
-        if (notification?.data?.item?.notification_type == 'ONE_TO_ONE_MESSAGE') {
+        if (
+          notification?.data?.item?.notification_type == 'ONE_TO_ONE_MESSAGE'
+        ) {
           setTimeout(() => {
+            if (
+              RootNavigation?.navigationRef?.current
+                ?.getCurrentRoute()
+                ?.key.toString()
+                .includes('Chat')
+            ) {
+              RootNavigation?.navigationRef?.current?.goBack();
+            }
             RootNavigation.navigate('Chat', {
               avatar: notification?.data?.item?.avatar,
               userName: notification?.data?.item?.userName,
@@ -69,7 +81,17 @@ class LocalNotificationService {
           }, 1000);
         }
         if (
-          notification?.data?.item?.notification_type == 'GROUP_MESSAGE_NOTIFICATION') {
+          notification?.data?.item?.notification_type ==
+          'GROUP_MESSAGE_NOTIFICATION'
+        ) {
+          if (
+            RootNavigation?.navigationRef?.current
+              ?.getCurrentRoute()
+              ?.key.toString()
+              .includes('GroupChat')
+          ) {
+            RootNavigation?.navigationRef?.current?.goBack();
+          }
           setTimeout(() => {
             RootNavigation.navigate('GroupChat', {
               group_id: notification?.data?.item?.group_id,
@@ -82,31 +104,37 @@ class LocalNotificationService {
           }, 1000);
         }
         if (
-          notification?.data?.item?.notification_type =='STORY_UPDATE_NOTIFICATION') {
-            // console.log(notification?.data?.item?.view_stories,JSON.parse(notification?.data?.item?.view_stories))
+          notification?.data?.item?.notification_type ==
+          'STORY_UPDATE_NOTIFICATION'
+        ) {
+          // console.log(notification?.data?.item?.view_stories,JSON.parse(notification?.data?.item?.view_stories))
           setTimeout(() => {
             RootNavigation.navigate('ShowStory', {
               list: JSON.parse(notification?.data?.item?.view_stories),
-            })
+            });
           }, 1000);
         }
         if (
-          notification?.data?.item?.notification_type =='EVENT_BOOKED_NOTIFICATION') {
+          notification?.data?.item?.notification_type ==
+          'EVENT_BOOKED_NOTIFICATION'
+        ) {
           setTimeout(() => {
             RootNavigation.navigate('eventDetails', {
               event_id: notification?.data?.item?.event_id,
-            })
+            });
           }, 1000);
         }
         if (
-          notification?.data?.item?.notification_type =='MARKETING_EVENT_NOTIFICATION') {
+          notification?.data?.item?.notification_type ==
+          'MARKETING_EVENT_NOTIFICATION'
+        ) {
           setTimeout(() => {
             RootNavigation.navigate('marketplaceDetails', {
               event_id: notification?.data?.item?.marketing_event_id,
-            })
+            });
           }, 1000);
         }
-        PushNotification.cancelAllLocalNotifications()
+        PushNotification.cancelAllLocalNotifications();
       },
       permissions: {
         alert: true,
@@ -130,7 +158,6 @@ class LocalNotificationService {
   };
 
   showNotification = (id, title, message, data = {}, option = {}) => {
-    console.log('show notificationsssss');
     PushNotification.localNotification({
       ...this.buildAndroidNotification(id, title, message, data, option),
       ...this.buildIOSNotification(id, title, message, data, option),
@@ -180,7 +207,7 @@ class LocalNotificationService {
 
   removeAllDeliveredNotificationByID = notificationId => {
     // console.log("[LocalNotificationService] removeAllDeliveredNotificationByID:", notificationId);
-    PushNotification.cancelLocalNotifications({ id: `${notificationId}` });
+    PushNotification.cancelLocalNotifications({id: `${notificationId}`});
   };
 }
 
