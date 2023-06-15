@@ -196,7 +196,6 @@ class GroupChat extends React.Component {
           });
 
           if (res.roomId) {
-            console.log('join chat', res.roomId);
             Socket.emit('join chat', res.roomId);
           }
         }
