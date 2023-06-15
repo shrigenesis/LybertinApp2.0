@@ -655,9 +655,8 @@ class GroupChat extends React.Component {
               ios: {
                 flex: 1,
                 minHeight:
-                  this.state.replyOn != undefined || this.state.replyOn != null
-                    ? Dimensions.get('window').height - 80
-                    : Dimensions.get('window').height - 60,
+                  this.state.replyOn != undefined
+                    ?? Dimensions.get('window').height - 80
               },
               android: {
                 flex: 1,

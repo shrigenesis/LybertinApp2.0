@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   // },
   row: {
     width: wp(100),
-    flex: 1,
+    // flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     alignContent: 'center',

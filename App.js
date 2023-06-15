@@ -44,7 +44,7 @@ const App = () => {
     function onNotification(notify) {
       localNotificationService.showNotification(
         'channel-id',
-        Platform.OS === 'ios' ? notify.message : notify.title,
+        Platform.OS === 'ios' ? notify.title : notify.title,
         notify.body,
         notify,
       );

@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useRef, memo, useEffect } from 'react';
+import React, {useState, useMemo, useRef, memo, useEffect} from 'react';
 import {
   View,
   Text,
@@ -14,12 +14,12 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import { Header, Loader, pickDocument, pickImage } from './../../component/';
+import {Header, Loader, pickDocument, pickImage} from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
+import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -29,13 +29,13 @@ import {
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
-import { BottomView, RenderBottomSheet, ChatItem } from './chatComponent/';
+import {useIsFocused} from '@react-navigation/native';
+import {BottomView, RenderBottomSheet, ChatItem} from './chatComponent/';
 import io from 'socket.io-client';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -45,7 +45,7 @@ import {
 } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
-import { BottomViewNew } from './chatComponent/bottomViewNew';
+import {BottomViewNew} from './chatComponent/bottomViewNew';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
@@ -78,24 +78,24 @@ class Chat extends React.Component {
   }
 
   componentWillMount() {
-    alert('here');
     Socket = io.connect(socketUrl);
   }
+  
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
-      this.setState({ appReady: true });
+      this.setState({appReady: true});
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
-        this.setState({ page: 1, chatList: [] });
+        this.setState({page: 1, chatList: []});
         this.fetchChatList(user_id);
       }
       this.socketEvents();
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
-        this.setState({ isConnected: true });
+        this.setState({isConnected: true});
       } else {
-        this.setState({ isConnected: false });
+        this.setState({isConnected: false});
       }
     });
   }
@@ -114,15 +114,15 @@ class Chat extends React.Component {
 
     Socket.on('typing', () => {
       console.log('typing');
-      this.setState({ isTyping: true });
+      this.setState({isTyping: true});
     });
     Socket.on('stop typing', () => {
       console.log('stop typing');
-      this.setState({ isTyping: false });
+      this.setState({isTyping: false});
     });
     Socket.on('user_offline', id => {
       console.log('user_offline', id);
-      this.setState({ isOnline: '0' });
+      this.setState({isOnline: '0'});
     });
 
     Socket.on('message recieved', newMessageRecieved => {
@@ -131,7 +131,7 @@ class Chat extends React.Component {
       );
       if (isExist === -1) {
         let data = [newMessageRecieved, ...this.state.chatList];
-        this.setState({ isLoading: false, chatList: data });
+        this.setState({isLoading: false, chatList: data});
         this.MarkReadMessage(newMessageRecieved.uuid);
       }
     });
@@ -204,7 +204,7 @@ class Chat extends React.Component {
   };
 
   fetchChatList = user_id => {
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     let config = {
       url: `${ApiUrl.conversations}/${user_id}?page=${this.state.page}`,
       method: 'get',
@@ -232,10 +232,10 @@ class Chat extends React.Component {
           //   this.chatListRef?.current?.scrollToEnd({animated: true});
           // }, 2000);
         }
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
       err => {
-        this.setState({ isLoading: false });
+        this.setState({isLoading: false});
       },
     );
   };
@@ -358,7 +358,7 @@ class Chat extends React.Component {
           console.log(res);
         },
         err => {
-          this.setState({ isLoading: false });
+          this.setState({isLoading: false});
           console.log(err);
           Toast.show({
             type: 'error',
@@ -461,11 +461,11 @@ class Chat extends React.Component {
 
   // hide Bottom sheet
   setisShowBottomSheet = () => {
-    this.setState({ isShowBottomSheet: false });
+    this.setState({isShowBottomSheet: false});
   };
   // Update file from bottom sheet
   UpdateFile = file => {
-    this.setState({ file: file, isShowBottomSheet: false });
+    this.setState({file: file, isShowBottomSheet: false});
   };
 
   handleOnReportOn = item => {
@@ -511,7 +511,6 @@ class Chat extends React.Component {
 
   render() {
     return (
-      // <SafeAreaView style={styles.safeArea} >
       <View style={styles.container}>
         <SafeAreaView>
           <FocusAwareStatusBar
@@ -522,7 +521,7 @@ class Chat extends React.Component {
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}
             LeftIcon={() => (
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
@@ -544,7 +543,7 @@ class Chat extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({ page: 1 });
+                    this.setState({page: 1});
                     this.props.navigation.navigate('UserProfile', {
                       data: {
                         ...this.props?.route?.params,
@@ -602,8 +601,8 @@ class Chat extends React.Component {
                       {this.state.isTyping
                         ? 'Typing...'
                         : this.state.isOnline == '1'
-                          ? 'Online'
-                          : 'Offline'}
+                        ? 'Online'
+                        : 'Offline'}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -613,19 +612,7 @@ class Chat extends React.Component {
           />
         </SafeAreaView>
 
-        <View
-          style={{
-            // gap: 10,
-            ...Platform.select({
-              ios: {
-                flex: 1,
-                minHeight: Dimensions.get('window').height - 60
-              },
-              android: {
-                flex: 1
-              },
-            }),
-          }}>
+        <View style={styles.listWrapper}>
           {this.state.isLoading && this.state.page > 1 && (
             <View
               style={{
@@ -641,7 +628,7 @@ class Chat extends React.Component {
                 zIndex: 1,
               }}>
               <ActivityIndicator size="small" color={color.btnBlue} />
-              <Text style={{ fontStyle: 'italic' }}>Please wait...</Text>
+              <Text style={{fontStyle: 'italic'}}>Please wait...</Text>
             </View>
           )}
           <AudioContextProvider>
@@ -652,18 +639,15 @@ class Chat extends React.Component {
               inverted={true}
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
-              style={{
-                flex: 1,
-                marginBottom: Platform.OS === 'ios' ? 15 : 15,
-              }}
-              renderItem={({ item, index }) => (
+              style={styles.flatlist}
+              renderItem={({item, index}) => (
                 <ChatItem
                   onImagePress={files => {
-                    this.setState({ page: 1 }),
+                    this.setState({page: 1}),
                       this.props.navigation.navigate('ShowImg', {
                         file: files?.file,
                         fileType: files?.fileType,
-                      })
+                      });
                   }}
                   user_id={this.props?.route?.params?.user_id}
                   avatar={this.props?.route?.params?.avatar}
@@ -679,28 +663,28 @@ class Chat extends React.Component {
               <BottomViewNew
                 message={this.state.message}
                 file={this.state.file}
-                audioFile={file => this.setState({ audioFile: file })}
-                deleteFile={() => this.setState({ file: undefined })}
+                audioFile={file => this.setState({audioFile: file})}
+                deleteFile={() => this.setState({file: undefined})}
                 sendMessage={
                   this.state.file || this.state.audioFile != ''
                     ? this.sendFile
                     : this.sendMessage
                 }
                 textChange={v => {
-                  this.setState({ message: v });
+                  this.setState({message: v});
                   this.onTyping(v != '');
                 }}
-                inputFocus={() => this.setState({ isShowBottomSheet: false })}
+                inputFocus={() => this.setState({isShowBottomSheet: false})}
                 addPress={() => {
                   Keyboard.dismiss();
                   // this.bottomSheetRef?.current?.expand();
-                  this.setState({ isShowBottomSheet: true });
+                  this.setState({isShowBottomSheet: true});
                 }}
                 emojiSelect={v => {
-                  this.setState({ message: `${this.state.message}${v}` });
+                  this.setState({message: `${this.state.message}${v}`});
                 }}
                 setFile={file => {
-                  this.setState({ file: file });
+                  this.setState({file: file});
                 }}
                 isConnected={this.state.isConnected}
               />
@@ -717,10 +701,6 @@ class Chat extends React.Component {
             isShowBottomSheet={this.state.isShowBottomSheet}
             setisShowBottomSheet={this.setisShowBottomSheet.bind(this)}>
             <View>
-              {/* <View style={{ alignContent: 'center', paddingVertical: hp(1), marginBottom: 10 }}>
-                  <Text style={BottomSheetUploadFileStyle.roportHeading}>Add Story</Text>
-                  <Text style={BottomSheetUploadFileStyle.subHeading}>Post Photo Video To Your Story</Text>
-                </View> */}
               <View>
                 <TouchableOpacity
                   onPress={() =>
@@ -819,7 +799,6 @@ class Chat extends React.Component {
           </BottomSheetUploadFile>
         </View>
       </View>
-      // </SafeAreaView>
     );
   }
 }
@@ -827,9 +806,21 @@ class Chat extends React.Component {
 export default Chat;
 
 const styles = StyleSheet.create({
-  safeArea: {
+  listWrapper: {
+    // gap: 10,
+    ...Platform.select({
+      ios: {
+        flex: 1,
+        // minHeight: Dimensions.get('window').height - 60
+      },
+      android: {
+        flex: 1,
+      },
+    }),
+  },
+  flatlist: {
     flex: 1,
-    backgroundColor: '#fff',
+    marginBottom: Platform.OS === 'ios' ? 15 : 15,
   },
   heading: {
     marginTop: -10,

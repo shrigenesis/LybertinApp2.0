@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { useState, useEffect, FC } from 'react';
+import React, {useState, useEffect, FC} from 'react';
 import {
   View,
   Text,
@@ -13,190 +13,205 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import {IMAGE, color, fontFamily} from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { RippleTouchable, StoryList } from '../../component/';
+import {RippleTouchable, StoryList} from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Toast from 'react-native-toast-message';
-import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
-import { useIsFocused } from '@react-navigation/native';
+import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
+import {useIsFocused} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
-import { User } from '../../utils/user';
+import {User} from '../../utils/user';
 import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import FastImage from 'react-native-fast-image';
 const getTime = time => {
   if (time) {
     return moment(time).fromNow();
   }
 };
 
-const _renderGroupList = React.memo(({ item, navigation, setisLoading, reload, pinnedChatCount }) => {
-  const userdata = new User().getuserdata();
-  let receiverId = userdata?.id == item.from_id ? item.from_id : userdata?.id;
+const _renderGroupList = React.memo(
+  ({item, navigation, setisLoading, reload, pinnedChatCount}) => {
+    const userdata = new User().getuserdata();
+    let receiverId = userdata?.id == item.from_id ? item.from_id : userdata?.id;
 
-  const pinUnpinChatList = item => {
-
-    if (pinnedChatCount >= 3 && item?.is_pinned == '0') {
-      Toast.show({
-        type: 'info',
-        text1: 'You can pin upto 3 conversations',
-      });
-      return false;
-    }
-    setisLoading(true);
-    let config = {
-      url: ApiUrl.pinUnpinChatList,
-      method: 'post',
-      body: {
-        to_id: item?.group_id,
-        is_group: 1
+    const pinUnpinChatList = item => {
+      if (pinnedChatCount >= 3 && item?.is_pinned == '0') {
+        Toast.show({
+          type: 'info',
+          text1: 'You can pin upto 3 conversations',
+        });
+        return false;
       }
+      setisLoading(true);
+      let config = {
+        url: ApiUrl.pinUnpinChatList,
+        method: 'post',
+        body: {
+          to_id: item?.group_id,
+          is_group: 1,
+        },
+      };
+      APIRequest(
+        config,
+        res => {
+          if (res.status) {
+            reload();
+          }
+          setisLoading(false);
+        },
+        err => {
+          setisLoading(false);
+        },
+      );
     };
-    APIRequest(
-      config,
-      res => {
-        if (res.status) {
-          reload()
-        }
-        setisLoading(false);
-      },
-      err => {
-        setisLoading(false);
-      },
-    );
-  };
-  return (
-
-    <SwipeableView autoClose={false} btnsArray={[{
-      component: (
-        <TouchableOpacity
-          onPress={() => { pinUnpinChatList(item) }}
-          style={{
-            backgroundColor: color.textGray2,
-            flex: 1,
-            alignItems: 'center',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}>
-          {item?.is_pinned == '1' ? (
-            <>
-              <Image
-                source={IMAGE.unPin}
-                style={{ height: 16, width: 16, resizeMode: 'contain' }}
-              />
-              <Text
+    return (
+      <SwipeableView
+        autoClose={false}
+        btnsArray={[
+          {
+            component: (
+              <TouchableOpacity
+                onPress={() => {
+                  pinUnpinChatList(item);
+                }}
                 style={{
-                  fontSize: 12,
-                  fontFamily: fontFamily.Semibold,
-                  color: color.white,
-                  marginLeft: 5,
-                }} >Unpin</Text>
-
-            </>
-          ) : (
-            <>
-              <Image
-                source={IMAGE.pin}
-                style={{ height: 16, width: 16, resizeMode: 'contain' }}
-              />
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontFamily: fontFamily.Semibold,
-                  color: color.white,
-                  marginLeft: 5,
-                }} >Pin</Text>
-            </>
-
-          )}
-
-
-        </TouchableOpacity>
-      ),
-    }]}>
-      <RippleTouchable
-        onPress={() =>
-          navigation.navigate('GroupChat', {
-            group_id: item?.group?.id,
-            user_id: receiverId,
-            groupType: item.group.group_type,
-            mediaPrivacy: item.group.media_privacy,
-            privacy: item.group.privacy,
-            isAdmin: item.is_admin,
-          })
-        }>
-        <View style={style.card}>
-          <View
-            style={{
-              alignItems: 'center',
-              flexDirection: 'row',
-              paddingLeft: wp(5),
-            }}>
-            <View style={style.imgview}>
-              {/* <View style={style.onlineDot} /> */}
-              <Image
-                source={{ uri: `${IMAGEURL}/${item?.group?.photo_url}` }}
-                style={style.imgBox}
-              />
-            </View>
-            <View style={style.chatView}>
-              <View>
-                <Text style={style.chatname}>{item?.group?.name}</Text>
-                <Text style={style.msg} numberOfLines={1}>
-                  {item?.message}
-                </Text>
-              </View>
-              <View style={{ paddingRight: wp(3) }}>
-                <Text style={style.time}>{item.created_time_ago}</Text>
-                <View
-                  style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}
-                >
-                  {item.unread_count > 0 && (
-                    <View
+                  backgroundColor: color.textGray2,
+                  flex: 1,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                {item?.is_pinned == '1' ? (
+                  <>
+                    <Image
+                      source={IMAGE.unPin}
+                      style={{height: 16, width: 16, resizeMode: 'contain'}}
+                    />
+                    <Text
                       style={{
-                        // flexDirection: 'row',
-                        // alignItems: 'center',
-                        marginTop: hp(1),
+                        fontSize: 12,
+                        fontFamily: fontFamily.Semibold,
+                        color: color.white,
+                        marginLeft: 5,
                       }}>
-                      <View style={style.badge}>
-                        <Text style={style.badgeText}>
-
-                          {parseInt(item.unread_count) > 99
-                            ? '99+'
-                            : parseInt(item.unread_count)}
-                        </Text>
+                      Unpin
+                    </Text>
+                  </>
+                ) : (
+                  <>
+                    <Image
+                      source={IMAGE.pin}
+                      style={{height: 16, width: 16, resizeMode: 'contain'}}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontFamily: fontFamily.Semibold,
+                        color: color.white,
+                        marginLeft: 5,
+                      }}>
+                      Pin
+                    </Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            ),
+          },
+        ]}>
+        <RippleTouchable
+          onPress={() =>
+            navigation.navigate('GroupChat', {
+              group_id: item?.group?.id,
+              user_id: receiverId,
+              groupType: item.group.group_type,
+              mediaPrivacy: item.group.media_privacy,
+              privacy: item.group.privacy,
+              isAdmin: item.is_admin,
+            })
+          }>
+          <View style={style.card}>
+            <View
+              style={{
+                alignItems: 'center',
+                flexDirection: 'row',
+                paddingLeft: wp(5),
+              }}>
+              <View style={style.imgview}>
+                <FastImage
+                  style={style.imgBox}
+                  source={{uri: `${IMAGEURL}/${item?.group?.photo_url}`}}
+                />
+              </View>
+              <View style={style.chatView}>
+                <View>
+                  <Text style={style.chatname}>{item?.group?.name}</Text>
+                  <Text style={style.msg} numberOfLines={1}>
+                    {item?.message}
+                  </Text>
+                </View>
+                <View style={{paddingRight: wp(3)}}>
+                  <Text style={style.time}>{item.created_time_ago}</Text>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-evenly',
+                    }}>
+                    {item.unread_count > 0 && (
+                      <View
+                        style={{
+                          // flexDirection: 'row',
+                          // alignItems: 'center',
+                          marginTop: hp(1),
+                        }}>
+                        <View style={style.badge}>
+                          <Text style={style.badgeText}>
+                            {parseInt(item.unread_count) > 99
+                              ? '99+'
+                              : parseInt(item.unread_count)}
+                          </Text>
+                        </View>
                       </View>
-                    </View>
-                  )}
-                  {parseInt(item?.is_pinned) > 0 && <Image
-                    source={IMAGE.grayPin}
-                    style={{ height: 16, width: 16, marginTop: hp(1), resizeMode: 'contain' }}
-                  />}
+                    )}
+                    {parseInt(item?.is_pinned) > 0 && (
+                      <Image
+                        source={IMAGE.grayPin}
+                        style={{
+                          height: 16,
+                          width: 16,
+                          marginTop: hp(1),
+                          resizeMode: 'contain',
+                        }}
+                      />
+                    )}
+                  </View>
                 </View>
               </View>
             </View>
           </View>
-        </View>
-      </RippleTouchable>
-    </SwipeableView>
-  );
-});
+        </RippleTouchable>
+      </SwipeableView>
+    );
+  },
+);
 
-const GroupList = ({ navigation }) => {
+const GroupList = ({navigation}) => {
   const [groupList, setGroupList] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoading, setisLoading] = useState(false);
   const [appReady, setappReady] = useState(false);
   const [pinnedChatCount, setPinnedChatCount] = useState(0);
-  const { avatar } = new User().getuserdata();
+  const {avatar} = new User().getuserdata();
 
   const isFocus = useIsFocused();
   useEffect(() => {
@@ -221,9 +236,10 @@ const GroupList = ({ navigation }) => {
       config,
       res => {
         const totalPinnedChat = res?.conversations.reduce(
-          (acc, curr) => (parseInt(acc) + parseInt(curr?.is_pinned == '1' ? 1 : 0)),
+          (acc, curr) =>
+            parseInt(acc) + parseInt(curr?.is_pinned == '1' ? 1 : 0),
           0,
-        )
+        );
         setPinnedChatCount(totalPinnedChat);
         if (res.conversations == []) {
           setGroupList([]);
@@ -247,12 +263,15 @@ const GroupList = ({ navigation }) => {
       setisLoading(false);
       setappReady(false);
       setPinnedChatCount(0);
-    }
-  }, [])
-  
+    };
+  }, []);
+
   return (
-    <View style={{ flex: 1, backgroundColor: color.white }}>
-      <FocusAwareStatusBar barStyle={'dark-content'} backgroundColor={color.white} />
+    <View style={{flex: 1, backgroundColor: color.white}}>
+      <FocusAwareStatusBar
+        barStyle={'dark-content'}
+        backgroundColor={color.white}
+      />
 
       {/* {appReady && <Loader type="dots" isLoading={isLoading} />} */}
 
@@ -281,18 +300,18 @@ const GroupList = ({ navigation }) => {
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => {
-                navigation.navigate('Search', { isGroupSearch: true });
+                navigation.navigate('Search', {isGroupSearch: true});
               }}>
               <View style={style.input}>
-                <View style={{ position: 'absolute', left: wp(3) }}>
-
+                <View style={{position: 'absolute', left: wp(3)}}>
                   <Image
                     source={IMAGE.search2}
-                    style={{ height: 20, width: 20, resizeMode: 'contain' }}
+                    style={{height: 20, width: 20, resizeMode: 'contain'}}
                   />
                 </View>
-                <Text style={{ color: color.iconGray }}>Search using group name</Text>
-
+                <Text style={{color: color.iconGray}}>
+                  Search using group name
+                </Text>
               </View>
             </TouchableOpacity>
             {isLoading ? (
@@ -309,14 +328,15 @@ const GroupList = ({ navigation }) => {
                       showsVerticalScrollIndicator={false}
                       keyExtractor={index => String(index.id)}
                       data={groupList}
-                      contentContainerStyle={{ marginBottom: hp(20) }}
-                      renderItem={({ item, index }) => (
+                      contentContainerStyle={{marginBottom: hp(20)}}
+                      renderItem={({item, index}) => (
                         <_renderGroupList
                           navigation={navigation}
                           item={item}
-                          setisLoading={(val) => setisLoading(val)}
+                          setisLoading={val => setisLoading(val)}
                           pinnedChatCount={pinnedChatCount}
-                          reload={fetchGroupList} />
+                          reload={fetchGroupList}
+                        />
                       )}
                     />
                   </View>
@@ -358,7 +378,12 @@ const GroupList = ({ navigation }) => {
         {/* <Imgage name={'pencil'} style={{ fontSize: 25, color: '#fff' }} /> */}
         <Image
           source={IMAGE.plus}
-          style={{ height: 25, width: 25, tintColor: color.white, resizeMode: 'contain' }}
+          style={{
+            height: 25,
+            width: 25,
+            tintColor: color.white,
+            resizeMode: 'contain',
+          }}
         />
       </TouchableOpacity>
     </View>
@@ -436,7 +461,7 @@ const style = StyleSheet.create({
     borderColor: color.borderGray,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: {width: 0, height: 1},
     shadowOpacity: 0.1,
     shadowRadius: 5,
   },
@@ -462,7 +487,7 @@ const style = StyleSheet.create({
     marginRight: wp(1),
     overflow: 'hidden',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   badgeText: {
     fontSize: 10,
