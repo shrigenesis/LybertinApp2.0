@@ -34,25 +34,6 @@ class LocalNotificationService {
         // process the action
       },
       onNotification: function (notification) {
-        console.log('[LocalNotificationService] onNotification:', notification);
-        // var data = {
-        //   channelId: 'channel-id',
-        //   autoCancel: true,
-        //   title: notification.data.title,
-        //   message: notification.data.message,
-        //   vibrate: true,
-        //   vibration: 2000,
-        //   playSound: true,
-        //   allowWhileIdle: true,
-        //   soundName: 'default',
-
-        //   // popInitialNotification: false,
-        //   requestPermissions: true,
-
-        //   // actions: '["Reject", "Accept"]',
-        //   // action:true,
-        //   invokeApp: false,
-        // };
         if (
           notification?.data?.item?.notification_type ==
           'FRIEND_REQUEST_NOTIFICATION'

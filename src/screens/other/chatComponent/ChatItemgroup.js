@@ -556,6 +556,7 @@ const styles = StyleSheet.create({
   file: {
     height: 80,
     width: 80,
+    color: color.btnBlue,
     resizeMode: 'contain',
     marginBottom: hp(1),
   },
