@@ -868,8 +868,8 @@ const styles = StyleSheet.create({
     columnGap: 5,
   },
   Pdf: {
-    height: 30,
-    width: 30,
+    height: 35,
+    width: 35,
     resizeMode: 'contain',
     tintColor: color.btnBlue
   },
