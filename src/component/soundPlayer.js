@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useRef, useEffect, useContext} from 'react';
+import React, { useState, useMemo, useRef, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -11,27 +11,23 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import Sound from 'react-native-sound';
 import Slider from 'react-native-slider';
 import Animated, {
-  BounceInLeft,
   FadeIn,
   FadeOut,
-  FadeOutUp,
 } from 'react-native-reanimated';
-import {IMAGE, color, fontFamily} from '../constant';
+import { IMAGE, color, fontFamily } from '../constant';
 import Toast from 'react-native-toast-message';
-import {AudioContext} from '../context/AudioContext';
+import { AudioContext } from '../context/AudioContext';
 import moment from 'moment';
-import Loader from './loader';
 
 const SoundPlayer = ({
   recordingFile = '',
   playImmediate = true,
-  close = () => {},
+  close = () => { },
   forChat = false,
-  Send = () => {},
+  Send = () => { },
 }) => {
   const audio = useContext(AudioContext);
   const [isPlay, setIsPlay] = useState(false);
@@ -65,7 +61,13 @@ const SoundPlayer = ({
   }, []);
 
   const startSound = () => {
-    console.log('startSound');
+    if (audio?.isdisabled) {
+      Toast.show({
+        type: 'error',
+        text1: "Can't play audio while recording is in progress.",
+      });
+      return
+    }
     setIsPlay(true);
     try {
       if (global?.sound) {
@@ -182,10 +184,10 @@ const SoundPlayer = ({
               // disabled={audio?.isdisabled}
               style={styles.playpause}
               onPress={startSound}
-              // onPress={()=>alert('ghn')}
+            // onPress={()=>alert('ghn')}
             >
               {/* <Icon name='play' style={{ fontSize: 16, color: '#681F84' }} /> */}
-              <Image source={IMAGE.playFill} style={{width: 40, height: 40}} />
+              <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
             </TouchableOpacity>
           ) : (
             <TouchableOpacity
@@ -193,17 +195,17 @@ const SoundPlayer = ({
               style={styles.playpause}
               onPress={pauseSound}>
               {/* <Icon name='pause' style={{ fontSize: 16, color: '#000' }} /> */}
-              <Image source={IMAGE.pauseFill} style={{width: 40, height: 40}} />
+              <Image source={IMAGE.pauseFill} style={{ width: 40, height: 40 }} />
             </TouchableOpacity>
           )}
 
-          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
             <Slider
-              style={{width: wp(28), marginLeft: wp(3)}}
+              style={{ width: wp(28), marginLeft: wp(3) }}
               trackStyle={styles.track}
               thumbStyle={styles.thumb}
               minimumTrackTintColor="#681F84"
-              thumbTouchSize={{width: 50, height: 40}}
+              thumbTouchSize={{ width: 50, height: 40 }}
               minimumValue={0}
               value={playTime}
               maximumValue={totalDuration}
@@ -211,16 +213,18 @@ const SoundPlayer = ({
             />
           </View>
           {totalDuration > 0 ? (
-            <Text style={{position: 'absolute', top: 25, left: 60}}>
+            <Text style={{ position: 'absolute', top: 25, left: 60 }}>
               {totalDuration > 0 &&
                 `${moment.utc(totalDuration * 1000).format('mm:ss')}`}
             </Text>
           ) : (
-            <ActivityIndicator
-              style={{position: 'absolute', top: 25, left: 60}}
-              color={color.btnBlue}
-              size="small"
-            />
+            !(audio?.isdisabled) && (
+              <ActivityIndicator
+                style={{ position: 'absolute', top: 25, left: 60 }}
+                color={color.btnBlue}
+                size="small"
+              />
+            )
           )}
         </View>
       );
@@ -236,16 +240,16 @@ const SoundPlayer = ({
                 onPress={() => startSound()}>
                 <Image
                   source={IMAGE.playFill}
-                  style={{width: 40, height: 40}}
+                  style={{ width: 40, height: 40 }}
                 />
               </TouchableOpacity>
             ) : (
-              <TouchableOpacity 
-              // style={styles.playpause}
-               onPress={pauseSound}>
+              <TouchableOpacity
+                // style={styles.playpause}
+                onPress={pauseSound}>
                 <Image
                   source={IMAGE.pauseFill}
-                  style={{width: 40, height: 40}}
+                  style={{ width: 40, height: 40 }}
                 />
               </TouchableOpacity>
             )}
@@ -254,7 +258,7 @@ const SoundPlayer = ({
               trackStyle={styles.track}
               thumbStyle={styles.thumb}
               minimumTrackTintColor="#681F84"
-              thumbTouchSize={{width: 50, height: 40}}
+              thumbTouchSize={{ width: 50, height: 40 }}
               minimumValue={0}
               value={playTime}
               maximumValue={totalDuration}
@@ -319,7 +323,7 @@ const styles = StyleSheet.create({
     backgroundColor: color.btnBlue,
     borderRadius: 10,
     shadowColor: color.btnBlue,
-    shadowOffset: {width: 0, height: 0},
+    shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
   },

@@ -8,10 +8,8 @@ import {
   TouchableOpacity,
   Keyboard,
   SafeAreaView,
-  BackHandler,
   Alert,
   Platform,
-  Dimensions,
   ActivityIndicator,
 } from 'react-native';
 import {Header, Loader, pickDocument, pickImage} from './../../component/';
@@ -23,14 +21,12 @@ import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
-  APIRequestWithFile,
   APIRequestWithFile1,
   ApiUrl,
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
-import {BottomView, RenderBottomSheet, ChatItem} from './chatComponent/';
+import {BottomView, ChatItem} from './chatComponent/';
 import io from 'socket.io-client';
 import {User} from '../../utils/user';
 import Toast from 'react-native-toast-message';
@@ -45,7 +41,6 @@ import {
 } from '../../component/BottomSheetUploadFile';
 import AudioContextProvider from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
-import {BottomViewNew} from './chatComponent/bottomViewNew';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
@@ -660,7 +655,7 @@ class Chat extends React.Component {
             />
 
             {this.state.appReady && (
-              <BottomViewNew
+              <BottomView
                 message={this.state.message}
                 file={this.state.file}
                 audioFile={file => this.setState({audioFile: file})}

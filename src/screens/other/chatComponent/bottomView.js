@@ -1,59 +1,75 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, { memo, useEffect, useState, useContext, useRef } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 import {
   View,
   StyleSheet,
   KeyboardAvoidingView,
+  TouchableOpacity,
   Image,
   TextInput,
-  TouchableOpacity,
-  Platform,
-  Keyboard,
   Text,
-  Alert,
   Dimensions,
+  Keyboard,
+  Platform,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import Icon from 'react-native-vector-icons/FontAwesome';
-import { IMAGE, color, fontFamily, fontSize } from '../../../constant/';
-import SoundPlayer from './../../../component/soundPlayer';
-import Toast from 'react-native-toast-message';
+import { IMAGE, color, fontFamily, fontSize } from '../../../constant';
 import Animated, {
-  SlideOutRight,
-  SlideInUp,
-  FadeInLeft,
-  SlideOutDown,
-  SlideInLeft,
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
   FadeOut,
-  SlideInDown,
+  FadeOutDown,
+  ZoomIn,
+  ZoomOut,
 } from 'react-native-reanimated';
-import Slider from 'react-native-slider';
-import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-import { EmojiKeyboard } from './../../../component/';
-import { requestPermission } from './../../../component/documentpicker';
-import { pickImage } from './../../../component/';
+import { EmojiKeyboard } from '../../../component';
+import { SlideInDown } from 'react-native-reanimated';
+import { SlideInUp } from 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
+import { AudioContext } from '../../../context/AudioContext';
 import { IMAGEURL } from '../../../utils/api';
-import VideoPlayer from '../VideoPlayer';
+import { requestPermission } from '../../../component/documentpicker';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+import moment from 'moment';
+import Slider from 'react-native-slider';
+import SoundPlayer from '../../../component/soundPlayer';
+import LottieView from 'lottie-react-native';
 import Video from 'react-native-video';
 import Pdf from 'react-native-pdf';
-import { AudioContext } from '../../../context/AudioContext';
-import moment from 'moment';
+import DeviceInfo from 'react-native-device-info';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 export const BottomView = memo(props => {
   const [showEmojiKeyboard, setshowEmojiKeyboard] = useState(false);
+  const [isRecordingStart, setRecordingStart] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const [recordingFile, setRecordingFile] = useState('');
+  const [playImmediate, setPlayImmediate] = useState(false);
+  const [replyBoxheight, setReplyBoxheight] = useState('');
+  const [videoHeight, setVideoHeight] = useState(1);
+  const [videoWidth, setVideoWidth] = useState(1);
+  const [height, setheight] = useState(0);
+  const [disable, setdisable] = useState(false);
+
   const {
     audioFile = () => { },
     addPress = () => { },
     file,
     pickCamera = 1,
     message,
-    setFile = () => { },
     deleteFile,
     inputFocus = () => { },
     sendMessage = () => { },
@@ -64,11 +80,23 @@ export const BottomView = memo(props => {
     emojiSelect,
     replyOn,
     removeReplyBox = () => { },
-    updateBottomViewHeight = () => { }
   } = props;
   const audio = useContext(AudioContext);
   const searchInput = useRef(null);
 
+  const keyboardDidHideCallback = () => {
+    if (Platform.OS === 'android') searchInput?.current?.blur?.();
+  };
+
+  useEffect(() => {
+    const keyboardDidHideSubscription = Keyboard.addListener(
+      'keyboardDidHide',
+      keyboardDidHideCallback,
+    );
+    return () => {
+      keyboardDidHideSubscription?.remove();
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -77,16 +105,8 @@ export const BottomView = memo(props => {
     };
   }, []);
 
-  const [isRecordingStart, setRecordingStart] = useState(false);
-  const [recordingTime, setRecordingTime] = useState(0);
-  const [recordingFile, setRecordingFile] = useState('');
-  const [replyBoxheight, setReplyBoxheight] = useState('');
-  const [height, setheight] = useState(0);
-  const [disable, setdisable] = useState(false);
-
-  var backTimer;
-
   const onStartRecord = async () => {
+    setPlayImmediate(false);
     if (await requestPermission('audio')) {
       setRecordingTime(0);
       setRecordingStart(true);
@@ -115,10 +135,10 @@ export const BottomView = memo(props => {
     if (item?.message_type == '0') {
       return (
         <>
-          <Text
-            style={{ fontFamily: fontFamily.Regular, fontSize: fontSize.size15 }}>
-            {' '}
-            {item?.message}{' '}
+          <Text numberOfLines={1} style={styles.messageTypeText}>
+            {item?.message.length < 30
+              ? `${item?.message}`
+              : `${item?.message.substring(0, 30)}...`}
           </Text>
         </>
       );
@@ -126,23 +146,16 @@ export const BottomView = memo(props => {
     if (item?.message_type == '1') {
       return (
         <>
-          <Image source={IMAGE.camera} style={styles.replyBoxImgIcon} />
-          <Text style={styles.replyBoxImgText}> Image </Text>
+          <Image source={IMAGE.camera} style={styles.messageTypeImage} />
+          <Text style={styles.replyBoxImgText}>Image</Text>
         </>
       );
     }
     if (item?.message_type == '4') {
       return (
         <>
-          <Image
-            source={IMAGE.micIconPurple}
-            style={{ resizeMode: 'contain', height: 14, width: 14 }}
-          />
-          <Text
-            style={{ fontFamily: fontFamily.Regular, fontSize: fontSize.size15 }}>
-            {' '}
-            Voice Message{' '}
-          </Text>
+          <Image source={IMAGE.micIconPurple} style={styles.messageTypeImage} />
+          <Text style={styles.messageTypeText}>Voice Message</Text>
         </>
       );
     }
@@ -151,13 +164,9 @@ export const BottomView = memo(props => {
         <>
           <Image
             source={IMAGE.videoIconPurple}
-            style={{ resizeMode: 'contain', height: 14, width: 14 }}
+            style={styles.messageTypeImage}
           />
-          <Text
-            style={{ fontFamily: fontFamily.Regular, fontSize: fontSize.size15 }}>
-            {' '}
-            Video{' '}
-          </Text>
+          <Text style={styles.messageTypeText}>Video</Text>
         </>
       );
     } else {
@@ -165,13 +174,9 @@ export const BottomView = memo(props => {
         <>
           <Image
             source={IMAGE.documentIconPurple}
-            style={{ resizeMode: 'contain', height: 14, width: 14 }}
+            style={styles.messageTypeImage}
           />
-          <Text
-            style={{ fontFamily: fontFamily.Regular, fontSize: fontSize.size15 }}>
-            {' '}
-            Document{' '}
-          </Text>
+          <Text style={styles.messageTypeText}>Document</Text>
         </>
       );
     }
@@ -181,6 +186,12 @@ export const BottomView = memo(props => {
     setReplyBoxheight(parseInt(height) + hp(3));
   };
 
+  const onVideoWrapperLayout = event => {
+    const { height, width } = event.nativeEvent.layout;
+    setVideoHeight(parseInt(height));
+    setVideoWidth(parseInt(width));
+  };
+
   const StopMultiplePress = () => {
     setdisable(true);
     // setTimeout(() => {
@@ -188,19 +199,29 @@ export const BottomView = memo(props => {
     // }, 500);
   };
 
+  const playAudio = play => {
+    audio?.setaudio(recordingFile);
+    if (play) {
+      setPlayImmediate(true);
+    }
+  };
+
   const showDisconectedToast = type => {
     let text = 'Please connect to internet.';
     switch (type) {
       case 'FILE':
-        text = 'Please connect to internet to send any file.'
+        text = 'Please connect to internet to send any file.';
         break;
       case 'RECORD':
-        text = 'Please connect to internet to record audio.'
+        text = 'Please connect to internet to record audio.';
+        break;
+      case 'NO_PERMISSION':
+        text = 'You do not have access to send media in this group.';
         break;
 
       default:
-        text = 'Please connect to internet to capture image.'
-        break;//CAMERA
+        text = 'Please connect to internet to capture image.';
+        break; //CAMERA
     }
 
     Toast.show({
@@ -210,8 +231,6 @@ export const BottomView = memo(props => {
   };
 
   useEffect(() => {
-    console.log('file log', file, file?.fileType);
-    console.log('recording  log', recordingFile);
     // if (file?.fileType == 'pdf') {
     //   console.log('pdf');
     //   sendMessage()
@@ -230,248 +249,275 @@ export const BottomView = memo(props => {
 
   const Audio = () => {
     if (recordingFile === audio?.audio) {
-      console.log('if');
       return (
-        <View
-          style={{
-            alignItems: 'center',
-            height: hp(10),
-            flexDirection: 'row',
-            paddingBottom: 20,
-          }}>
-          <SoundPlayer
-            close={() => {
-              audioFile('');
-              setRecordingFile('');
-              onStopRecord();
-            }}
-            Send={() => {
-              audio?.setaudio('');
-              onStopRecord();
-              setRecordingFile('');
-              sendMessage();
-            }}
-            recordingFile={recordingFile}
-          />
-        </View>
+        <SoundPlayer
+          playImmediate={playImmediate}
+          close={() => {
+            audioFile('');
+            setRecordingFile('');
+            onStopRecord();
+          }}
+          Send={() => {
+            audio?.setaudio('');
+            onStopRecord();
+            setRecordingFile('');
+            sendMessage();
+          }}
+          recordingFile={recordingFile}
+        />
       );
     } else {
-      console.log('else');
       return (
-        <TouchableOpacity
-          activeOpacity={1}
-          onPress={() => audio?.setaudio(recordingFile)}>
-          <View
-            style={{
-              alignItems: 'center',
-              height: hp(10),
-              flexDirection: 'row',
-              paddingHorizontal: wp(2),
-              paddingBottom: 20,
-            }}>
+        <View style={styles.row}>
+          <TouchableOpacity activeOpacity={1} onPress={() => playAudio(true)}>
             <View style={styles.playpause}>
               <Image source={IMAGE.playFill} style={{ width: 40, height: 40 }} />
             </View>
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Slider
-                style={{ width: wp(55), marginLeft: wp(5) }}
-                trackStyle={styles.track}
-                thumbStyle={styles.thumb}
-                minimumTrackTintColor="#681F84"
-                thumbTouchSize={{ width: 50, height: 40 }}
-                minimumValue={0}
-                value={0}
-                maximumValue={10}
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  setRecordingFile('');
-                  audioFile('');
-                  onStopRecord();
-                }}
-                style={{ paddingLeft: wp(5) }}>
-                <Icon name="times" style={{ fontSize: 20, color: '#000' }} />
-              </TouchableOpacity>
-              <TouchableOpacity
-                onPress={() => {
-                  audio?.setaudio('');
-                  sendMessage();
-                  setRecordingFile('');
-                  onStopRecord();
-                }}
-                style={{ paddingLeft: wp(5) }}>
-                <Icon name="send" style={{ fontSize: 20, color: '#681F84' }} />
-              </TouchableOpacity>
-            </View>
-          </View>
-          {/* <Text>Click</Text> */}
-        </TouchableOpacity>
+          </TouchableOpacity>
+          <Slider
+            style={styles.slider}
+            trackStyle={styles.track}
+            thumbStyle={styles.thumb}
+            minimumTrackTintColor="red"
+            // thumbTouchSize={{width: 50, height: 40}}
+            minimumValue={0}
+            value={0}
+            disabled={true}
+            maximumValue={10}
+          />
+          <TouchableOpacity
+            style={[styles.col_small]}
+            onPress={() => {
+              setRecordingFile('');
+              audioFile('');
+              onStopRecord();
+            }}>
+            <Image
+              source={IMAGE.delete}
+              style={{
+                resizeMode: 'contain',
+                height: 24,
+                width: 24,
+                tintColor: color.red,
+              }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.col_small, styles.sendIconBox]}
+            onPress={() => {
+              audio?.setaudio('');
+              sendMessage();
+              setRecordingFile('');
+              onStopRecord();
+            }}>
+            <Image
+              source={IMAGE.send}
+              style={{
+                resizeMode: 'contain',
+                height: 20,
+                width: 20,
+                tintColor: color.white,
+              }}
+            />
+          </TouchableOpacity>
+        </View>
       );
     }
   };
 
   useEffect(() => {
-    console.log(height);
-  }, [height])
+
+  }, [height]);
 
   return (
-    <KeyboardAvoidingView
-      keyboardVerticalOffset={'90'}
-      contentInsetAdjustmentBehavior="automatic"
-      behavior={Platform.OS == 'ios' ? 'padding' : ''}>
-      <View onLayout={event => updateBottomViewHeight(event)}>
-        {!isRecordingStart && recordingFile && (
+    <>
+      {file && (
+        <View style={styles.fileView}>
           <View
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              zIndex: 99,
-              backgroundColor: '#F6F6F6',
-              width: wp(100),
-            }}>
-            {Audio()}
-          </View>
-        )}
-        <View
-          style={{
-            // flex:1,
-            // flexDirection:'row',
-            minHeight: hp(9),
-            marginTop: replyOn
-              ? replyBoxheight == ''
-                ? hp(8)
-                : replyBoxheight
-              : hp(1),
-            paddingTop: showEmojiKeyboard ? hp(6.5) : 0,
-            backgroundColor: '#F6F6F6',
-          }}>
-          {file && (
-            <Animated.View
-              entering={SlideInLeft}
-              exiting={SlideOutDown}
-              style={styles.fileView}>
-              <View
+            onLayout={onVideoWrapperLayout}
+            style={styles.filePreviewWrapper}>
+            {file?.fileType == 'pdf' ? (
+              <Pdf
+                trustAllCerts={false}
+                source={{
+                  uri: `${file?.uri}`,
+                  cache: true,
+                }}
                 style={{
-                  width: wp(100),
-                  height: 50,
-                  position: 'absolute',
-                  top: 0,
-                  zIndex: 999,
-                  backgroundColor: 'rgba(52, 52, 52, 0.4)',
-                }}>
-                <TouchableOpacity
-                  onPress={deleteFile}
+                  width: Dimensions.get('window').width,
+                  height: hp(80),
+                }}
+              />
+            ) : null}
+            {file?.fileType == 'photo' || file?.fileType == 'image'
+              ?
+              (
+                <Image
+                  source={{ uri: file.uri }}
                   style={{
-                    position: 'absolute',
-                    left: 15,
-                    top: 10,
-                    zIndex: 999,
-                  }}>
-                  <Image
-                    source={IMAGE.close}
-                    style={{
-                      color: color.red,
-                      height: 30,
-                      width: 30,
-                      resizeMode: 'contain',
-                    }}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => {
-                    audio?.setaudio('');
-                    sendMessage();
+                    resizeMode: 'contain',
+                    width: wp(100),
+                    height: hp(100),
                   }}
-                  style={{
-                    position: 'absolute',
-                    right: 10,
-                    top: 10,
-                    zIndex: 999,
-                  }}>
-                  <Image
-                    source={IMAGE.right}
+                />
+              )
+              : null}
+            {file?.fileType == 'video' || file?.fileType === 'video/mp4' ? (
+              <Video
+                source={{ uri: file?.uri }}
+                muted={true}
+                paused={true}
+                controls={true}
+                resizeMode="cover"
+                style={{
+                  // height: Dimensions.get('window').width / (16 / 9),
+                  height: videoHeight - 50,
+                  width: videoWidth,
+                }}
+              />
+            ) : null}
+          </View>
+
+          <TouchableOpacity style={styles.removeFile} onPress={deleteFile}>
+            <Image source={IMAGE.close} style={styles.removeFIleImage} />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.sendFile}
+            onPress={() => {
+              audio?.setaudio('');
+              sendMessage();
+            }}>
+            <View style={[styles.col_small, styles.sendIconBoxLg]}>
+              <Image
+                source={IMAGE.send}
+                style={{
+                  color: color.white,
+                  height: 25,
+                  width: 25,
+                  tintColor: color.white,
+                  resizeMode: 'contain',
+                }}
+              />
+            </View>
+          </TouchableOpacity>
+        </View>
+      )}
+      <KeyboardAvoidingView
+        keyboardVerticalOffset={'90'}
+        contentInsetAdjustmentBehavior="automatic"
+        behavior={Platform.OS == 'ios' ? 'padding' : ''}>
+        {!isRecordingStart && recordingFile && (
+          <View style={styles.recordedAudioContainer}>{Audio()}</View>
+        )}
+
+        <View
+          style={[
+            styles.container,
+            {
+              ...Platform.select({
+                ios: {
+                  minHeight: replyOn
+                    ? DeviceInfo.hasNotch()
+                      ? 180
+                      : 150
+                    : DeviceInfo.hasNotch()
+                      ? 100
+                      : 60,
+                },
+                android: {
+                  minHeight: 50,
+                },
+              }),
+            },
+          ]}>
+          {isRecordingStart && (
+            <Animated.View
+              entering={FadeIn}
+              exiting={FadeOut}
+            // style={styles.recordingTimer}
+            >
+              <View
+                style={[
+                  styles.row,
+                  {
+                    ...Platform.select({
+                      ios: {
+                        maxHeight: height + 1 > 0 ? 70 : 150,
+                      },
+                      android: {
+                        maxHeight: height + 1 > 0 ? 100 : 200,
+                      },
+                    }),
+                  },
+                ]}>
+                <View style={[styles.recordingContainer]}>
+                  <View style={[styles.col_small, styles.sendIconBox]}>
+                    {/* <Image
+                    source={IMAGE.mic}
                     style={{
-                      color: color.red,
-                      height: 30,
-                      width: 30,
                       resizeMode: 'contain',
+                      height: 20,
+                      width: 20,
+                      tintColor: color.white,
                     }}
-                  />
-                </TouchableOpacity>
-              </View>
-              <View style={{ alignItems: 'center' }}>
-                {file?.fileType == 'pdf' ? (
-                  <View
-                    style={{
-                      justifyContent: 'flex-start',
-                      alignItems: 'center',
-                    }}>
-                    <Pdf
-                      trustAllCerts={false}
-                      source={{
-                        uri: `${file?.uri}`,
-                        cache: true,
-                      }}
-                      // source={{uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true}}
-                      style={{
-                        width: Dimensions.get('window').width,
-                        height: Dimensions.get('window').height,
-                      }}
+                  /> */}
+                    <LottieView
+                      speed={1}
+                      style={{ height: 50 }}
+                      source={require('../../../animation/SoundBarWhite.json')}
+                      autoPlay
+                      loop={true}
                     />
                   </View>
-                ) : null}
-                {file?.fileType == 'photo' || file?.fileType == 'image' ? (
-                  <Image
-                    source={{ uri: file.uri }}
-                    style={{
-                      resizeMode: 'contain',
-                      height: Platform.OS === 'ios' ? hp(85) : hp(100),
-                      width: wp(100),
-                    }}
-                  />
-                ) : null}
-                {file?.fileType == 'video' || file?.fileType === 'video/mp4' ? (
-                  <Video
-                    source={{ uri: file?.uri }}
-                    resizeMode={'contain'}
-                    style={{ height: '100%', width: wp(100) }}
-                  />
-                ) : null}
+
+                  <View style={styles.recordingTextWrap}>
+                    <View style={styles.recordingTimerTextWrap}>
+                      <Text style={styles.recordingTimerText}>
+                        {moment.utc(recordingTime * 1000).format('mm:ss')}
+                      </Text>
+                    </View>
+                    <Text style={styles.recordingText}>Recording ...</Text>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      pickCamera == 1
+                        ? isRecordingStart
+                          ? (onStopRecord(), audio?.setaudio(recordingFile))
+                          : onStartRecord()
+                        : console.log('kkkkkk');
+                    }}>
+                    <View style={[styles.col_small, styles.recordIconBox]}>
+                      <Image
+                        source={IMAGE.stop}
+                        style={{
+                          resizeMode: 'contain',
+                          height: 16,
+                          width: 16,
+                          tintColor: color.white,
+                        }}
+                      />
+                    </View>
+                  </TouchableOpacity>
+                </View>
               </View>
             </Animated.View>
           )}
-          <View
-            style={[
-              styles.msgSendViewWrapper,
-              showEmojiKeyboard && { marginBottom: hp(35) },
-            ]}>
-            {replyOn && (
-              <View style={styles.replyBox}>
+          {replyOn && (
+            <View style={styles.replyBoxContainer}>
+              <View style={styles.replyBoxRow}>
                 <View onLayout={onLayout} style={{ flex: 0.9 }}>
-                  <Text style={{ color: color.btnBlue }}>
-                    {' '}
+                  <Text style={styles.remplySenderName}>
                     {replyOn?.sender?.name}
                   </Text>
-                  <View
-                    style={{
-                      flex: 1,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                    }}>
+                  <View style={styles.replyBoxleftIcons}>
                     {getIconAndMessageOnReplyBox(replyOn)}
                   </View>
                 </View>
-                <View
-                  style={{
-                    flex: 0.1,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}>
+                <View style={styles.replyBoxRemoveIcon}>
                   {replyOn?.message_type == '1' && (
                     <Image
                       source={{ uri: `${IMAGEURL}/${replyOn?.file_name}` }}
-                      style={{ resizeMode: 'cover', height: 50, width: 50 }}
+                      style={styles.replyBoxImage}
                     />
                   )}
                   <TouchableOpacity onPress={removeReplyBox}>
@@ -479,31 +525,41 @@ export const BottomView = memo(props => {
                       source={IMAGE.closeCircle}
                       style={{
                         resizeMode: 'contain',
-                        height: 20,
-                        width: 20,
+                        height: 24,
+                        width: 24,
                         tintColor: color.btnBlue,
-                        marginLeft: 10,
                       }}
                     />
                   </TouchableOpacity>
                 </View>
               </View>
-            )}
-            <View style={styles.msgSendView}>
-              {!isRecordingStart && (
-                <TouchableOpacity
-                  disabled={media_privacy == 2}
-                  onPress={() => {
-                      isConnected ? (
-                        searchInput.current.blur(),
-                        setTimeout(() => {
-                          addPress()
-                        }, 500),
-                        audio?.setaudio('')
-                      ) : showDisconectedToast('FILE')
-
-                    }
-                  }>
+            </View>
+          )}
+          {!isRecordingStart && !recordingFile && (
+            <View
+              style={[
+                styles.row,
+                {
+                  ...Platform.select({
+                    ios: {
+                      maxHeight: height + 1 > 0 ? 100 : 150,
+                    },
+                    android: {
+                      maxHeight: height + 1 > 0 ? 100 : 200,
+                    },
+                  }),
+                },
+              ]}>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => {
+                  isConnected
+                    ? (searchInput?.current?.blur(),
+                      addPress(),
+                      audio?.setaudio(''))
+                    : showDisconectedToast('FILE');
+                }}>
+                <View style={styles.col_small}>
                   <Image
                     source={IMAGE.add}
                     style={{
@@ -513,290 +569,331 @@ export const BottomView = memo(props => {
                       tintColor: color.btnBlue,
                     }}
                   />
-                </TouchableOpacity>
-              )}
-              <View style={{ flexDirection: 'row' }}>
-                {!isRecordingStart && (
-                  <>
-                    <TouchableOpacity
-                      disabled={group_type == 2}
-                      onPress={() => {
-                        !isRecordingStart &&
-                          setshowEmojiKeyboard(!showEmojiKeyboard);
-                        Keyboard.dismiss();
-                      }}
-                      style={{
-                        position: 'absolute',
-                        zIndex: 99,
-                        left: wp(5),
-                        bottom: Platform.OS === 'ios' ? 10 : 5,
-                      }}>
-                      <Image
-                        source={IMAGE.smile}
-                        style={{
-                          resizeMode: 'contain',
-                          height: 18,
-                          width: 18,
-                          tintColor: color.btnBlue,
-                        }}
-                      />
-                    </TouchableOpacity>
-                    <TextInput
-                      editable={group_type == 1}
-                      value={message}
-                      onFocus={() => {
-                        setshowEmojiKeyboard(false);
-                        inputFocus();
-                      }}
-                      onContentSizeChange={event => {
-                        setheight(Math.round((event.nativeEvent.contentSize.height - 41) / 16));
-                      }}
-                      onChangeText={textChange}
-                      placeholder={'Write a reply....'}
-                      textAlignVertical={'center'}
-                      paddingHorizontal={40}
-                      placeholderTextColor={color.textGray2}
-                      ref={searchInput}
-                      multiline={true}
-                      // numberOfLines={
-                      //   height> 0 ? height+1> 4 ? 4:(height+1):1
-                      // }
-                      style={[
-                        styles.msgSendBox,
-                        {
-                          height: height > 0 ? null : hp(4.5),
-                          maxHeight: (height + 1) > 0 ? 100 : 200
-                        },
-                      ]}
-                    />
-                    <TouchableOpacity
-                      disabled={disable}
-                      onPress={() => {
-                        StopMultiplePress();
-                        !isRecordingStart && sendMessage(),
-                          setRecordingFile(''),
-                          audio?.setaudio('');
-                      }}
-                      style={styles.sendbtn}>
-                      {!isRecordingStart && (
-                        <Image
-                          source={IMAGE.send}
-                          style={{
-                            resizeMode: 'contain',
-                            height: 18,
-                            width: 18,
-                            tintColor: color.btnBlue,
-                          }}
-                        />
-                      )}
-                    </TouchableOpacity>
-                  </>
-                )}
-              </View>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  width: wp(23),
-                  paddingHorizontal: wp(3),
-                }}>
+                </View>
+              </TouchableOpacity>
+
+              {/* // middle section */}
+              <View style={styles.col}>
                 <TouchableOpacity
+                  activeOpacity={1}
                   onPress={() => {
-                    isConnected ? (
-                      pickCamera == 1
-                        ? isRecordingStart
-                          ? console.log('onStopRecord()')
-                          : (onStartRecord(), textChange)('')
-                        : console.log('kkkkkk')
-                    ) : showDisconectedToast('RECORD');
-
+                    setshowEmojiKeyboard(!showEmojiKeyboard);
+                    Keyboard.dismiss();
                   }}>
-                  <Image
-                    source={IMAGE.mic}
-                    style={{
-                      tintColor: isRecordingStart ? color.red : color.btnBlue,
-                      resizeMode: 'contain',
-                      height: 25,
-                      width: 25,
-                      tintColor: color.btnBlue,
-                    }}
-                  />
-                </TouchableOpacity>
-                {isRecordingStart && (
-                  <View
-                    style={{
-                      position: 'absolute',
-                      left: wp(15),
-                      width: wp(75),
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Animated.Text
-                      entering={FadeInLeft}
-                      exiting={SlideOutRight}
-                    // style={styles.recordingTimer}
-                    >
-                      {moment.utc(recordingTime * 1000).format('mm:ss')}
-                    </Animated.Text>
-                    <Text>Recording ...</Text>
-                    <TouchableOpacity
-                      onPress={() => {
-                        pickCamera == 1
-                          ? isRecordingStart
-                            ? onStopRecord()
-                            : onStartRecord()
-                          : console.log('kkkkkk');
-                      }}>
-                      <Image
-                        source={IMAGE.stop}
-                        style={{
-                          resizeMode: 'contain',
-                          height: 25,
-                          width: 25,
-                          // tintColor: color.btnBlue,
-                        }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                )}
-                {!isRecordingStart && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      audio?.setaudio('');
-                      searchInput.current.blur();
-                      isConnected ? (pickCamera == 1
-                        ? pickImage(
-                          'camera',
-                          res => {
-                            setFile(res);
-                          },
-                          'image',
-                        )
-                        : console.log('kkkkkk')) : showDisconectedToast('CAMERA');
-
-                    }}>
+                  <View style={styles.col_small}>
                     <Image
-                      source={IMAGE.camera}
+                      source={IMAGE.smile}
                       style={{
                         resizeMode: 'contain',
-                        height: 25,
-                        width: 25,
+                        height: 20,
+                        width: 20,
                         tintColor: color.btnBlue,
                       }}
                     />
-                  </TouchableOpacity>
-                )}
+                  </View>
+                </TouchableOpacity>
+                <TextInput
+                  placeholder={'Message...'}
+                  placeholderTextColor={color.lightBlack}
+                  multiline={true}
+                  editable={group_type == 1}
+                  value={message}
+                  onChangeText={textChange}
+                  textAlignVertical={'center'}
+                  ref={ref => {
+                    searchInput && (searchInput.current = ref);
+                  }}
+                  onFocus={() => {
+                    setshowEmojiKeyboard(false);
+                    inputFocus();
+                  }}
+                  style={[
+                    styles.messageBox,
+                    {
+                      ...Platform.select({
+                        ios: {
+                          maxHeight: height + 1 > 0 ? 100 : 150,
+                        },
+                        android: {
+                          maxHeight: height + 1 > 0 ? 100 : 200,
+                        },
+                      }),
+                    },
+                  ]}
+                  onContentSizeChange={event => {
+                    setheight(
+                      Math.round(event.nativeEvent.contentSize.height - 20),
+                    );
+                  }}
+                />
+                {/* <TouchableOpacity
+              activeOpacity={1}
+              onPress={() => {
+                alert('hello');
+              }}>
+              <View style={styles.col_small}>
+                <Image
+                  source={IMAGE.add}
+                  style={{
+                    resizeMode: 'contain',
+                    height: 25,
+                    width: 25,
+                    tintColor: color.btnBlue,
+                  }}
+                />
               </View>
+            </TouchableOpacity> */}
+              </View>
+              <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => {
+                  message
+                    ? (StopMultiplePress(),
+                      !isRecordingStart && sendMessage(),
+                      setRecordingFile(''),
+                      audio?.setaudio(''))
+                    : isConnected
+                      ? pickCamera == 1
+                        ? isRecordingStart
+                          ? console.log('onStopRecord()')
+                          : (onStartRecord(), textChange(''), removeReplyBox())
+                        : showDisconectedToast('NO_PERMISSION')
+                      : showDisconectedToast('RECORD');
+                }}>
+                <View style={[styles.col_small, styles.sendIconBox]}>
+                  {message && (
+                    <Animated.View entering={ZoomIn} exiting={ZoomOut}>
+                      <Image source={IMAGE.send} style={styles.sendIconStyle} />
+                    </Animated.View>
+                  )}
+                  {!message && (
+                    <Animated.View entering={ZoomIn} exiting={ZoomOut}>
+                      <Image source={IMAGE.mic} style={styles.sendIconStyle} />
+                    </Animated.View>
+                  )}
+                </View>
+              </TouchableOpacity>
             </View>
-          </View>
+          )}
           {showEmojiKeyboard && (
             <Animated.View
-              entering={SlideInDown}
+              entering={FadeIn}
               exiting={FadeOut}
-              style={{ height: hp(35), zIndex: 999 }}>
+              style={{ height: hp(35) }}>
               <EmojiKeyboard onSelectEmoji={emojiSelect} />
             </Animated.View>
           )}
         </View>
-      </View>
-    </KeyboardAvoidingView >
+      </KeyboardAvoidingView>
+    </>
   );
 });
 
 const styles = StyleSheet.create({
-  sendbtn: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: hp(4),
-    bottom: Platform.OS === 'ios' ? 2 : 1,
-    width: wp(10),
-    position: 'absolute',
-    zIndex: 99,
-    right: 5,
-  },
-  fileView: {
-    width: wp(100),
-    height: Platform.OS === 'ios' ? hp(100) : hp(110),
-    // marginBottom: hp(7),
-    marginTop: -10,
-    // left: wp(4),
-    backgroundColor: '#000',
-  },
-  recordingTimer: {
-    fontFamily: fontFamily.Thin,
-    color: '#000',
-    fontSize: fontSize.size11,
-    position: 'absolute',
-    left: 40,
-    bottom: 5,
-    width: 100,
-  },
-
-  msgSendViewWrapper: {
-    backgroundColor: '#F6F6F6',
-    position: 'absolute',
-    bottom: 0,
-    width: wp(100),
-    paddingHorizontal: wp(4),
-    marginBottom: hp(3),
+  container: {
+    // position: 'absolute',
+    // bottom: 0,
+    // flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    flex: 1,
-  },
-  msgSendView: {
-    backgroundColor: '#F6F6F6',
-    bottom: 0,
+    backgroundColor: color.lightGray,
+    minHeight: Platform.OS === 'ios' && DeviceInfo.hasNotch() ? 90 : 50,
+    paddingVertical: 5,
     width: wp(100),
-    paddingHorizontal: wp(4),
-    marginBottom: hp(1),
-    flexDirection: 'row',
-    alignItems: 'baseline',
-    flex: 1,
+    paddingTop: Platform.OS === 'ios' ? 10 : 0,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 0,
+    zIndex: 1,
   },
-
-  replyBox: {
-    width: wp(100),
-    marginBottom: 5,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: color.borderGray,
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    borderLeftWidth: 4,
-    borderLeftColor: color.btnBlue,
-  },
-  msgSendBox: {
-    // maxHeight: 100,
-    paddingLeft: wp(10),
-    borderRadius: 20,
-    backgroundColor: '#f8fcfc',
-    borderWidth: 1,
-    borderColor: color.borderGray,
-    fontSize: fontSize.size12,
-    color: color.black,
-    fontFamily: fontFamily.Regular,
-    width: wp(63),
-    marginLeft: wp(3),
-    paddingTop: 10,
-    paddingBottom: Platform.OS === 'ios' ? 10 : 5
-  },
-  replyBoxImgIcon: {
-    resizeMode: 'contain',
-    height: 12,
-    width: 12,
-    tintColor: color.iconGray,
-  },
-  replyBoxImgText: {
-    marginTop: 2,
-    fontFamily: fontFamily.Regular,
-    fontSize: fontSize.size12,
-  },
-  playpause: {
+  recordedAudioContainer: {
+    position: 'absolute',
+    bottom: Platform.OS === 'ios' ? 20 : 0,
+    // flex: 1,
+    flexDirection: 'column',
     alignItems: 'center',
+    backgroundColor: color.lightGray,
+    minHeight: Platform.OS === 'ios' && DeviceInfo.hasNotch() ? 70 : 50,
+    paddingVertical: 5,
+    width: wp(100),
+    paddingTop: Platform.OS === 'ios' ? 0 : 0,
+    paddingBottom: Platform.OS === 'ios' ? 0 : 0,
+    zIndex: 2,
+  },
+  row: {
+    // position: 'relative',
+    // flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+    gap: 5,
+    paddingHorizontal: 10,
+  },
+  col_small: {
+    // backgroundColor: color.green,
+    minHeight: 40,
+    width: 40,
+    minWidth: 40,
     justifyContent: 'center',
-    width: wp(10),
-    height: hp(4),
+    alignContent: 'center',
+    alignItems: 'center',
+    // flex: 1
+  },
+  sendIconStyle: {
+    resizeMode: 'contain',
+    height: 20,
+    width: 20,
+    tintColor: color.white,
+  },
+  col: {
+    backgroundColor: color.green,
+    minWidth: 40,
+    // MinHeight: 45,
+    width: 40,
+    flex: 1,
+    gap: 5,
+    backgroundColor: color.white,
+    borderColor: color.textGray2,
+    borderWidth: 1,
+    borderRadius: 25,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    // alignContent: 'center',
+    alignItems: 'center',
+  },
+  messageBox: {
+    flex: 1,
+    fontFamily: fontFamily.Medium,
+    fontSize: fontSize.size15,
+    color: color.lightBlack,
+    textAlign: 'left',
+    paddingRight: 10,
+    textAlignVertical: 'center',
+  },
+  sendIconBox: {
+    height: 40,
+    minHeight: 40,
+    minWidth: 40,
+    width: 40,
+    backgroundColor: color.btnBlue,
+    borderRadius: 60,
+    padding: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    transition: 'opacity 0.5s ease-in',
+  },
+  sendIconBoxLg: {
+    height: 50,
+    minHeight: 50,
+    minWidth: 50,
+    width: 50,
+    backgroundColor: color.btnBlue,
+    borderRadius: 60,
+    padding: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    transition: 'opacity 0.5s ease-in',
+  },
+  recordIconBox: {
+    height: 40,
+    minHeight: 40,
+    minWidth: 40,
+    width: 40,
+    backgroundColor: color.red,
+    borderRadius: 60,
+    padding: 10,
+    justifyContent: 'center',
+    alignContent: 'center',
+    alignItems: 'center',
+    transition: 'opacity 0.5s ease-in',
+  },
+  replyBoxContainer: {
+    // flexDirection: 'row',
+    // flex: 1,
+    alignItems: 'center',
+    marginBottom: 5,
+  },
+  replyBoxRow: {
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 15,
+    paddingHorizontal: 5,
+    paddingVertical: 10,
+    backgroundColor: `rgba(${color.btnBluergb},0.1)`,
+    borderRadius: 10,
+    borderColor: color.btnBlue,
+    borderLeftWidth: 5,
+  },
+  remplySenderName: {
+    fontFamily: fontFamily.Medium,
+    fontSize: fontSize.size12,
+    color: color.btnBlue,
+    marginBottom: 5,
+  },
+  replyBoxRemoveIcon: {
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    alignItems: 'center',
+    gap: 10,
+    marginRight: 10,
+  },
+  replyBoxImage: {
+    resizeMode: 'cover',
+    height: 40,
+    width: 40,
+    borderRadius: 5,
+  },
+  replyBoxleftIcons: {
+    flexDirection: 'row',
+    alignContent: 'space-between',
+    alignItems: 'center',
+  },
+  messageTypeText: {
+    fontFamily: fontFamily.Regular,
+    fontSize: fontSize.size15,
+  },
+  messageTypeImage: {
+    resizeMode: 'contain',
+    height: 16,
+    width: 16,
+    marginRight: 5,
+  },
+  recordingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignContent: 'center',
+    justifyContent: 'space-between',
+    gap: 5,
+  },
+  recordingTextWrap: {
+    flex: 1,
+    height: 45,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  recordingTimerTextWrap: {
+    minWidth: 100,
+    flexDirection: 'row',
+    alignContent: 'center',
+    justifyContent: 'center',
+  },
+  recordingText: {
+    textAlign: 'center',
+    fontFamily: fontFamily.Medium,
+    fontSize: fontSize.size13,
+  },
+  recordingTimerText: {
+    textAlign: 'left',
+    fontFamily: fontFamily.Bold,
+    fontSize: fontSize.size13,
+    color: color.btnBlue,
+    marginRight: 20,
+  },
+  slider: {
+    flex: 1,
+    marginLeft: 10,
   },
   track: {
     height: 3,
@@ -811,5 +908,36 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 2,
     shadowOpacity: 1,
+  },
+  fileView: {
+    position: 'absolute',
+    width: wp(100),
+    height: Dimensions.get('window').height - 50,
+    zIndex: 2,
+    backgroundColor: color.black,
+  },
+  filePreviewWrapper: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  removeFile: {
+    position: 'absolute',
+    right: 20,
+    top: 20,
+    shadowColor: color.iconGray,
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 10,
+    shadowOpacity: 1,
+  },
+  removeFIleImage: {
+    tintColor: color.white,
+    height: 40,
+    width: 40,
+    resizeMode: 'contain',
+  },
+  sendFile: {
+    position: 'absolute',
+    right: 20,
+    bottom: Platform.OS === 'ios' ? 100 : 80,
   },
 });

@@ -52,7 +52,6 @@ import AudioContextProvider, { AudioContext } from '../../context/AudioContext';
 import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BottomViewNew } from './chatComponent/bottomViewNew';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
@@ -719,8 +718,7 @@ class GroupChat extends React.Component {
               <>
                 {(this.state.groupType == 2 && this.state.isAdmin == true) ||
                   this.state.groupType == 1 ? (
-                  <BottomViewNew
-                    // group_type={group_type}
+                  <BottomView
                     pickCamera={
                       (this.state.mediaPrivacy == 2 &&
                         this.state.isAdmin == true) ||
