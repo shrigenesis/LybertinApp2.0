@@ -356,6 +356,7 @@ export const ChatItemgroup = React.memo(
         );
       }
     };
+    
     if (item.from_id != user_id) {
       return (
         <View key={String(index)} style={styles.listInner}>

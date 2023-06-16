@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, FC} from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import {
   View,
   Text,
@@ -13,18 +13,18 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import { IMAGE, color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, StoryList} from '../../component/';
+import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
-import {User} from '../../utils/user';
+import { User } from '../../utils/user';
 import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
@@ -33,9 +33,10 @@ import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
+import { RefreshControl } from 'react-native-gesture-handler';
 
 const _renderChatList = React.memo(
-  ({item, userId, navigation, reload, setisLoading, pinnedChatCount}) => {
+  ({ item, userId, navigation, reload, setisLoading, pinnedChatCount }) => {
     const pinUnpinChatList = item => {
       if (pinnedChatCount >= 3 && item?.is_pinned == '0') {
         Toast.show({
@@ -85,7 +86,7 @@ const _renderChatList = React.memo(
           });
           // fetchChatList()
         },
-        err => {},
+        err => { },
       );
     };
     return (
@@ -154,7 +155,7 @@ const _renderChatList = React.memo(
                 }}>
                 <Image
                   source={item?.is_pinned == '1' ? IMAGE.unPin : IMAGE.pin}
-                  style={{height: 16, width: 16, resizeMode: 'contain'}}
+                  style={{ height: 16, width: 16, resizeMode: 'contain' }}
                 />
                 <Text
                   style={{
@@ -187,7 +188,7 @@ const _renderChatList = React.memo(
               <View style={style.imgview}>
                 {item?.user?.avatar ? (
                   <FastImage style={style.imgBox} source={{ uri: `${IMAGEURL}/${item?.user?.avatar}` }} />
-                  ) : (
+                ) : (
                   <FastImage source={IMAGE.boy} style={style.imgBox} />
                 )}
 
@@ -204,7 +205,7 @@ const _renderChatList = React.memo(
                     <Text style={style.msg}>Sent a file</Text>
                   )}
                 </View>
-                <View style={{paddingRight: wp(3)}}>
+                <View style={{ paddingRight: wp(3) }}>
                   <Text style={style.time}>{item?.created_time_ago}</Text>
                   <View
                     style={{
@@ -250,14 +251,14 @@ const _renderChatList = React.memo(
   },
 );
 
-const ChatList = ({navigation}) => {
+const ChatList = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [requestCount, setrequestCount] = useState(0);
   const [chatData, setchatData] = useState([]);
   const [isLoading, setisLoading] = useState(false);
   const [pinnedChatCount, setPinnedChatCount] = useState(0);
   const [appReady, setappReady] = useState(false);
-  const {avatar, id} = new User().getuserdata();
+  const { avatar, id } = new User().getuserdata();
   const [storedMessage, setstoredMessage] = useState([]);
 
   const isFocus = useIsFocused();
@@ -281,6 +282,9 @@ const ChatList = ({navigation}) => {
     };
   }, []);
 
+  const onRefresh = () => {
+    fetchChatList();
+  }
   const fetchChatList = () => {
     setisLoading(true);
 
@@ -312,7 +316,7 @@ const ChatList = ({navigation}) => {
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: color.white}}>
+    <View style={{ flex: 1, backgroundColor: color.white }}>
       <FocusAwareStatusBar
         barStyle={'dark-content'}
         backgroundColor={color.white}
@@ -339,7 +343,16 @@ const ChatList = ({navigation}) => {
             borderBottomWidth: 0.5,
             borderColor: color.borderGray,
           }}></View>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false}
+          refreshControl={
+            <RefreshControl
+              backgroundColor={color.white}
+              colors={[color.btnBlue]}
+              refreshing={isLoading}
+              onRefresh={onRefresh}
+            />
+          }
+        >
           <View style={style.SearchWrapper}>
             <TouchableOpacity
               activeOpacity={1}
@@ -347,13 +360,13 @@ const ChatList = ({navigation}) => {
                 navigation.navigate('Search');
               }}>
               <View style={style.input}>
-                <View style={{position: 'absolute', left: wp(3)}}>
+                <View style={{ position: 'absolute', left: wp(3) }}>
                   <Image
                     source={IMAGE.search2}
-                    style={{height: 20, width: 20, resizeMode: 'contain'}}
+                    style={{ height: 20, width: 20, resizeMode: 'contain' }}
                   />
                 </View>
-                <Text style={{color: color.iconGray}}>
+                <Text style={{ color: color.iconGray }}>
                   Search using username and Email
                 </Text>
                 {/* <TextInput
@@ -381,7 +394,7 @@ const ChatList = ({navigation}) => {
                 color: '#000',
                 elevation: 3,
                 shadowColor: '#000',
-                shadowOffset: {width: 0, height: 1},
+                shadowOffset: { width: 0, height: 1 },
                 shadowOpacity: 0.1,
                 shadowRadius: 5,
               }}>
@@ -390,7 +403,7 @@ const ChatList = ({navigation}) => {
                   onPress={() => {
                     navigation.navigate('Request');
                   }}>
-                  <View style={{paddingBottom: hp(0)}}>
+                  <View style={{ paddingBottom: hp(0) }}>
                     <Image
                       source={IMAGE.friend_request}
                       style={{
@@ -428,8 +441,8 @@ const ChatList = ({navigation}) => {
                     showsVerticalScrollIndicator={false}
                     keyExtractor={index => String(index.id)}
                     data={chatData}
-                    contentContainerStyle={{marginBottom: hp(20)}}
-                    renderItem={({item, index}) => (
+                    contentContainerStyle={{ marginBottom: hp(20) }}
+                    renderItem={({ item, index }) => (
                       <_renderChatList
                         userId={item?.user_id}
                         reload={fetchChatList}
@@ -472,7 +485,7 @@ const ChatList = ({navigation}) => {
           }}
         />
       </TouchableOpacity>
-    </View>
+    </View >
   );
 };
 
@@ -546,7 +559,7 @@ const style = StyleSheet.create({
     paddingLeft: wp(13),
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
   },

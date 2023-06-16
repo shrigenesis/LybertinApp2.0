@@ -600,6 +600,7 @@ export const BottomView = memo(props => {
                   value={message}
                   onChangeText={textChange}
                   textAlignVertical={'center'}
+                  autoFocus={true}
                   ref={ref => {
                     searchInput && (searchInput.current = ref);
                   }}

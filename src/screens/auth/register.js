@@ -122,16 +122,34 @@ const Register = ({ navigation }) => {
         err => {
           setisLoading(false);
           if (err?.response?.data) {
+            console.log(err?.response?.data?.error?.name?.[0] !== "");
             if (err?.response?.data?.error?.email?.[0] !== "") {
               Toast.show({
                 type: 'error',
-                text1:err?.response?.data?.error?.email?.[0]
+                text1: err?.response?.data?.error?.email?.[0]
               });
-            } else {
+              return;
+            }
+            if (err?.response?.data?.error?.name?.[0] !== "") {
               Toast.show({
                 type: 'error',
-                text1:err?.response?.data?.error?.username?.[0]
+                text1: err?.response?.data?.error?.name[0]
               });
+              return;
+            }
+            if (err?.response?.data?.error?.username?.[0] !== "") {
+              Toast.show({
+                type: 'error',
+                text1: err?.response?.data?.error?.username?.[0]
+              });
+              return;
+            }
+            if (err?.response?.data?.error?.password?.[0] !== "") {
+              Toast.show({
+                type: 'error',
+                text1: err?.response?.data?.error?.password?.[0]
+              });
+              return;
             }
           }
         },

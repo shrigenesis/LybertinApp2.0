@@ -64,9 +64,9 @@ export class User {
     return SyncStorage.get('message');
   }
   clearAllUserData() {
-    SyncStorage.set('userdata', null);
-    SyncStorage.set('token', null);
-    SyncStorage.set('login', null);
-    SyncStorage.set('fromRegister',false);
+    SyncStorage.remove('userdata', null);
+    SyncStorage.remove('token', null);
+    SyncStorage.remove('login', null);
+    SyncStorage.remove('fromRegister',false);
   }
 }

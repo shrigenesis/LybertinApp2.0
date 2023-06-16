@@ -55,12 +55,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // const Socket = io.connect(socketUrl);
 var Socket;
-const userdata = new User().getuserdata();
+
 class GroupChat extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       page: 1,
+      last_page: 1,
       isLoading: false,
       message: '',
       groupDetail: {},
@@ -174,7 +175,10 @@ class GroupChat extends React.Component {
   };
 
   fetchChatList = group_id => {
-    let userdata = new User().getuserdata();
+    if (this.state.page > this.state.last_page) {
+      return
+    }
+    
     this.setState({ isLoading: true });
     let config = {
       url: `${ApiUrl.groups}/${group_id}/getConversation?page=${this.state.page}`,
@@ -190,6 +194,7 @@ class GroupChat extends React.Component {
           let chatData = this.state.chatList.concat(data);
           this.setState({
             chatList: chatData,
+            last_page: res?.conversation.last_page,
             roomId: res.roomId,
             is_exit: res?.is_exit,
           });
@@ -230,6 +235,7 @@ class GroupChat extends React.Component {
     });
 
     Socket.on('message recieved', newMessageRecieved => {
+
       const isExist = this.state.chatList?.findIndex(
         item => item.uuid === newMessageRecieved.uuid,
       );
@@ -327,6 +333,7 @@ class GroupChat extends React.Component {
   };
 
   prepareSocketMessageObject = (uuid, message_type, reply_on = null) => {
+    let userdata = new User().getuserdata();
     let date = new Date();
     // let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     let message = {
@@ -404,8 +411,6 @@ class GroupChat extends React.Component {
         return;
       }
 
-      Socket.emit('new message', message);
-
       let config = {
         url: ApiUrl.sendMessage,
         method: 'post',
@@ -419,6 +424,8 @@ class GroupChat extends React.Component {
           is_group: 1,
         },
       };
+
+      Socket.emit('new message', message);
 
       this.setState({
         isLoading: false,
@@ -516,6 +523,15 @@ class GroupChat extends React.Component {
         }
       },
       err => {
+        if (err?.response?.data?.uuid) {
+          const data = this.state.chatList?.filter(
+            item => item.uuid !== err?.response?.data?.uuid,
+          );
+          this.setState({
+            chatList: data,
+          });
+        }
+
         if (err.response.status === 422) {
           let errorMsg = '';
           if (err?.response?.data?.error?.to_id) {
@@ -523,10 +539,6 @@ class GroupChat extends React.Component {
           }
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0];
-            // if (err?.response?.data?.uniqueId) {
-            //   const data = this.state.progressFile?.filter((item, i) => item.uniqueId != err?.response?.data?.uniqueId)
-            //   this.setState({ progressFile: data })
-            // }
           }
           Toast.show({
             type: 'error',
@@ -654,7 +666,7 @@ class GroupChat extends React.Component {
                 flex: 1,
                 minHeight:
                   this.state.replyOn != undefined
-                    ?? Dimensions.get('window').height - 80
+                  ?? Dimensions.get('window').height - 80
               },
               android: {
                 flex: 1,

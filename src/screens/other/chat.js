@@ -1,4 +1,4 @@
-import React, {useState, useMemo, useRef, memo, useEffect} from 'react';
+import React, { useState, useMemo, useRef, memo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,12 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import {Header, Loader, pickDocument, pickImage} from './../../component/';
+import { Header, Loader, pickDocument, pickImage } from './../../component/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {
   APIRequest,
@@ -26,12 +26,12 @@ import {
   IMAGEURL,
   socketUrl,
 } from './../../utils/api';
-import {BottomView, ChatItem} from './chatComponent/';
+import { BottomView, ChatItem } from './chatComponent/';
 import io from 'socket.io-client';
-import {User} from '../../utils/user';
+import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
 import 'react-native-get-random-values';
-import {v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -51,6 +51,7 @@ class Chat extends React.Component {
     this.state = {
       loadMore: '',
       page: 1,
+      last_page: 1,
       isLoading: false,
       message: '',
       chatList: [],
@@ -75,22 +76,22 @@ class Chat extends React.Component {
   componentWillMount() {
     Socket = io.connect(socketUrl);
   }
-  
+
   componentDidMount() {
     this.focusListener = this.props?.navigation?.addListener('focus', () => {
-      this.setState({appReady: true});
+      this.setState({ appReady: true });
       let user_id = this.props?.route?.params?.user_id;
       if (user_id) {
-        this.setState({page: 1, chatList: []});
+        this.setState({ page: 1, chatList: [] });
         this.fetchChatList(user_id);
       }
       this.socketEvents();
     });
     this.unsubscribe = NetInfo.addEventListener(state => {
       if (state.isConnected) {
-        this.setState({isConnected: true});
+        this.setState({ isConnected: true });
       } else {
-        this.setState({isConnected: false});
+        this.setState({ isConnected: false });
       }
     });
   }
@@ -109,15 +110,15 @@ class Chat extends React.Component {
 
     Socket.on('typing', () => {
       console.log('typing');
-      this.setState({isTyping: true});
+      this.setState({ isTyping: true });
     });
     Socket.on('stop typing', () => {
       console.log('stop typing');
-      this.setState({isTyping: false});
+      this.setState({ isTyping: false });
     });
     Socket.on('user_offline', id => {
       console.log('user_offline', id);
-      this.setState({isOnline: '0'});
+      this.setState({ isOnline: '0' });
     });
 
     Socket.on('message recieved', newMessageRecieved => {
@@ -126,7 +127,7 @@ class Chat extends React.Component {
       );
       if (isExist === -1) {
         let data = [newMessageRecieved, ...this.state.chatList];
-        this.setState({isLoading: false, chatList: data});
+        this.setState({ isLoading: false, chatList: data });
         this.MarkReadMessage(newMessageRecieved.uuid);
       }
     });
@@ -199,7 +200,12 @@ class Chat extends React.Component {
   };
 
   fetchChatList = user_id => {
-    this.setState({isLoading: true});
+
+    if (this.state.page > this.state.last_page) {
+      return
+    }
+
+    this.setState({ isLoading: true });
     let config = {
       url: `${ApiUrl.conversations}/${user_id}?page=${this.state.page}`,
       method: 'get',
@@ -219,6 +225,7 @@ class Chat extends React.Component {
           this.setState({
             chatList: chatData,
             roomId: res.roomId,
+            last_page: res?.conversation.last_page,
             isOnline: res?.is_online,
             per_page: res?.conversation?.per_page,
             per_page_count: res?.conversation?.data.length,
@@ -227,10 +234,10 @@ class Chat extends React.Component {
           //   this.chatListRef?.current?.scrollToEnd({animated: true});
           // }, 2000);
         }
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       },
       err => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       },
     );
   };
@@ -256,7 +263,8 @@ class Chat extends React.Component {
 
   prepareSocketMessageObject = (uuid, message_type) => {
     let date = new Date();
-    // let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let userdata = new User().getuserdata();
+    
     let message = {
       uuid: uuid,
       from_id: userdata.id,
@@ -353,7 +361,7 @@ class Chat extends React.Component {
           console.log(res);
         },
         err => {
-          this.setState({isLoading: false});
+          this.setState({ isLoading: false });
           console.log(err);
           Toast.show({
             type: 'error',
@@ -425,6 +433,15 @@ class Chat extends React.Component {
         }
       },
       err => {
+        if (err?.response?.data?.uuid) {
+          const data = this.state.chatList?.filter(
+            item => item.uuid !== err?.response?.data?.uuid,
+          );
+          this.setState({
+            chatList: data,
+          });
+        }
+
         if (err.response.status === 422) {
           let errorMsg = '';
           if (err?.response?.data?.error?.to_id) {
@@ -432,12 +449,6 @@ class Chat extends React.Component {
           }
           if (err?.response?.data?.error?.file) {
             errorMsg = err?.response?.data?.error?.file[0];
-            // if (err?.response?.data?.uniqueId) {
-            //   const data = this.state.progressFile?.filter(
-            //     (item, i) => item.uniqueId !== err?.response?.data?.uniqueId,
-            //   );
-            //   this.setState({progressFile: data});
-            // }
           }
           Toast.show({
             type: 'error',
@@ -456,11 +467,11 @@ class Chat extends React.Component {
 
   // hide Bottom sheet
   setisShowBottomSheet = () => {
-    this.setState({isShowBottomSheet: false});
+    this.setState({ isShowBottomSheet: false });
   };
   // Update file from bottom sheet
   UpdateFile = file => {
-    this.setState({file: file, isShowBottomSheet: false});
+    this.setState({ file: file, isShowBottomSheet: false });
   };
 
   handleOnReportOn = item => {
@@ -516,7 +527,7 @@ class Chat extends React.Component {
             appReady={this.state.appReady}
             isLoading={this.state.isLoading}
             LeftIcon={() => (
-              <View style={{flexDirection: 'row', alignItems: 'center'}}>
+              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.goBack();
@@ -538,7 +549,7 @@ class Chat extends React.Component {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    this.setState({page: 1});
+                    this.setState({ page: 1 });
                     this.props.navigation.navigate('UserProfile', {
                       data: {
                         ...this.props?.route?.params,
@@ -596,8 +607,8 @@ class Chat extends React.Component {
                       {this.state.isTyping
                         ? 'Typing...'
                         : this.state.isOnline == '1'
-                        ? 'Online'
-                        : 'Offline'}
+                          ? 'Online'
+                          : 'Offline'}
                     </Text>
                   </View>
                 </TouchableOpacity>
@@ -623,7 +634,7 @@ class Chat extends React.Component {
                 zIndex: 1,
               }}>
               <ActivityIndicator size="small" color={color.btnBlue} />
-              <Text style={{fontStyle: 'italic'}}>Please wait...</Text>
+              <Text style={{ fontStyle: 'italic' }}>Please wait...</Text>
             </View>
           )}
           <AudioContextProvider>
@@ -635,10 +646,10 @@ class Chat extends React.Component {
               onEndReached={this.onScrollHandler}
               onEndThreshold={1}
               style={styles.flatlist}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <ChatItem
                   onImagePress={files => {
-                    this.setState({page: 1}),
+                    this.setState({ page: 1 }),
                       this.props.navigation.navigate('ShowImg', {
                         file: files?.file,
                         fileType: files?.fileType,
@@ -658,28 +669,28 @@ class Chat extends React.Component {
               <BottomView
                 message={this.state.message}
                 file={this.state.file}
-                audioFile={file => this.setState({audioFile: file})}
-                deleteFile={() => this.setState({file: undefined})}
+                audioFile={file => this.setState({ audioFile: file })}
+                deleteFile={() => this.setState({ file: undefined })}
                 sendMessage={
                   this.state.file || this.state.audioFile != ''
                     ? this.sendFile
                     : this.sendMessage
                 }
                 textChange={v => {
-                  this.setState({message: v});
+                  this.setState({ message: v });
                   this.onTyping(v != '');
                 }}
-                inputFocus={() => this.setState({isShowBottomSheet: false})}
+                inputFocus={() => this.setState({ isShowBottomSheet: false })}
                 addPress={() => {
                   Keyboard.dismiss();
                   // this.bottomSheetRef?.current?.expand();
-                  this.setState({isShowBottomSheet: true});
+                  this.setState({ isShowBottomSheet: true });
                 }}
                 emojiSelect={v => {
-                  this.setState({message: `${this.state.message}${v}`});
+                  this.setState({ message: `${this.state.message}${v}` });
                 }}
                 setFile={file => {
-                  this.setState({file: file});
+                  this.setState({ file: file });
                 }}
                 isConnected={this.state.isConnected}
               />

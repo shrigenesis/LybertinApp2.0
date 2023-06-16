@@ -42,7 +42,7 @@ const UserProfile = ({ navigation, route }) => {
       let id = route?.params?.data?.user_id
         ? route?.params?.data?.user_id
         : route?.params?.data?.id;
-      getHighlight(id);
+      // getHighlight(id);
       setuserId(id);
       getuserInfo(id);
     }

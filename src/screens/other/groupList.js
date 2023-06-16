@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, FC} from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import {
   View,
   Text,
@@ -13,19 +13,19 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import { IMAGE, color, fontFamily } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, StoryList} from '../../component/';
+import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Toast from 'react-native-toast-message';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
-import {User} from '../../utils/user';
+import { User } from '../../utils/user';
 import NoRecord from './noRecord';
 import ChatListSkelton from '../../utils/skeltons/chatListSkelton';
 import UserProfileImage from '../../component/userProfileImage';
@@ -33,6 +33,7 @@ import FocusAwareStatusBar from '../../utils/FocusAwareStatusBar';
 import NetInfo from '@react-native-community/netinfo';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
+import { RefreshControl } from 'react-native-gesture-handler';
 const getTime = time => {
   if (time) {
     return moment(time).fromNow();
@@ -40,7 +41,7 @@ const getTime = time => {
 };
 
 const _renderGroupList = React.memo(
-  ({item, navigation, setisLoading, reload, pinnedChatCount}) => {
+  ({ item, navigation, setisLoading, reload, pinnedChatCount }) => {
     const userdata = new User().getuserdata();
     let receiverId = userdata?.id == item.from_id ? item.from_id : userdata?.id;
 
@@ -95,7 +96,7 @@ const _renderGroupList = React.memo(
                   <>
                     <Image
                       source={IMAGE.unPin}
-                      style={{height: 16, width: 16, resizeMode: 'contain'}}
+                      style={{ height: 16, width: 16, resizeMode: 'contain' }}
                     />
                     <Text
                       style={{
@@ -111,7 +112,7 @@ const _renderGroupList = React.memo(
                   <>
                     <Image
                       source={IMAGE.pin}
-                      style={{height: 16, width: 16, resizeMode: 'contain'}}
+                      style={{ height: 16, width: 16, resizeMode: 'contain' }}
                     />
                     <Text
                       style={{
@@ -149,7 +150,7 @@ const _renderGroupList = React.memo(
               <View style={style.imgview}>
                 <FastImage
                   style={style.imgBox}
-                  source={{uri: `${IMAGEURL}/${item?.group?.photo_url}`}}
+                  source={{ uri: `${IMAGEURL}/${item?.group?.photo_url}` }}
                 />
               </View>
               <View style={style.chatView}>
@@ -159,7 +160,7 @@ const _renderGroupList = React.memo(
                     {item?.message}
                   </Text>
                 </View>
-                <View style={{paddingRight: wp(3)}}>
+                <View style={{ paddingRight: wp(3) }}>
                   <Text style={style.time}>{item.created_time_ago}</Text>
                   <View
                     style={{
@@ -205,13 +206,13 @@ const _renderGroupList = React.memo(
   },
 );
 
-const GroupList = ({navigation}) => {
+const GroupList = ({ navigation }) => {
   const [groupList, setGroupList] = useState([]);
   const [search, setSearch] = useState('');
   const [isLoading, setisLoading] = useState(false);
   const [appReady, setappReady] = useState(false);
   const [pinnedChatCount, setPinnedChatCount] = useState(0);
-  const {avatar} = new User().getuserdata();
+  const { avatar } = new User().getuserdata();
 
   const isFocus = useIsFocused();
   useEffect(() => {
@@ -222,6 +223,10 @@ const GroupList = ({navigation}) => {
       });
     }
   }, [isFocus]);
+
+  const onRefresh = () => {
+    fetchGroupList();
+  }
 
   const fetchGroupList = () => {
     // alert("api callled")
@@ -267,7 +272,7 @@ const GroupList = ({navigation}) => {
   }, []);
 
   return (
-    <View style={{flex: 1, backgroundColor: color.white}}>
+    <View style={{ flex: 1, backgroundColor: color.white }}>
       <FocusAwareStatusBar
         barStyle={'dark-content'}
         backgroundColor={color.white}
@@ -296,20 +301,28 @@ const GroupList = ({navigation}) => {
               borderBottomWidth: 0.5,
               borderColor: color.borderGray,
             }}></View>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                backgroundColor={color.white}
+                colors={[color.btnBlue]}
+                refreshing={isLoading}
+                onRefresh={onRefresh}
+              />
+            }>
             <TouchableOpacity
               activeOpacity={0.9}
               onPress={() => {
-                navigation.navigate('Search', {isGroupSearch: true});
+                navigation.navigate('Search', { isGroupSearch: true });
               }}>
               <View style={style.input}>
-                <View style={{position: 'absolute', left: wp(3)}}>
+                <View style={{ position: 'absolute', left: wp(3) }}>
                   <Image
                     source={IMAGE.search2}
-                    style={{height: 20, width: 20, resizeMode: 'contain'}}
+                    style={{ height: 20, width: 20, resizeMode: 'contain' }}
                   />
                 </View>
-                <Text style={{color: color.iconGray}}>
+                <Text style={{ color: color.iconGray }}>
                   Search using group name
                 </Text>
               </View>
@@ -328,8 +341,8 @@ const GroupList = ({navigation}) => {
                       showsVerticalScrollIndicator={false}
                       keyExtractor={index => String(index.id)}
                       data={groupList}
-                      contentContainerStyle={{marginBottom: hp(20)}}
-                      renderItem={({item, index}) => (
+                      contentContainerStyle={{ marginBottom: hp(20) }}
+                      renderItem={({ item, index }) => (
                         <_renderGroupList
                           navigation={navigation}
                           item={item}
@@ -461,7 +474,7 @@ const style = StyleSheet.create({
     borderColor: color.borderGray,
     elevation: 3,
     shadowColor: '#000',
-    shadowOffset: {width: 0, height: 1},
+    shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
   },

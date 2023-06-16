@@ -226,7 +226,7 @@ const MyProfile = ({ navigation, route }) => {
   useEffect(() => {
     // alert("",userdata.id)
     if (isFocus) {
-      getHighlight();
+      // getHighlight();
       setAppReady(true);
     }
   }, [isFocus]);
@@ -312,6 +312,7 @@ const MyProfile = ({ navigation, route }) => {
     APIRequest(
       config,
       res => {
+        console.log(res);
         setisLoading(false);
         if (res.status) {
           new User().clearAllUserData();
@@ -324,7 +325,6 @@ const MyProfile = ({ navigation, route }) => {
         setisLoading(false);
         new User().clearAllUserData();
         setLogin(false);
-        console.log(err?.response?.data);
       },
     );
   };
