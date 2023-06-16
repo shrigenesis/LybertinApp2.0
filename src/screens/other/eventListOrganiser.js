@@ -311,48 +311,48 @@ const EventListOrganiser = ({ navigation }) => {
             </View>
           </View>
           <StoryList navigation={navigation} storyBackGroundColor={color.btnBlue} headerFontColor={"themeColor"} />
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <View style={{ backgroundColor: color.btnBlue }}>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginHorizontal: '3%',
-                  marginBottom: hp(2),
-                }}>
-                <View style={style.input}>
-                  <View style={{ position: 'absolute', left: wp(3) }}>
-                    <TouchableOpacity onPress={() => getSearchEvents()}>
-                      <Image
-                        source={IMAGE.search2}
-                        style={{ height: 20, width: 20, resizeMode: 'contain' }}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  <TextInput
-                    onSubmitEditing={() => getSearchEvents()}
-                    style={{ paddingVertical: 0, color: color.textGray2 }}
-                    onChangeText={setSearch}
-                    placeholder="Search"
-                    placeholderTextColor={'gray'}
-                  />
-                </View>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('filterScreen')}
-                  style={{
-                    height: 50,
-                    width: 50,
-                    borderRadius: 5,
-                    backgroundColor: color.lightGray,
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                  }}>
-                  <Image source={IMAGE.filterList} style={style.filterImage} />
-                </TouchableOpacity>
-              </View>
 
-              {/* <View
+          <View style={{ backgroundColor: color.btnBlue }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginHorizontal: '3%',
+                marginBottom: hp(2),
+              }}>
+              <View style={style.input}>
+                <View style={{ position: 'absolute', left: wp(3) }}>
+                  <TouchableOpacity onPress={() => getSearchEvents()}>
+                    <Image
+                      source={IMAGE.search2}
+                      style={{ height: 20, width: 20, resizeMode: 'contain' }}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <TextInput
+                  onSubmitEditing={() => getSearchEvents()}
+                  style={{ paddingVertical: 0, color: color.textGray2 }}
+                  onChangeText={setSearch}
+                  placeholder="Search"
+                  placeholderTextColor={'gray'}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('filterScreen')}
+                style={{
+                  height: 50,
+                  width: 50,
+                  borderRadius: 5,
+                  backgroundColor: color.lightGray,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Image source={IMAGE.filterList} style={style.filterImage} />
+              </TouchableOpacity>
+            </View>
+
+            {/* <View
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
@@ -374,8 +374,7 @@ const EventListOrganiser = ({ navigation }) => {
                 <Text style={style.seeAllText}>See all</Text>
               </TouchableOpacity>
             </View> */}
-            </View>
-          </ScrollView>
+          </View>
         </View>
         {/* <View
         style={{
@@ -387,43 +386,43 @@ const EventListOrganiser = ({ navigation }) => {
       </View>
       {/* <ScrollView style={{flex:1, backgroundColor: color.btnBlue}}> */}
 
-        {upcomingEvents.length > 0 ?<View
-          style={{
-            paddingHorizontal: 10,
-            height: 100,
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            backgroundColor: color.white,
-          }}>
-          <View style={style.popularContainer}>
-            <Text style={[style.popularText, { color: color.black }]}>My Events</Text>
-            {/* <Image
+      {upcomingEvents.length > 0 ? <View
+        style={{
+          paddingHorizontal: 10,
+          height: 70,
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          backgroundColor: color.white,
+        }}>
+        <View style={style.popularContainer}>
+          <Text style={[style.popularText, { color: color.black }]}>My Events</Text>
+          {/* <Image
               source={IMAGE.fire}
               style={{height: 27, width: 27, resizeMode: 'contain',marginTop:"2%"}}
             /> */}
-          </View>
-          <TouchableOpacity
-            onPress={() =>
-              navigation.navigate('seeAllEventOrg', {
-                category: '',
-                date: '',
-                price: '',
-                country: '',
-                city: '',
-                input: '',
-              })
-            }>
-            <Text style={style.seeAllText}>See all</Text>
-          </TouchableOpacity>
-        </View>:null}
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate('seeAllEventOrg', {
+              category: '',
+              date: '',
+              price: '',
+              country: '',
+              city: '',
+              input: '',
+            })
+          }>
+          <Text style={style.seeAllText}>See all</Text>
+        </TouchableOpacity>
+      </View> : null}
 
-        <View
-          style={{
-            backgroundColor: color.white,
-            paddingHorizontal: 10,
-            // marginTop: -50,
-          }}>
-          {upcomingEvents.length > 0 ? 
+      <View
+        style={{
+          backgroundColor: color.white,
+          paddingHorizontal: 10,
+          flex: 1
+        }}>
+        {upcomingEvents.length > 0 ?
           <FlatList
             data={upcomingEvents}
             renderItem={({ item: d }) => (
@@ -472,16 +471,16 @@ const EventListOrganiser = ({ navigation }) => {
               </TouchableOpacity>
             )}
           //Setting the number of column
-          /> 
+          />
           :
-            <NoRecord
-              image={IMAGE.noConversation}
-              title="No Event found"
-              description="You will get Upcoming and poular events here."
-              showButton={false}
-            />
-          }
-        </View>
+          <NoRecord
+            image={IMAGE.noConversation}
+            title="No Event found"
+            description="You will get Upcoming and poular events here."
+            showButton={false}
+          />
+        }
+      </View>
       {/* </ScrollView> */}
 
     </SafeAreaView>
