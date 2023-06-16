@@ -11,6 +11,10 @@ import {
   Image,
 } from 'react-native';
 import Loader from './../../component/loader';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import { color, fontFamily, fontSize, IMAGE } from '../../constant';
@@ -136,8 +140,8 @@ class Barcode extends Component {
           ref={node => {
             this.scanner = node;
           }}
-          containerStyle={{width: 50}}
-          cameraStyle={{height: 100}}
+          containerStyle={{width: hp(100)}}
+          cameraStyle={{height: hp(70)}}
         />
 
         {this.state.isLoading && (

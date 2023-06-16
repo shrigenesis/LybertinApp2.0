@@ -93,6 +93,14 @@
     "sync-storage": "^0.4.2",
     "uuid": "^9.0.0"
   },
+  "resolutions": {
+    "react-native-permissions": "^3.7.3"
+  },
+  "overrides": {
+    "react-native-qrcode-scanner": {
+      "react-native-permissions": "^3.7.3"
+    }
+  },
   "devDependencies": {
     "@babel/core": "^7.21.0",
     "@babel/preset-env": "^7.20.2",
