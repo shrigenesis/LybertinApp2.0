@@ -20,6 +20,7 @@ import QRCodeScanner from 'react-native-qrcode-scanner';
 import { color, fontFamily, fontSize, IMAGE } from '../../constant';
 import Toast from 'react-native-toast-message';
 import { APIRequest, ApiUrl } from '../../utils/api';
+import {Platform} from 'react-native';
 
 class Barcode extends Component {
   constructor(props) {
@@ -141,7 +142,7 @@ class Barcode extends Component {
             this.scanner = node;
           }}
           containerStyle={{width: hp(100)}}
-          cameraStyle={{height: hp(70)}}
+          cameraStyle={{height: Platform.OS === 'ios' ? hp(70) : hp(60)}}
         />
 
         {this.state.isLoading && (
