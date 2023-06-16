@@ -418,10 +418,10 @@ export const BottomView = memo(props => {
                 ios: {
                   minHeight: replyOn
                     ? DeviceInfo.hasNotch()
-                      ? 180
+                      ? 186
                       : 150
                     : DeviceInfo.hasNotch()
-                      ? 100
+                      ? 112
                       : 60,
                 },
                 android: {
