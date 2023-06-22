@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -18,16 +18,16 @@ import {
   SafeAreaView,
   Linking,
 } from 'react-native';
-import {SliderBox} from 'react-native-image-slider-box';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant';
+import { SliderBox } from 'react-native-image-slider-box';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
-import {User} from '../../utils/user';
-import {Tooltip} from 'react-native-elements';
+import { User } from '../../utils/user';
+import { Tooltip } from 'react-native-elements';
 import Toast from 'react-native-toast-message';
 import HtmlToText from '../../utils/HtmlToText';
 import ConfirmationModal from './Modal/ConfirmationModal';
@@ -55,6 +55,7 @@ import ReadMore from '../../utils/ReadMore';
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 const MarketplaceDetails = props => {
+  const webView = useRef();
   const [event, setEvent] = useState();
   const [isLoading, setisLoading] = useState(true);
   const [tag_group, settag_group] = useState([]);
@@ -77,7 +78,12 @@ const MarketplaceDetails = props => {
   const SetTwitterSuccessMessage = () => {
     getEventDetails();
   };
-
+  const jsCode = `setInterval(function() { 
+      document.querySelector('[data-testid="apple_sign_in_button"]').style.display = 'none';
+      document.querySelector('[data-testid="google_sign_in_container"]').style.display = 'none'
+    }, 
+      2);`;
+  
   // Get event details
   const getEventDetails = () => {
     let config = {
@@ -237,8 +243,7 @@ const MarketplaceDetails = props => {
         res => {
           if (res.status) {
             settwitterMassage(
-              `${
-                res.promotional_text ? res.promotional_text : ''
+              `${res.promotional_text ? res.promotional_text : ''
               }Book your tickets at ${res.deep_link}`,
             );
             settwitterConfirmMessage(true);
@@ -255,7 +260,7 @@ const MarketplaceDetails = props => {
       setisShowBottomSheet(false);
     }
   };
-  const SetIsShowBottomSheet=() =>{
+  const SetIsShowBottomSheet = () => {
     setopenWebview(false);
     setisPostTwitter(false);
     setwebviewUrl('');
@@ -266,7 +271,7 @@ const MarketplaceDetails = props => {
     settwitterMassage('');
   }
 
-  
+
 
   return (
     <SafeAreaView style={styles.container}>
@@ -278,20 +283,20 @@ const MarketplaceDetails = props => {
       <View
         style={[
           styles.backBtnPosition,
-          {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 120 : 85)},
+          { top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 120 : 85) },
         ]}>
         <TouchableOpacity onPress={() => props.navigation.goBack()}>
           <Image source={IMAGE.ArrowLeft} style={styles.backImage} />
         </TouchableOpacity>
       </View>
 
-      <ScrollView style={{flex: 0.92}}>
+      <ScrollView style={{ flex: 0.92 }}>
         {isLoading === true ? (
           <DetailsSkelton />
         ) : (
           <>
             <SliderBox
-              images={event.images.length>0 ? sliderImageArray(event.images) : [`${IMAGEURL}/${event.thumbnail}`]}
+              images={event.images.length > 0 ? sliderImageArray(event.images) : [`${IMAGEURL}/${event.thumbnail}`]}
               sliderBoxHeight={300}
               onCurrentImagePressed={index =>
                 console.warn(`image ${index} pressed`)
@@ -305,7 +310,7 @@ const MarketplaceDetails = props => {
             <View
               style={{
                 backgroundColor: color.white,
-                paddingBottom:15
+                paddingBottom: 15
               }}>
               <Text style={styles.mainHeading}>{/* ${this.minPrice()} */}</Text>
               <View>
@@ -340,15 +345,15 @@ const MarketplaceDetails = props => {
                     <Image
                       source={
                         event?.hasShared?.sharedOnTwitter ||
-                        event?.hasShared?.normalShare
+                          event?.hasShared?.normalShare
                           ? IMAGE.shareMarketplace
                           : IMAGE.sendBlue
                       }
                       style={styles.shareImage}
                     />
                     {event?.hasShared?.sharedOnTwitter ||
-                    event?.hasShared?.normalShare ? (
-                      <Text style={[styles.buttonText, {color: color.violet}]}>
+                      event?.hasShared?.normalShare ? (
+                      <Text style={[styles.buttonText, { color: color.violet }]}>
                         Share again{' '}
                       </Text>
                     ) : (
@@ -360,16 +365,16 @@ const MarketplaceDetails = props => {
                 <View
                   style={[
                     styles.borderBox,
-                    {padding: 15, marginHorizontal: 14, marginVertical: 15},
+                    { padding: 15, marginHorizontal: 14, marginVertical: 15 },
                   ]}>
                   <View style={styles.engagementTitleBox}>
                     <Text style={styles.engagementTitle}>POST ENGAGEMENT</Text>
                   </View>
-                  <View style={[styles.engagementTitleBox, {marginTop: 15}]}>
+                  <View style={[styles.engagementTitleBox, { marginTop: 15 }]}>
                     <Tooltip
                       width={250}
                       popover={
-                        <Text style={{color: '#fff'}}>
+                        <Text style={{ color: '#fff' }}>
                           My Friends Who Booked Event{' '}
                         </Text>
                       }>
@@ -384,7 +389,7 @@ const MarketplaceDetails = props => {
                     <Tooltip
                       width={250}
                       popover={
-                        <Text style={{color: '#fff'}}>
+                        <Text style={{ color: '#fff' }}>
                           Booking with same interest people
                         </Text>
                       }>
@@ -399,7 +404,7 @@ const MarketplaceDetails = props => {
                     <Tooltip
                       width={150}
                       popover={
-                        <Text style={{color: '#fff'}}>Total views</Text>
+                        <Text style={{ color: '#fff' }}>Total views</Text>
                       }>
                       <Text style={styles.detailsTitle}>
                         {NoFormatter(event.total_views)}
@@ -412,7 +417,7 @@ const MarketplaceDetails = props => {
                     <Tooltip
                       width={250}
                       popover={
-                        <Text style={{color: '#fff'}}>
+                        <Text style={{ color: '#fff' }}>
                           How many earning on this post
                         </Text>
                       }>
@@ -420,8 +425,8 @@ const MarketplaceDetails = props => {
                         {event.total_coins_distributed === null
                           ? 0
                           : event.total_coins_distributed < 1000
-                          ? parseFloat(event.total_coins_distributed).toFixed(1)
-                          : NoFormatter(event.total_coins_distributed)}
+                            ? parseFloat(event.total_coins_distributed).toFixed(1)
+                            : NoFormatter(event.total_coins_distributed)}
                       </Text>
                       <Image
                         source={IMAGE.salary}
@@ -431,7 +436,7 @@ const MarketplaceDetails = props => {
                     <Tooltip
                       width={250}
                       popover={
-                        <Text style={{color: '#fff'}}>
+                        <Text style={{ color: '#fff' }}>
                           How many booking on this post
                         </Text>
                       }>
@@ -446,32 +451,31 @@ const MarketplaceDetails = props => {
                   </View>
                 </View>
                 <View style={styles.imageContainer}>
-                    <Image
-                      source={IMAGE.category}
-                      style={{
-                        height: 22,
-                        width: 22,
-                        resizeMode: 'contain',
-                        marginRight: '4%',
-                        tintColor: color.btnBlue,
-                      }}
-                    />
+                  <Image
+                    source={IMAGE.category}
+                    style={{
+                      height: 22,
+                      width: 22,
+                      resizeMode: 'contain',
+                      marginRight: '4%',
+                      tintColor: color.btnBlue,
+                    }}
+                  />
 
-                    <View>
-                      <Text style={styles.dateText}>Category</Text>
-                      <Text style={styles.timeText} numberOfLines={1}>
-                        {event?.category_name}
-                      </Text>
-                    </View>
+                  <View>
+                    <Text style={styles.dateText}>Category</Text>
+                    <Text style={styles.timeText} numberOfLines={1}>
+                      {event?.category_name}
+                    </Text>
                   </View>
+                </View>
                 <View style={styles.imageContainer}>
                   <Image source={IMAGE.star_earn} style={styles.dateStyle} />
                   <View>
                     <Text style={styles.dateText}>Earnings</Text>
                     <Text style={styles.timeText}>
-                      {`${earningValue.min} to ${earningValue.max} ${
-                        earningValue.type === 'percentage' ? '%' : '$'
-                      } earnings`}
+                      {`${earningValue.min} to ${earningValue.max} ${earningValue.type === 'percentage' ? '%' : '$'
+                        } earnings`}
                     </Text>
                   </View>
                 </View>
@@ -537,17 +541,17 @@ const MarketplaceDetails = props => {
                           horizontal
                           showsHorizontalScrollIndicator={false}
                           data={itt?.items}
-                          renderItem={({item, index}) => (
+                          renderItem={({ item, index }) => (
                             <View
                               key={`marketplace-details${index}`}
                               style={styles.eventTagInner}>
                               <View style={styles.tagIMageWrapper}>
                                 <Image
-                                  source={{uri: `${IMAGEURL}/${item.image}`}}
+                                  source={{ uri: `${IMAGEURL}/${item.image}` }}
                                   style={styles.profileImage}
                                 />
                               </View>
-                              <View style={{margin: 8}}>
+                              <View style={{ margin: 8 }}>
                                 <Text style={styles.nameText}>
                                   {item.title}
                                 </Text>
@@ -573,12 +577,20 @@ const MarketplaceDetails = props => {
           isShowBottomSheet={isShowBottomSheet}
           setisShowBottomSheet={SetIsShowBottomSheet}>
           {openWebview && isPostTwitter ? (
-            <View style={{height: 500}}>
+
+            <View style={{ height: 500 }}>
               <WebView
-                source={{uri: webviewUrl}}
+                ref={webView}
+                // source={{ uri: "https://hrd.shrigenesis.com/index.php/dashboard" }}
+                source={{ uri: webviewUrl }}
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                sharedCookiesEnabled={true}
+                injectedJavaScript={jsCode}
+                mixedContentMode={'compatibility'}
                 onNavigationStateChange={navState => {
                   // Keep track of going back navigation within component
-                  console.log('navstate', navState);
+                  console.log('navstate', navState?.url);
                   if (navState?.url.includes(twitterSuccessUrl)) {
                     Toast.show({
                       type: 'info',
@@ -597,7 +609,7 @@ const MarketplaceDetails = props => {
                   if (navState?.url.includes(twitterFailUrl)) {
                     Toast.show({
                       type: 'error',
-                      text1: res.message,
+                      text1: "Something went wrong while authorising",
                     });
                     setopenWebview(false);
                     setisPostTwitter(false);
@@ -635,7 +647,7 @@ const MarketplaceDetails = props => {
                   <View
                     style={[
                       styles.shareIconBox,
-                      {backgroundColor: color.lightGray},
+                      { backgroundColor: color.lightGray },
                     ]}>
                     <Image
                       style={styles.shareIcon}
@@ -653,7 +665,7 @@ const MarketplaceDetails = props => {
                   <View
                     style={[
                       styles.shareIconBox,
-                      {backgroundColor: color.twitterColor},
+                      { backgroundColor: color.twitterColor },
                     ]}>
                     <Image style={styles.shareIcon} source={IMAGE.twitter} />
                   </View>
@@ -787,7 +799,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: color.liteRed,
     shadowColor: color.liteRed,
-    shadowOffset: {width: -2, height: 4},
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.2,
     shadowRadius: 3,
     elevation: 3,
