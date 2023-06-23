@@ -18,7 +18,7 @@ import {fontFamily} from '../constant/font';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useNavigation} from '@react-navigation/native';
 import Loader from './loader';
-import { fontSize } from '../constant';
+import {fontSize} from '../constant';
 
 const Header = props => {
   const {
@@ -28,6 +28,7 @@ const Header = props => {
     LeftRouteParams = {},
     headingStyle = {},
     LeftIcon = false,
+    expandedTitle = false,
     leftRoute = '',
     RightIcon = null,
     appReady = false,
@@ -38,12 +39,17 @@ const Header = props => {
   const renderOtherHeader = () => {
     return (
       <View style={[style.headerWrapper, headStyle]}>
-        <View style={style.leftIconWrapper}>
+        <View
+          style={
+            !expandedTitle
+              ? style.leftIconWrapper
+              : style.expandedLeftIconWrapper
+          }>
           {LeftIcon ? (
             <LeftIcon />
           ) : (
             <TouchableOpacity
-            style={style.leftIconWrapper}
+              style={style.leftIconWrapper}
               onPress={() => {
                 navigation && leftRoute
                   ? navigation.navigate(leftRoute, LeftRouteParams)
@@ -56,10 +62,16 @@ const Header = props => {
             </TouchableOpacity>
           )}
         </View>
-        <View style={style.titleWrapper}>
-          <Text style={[style.heading, headingStyle]}>{title}</Text>
-        </View>
-        <View style={style.rightIconWrapper}>{RightIcon && <RightIcon />}</View>
+        {title && (
+          <View style={style.titleWrapper}>
+            <Text style={[style.heading, headingStyle]}>{title}</Text>
+          </View>
+        )}
+        {RightIcon && (
+          <View style={style.rightIconWrapper}>
+            <RightIcon />
+          </View>
+        )}
       </View>
     );
   };
@@ -71,27 +83,34 @@ const style = StyleSheet.create({
   headerWrapper: {
     height: 50,
     paddingHorizontal: 15,
+    paddingTop: 10,
     paddingBottom: 10,
     flexDirection: 'row',
-    justifyContent: "space-between",
-    alignItems: "center",
+    justifyContent: 'space-between',
+    alignItems: 'center',
     shadowColor: '#171717',
     shadowOffset: {width: -1, height: 4},
     shadowOpacity: 0.1,
     elevation: 2,
     shadowRadius: 2,
-    backgroundColor: color.white
+    backgroundColor: color.white,
   },
   leftIconWrapper: {
     width: 45,
     height: 45,
     paddingLeft: 5,
     flexDirection: 'row',
-    alignItems: "center",
+    alignItems: 'center',
+  },
+  expandedLeftIconWrapper: {
+    minWidth: 250,
+    height: 45,
+    paddingLeft: 5,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   titleWrapper: {
-    
-    width: (Dimensions.get('window').width - (130)),
+    width: Dimensions.get('window').width - 130,
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center',
@@ -107,7 +126,7 @@ const style = StyleSheet.create({
     height: 45,
     paddingRight: 5,
     flexDirection: 'row',
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
     alignItems: 'center',
   },
 });
