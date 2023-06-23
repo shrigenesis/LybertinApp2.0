@@ -48,6 +48,7 @@ export default class addParticipent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoading : false,
       participents: [],
       selectUserList: [],
       group_members: [],
@@ -71,6 +72,7 @@ export default class addParticipent extends Component {
       config,
       res => {
         this.setState({
+          isLoading: false,
           participents: res.data.add_more_participent_list,
           group_members: res.data.group_members
         });
@@ -88,7 +90,7 @@ export default class addParticipent extends Component {
       url: `${apiUrl}/removemember/${this.state.groupId}/members/${id}`,
       method: 'post',
     };
-    console.log('config', config);
+    
     APIRequest(
       config,
       res => {
@@ -107,6 +109,7 @@ export default class addParticipent extends Component {
     );
   }
    AddMember = (id) => {
+    this.setState({ isLoading: true });
     let config = {
       url: `${apiUrl}/${this.state.groupId}${apiMethod}`,
       method: 'post',
@@ -125,9 +128,10 @@ export default class addParticipent extends Component {
           })
         }
         this.getGroupInfo();
+        this.setState({ isLoading: false });
       },
       err => {
-        console.log(err?.response?.data);
+        this.setState({ isLoading: false });
       },
     );
   }
@@ -201,6 +205,7 @@ export default class addParticipent extends Component {
           //   )
           // }
           />
+          <Loader isLoading={this.state.isLoading} type={'dots'} />
           {this.state.participents.length > 0 ?
             <>
               <FlatList
@@ -252,7 +257,7 @@ export default class addParticipent extends Component {
             </> :
             <NoRecord
               image={IMAGE.noFriends}
-              title="No participants found"
+              title="No more participants found to add"
               // description="You will get Upcoming and poular events here."
               showButton={false}
             />

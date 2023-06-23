@@ -10,7 +10,7 @@ import {
   Platform,
   Dimensions,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -175,9 +175,10 @@ export default class popularEvent extends Component {
                           <View
                             style={{
                               flexDirection: 'row',
+                              alignItems: 'center',
                               margin: 5,
                             }}>
-                            <Image
+                            {/* <Image
                               source={IMAGE.time}
                               style={{
                                 height: 12,
@@ -186,9 +187,12 @@ export default class popularEvent extends Component {
                                 alignSelf: 'center',
                                 tintColor: '#0F1828D9',
                               }}
-                            />
+                            /> */}
+                            <Text style={[styles.symbolText]}>
+                              {d.currency_object?.symbol}
+                            </Text>
                             <Text style={[styles.dateText, { marginLeft: 5 }]}>
-                              {d.start_time} - {d.end_time}
+                              {d.min_price} - {d.max_price}
                             </Text>
                           </View>
                         </View>
@@ -228,7 +232,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: null,
-     backgroundColor: color.lightGray ,
+    backgroundColor: color.lightGray,
   },
   headerContainer: {
     flexDirection: 'row',
@@ -267,6 +271,12 @@ const styles = StyleSheet.create({
     color: color.black,
     marginLeft: '4%',
     marginTop: '6%',
+  },
+  symbolText: {
+    fontSize: fontSize.size13,
+    fontFamily: fontFamily.Medium,
+    color: color.black,
+    marginHorizontal: '2%',
   },
   dateText: {
     fontSize: Platform.OS == 'ios' ? 13 : 11,

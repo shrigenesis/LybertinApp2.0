@@ -64,7 +64,6 @@ const MyFriends = ({navigation, route}) => {
   }, []);
 
   const unfreind = item => {
-    // this.setState({isLoading: true});
     setisLoading(true);
     let config = {
       url: ApiUrl.unfollow,
@@ -77,28 +76,20 @@ const MyFriends = ({navigation, route}) => {
     APIRequest(
       config,
       res => {
-        setisLoading(false);
         getfriends();
         Toast.show({
           type: 'success',
           text1: res.message,
         });
-        console.log('Api response unfriend===', res);
       },
       err => {
         setisLoading(false);
-
-        // this.setState({isLoading: false});
-        console.log(err?.response?.data);
       },
     );
   };
 
   const getfriends = () => {
     setisLoading(true);
-
-    // alert("getfriend called")
-    // this.setState({isLoading: true});
     let config = {
       url: ApiUrl.friendList,
       method: 'get',
@@ -108,14 +99,10 @@ const MyFriends = ({navigation, route}) => {
       config,
       res => {
         setisLoading(false);
-
         setfriends(res?.friends);
       },
       err => {
         setisLoading(false);
-
-        // this.setState({isLoading: false});
-        console.log(err?.response?.data);
       },
     );
   };

@@ -81,6 +81,7 @@ const MarketplaceDetails = props => {
   const jsCode = `setInterval(function() { 
       document.querySelector('[data-testid="apple_sign_in_button"]').style.display = 'none';
       document.querySelector('[data-testid="google_sign_in_container"]').style.display = 'none'
+      document.querySelector('.r-13qz1uu').style.display = 'none'
     }, 
       2);`;
   

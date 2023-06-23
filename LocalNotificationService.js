@@ -86,6 +86,14 @@ class LocalNotificationService {
         }
         if (
           notification?.data?.item?.notification_type ==
+          'FRIEND_ACCPETED_NOTIFICATION'
+        ) {
+          setTimeout(() => {
+            RootNavigation.navigate('MyFriends');
+          }, 1000);
+        }
+        if (
+          notification?.data?.item?.notification_type ==
           'STORY_UPDATE_NOTIFICATION'
         ) {
           // console.log(notification?.data?.item?.view_stories,JSON.parse(notification?.data?.item?.view_stories))

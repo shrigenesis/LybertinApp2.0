@@ -67,7 +67,7 @@ const EventList = ({ navigation }) => {
       });
     }
   }, [isFocus])
-  
+
   useEffect(() => {
     getEvents('');
     axios.interceptors.response.use(
@@ -239,9 +239,10 @@ const EventList = ({ navigation }) => {
             <View
               style={{
                 flexDirection: 'row',
+                alignItems: 'center',
                 margin: 5,
               }}>
-              <Image
+              {/* <Image
                 source={IMAGE.time}
                 style={{
                   height: 12,
@@ -250,9 +251,12 @@ const EventList = ({ navigation }) => {
                   alignSelf: 'center',
                   tintColor: '#0F1828D9',
                 }}
-              />
+              /> */}
+              <Text style={[style.symbolText]}>
+                {item.currency_object?.symbol}
+              </Text>
               <Text style={[style.dateText, { marginLeft: 5 }]}>
-                {item.start_time} - {item.end_time}
+                {item.min_price} - {item.max_price}
               </Text>
             </View>
           </View>
@@ -281,220 +285,220 @@ const EventList = ({ navigation }) => {
 
   return (
     // <KeyboardAwareScrollView bounces={false} keyboardShouldPersistTaps={true}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
-        <FocusAwareStatusBar
-        barStyle={'light-content'} 
+    <SafeAreaView style={{ flex: 1, backgroundColor: color.btnBlue }}>
+      <FocusAwareStatusBar
+        barStyle={'light-content'}
         backgroundColor={color.btnBlue}
-         />
-         
-        {/* <View style={style.appBar} />
+      />
+
+      {/* <View style={style.appBar} />
         <View style={style.content} /> */}
-        <View>
+      <View>
+        <View style={{ backgroundColor: color.btnBlue }}>
           <View style={{ backgroundColor: color.btnBlue }}>
+            {/* {appReady && <Loader type="dots" isLoading={isLoading} />} */}
+            <View
+              style={{
+                flexDirection: 'row',
+                marginTop: Platform.OS == 'ios' ? '4%' : 10,
+                paddingLeft: wp(7),
+                paddingRight: wp(4),
+                justifyContent: 'space-between',
+              }}>
+              <Text style={style.heading}>Lybertine</Text>
+              <UserProfileImage />
+            </View>
+          </View>
+          <StoryList navigation={navigation} storyBackGroundColor={color.btnBlue} headerFontColor={"themeColor"} />
+          <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'}>
             <View style={{ backgroundColor: color.btnBlue }}>
-              {/* {appReady && <Loader type="dots" isLoading={isLoading} />} */}
               <View
                 style={{
                   flexDirection: 'row',
-                  marginTop: Platform.OS == 'ios' ? '4%' : 10,
-                  paddingLeft: wp(7),
-                  paddingRight: wp(4),
                   justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginHorizontal: '3%',
+                  marginBottom: hp(2),
                 }}>
-                <Text style={style.heading}>Lybertine</Text>
-                <UserProfileImage />
+                <View style={style.input}>
+                  <View style={{ position: 'absolute', left: wp(3) }}>
+                    <TouchableOpacity onPress={() => getEvents()}>
+                      <Image
+                        source={IMAGE.search2}
+                        style={{ height: 20, width: 20, resizeMode: 'contain' }}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  <TextInput
+                    onSubmitEditing={() => getEvents()}
+                    style={style.search}
+                    onChangeText={text => {
+                      setSearch(text);
+                      optimizedFn(text);
+                    }}
+                    value={search}
+                    placeholder="Search"
+                    placeholderTextColor={'gray'}
+                  />
+                  {search !== '' && (
+                    <TouchableOpacity
+                      onPress={() => {
+                        setSearch('');
+                        getEvents('')
+                      }}
+                      style={{ position: 'absolute', right: wp(5) }}>
+                      <Icon
+                        name={'times'}
+                        style={{ fontSize: 15, color: color.iconGray }}
+                      />
+                    </TouchableOpacity>
+                  )}
+                </View>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('filterScreen', {
+                      category: category,
+                      price: price,
+                    })
+                  }
+                  style={{
+                    height: 50,
+                    width: 50,
+                    borderRadius: 5,
+                    backgroundColor: color.lightGray,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Image source={IMAGE.filterList} style={style.filterImage} />
+                </TouchableOpacity>
               </View>
             </View>
-            <StoryList navigation={navigation} storyBackGroundColor={color.btnBlue} headerFontColor={"themeColor"} />
-            <ScrollView showsVerticalScrollIndicator={false} keyboardShouldPersistTaps={'always'}>
-              <View style={{ backgroundColor: color.btnBlue }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginHorizontal: '3%',
-                    marginBottom: hp(2),
-                  }}>
-                  <View style={style.input}>
-                    <View style={{ position: 'absolute', left: wp(3) }}>
-                      <TouchableOpacity onPress={() => getEvents()}>
-                        <Image
-                          source={IMAGE.search2}
-                          style={{ height: 20, width: 20, resizeMode: 'contain' }}
-                        />
-                      </TouchableOpacity>
-                    </View>
-                    <TextInput
-                      onSubmitEditing={() => getEvents()}
-                      style={style.search}
-                      onChangeText={text => {
-                        setSearch(text);
-                        optimizedFn(text);
-                      }}
-                      value={search}
-                      placeholder="Search"
-                      placeholderTextColor={'gray'}
-                    />
-                    {search !== '' && (
-                      <TouchableOpacity
-                        onPress={() => {
-                          setSearch('');
-                          getEvents('')
-                        }}
-                        style={{ position: 'absolute', right: wp(5) }}>
-                        <Icon
-                          name={'times'}
-                          style={{ fontSize: 15, color: color.iconGray }}
-                        />
-                      </TouchableOpacity>
-                    )}
-                  </View>
-                  <TouchableOpacity
-                    onPress={() =>
-                      navigation.navigate('filterScreen', {
-                        category: category,
-                        price: price,
-                      })
-                    }
-                    style={{
-                      height: 50,
-                      width: 50,
-                      borderRadius: 5,
-                      backgroundColor: color.lightGray,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                    }}>
-                    <Image source={IMAGE.filterList} style={style.filterImage} />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </ScrollView>
-          </View>
-
+          </ScrollView>
         </View>
 
-        <ScrollView style={{ zIndex: -10, backgroundColor: '#fff', flex:1 }}>
-          {isLoading ? (
-            <View
-              style={{
-                paddingHorizontal: 20,
-                paddingVertical: 20,
-                backgroundColor: color.white
-              }}>
-              <SectionTitleWithBtn />
-              <FlatList
-                showsVerticalScrollIndicator={false}
-                data={[0, 1, 2, 3, 4, 6]}
-                numColumns={2}
-                renderItem={() => (
-                  <EventListSkelton />
-                )}
-              />
-            </View>
-          ) : (
-            <>
-              {status == 'true' ? (
-                <View style={{backgroundColor:color.lightGray}}>
-                  {upcomingEvents.length > 0 ?
-                    <>
-                      <View
-                        style={style.listCategoryBox}>
-                        <View style={[style.popularContainer, { marginTop: 10 }]}>
-                          <Text style={style.popularText}>Upcoming Events</Text>
-                        </View>
+      </View>
 
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate('popularEvent', {
-                              filter_type: 'upcomming_events ',
-                              title: 'Upcoming Events',
-                            })
-                          }>
-                          <Text style={style.seeAllText}>See all</Text>
-                        </TouchableOpacity>
-                      </View>
-                      <View style={{ backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
-                        <FlatList
-                          data={upcomingEvents}
-                          renderItem={({ item, index }) => renderEventBox(item, index)}
-                          //Setting the number of column
-                          numColumns={2}
-                        />
-                      </View>
-                    </> : null}
-
-                  {featuredEvents.length > 0 ?
-                    <>
-                      <View
-                        style={style.listCategoryBox}>
-                        <View style={style.popularContainer}>
-                          <Text style={style.popularText}>Featured Events</Text>
-                        </View>
-
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate('popularEvent', {
-                              filter_type: 'featured_events ',
-                              title: 'Featured Events',
-                            })
-                          }>
-                          <Text style={style.seeAllText}>See all</Text>
-                        </TouchableOpacity>
+      <ScrollView style={{ zIndex: -10, backgroundColor: '#fff', flex: 1 }}>
+        {isLoading ? (
+          <View
+            style={{
+              paddingHorizontal: 20,
+              paddingVertical: 20,
+              backgroundColor: color.white
+            }}>
+            <SectionTitleWithBtn />
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              data={[0, 1, 2, 3, 4, 6]}
+              numColumns={2}
+              renderItem={() => (
+                <EventListSkelton />
+              )}
+            />
+          </View>
+        ) : (
+          <>
+            {status == 'true' ? (
+              <View style={{ backgroundColor: color.lightGray }}>
+                {upcomingEvents.length > 0 ?
+                  <>
+                    <View
+                      style={style.listCategoryBox}>
+                      <View style={[style.popularContainer, { marginTop: 10 }]}>
+                        <Text style={style.popularText}>Upcoming Events</Text>
                       </View>
 
-                      <View style={{ backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
-                        <FlatList
-                          data={featuredEvents}
-                          renderItem={({ item, index }) => renderEventBox(item, index)}
-                          //Setting the number of column
-                          numColumns={2}
-                        />
-                      </View>
-                    </> : null}
-                  {topSellingEvents.length > 0 ?
-                    <>
-                      <View
-                        style={style.listCategoryBox}>
-                        <View style={style.popularContainer}>
-                          <Text style={style.popularText}>Top Selling Events</Text>
-                        </View>
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('popularEvent', {
+                            filter_type: 'upcomming_events ',
+                            title: 'Upcoming Events',
+                          })
+                        }>
+                        <Text style={style.seeAllText}>See all</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
+                      <FlatList
+                        data={upcomingEvents}
+                        renderItem={({ item, index }) => renderEventBox(item, index)}
+                        //Setting the number of column
+                        numColumns={2}
+                      />
+                    </View>
+                  </> : null}
 
-                        <TouchableOpacity
-                          onPress={() =>
-                            navigation.navigate('popularEvent', {
-                              filter_type: 'top_selling_events ',
-                              title: 'Top Selling Events',
-                            })
-                          }>
-                          <Text style={style.seeAllText}>See all</Text>
-                        </TouchableOpacity>
+                {featuredEvents.length > 0 ?
+                  <>
+                    <View
+                      style={style.listCategoryBox}>
+                      <View style={style.popularContainer}>
+                        <Text style={style.popularText}>Featured Events</Text>
                       </View>
-                      <View style={{ backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
-                        <FlatList
-                          data={topSellingEvents}
-                          renderItem={({ item, index }) => renderEventBox(item, index)}
-                          //Setting the number of column
-                          numColumns={2}
-                        />
-                      </View>
-                    </> : null}
 
-                </View>
-              ) : ( 
-                <View >
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('popularEvent', {
+                            filter_type: 'featured_events ',
+                            title: 'Featured Events',
+                          })
+                        }>
+                        <Text style={style.seeAllText}>See all</Text>
+                      </TouchableOpacity>
+                    </View>
+
+                    <View style={{ backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
+                      <FlatList
+                        data={featuredEvents}
+                        renderItem={({ item, index }) => renderEventBox(item, index)}
+                        //Setting the number of column
+                        numColumns={2}
+                      />
+                    </View>
+                  </> : null}
+                {topSellingEvents.length > 0 ?
+                  <>
+                    <View
+                      style={style.listCategoryBox}>
+                      <View style={style.popularContainer}>
+                        <Text style={style.popularText}>Top Selling Events</Text>
+                      </View>
+
+                      <TouchableOpacity
+                        onPress={() =>
+                          navigation.navigate('popularEvent', {
+                            filter_type: 'top_selling_events ',
+                            title: 'Top Selling Events',
+                          })
+                        }>
+                        <Text style={style.seeAllText}>See all</Text>
+                      </TouchableOpacity>
+                    </View>
+                    <View style={{ backgroundColor: color.lightGray, paddingHorizontal: 10 }}>
+                      <FlatList
+                        data={topSellingEvents}
+                        renderItem={({ item, index }) => renderEventBox(item, index)}
+                        //Setting the number of column
+                        numColumns={2}
+                      />
+                    </View>
+                  </> : null}
+
+              </View>
+            ) : (
+              <View >
                 <NoRecord
                   image={IMAGE.noConversation}
                   title="No Event found"
                   description="You will get Upcoming and poular events here."
                   showButton={false}
                 />
-                </View>
-              )}
-            </>
-          )}
-        </ScrollView>
-      </SafeAreaView>
+              </View>
+            )}
+          </>
+        )}
+      </ScrollView>
+    </SafeAreaView>
     // </KeyboardAwareScrollView>
   );
 };
@@ -703,6 +707,11 @@ const style = StyleSheet.create({
     color: color.black,
     marginLeft: '4%',
     marginTop: '6%',
+  },
+  symbolText: {
+    fontSize: fontSize.size13,
+    fontFamily: fontFamily.Medium,
+    color: color.black,
   },
   dateText: {
     fontSize: Platform.OS == 'ios' ? 13 : 11,

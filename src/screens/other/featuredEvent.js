@@ -12,7 +12,7 @@ import {
   Platform,
   StatusBar,
 } from 'react-native';
-import { IMAGE, color, fontFamily } from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -185,10 +185,10 @@ export default class featured_events extends Component {
                       <View
                         style={{
                           flexDirection: 'row',
-                          justifyContent: 'flex-start',
+                          alignItems: 'center',
                           marginHorizontal: '3%',
                         }}>
-                        <Image
+                        {/* <Image
                           source={IMAGE.time}
                           style={{
                             height: 12,
@@ -197,9 +197,12 @@ export default class featured_events extends Component {
                             alignSelf: 'center',
                             marginHorizontal: '2%',
                           }}
-                        />
+                        /> */}
+                        <Text style={[styles.symbolText]}>
+                          {d.currency_object?.symbol}
+                        </Text>
                         <Text style={styles.dateText}>
-                          {d.start_time} - {d.end_time}
+                          {d.min_price} - {d.max_price}
                         </Text>
                       </View>
                     </TouchableOpacity>
@@ -285,6 +288,13 @@ const styles = StyleSheet.create({
     color: color.black,
     marginLeft: '4%',
     marginTop: '6%',
+  },
+  symbolText: {
+    fontSize: fontSize.size13,
+    fontFamily: fontFamily.Medium,
+    color: color.black,
+    marginHorizontal: '2%',
+    marginTop: '3%',
   },
   dateText: {
     fontSize: Platform.OS == 'ios' ? 13 : 11,

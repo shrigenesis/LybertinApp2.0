@@ -183,6 +183,7 @@ const EditGroup = ({ navigation, route }) => {
   };
 
   const RemoveMember = (id) => {
+    setisLoading(true);
     let config = {
       url: `${apiUrl}/removemember/${route?.params?.group_id}/members/${id}`,
       method: 'post',
@@ -198,13 +199,17 @@ const EditGroup = ({ navigation, route }) => {
             text1: 'Remove Participants successfully'
           })
         }
+        setisLoading(false);
       },
       err => {
+        setisLoading(false);
         console.log(err?.response?.data);
       },
     );
   }
   const AddMember = (id) => {
+
+    setisLoading(true);
     let config = {
       url: `${apiUrl}/${route?.params?.group_id}${apiMethod}`,
       method: 'post',
@@ -212,7 +217,7 @@ const EditGroup = ({ navigation, route }) => {
         members: id,
       },
     };
-    console.log('config', config);
+
     APIRequest(
       config,
       res => {
@@ -223,8 +228,11 @@ const EditGroup = ({ navigation, route }) => {
             text1: 'Add Participants successfully'
           })
         }
+
+        setisLoading(false);
       },
       err => {
+        setisLoading(false);
         console.log(err?.response?.data);
       },
     );
@@ -259,7 +267,7 @@ const EditGroup = ({ navigation, route }) => {
       body.append('media_privacy', MediaPrivacy);
       body.append('users', selectUserList.join(','));
       body.append('welcome_message', welcomeMessage);
-      
+
       if (profile) {
         body.append('photo', profile);
       }
@@ -343,7 +351,7 @@ const EditGroup = ({ navigation, route }) => {
             <Loader isLoading={isLoading} type={'dots'} />
             <TouchableOpacity
               onPress={() => {
-                setimgtype('cover'),setisShowBottomSheet(true);
+                setimgtype('cover'), setisShowBottomSheet(true);
               }}
               style={style.coverView}>
               {cover ? (
@@ -426,7 +434,7 @@ const EditGroup = ({ navigation, route }) => {
                 style={style.inputStyle}
               />
               <TextInput
-                onFocus={() =>setisShowBottomSheet(false)}
+                onFocus={() => setisShowBottomSheet(false)}
                 value={welcomeMessage}
                 onChangeText={setWelcomeMessage}
                 placeholderTextColor={'#0F2D52A6'}
@@ -501,13 +509,14 @@ const EditGroup = ({ navigation, route }) => {
               <>
                 {add_more_participent_list.map((item, index) => (
                   <View
+                    key={`pl-${index}`}
                     style={{
                       alignItems: 'center',
                       flexDirection: 'column',
-                      padding: wp(3),
+                      // padding: wp(3),
                       backgroundColor: '#fff',
                       borderRadius: 10,
-                      elevation: 5,
+                      elevation: 1,
                       marginBottom: hp(2),
                       width: wp(90),
                       alignSelf: 'center',
@@ -545,6 +554,7 @@ const EditGroup = ({ navigation, route }) => {
                 {group_members.map((item, index) => (
                   !item.is_admin ?
                     <View
+                      key={`gm-${index}`}
                       style={{
                         alignItems: 'center',
                         flexDirection: 'column',
