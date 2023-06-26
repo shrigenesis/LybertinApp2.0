@@ -67,11 +67,11 @@ const Header = props => {
             <Text style={[style.heading, headingStyle]}>{title}</Text>
           </View>
         )}
-        {RightIcon && (
           <View style={style.rightIconWrapper}>
+            {RightIcon && (
             <RightIcon />
+            )}
           </View>
-        )}
       </View>
     );
   };

@@ -1,4 +1,4 @@
-import React, { useState, memo, useEffect, useRef } from 'react';
+import React, {useState, memo, useEffect, useRef} from 'react';
 import {
   View,
   StyleSheet,
@@ -15,21 +15,21 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
-import { color, fontFamily } from '../../constant/';
+import {color, fontFamily} from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import { Header, Loader } from './../../component/';
+import {Header, Loader} from './../../component/';
 import IMAGE from '../../constant/image';
-import { useIsFocused } from '@react-navigation/native';
-import { APIRequestWithFile, ApiUrl, IMAGEURL } from './../../utils/api';
+import {useIsFocused} from '@react-navigation/native';
+import {APIRequestWithFile, ApiUrl, IMAGEURL} from './../../utils/api';
 import Video from 'react-native-video';
-import Animated, { ZoomIn, FadeOut, FadeIn } from 'react-native-reanimated';
-import { Download } from './../../utils/download';
+import Animated, {ZoomIn, FadeOut, FadeIn} from 'react-native-reanimated';
+import {Download} from './../../utils/download';
 import Pdf from 'react-native-pdf';
 
-const ShowImg = ({ navigation, route }) => {
+const ShowImg = ({navigation, route}) => {
   const [appReady, setAppReady] = useState(false);
   const [isLoading, setisLoading] = useState(false);
   const [isplay, setisplay] = useState(false);
@@ -37,7 +37,7 @@ const ShowImg = ({ navigation, route }) => {
   const [paused, setPaused] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const isFocus = useIsFocused();
-  const [DownloadProgress, setDownloadProgress] = useState(false)
+  const [DownloadProgress, setDownloadProgress] = useState(false);
 
   useEffect(() => {
     if (isFocus) {
@@ -49,17 +49,13 @@ const ShowImg = ({ navigation, route }) => {
     return;
   }, [isFocus]);
 
-
-
   const videoRef = useRef();
   const renderStoryItem = () => {
     let file = route?.params?.file;
     let fileType = route?.params?.fileType;
-    console.log(`${IMAGEURL}/${file}`, 'file::::::::fileType::::::::::::')
-    const source = {
-      uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf',
-      cache: true,
-    };
+    let baseUrlIncluded = route?.params?.baseUrlIncluded ? true : false;
+    
+    
     if (fileType == 'photo') {
       return (
         <Image
@@ -67,7 +63,7 @@ const ShowImg = ({ navigation, route }) => {
             setisLoading(false);
           }}
           onLoadStart={() => setisLoading(true)}
-          source={{ uri: `${IMAGEURL}/${file}` }}
+          source={{uri: baseUrlIncluded ? file : `${IMAGEURL}/${file}`}}
           style={style.storyImage}
         />
       );
@@ -98,7 +94,6 @@ const ShowImg = ({ navigation, route }) => {
           {/*  resizeMode={'cover'}*/}
           {/*  style={{height: '100%', width: wp(100)}}*/}
 
-
           {/*/>*/}
           <Video
             // poster={item.thumbnailUrl}
@@ -117,24 +112,24 @@ const ShowImg = ({ navigation, route }) => {
             }}
             // onError={this.onVideoError}
             onAudioBecomingNoisy={() => setPaused(true)}
-            onAudioFocusChanged={(event) => { setPaused(!event.hasAudioFocus) }}
+            onAudioFocusChanged={event => {
+              setPaused(!event.hasAudioFocus);
+            }}
             // onAudioFocusChanged={this.onAudioFocusChanged}
             repeat={false}
-
-            source={{ uri: `${IMAGEURL}/${file}` }}
+            source={{uri: `${IMAGEURL}/${file}`}}
             ref={videoRef}
             paused={paused}
-            onBuffer={({ isBuffering }) => {
+            onBuffer={({isBuffering}) => {
               setisLoading(isBuffering == 1);
             }}
             // onError={err => console.log(err)}
             onLoad={() => {
               _hideControles(),
                 // videoRef?.current?.seek(3);
-                setPaused(false)
+                setPaused(false);
               setisplay(true), setisLoading(false);
             }}
-
             onLoadStart={() => {
               setisLoading(true);
             }}
@@ -144,7 +139,7 @@ const ShowImg = ({ navigation, route }) => {
               setisplay(false);
             }}
             resizeMode={'contain'}
-            style={{ height: '100%', width: wp(100) }}
+            style={{height: '100%', width: wp(100)}}
           />
           {!hideControles && !isLoading && _showIcon()}
         </View>
@@ -191,7 +186,7 @@ const ShowImg = ({ navigation, route }) => {
     let fileType = route?.params?.fileType;
     let url = `${IMAGEURL}/${file}`;
     let ext = url.split('.').pop();
-    setDownloadProgress(true)
+    setDownloadProgress(true);
     Download(url, ext, setDownloadProgress);
   };
 
@@ -201,7 +196,7 @@ const ShowImg = ({ navigation, route }) => {
         <TouchableOpacity
           onPress={() => {
             sethideControles(false);
-            videoRef?.current?.setNativeProps({ paused: true });
+            videoRef?.current?.setNativeProps({paused: true});
             setisplay(false);
           }}
           style={{
@@ -222,9 +217,8 @@ const ShowImg = ({ navigation, route }) => {
       return (
         <TouchableOpacity
           onPress={() => {
-
             _hideControles();
-            videoRef?.current?.setNativeProps({ paused: false });
+            videoRef?.current?.setNativeProps({paused: false});
 
             setisplay(true);
           }}
@@ -246,7 +240,8 @@ const ShowImg = ({ navigation, route }) => {
   };
   let file = route?.params?.file;
   let fileType = route?.params?.fileType;
-  console.log('file', ` ${IMAGEURL}/${file}`);
+  let hideDownloadButton = route?.params?.hideDownloadButton ? true : false;
+  
   return (
     <View
       style={{
@@ -254,8 +249,12 @@ const ShowImg = ({ navigation, route }) => {
         backgroundColor: fileType == 'pdf' ? '#fff' : color.black,
       }}>
       <StatusBar barStyle={'light-content'} backgroundColor={color.white} />
-      <Loader isLoading={DownloadProgress} type='progress' pageCircleText='Downloading...' />
-      
+      <Loader
+        isLoading={DownloadProgress}
+        type="progress"
+        pageCircleText="Downloading..."
+      />
+
       {appReady && route?.params?.file && (
         <Animated.View entering={ZoomIn}>
           <View style={style.header}>
@@ -266,17 +265,17 @@ const ShowImg = ({ navigation, route }) => {
                 paddingHorizontal: wp(7),
                 flexDirection: 'row',
                 paddingVertical: hp(2),
-                backgroundColor: 'rgba(52, 52, 52, 0.4)'
+                backgroundColor: 'rgba(52, 52, 52, 0.4)',
               }}>
               <TouchableOpacity
                 onPress={() => {
-                  videoRef?.current?.setNativeProps({ paused: true });
+                  videoRef?.current?.setNativeProps({paused: true});
                   videoRef?.current?.seek(0);
                   // setIsPlaying(true)
                   setisplay(false);
-                  setPaused(true)
+                  setPaused(true);
                   sethideControles(false);
-                  navigation.goBack()
+                  navigation.goBack();
                 }}>
                 <Image
                   source={IMAGE.close}
@@ -287,17 +286,18 @@ const ShowImg = ({ navigation, route }) => {
                   }}
                 />
               </TouchableOpacity>
-
-              <TouchableOpacity onPress={() => Action()}>
-                <Image
-                  source={IMAGE.download}
-                  style={{
-                    height: 30,
-                    width: 30,
-                    resizeMode: 'contain',
-                  }}
-                />
-              </TouchableOpacity>
+              {!hideDownloadButton && (
+                <TouchableOpacity onPress={() => Action()}>
+                  <Image
+                    source={IMAGE.download}
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: 'contain',
+                    }}
+                  />
+                </TouchableOpacity>
+              )}
             </View>
           </View>
           {fileType != 'pdf' ? (
@@ -307,7 +307,7 @@ const ShowImg = ({ navigation, route }) => {
               style={style.storyView}>
               {renderStoryItem()}
               {isLoading && (
-                <View style={{ position: 'absolute', top: hp(40), left: wp(40) }}>
+                <View style={{position: 'absolute', top: hp(40), left: wp(40)}}>
                   <Loader isLoading={isLoading} />
                 </View>
               )}
@@ -323,7 +323,7 @@ const ShowImg = ({ navigation, route }) => {
                 trustAllCerts={false}
                 source={{
                   uri: `${IMAGEURL}/${file}`,
-                  cache: true
+                  cache: true,
                 }}
                 // source={{uri: 'http://samples.leanpub.com/thereactnativebook-sample.pdf', cache: true}}
                 style={{

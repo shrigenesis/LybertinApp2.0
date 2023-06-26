@@ -18,6 +18,7 @@ import {
   Pressable,
   Linking,
   TouchableHighlight,
+  Dimensions,
 } from 'react-native';
 import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
 import {
@@ -157,7 +158,16 @@ export default class eventDetails extends Component {
               </TouchableOpacity>
             </View>
             <ScrollView style={{flex: 0.92}}>
-              <SliderBox
+              <ImageBackground
+                source={{uri: `${IMAGEURL}/${this.state.event?.poster}`}}
+                style={{
+                  height: 300,
+                  width: Dimensions.get('window').width,
+                  resizeMode: 'stretch',
+                  alignSelf: 'center',
+                  paddingTop: Platform.OS == 'ios' ? 0 : 0,
+                }}></ImageBackground>
+              {/* <SliderBox
                 images={this.state?.images.length>0? this.sliderImageArray(this.state.images) : [`${IMAGEURL}/${this.state.event.thumbnail}`]}
                 sliderBoxHeight={300}
                 onCurrentImagePressed={index =>
@@ -173,7 +183,7 @@ export default class eventDetails extends Component {
                   padding: 0,
                   margin: -5,
                 }}
-              />
+              /> */}
               {/* <FlatList
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -292,7 +302,9 @@ export default class eventDetails extends Component {
 
                     <Pressable
                       onPress={() =>
-                        RedirectToMap(`${this.state.event?.venue}+${this.state.event?.state}+${this.state.event?.city}+${this.state.event?.zipcode}`)
+                        RedirectToMap(
+                          `${this.state.event?.venue}+${this.state.event?.state}+${this.state.event?.city}+${this.state.event?.zipcode}`,
+                        )
                       }>
                       <Text style={styles.dateText}>Location</Text>
                       <Text style={styles.timeText} numberOfLines={2}>
@@ -326,7 +338,7 @@ export default class eventDetails extends Component {
                         </Text>
                       </View>
                     </View>
-                  ) :null}
+                  ) : null}
                   <View style={styles.descriptionWrapper}>
                     <Text style={styles.desHeading}>Event Description</Text>
                     <ReadMore description={this.state.strippedHtml} />
@@ -444,6 +456,38 @@ export default class eventDetails extends Component {
                       </View>
                     </View>
                   )}
+                  {this.state?.images.length > 0 && (
+                    <View style={styles.eventItemsGallery}>
+                      <Text style={styles.ticketsText}>Gallery</Text>
+                      <FlatList
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        keyExtractor={item => `gallery_${item}`}
+                        data={this.sliderImageArray(this.state.images)}
+                        renderItem={({item}) => (
+                          <TouchableOpacity
+                            onPress={() =>
+                              this.props.navigation.navigate('ShowImg', {
+                                file: item,
+                                fileType: 'photo',
+                                baseUrlIncluded: true,
+                                hideDownloadButton: true
+                              })
+                            }>
+                            <View style={styles.eventGalleryInner}>
+                              <View style={styles.tagIMageWrapperGallery}>
+                                <ImageBackground
+                                  source={{uri: item}}
+                                  resizeMode="cover"
+                                  imageStyle={{borderRadius: 10}}
+                                  style={styles.galleryImage}></ImageBackground>
+                              </View>
+                            </View>
+                          </TouchableOpacity>
+                        )}
+                      />
+                    </View>
+                  )}
                   {this.state.tag_group_new?.length > 0 &&
                     this.state.tag_group_new?.map((itt, indx) => {
                       return (
@@ -475,6 +519,8 @@ export default class eventDetails extends Component {
                         </View>
                       );
                     })}
+
+                  <View style={{minHeight: 50}}></View>
                 </View>
               </View>
             </ScrollView>
@@ -564,6 +610,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginTop: 20,
   },
+  eventItemsGallery: {
+    paddingHorizontal: 15,
+    marginTop: 20,
+  },
+  eventGalleryInner: {
+    // backgroundColor: color.black,
+    borderColor: '#DEDEDE',
+    borderWidth: 1,
+    marginRight: 10,
+    borderRadius: 10,
+    marginTop: 10,
+    height: 110,
+    width: 180,
+  },
   eventTagInner: {
     backgroundColor: color.extralightSlaty,
     borderColor: '#DEDEDE',
@@ -630,6 +690,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  tagIMageWrapperGallery: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+  },
+  galleryImage: {
+    width: '100%',
+    height: 110,
+    resizeMode: 'cover',
+    borderRadius: 10,
+  },
   profileImage: {
     width: '100%',
     height: 116,
@@ -652,12 +724,12 @@ const styles = StyleSheet.create({
     height: 56,
     resizeMode: 'cover',
   },
-  galleryImage: {
-    height: 146,
-    width: 161,
-    resizeMode: 'cover',
-    borderRadius: 10,
-  },
+  // galleryImage: {
+  //   height: 146,
+  //   width: 161,
+  //   resizeMode: 'cover',
+  //   borderRadius: 10,
+  // },
   buttonText: {
     fontSize: fontSize.size15,
     fontFamily: fontFamily.Regular,

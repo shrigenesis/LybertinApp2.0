@@ -582,7 +582,6 @@ const MarketplaceDetails = props => {
             <View style={{ height: 500 }}>
               <WebView
                 ref={webView}
-                // source={{ uri: "https://hrd.shrigenesis.com/index.php/dashboard" }}
                 source={{ uri: webviewUrl }}
                 javaScriptEnabled={true}
                 domStorageEnabled={true}

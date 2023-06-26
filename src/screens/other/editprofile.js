@@ -603,7 +603,7 @@ const EditProfile = ({ navigation, route }) => {
                   />
                 </View>
               </TouchableOpacity>
-              <View style={{ marginTop: -20, marginBottom: 15, alignItems: 'flex-start' }}>
+              <View style={{ marginTop: -20, marginBottom: 15, alignItems: 'center' }}>
                 {hasError('dob')}
               </View>
               <Textinput
