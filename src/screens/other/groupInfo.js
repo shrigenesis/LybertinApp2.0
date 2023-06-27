@@ -34,12 +34,15 @@ import {
   IMAGEURL,
 } from './../../utils/api';
 import Toast from 'react-native-toast-message';
+import { User } from '../../utils/user';
 
 
 let apiMethod = '/leave';
 let apiUrl = ApiUrl.groups;
 let apiMethodNew = '/remove';
 let reportMethod = '/report-group';
+
+let userdata = new User().getuserdata();
 
 export default class groupInfo extends Component {
   constructor(props) {
@@ -214,12 +217,12 @@ export default class groupInfo extends Component {
               />
             </View>
             <View style={styles.profileContainer}>
-              <TouchableOpacity 
-              activeOpacity={0.9} 
-              onPress={() => this.props.navigation.navigate('ViewProfileImage', {
-                image:  `${IMAGEURL}/${this.state.image}`,
-                name: this.state.groupName
-              })}><Image
+              <TouchableOpacity
+                activeOpacity={0.9}
+                onPress={() => this.props.navigation.navigate('ViewProfileImage', {
+                  image: `${IMAGEURL}/${this.state.image}`,
+                  name: this.state.groupName
+                })}><Image
                   source={{ uri: `${IMAGEURL}/${this.state.image}` }}
                   style={{
                     height: '94%',
@@ -306,15 +309,19 @@ export default class groupInfo extends Component {
 
             <FlatList
               data={this.state.groupMembers}
+              keyExtractor={item => `groupmember_${item.id}`}
               renderItem={({ item: d }) => (
                 <View>
                   <RippleTouchable>
                     <View style={styles.card}>
                       <RippleTouchable
                         onPress={() =>
-                          this.props?.navigation.navigate('UserProfile', {
-                            data: d,
-                          })
+                          {
+                            userdata.id === d.id ? this.props?.navigation.navigate('MyProfile') :
+                              this.props?.navigation.navigate('UserProfile', {
+                                data: d,
+                              })
+                          }
                         }
                         style={{
                           alignItems: 'center',
