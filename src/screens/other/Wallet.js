@@ -14,6 +14,7 @@ import { User } from '../../utils/user';
 import { APIRequest, ApiUrl, IMAGEURL } from '../../utils/api';
 import NoRecord from './noRecord';
 import { useIsFocused } from '@react-navigation/native';
+import moment from 'moment';
 
 const Wallet = ({ navigation }) => {
   const userdata = new User().getuserdata();
@@ -140,7 +141,7 @@ const Wallet = ({ navigation }) => {
                   </View>
                   <View style={{ width: '60%' }}>
                     <Text style={styles.historyTitle}>{item.type}</Text>
-                    <Text style={styles.historyDisc}>{item.created_at}</Text>
+                    <Text style={styles.historyDisc}>{moment(item.created_at).format('DD MMM, YYYY HH:mm')}</Text>
                     {/* <Text style={styles.historyDisc}>({item.description === "" ? '' : item.description})</Text> */}
                     
                   </View>
