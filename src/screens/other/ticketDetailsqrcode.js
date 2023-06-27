@@ -1,37 +1,23 @@
-import React, {useState, useEffect, FC, Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  FlatList,
-  TextInput,
-  Image,
   TouchableOpacity,
-  ScrollView,
-  StatusBar,
-  ActivityIndicator,
-  Platform,
-  ImageBackground,
+  SafeAreaView,
+  ScrollView
 } from 'react-native';
-import {IMAGE, color, fontFamily} from '../../constant/';
+import {  color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
-  widthPercentageToDP,
 } from 'react-native-responsive-screen';
-import {Divider, Input, Overlay} from 'react-native-elements';
 
-import {Header, RippleTouchable, StoryList} from '../../component/';
-import SwipeableView from 'react-native-swipeable-view';
+import { Header } from '../../component/';
 import Loader from './../../component/loader';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
+import { APIRequest, ApiUrl } from './../../utils/api';
 import moment from 'moment';
-import {User} from '../../utils/user';
-import {FA5Style} from 'react-native-vector-icons/FontAwesome5';
-import {Download} from './../../utils/download';
 import Toast from 'react-native-toast-message';
-const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default class ticketDetailsqrcode extends Component {
   constructor(props) {
@@ -43,16 +29,19 @@ export default class ticketDetailsqrcode extends Component {
     };
   }
 
+  componentDidMount() {
+    this.setState({ selected: this.props.route?.params?.ticket?.checked_in })
+  }
+
   expiryDays(date_string) {
     var dd = moment(date_string).format('MM/DD/YYYY');
     var b = dd.split(/\D/);
     var expiry = new Date(b[2], --b[0], b[1]);
     var d = Math.round((expiry - new Date().setHours(0, 0, 0, 0)) / 8.64e7);
-    console.log('dddd', d);
     return d;
   }
   checkout = () => {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
 
     var id = this.state.ticket?.id;
     var order_number = this.state.ticket?.order_number;
@@ -68,9 +57,8 @@ export default class ticketDetailsqrcode extends Component {
     APIRequest(
       config,
       res => {
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false, selected: 1 });
 
-        console.log('API response  =====', res);
         if (res?.status) {
           Toast.show({
             type: 'success',
@@ -79,39 +67,18 @@ export default class ticketDetailsqrcode extends Component {
         }
       },
       err => {
-        this.setState({isLoading: false});
-
-        // setisLoading(false);
-        console.log(err);
+        this.setState({ isLoading: false });
       },
     );
   };
   render() {
-    console.log(
-      'this.props.route.params.ticket',
-      this.props.route.params.ticket,
-    );
     return (
-      <ScrollView style={styles.container}>
-        <Loader type="dots" isLoading={this.state.isLoading} />
-        <View style={{marginHorizontal: '4%', marginVertical: '6%'}}>
-        <View style={styles.headerContainer}>
-            <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-              <Image
-                source={IMAGE.back}
-                style={{
-                  height: 20,
-                  width: 20,
-                  resizeMode: 'contain',
-                }}
-              />
-            </TouchableOpacity>
+      <SafeAreaView style={styles.safeArea}>
+        <Header title="Ticket Details" />
+        <ScrollView style={styles.container}>
+          <Loader type="dots" isLoading={this.state.isLoading} />
 
-            <Text style={styles.headerText}>Ticket Details</Text>
-            <Text style={{color: '#fff'}}>new</Text>
-          </View>
-          <View style={styles.divider}></View>
-          <Text style={styles.upperText}>Event</Text>
+          <Text style={[styles.upperText, { marginTop: 10 }]}>Event</Text>
           <Text style={styles.bottomText}>{this.state.ticket.event_title}</Text>
           <View style={styles.divider}></View>
           <Text style={styles.upperText}>Order ID</Text>
@@ -146,7 +113,7 @@ export default class ticketDetailsqrcode extends Component {
           </Text>
           <View style={styles.divider}></View>
           <Text style={styles.upperText}>Booked On</Text>
-          <Text style={styles.bottomText}>{this.state.ticket.created_at}</Text>
+          <Text style={styles.bottomText}>{moment(this.state.ticket.created_at).format('DD MMM, YYYY HH:mm')}</Text>
           <View style={styles.divider}></View>
           <Text style={styles.upperText}>Payment </Text>
           <Text style={styles.bottomTextGreen}>
@@ -176,62 +143,48 @@ export default class ticketDetailsqrcode extends Component {
               : 'yes'}
           </Text>
           <View style={styles.divider}></View>
-          <Text style={styles.upperText}>Actions</Text>
+          {/* <Text style={styles.upperText}>Actions</Text> */}
 
-          <View style={{flexDirection: 'row', marginHorizontal: -10}}>
+          <View style={{ flexDirection: 'row', justifyContent: 'center' }}>
             {this.state.selected == 1 ? (
               <TouchableOpacity
-                style={{
-                  backgroundColor: '#EDEDED',
-                  width: widthPercentageToDP(100),
-                  alignItems: 'center',
-
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-
-                  height: 52,
-
-                  marginVertical: '5%',
-                }}
                 onPress={() => [
                   this.checkout(),
                   this.setState({
                     selected: 0,
                   }),
                 ]}>
-                <Text style={[styles.buttonText, {color: '#20BBF6'}]}>
-                  Check-Out
-                </Text>
+                <View style={styles.buttonWrapper}>
+                  <Text style={[styles.buttonText]}>
+                    Check-Out
+                  </Text>
+                </View>
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                style={{
-                  width: widthPercentageToDP(100),
-                  backgroundColor: color.btnBlue,
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                  alignSelf: 'center',
-                  height: 52,
-
-                  marginVertical: '5%',
-                }}
-                onPress={() => [this.checkout(), this.setState({selected: 1})]}>
-                <Text style={styles.buttonText}>Check-In</Text>
+                onPress={() => [this.checkout()]}>
+                <View style={styles.buttonWrapper}>
+                  <Text style={styles.buttonText}>Check-In</Text>
+                </View>
               </TouchableOpacity>
             )}
           </View>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </SafeAreaView>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: color.white,
+  },
   container: {
     flex: 1,
     width: null,
     backgroundColor: '#fff',
+    paddingHorizontal: 20
   },
   headerContainer: {
     flexDirection: 'row',
@@ -278,10 +231,18 @@ const styles = StyleSheet.create({
     color: color.red,
     marginTop: '2%',
   },
+  buttonWrapper: {
+    backgroundColor: color.btnBlue,
+    borderRadius: 10,
+    width: wp(88),
+    height: 45,
+    justifyContent: 'center',
+  },
   buttonText: {
-    fontSize: 19,
+    fontSize: fontSize.size16,
     fontFamily: fontFamily.Regular,
     color: color.white,
+    textAlign: 'center'
   },
   buttonImage: {
     height: 20,

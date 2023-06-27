@@ -1,26 +1,21 @@
 import React, { Component } from 'react';
 
 import {
-  PermissionsAndroid,
   View,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  Linking,
   BackHandler,
-  Image,
 } from 'react-native';
 import Loader from './../../component/loader';
 import {
-  widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
-import { color, fontFamily, fontSize, IMAGE } from '../../constant';
+import { color, fontFamily, fontSize } from '../../constant';
 import Toast from 'react-native-toast-message';
 import { APIRequest, ApiUrl } from '../../utils/api';
-import {Platform} from 'react-native';
+import { Platform } from 'react-native';
 
 class Barcode extends Component {
   constructor(props) {
@@ -53,14 +48,9 @@ class Barcode extends Component {
 
   onSuccess = async e => {
     const data = JSON.parse(e.data);
-    console.log(data);
 
-    this.setState({ scannerData: data, isLoading:true });
+    this.setState({ scannerData: data, isLoading: true });
 
-    Toast.show({
-      type: 'success',
-      text1: 'Ticket scanned.'
-    })
     let config = {
       url: ApiUrl.scanTicket,
       method: 'post',
@@ -74,8 +64,7 @@ class Barcode extends Component {
       config,
 
       res => {
-        console.log('API response dance =====', res);
-        this.setState({isLoading:false})
+        this.setState({ isLoading: false })
 
         if (res.status) {
           // setrequestCount(res.follow_requests);
@@ -92,8 +81,7 @@ class Barcode extends Component {
       },
       err => {
         // setisLoading(false);
-        this.setState({isLoading:false})
-        console.log('ssssss', err?.response?.data);
+        this.setState({ isLoading: false })
         if (!err?.status) {
           Toast.show({
             type: 'error',
@@ -123,7 +111,7 @@ class Barcode extends Component {
           // }
           topContent={
             <Text style={styles.centerText}>
-             Scan Ticket
+              Scan Ticket
             </Text>
           }
           // bottomContent={
@@ -141,8 +129,8 @@ class Barcode extends Component {
           ref={node => {
             this.scanner = node;
           }}
-          containerStyle={{width: hp(100)}}
-          cameraStyle={{height: Platform.OS === 'ios' ? hp(70) : hp(60)}}
+          containerStyle={{ width: hp(100) }}
+          cameraStyle={{ height: Platform.OS === 'ios' ? hp(70) : hp(60) }}
         />
 
         {this.state.isLoading && (
