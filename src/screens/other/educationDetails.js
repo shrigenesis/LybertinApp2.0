@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, FC, Component} from 'react';
+import React, { useState, useEffect, FC, Component } from 'react';
 import {
   View,
   Text,
@@ -14,14 +14,14 @@ import {
   Share,
   Pressable,
 } from 'react-native';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {APIRequest, ApiUrl, BASEURL, domainUriPrefix} from '../../utils/api';
+import { APIRequest, ApiUrl, BASEURL, domainUriPrefix } from '../../utils/api';
 import Toast from 'react-native-toast-message';
-import {SliderBox} from 'react-native-image-slider-box';
+import { SliderBox } from 'react-native-image-slider-box';
 import RenderHtml from 'react-native-render-html';
 import HtmlToText from '../../utils/HtmlToText';
 import SvgUri from 'react-native-svg-uri-updated';
@@ -30,17 +30,22 @@ import BottomSheetAddVideo from '../../component/BottomSheetAddVideo';
 import Video from 'react-native-video';
 import dynamicLinks from '@react-native-firebase/dynamic-links';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
-import {Button, Loader} from '../../component';
+import { Button, Loader } from '../../component';
 import ReadMore from '../../utils/ReadMore';
+import Animated from 'react-native-reanimated';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 
 export default class educationDetails extends Component {
+
+  scroll = new Animated.Value(0);
+
   constructor(props) {
     super(props);
     this.state = {
       id: this.props.route.params.id,
       selected: 0,
+      dark: true,
       Course: [],
       event: {},
       allVideos: [],
@@ -68,14 +73,14 @@ export default class educationDetails extends Component {
   componentDidMount() {
     this.props.navigation.addListener('focus', async () => {
       this.getEventDetails();
-      this.setState({...this.state, AddedVideoPrice: 0, AddedVideoCount: 0});
+      this.setState({ ...this.state, AddedVideoPrice: 0, AddedVideoCount: 0 });
     });
     this.getEventDetails();
   }
 
   // Get course details
   getEventDetails = () => {
-    this.setState({...this.state, isLoading: true});
+    this.setState({ ...this.state, isLoading: true });
     let config = {
       url: `${ApiUrl.educationList}/${this.state.id}`,
       method: 'post',
@@ -92,11 +97,11 @@ export default class educationDetails extends Component {
           ),
           strippedHtml: HtmlToText(res.data.video_description),
         });
-        this.setState({...this.state, isLoading: false});
+        this.setState({ ...this.state, isLoading: false });
       },
       err => {
         console.log(err);
-        this.setState({...this.state, isLoading: false});
+        this.setState({ ...this.state, isLoading: false });
       },
     );
   };
@@ -121,11 +126,11 @@ export default class educationDetails extends Component {
             text1: res.Message,
           });
         }
-        this.setState({...this.state, isLoading: false});
+        this.setState({ ...this.state, isLoading: false });
       },
       err => {
         console.log(err);
-        this.setState({...this.state, isLoading: false});
+        this.setState({ ...this.state, isLoading: false });
       },
     );
   };
@@ -144,7 +149,7 @@ export default class educationDetails extends Component {
     this.setState({
       ...this.state,
       allVideos: this.state.allVideos.map(item =>
-        item.id === id ? {...item, added: true} : item,
+        item.id === id ? { ...item, added: true } : item,
       ),
       AddedVideoCount: this.state.AddedVideoCount + 1,
       AddedVideoPrice: this.state.AddedVideoPrice + price,
@@ -156,7 +161,7 @@ export default class educationDetails extends Component {
     this.setState({
       ...this.state,
       allVideos: this.state.allVideos.map(item =>
-        item.id === id ? {...item, added: false} : item,
+        item.id === id ? { ...item, added: false } : item,
       ),
       AddedVideoCount: this.state.AddedVideoCount - 1,
       AddedVideoPrice: this.state.AddedVideoPrice - price,
@@ -218,20 +223,33 @@ export default class educationDetails extends Component {
     this.onShare(link);
   };
 
+  onScroll = ({ nativeEvent }) => {
+    let y = nativeEvent.contentOffset.y;
+    this.scroll.setValue(y);
+    const { dark } = this.state;
+    let scrollValue = y;
+    if (scrollValue > 280 && dark) {
+      this.setState({ dark: false });
+    }
+    if (scrollValue < 280 && !dark) {
+      this.setState({ dark: true });
+    }
+  };
+
   render() {
     // let SliderImage = JSON.parse(this.state.Course.image);
     // SliderImage = SliderImage.map((item) => BaseURL + item);
     return (
       <View style={styles.container}>
         <StatusBar
-          barStyle={'light-content'}
+              barStyle={this.state.dark ? 'light-content' : 'dark-content'}
           translucent={true}
           backgroundColor={color.transparent}
         />
         <View
           style={[
             styles.backBtnPosition,
-            {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15)},
+            { top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15) },
           ]}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Image source={IMAGE.ArrowLeft} style={styles.backBtnImage} />
@@ -241,7 +259,8 @@ export default class educationDetails extends Component {
           <DetailsSkelton />
         ) : (
           <>
-            <ScrollView style={{flex: 0.92}}>
+            <ScrollView style={{ flex: 0.92 }}
+              onScroll={this.onScroll}>
               <SliderBox
                 images={[this.state.Course.image]}
                 sliderBoxHeight={300}
@@ -339,14 +358,14 @@ export default class educationDetails extends Component {
                         <Text style={styles.desHeading}>Trailer Video</Text>
                         <View>
                           <TouchableOpacity
-                            style={{width: wp(60)}}
+                            style={{ width: wp(60) }}
                             onPress={() =>
                               this.props.navigation.navigate('videoPlayer', {
                                 VideoURL: this.state.Course.trailer_video,
                               })
                             }>
                             <Image
-                              source={{uri: this.state.Course.image}}
+                              source={{ uri: this.state.Course.image }}
                               style={{
                                 height: hp(25),
                                 resizeMode: 'cover',
@@ -379,7 +398,7 @@ export default class educationDetails extends Component {
                         </View>
 
                         {this.state.allVideos.length > 0 ? (
-                          <View style={[styles.shareWrapp, {marginBottom: 15}]}>
+                          <View style={[styles.shareWrapp, { marginBottom: 15 }]}>
                             <Text>Select All Session</Text>
                             <TouchableOpacity
                               onPress={() => this.selectAllVideo()}>
@@ -397,7 +416,7 @@ export default class educationDetails extends Component {
                         <FlatList
                           showsHorizontalScrollIndicator={false}
                           data={this.state.allPurchasedVideo}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             if (item.is_purchased) {
                               return (
                                 <View>
@@ -420,7 +439,7 @@ export default class educationDetails extends Component {
                         <FlatList
                           showsHorizontalScrollIndicator={false}
                           data={this.state.allVideos}
-                          renderItem={({item, index}) => {
+                          renderItem={({ item, index }) => {
                             if (!item.is_purchased) {
                               return (
                                 <View>
@@ -475,11 +494,11 @@ export default class educationDetails extends Component {
                           horizontal={true}
                           showsHorizontalScrollIndicator={true}
                           data={this.state.Course.sponsors}
-                          renderItem={({item, index}) => (
+                          renderItem={({ item, index }) => (
                             <View style={styles.sponsorTagInner}>
                               <View>
                                 <Image
-                                  source={{uri: item}}
+                                  source={{ uri: item }}
                                   style={styles.sponsorImage}
                                 />
                               </View>
@@ -544,14 +563,14 @@ export default class educationDetails extends Component {
                   onPress={() =>
                     this.state.AddedVideoCount > 0
                       ? this.props.navigation.navigate('Payment', {
-                          course_id: this.state.id,
-                          video_id: this.state.addedVideo,
-                          promocode: [],
-                        })
+                        course_id: this.state.id,
+                        video_id: this.state.addedVideo,
+                        promocode: [],
+                      })
                       : Toast.show({
-                          type: 'info',
-                          text1: 'Sorry, Cart is empty',
-                        })
+                        type: 'info',
+                        text1: 'Sorry, Cart is empty',
+                      })
                   }
                   style={styles.bottomCheckoutBox}>
                   <View>
@@ -650,6 +669,7 @@ const styles = StyleSheet.create({
   iconImage: {
     width: 20,
     height: 20,
+    tintColor: color.btnBlue
   },
   bottomCheckoutBox: {
     flexDirection: 'row',
@@ -819,7 +839,7 @@ const styles = StyleSheet.create({
     height: 10,
     resizeMode: 'contain',
   },
-  joinBtn: {alignItems: 'center'},
+  joinBtn: { alignItems: 'center' },
   tagText: {
     fontSize: fontSize.size11,
     paddingHorizontal: 10,

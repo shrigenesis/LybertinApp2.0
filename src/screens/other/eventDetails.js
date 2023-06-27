@@ -1,6 +1,6 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable prettier/prettier */
-import React, {useState, useEffect, FC, Component} from 'react';
+import React, { useState, useEffect, FC, Component } from 'react';
 import {
   View,
   Text,
@@ -20,35 +20,40 @@ import {
   TouchableHighlight,
   Dimensions,
 } from 'react-native';
-import {IMAGE, color, fontFamily, fontSize} from '../../constant/';
+import { IMAGE, color, fontFamily, fontSize } from '../../constant/';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {RippleTouchable, StoryList} from '../../component/';
+import { RippleTouchable, StoryList } from '../../component/';
 import SwipeableView from 'react-native-swipeable-view';
 import Loader from './../../component/loader';
 import CountDown from 'react-native-countdown-fixed';
-import {APIRequest, ApiUrl, IMAGEURL} from './../../utils/api';
-import {useIsFocused} from '@react-navigation/native';
+import { APIRequest, ApiUrl, IMAGEURL } from './../../utils/api';
+import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
-import {User} from '../../utils/user';
+import { User } from '../../utils/user';
 import Toast from 'react-native-toast-message';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {SliderBox} from 'react-native-image-slider-box';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { SliderBox } from 'react-native-image-slider-box';
 import DetailsSkelton from '../../utils/skeltons/DetailsSkelton';
 import HtmlToText from '../../utils/HtmlToText';
 import RedirectToMap from '../../utils/RedirectToMap';
 import ReadMore from '../../utils/ReadMore';
+import Animated from 'react-native-reanimated';
 
 const STATUSBAR_HEIGHT = StatusBar.currentHeight;
 let myHTML = '';
 
 export default class eventDetails extends Component {
+
+  scroll = new Animated.Value(0);
+
   constructor(props) {
     super(props);
     this.state = {
       selected: 0,
+      dark: true,
       eventId: this.props.route.params.event_id,
       event: {},
       showText: 0,
@@ -96,10 +101,10 @@ export default class eventDetails extends Component {
           });
           // setrequestCount(res.follow_requests);
         }
-        this.setState({...this.state, isLoading: false});
+        this.setState({ ...this.state, isLoading: false });
       },
       err => {
-        this.setState({...this.state, isLoading: false});
+        this.setState({ ...this.state, isLoading: false });
         console.log(err);
       },
     );
@@ -137,6 +142,19 @@ export default class eventDetails extends Component {
     }
   };
 
+  onScroll = ({ nativeEvent }) => {
+    let y = nativeEvent.contentOffset.y;
+    this.scroll.setValue(y);
+    const { dark } = this.state;
+    let scrollValue = y;
+    if (scrollValue > 280 && dark) {
+      this.setState({ dark: false });
+    }
+    if (scrollValue < 280 && !dark) {
+      this.setState({ dark: true });
+    }
+  };
+
   render() {
     return (
       // <SafeAreaView style={{flex: 1}}>
@@ -144,22 +162,24 @@ export default class eventDetails extends Component {
         {!this.state.isLoading ? (
           <View style={styles.container}>
             <StatusBar
-              barStyle={'dark-content'}
+              barStyle={this.state.dark ? 'light-content' : 'dark-content'}
               translucent={true}
               backgroundColor={color.transparent}
             />
             <View
               style={[
                 styles.backBtn,
-                {top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15)},
+                { top: STATUSBAR_HEIGHT + (Platform.OS == 'ios' ? 50 : 15) },
               ]}>
               <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
                 <Image source={IMAGE.ArrowLeft} style={styles.backBtnImage} />
               </TouchableOpacity>
             </View>
-            <ScrollView style={{flex: 0.92}}>
+            <ScrollView style={{ flex: 0.92 }}
+              onScroll={this.onScroll}
+            >
               <ImageBackground
-                source={{uri: `${IMAGEURL}/${this.state.event?.poster}`}}
+                source={{ uri: `${IMAGEURL}/${this.state.event?.poster}` }}
                 style={{
                   height: 300,
                   width: Dimensions.get('window').width,
@@ -214,7 +234,7 @@ export default class eventDetails extends Component {
                   // borderTopRightRadius: 40,
                   backgroundColor: '#F9F9FA',
                 }}>
-                <View style={{paddingBottom: 15}}>
+                <View style={{ paddingBottom: 15 }}>
                   <View style={styles.shareWrapp}>
                     <Text style={styles.heading}>{this.state.event.title}</Text>
                     <TouchableOpacity onPress={() => this.onShare()}>
@@ -354,7 +374,7 @@ export default class eventDetails extends Component {
                         horizontal
                         showsHorizontalScrollIndicator={false}
                         data={this.state.repititiveSchedule}
-                        renderItem={({item: d}) => (
+                        renderItem={({ item: d }) => (
                           <TouchableOpacity
                             onPress={() => [
                               this.setState({
@@ -435,7 +455,7 @@ export default class eventDetails extends Component {
                           )}
                           size={15}
                           // onFinish={() => this.saleFinished()}
-                          digitTxtStyle={{color: color.btnBlue}}
+                          digitTxtStyle={{ color: color.btnBlue }}
                           digitStyle={{
                             backgroundColor: '#fff',
                             marginTop: 0,
@@ -464,7 +484,7 @@ export default class eventDetails extends Component {
                         showsHorizontalScrollIndicator={false}
                         keyExtractor={item => `gallery_${item}`}
                         data={this.sliderImageArray(this.state.images)}
-                        renderItem={({item}) => (
+                        renderItem={({ item }) => (
                           <TouchableOpacity
                             onPress={() =>
                               this.props.navigation.navigate('ShowImg', {
@@ -477,9 +497,9 @@ export default class eventDetails extends Component {
                             <View style={styles.eventGalleryInner}>
                               <View style={styles.tagIMageWrapperGallery}>
                                 <ImageBackground
-                                  source={{uri: item}}
+                                  source={{ uri: item }}
                                   resizeMode="cover"
-                                  imageStyle={{borderRadius: 10}}
+                                  imageStyle={{ borderRadius: 10 }}
                                   style={styles.galleryImage}></ImageBackground>
                               </View>
                             </View>
@@ -497,15 +517,15 @@ export default class eventDetails extends Component {
                             horizontal
                             showsHorizontalScrollIndicator={false}
                             data={itt?.items}
-                            renderItem={({item, index}) => (
+                            renderItem={({ item, index }) => (
                               <View style={styles.eventTagInner}>
                                 <View style={styles.tagIMageWrapper}>
                                   <Image
-                                    source={{uri: `${IMAGEURL}/${item.image}`}}
+                                    source={{ uri: `${IMAGEURL}/${item.image}` }}
                                     style={styles.profileImage}
                                   />
                                 </View>
-                                <View style={{margin: 8}}>
+                                <View style={{ margin: 8 }}>
                                   <Text style={styles.nameText}>
                                     {item.title}
                                   </Text>
@@ -520,7 +540,7 @@ export default class eventDetails extends Component {
                       );
                     })}
 
-                  <View style={{minHeight: 50}}></View>
+                  <View style={{ minHeight: 50 }}></View>
                 </View>
               </View>
             </ScrollView>
@@ -529,18 +549,18 @@ export default class eventDetails extends Component {
                 onPress={() =>
                   this.state.isRepetative == false
                     ? this.props.navigation.navigate('buyTicket', {
-                        event_id: this.state.eventId,
-                        date: {
-                          start_date: this.state?.event?.start_date,
-                          end_date: this.state?.event?.end_date,
-                          start_time: this.state?.event?.start_time,
-                          end_time: this.state?.event?.end_time,
-                        },
-                      })
+                      event_id: this.state.eventId,
+                      date: {
+                        start_date: this.state?.event?.start_date,
+                        end_date: this.state?.event?.end_date,
+                        start_time: this.state?.event?.start_time,
+                        end_time: this.state?.event?.end_time,
+                      },
+                    })
                     : Toast.show({
-                        type: 'error',
-                        text1: 'Choose event date',
-                      })
+                      type: 'error',
+                      text1: 'Choose event date',
+                    })
                 }
                 style={{
                   flex: 0.08,
