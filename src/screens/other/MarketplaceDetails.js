@@ -84,7 +84,7 @@ const MarketplaceDetails = props => {
       document.querySelector('.r-13qz1uu').style.display = 'none'
     }, 
       2);`;
-  
+
   // Get event details
   const getEventDetails = () => {
     let config = {
@@ -99,6 +99,7 @@ const MarketplaceDetails = props => {
           settag_group(res.marketing_event_info.tag_group);
           let myHTML = res.marketing_event_info.event.description;
           setstrippedHtml(HtmlToText(myHTML));
+          calculateEarningValue(res.marketing_event_info.event);
         }
         setisLoading(false);
         console.log(res);
@@ -169,11 +170,12 @@ const MarketplaceDetails = props => {
     }
   };
   // Calculate EarningValue
-  const CalculateEarningValue = () => {
+  const calculateEarningValue = (event) => {
     let earningCoins = [];
-    for (let index = 0; index < event.marketings.length; index++) {
-      earningCoins.push(event.marketings[index].commission);
+    for (let index = 0; index < event?.marketings?.length; index++) {
+      earningCoins.push(event?.marketings[index].commission);
     }
+
     let minValue = Math.min(...earningCoins);
     let maxValue = Math.max(...earningCoins);
     setearningValue({
